@@ -47,7 +47,7 @@ export const sysResources = [
         title: "邮箱设置",
         name: "EmailSetting",
         path: "/sys/settings/email",
-        component: "/sys/settings/email-setting.vue",
+        component: "/sys/settings/email/index.vue",
         meta: {
           permission: "sys:settings:view",
           icon: "ion:mail-outline",
@@ -68,6 +68,20 @@ export const sysResources = [
           permission: "sys:settings:view"
         }
       },
+      // {
+      //   title: "顶部菜单设置",
+      //   name: "HeaderMenus",
+      //   path: "/sys/settings/header-menus",
+      //   component: "/sys/settings/header-menus/index.vue",
+      //   meta: {
+      //     show: () => {
+      //       const settingStore = useSettingStore();
+      //       return settingStore.isComm;
+      //     },
+      //     icon: "ion:document-text-outline",
+      //     permission: "sys:settings:view"
+      //   }
+      // },
       {
         title: "系统级授权",
         name: "SysAccess",

@@ -5,7 +5,7 @@ import _ from "lodash-es";
 import { LocalStorage } from "/src/utils/util.storage";
 
 import * as basicApi from "/@/api/modules/api.basic";
-import { PlusInfo, SiteEnv, SiteInfo, SysInstallInfo, SysPublicSetting } from "/@/api/modules/api.basic";
+import { HeaderMenus, PlusInfo, SiteEnv, SiteInfo, SysInstallInfo, SysPublicSetting } from "/@/api/modules/api.basic";
 import { useUserStore } from "/@/store/modules/user";
 import { mitter } from "/@/utils/util.mitt";
 import { env } from "/@/utils/util.env";
@@ -36,6 +36,7 @@ export interface SettingState {
   siteInfo: SiteInfo;
   plusInfo?: PlusInfo;
   siteEnv?: SiteEnv;
+  headerMenus?: HeaderMenus;
   inited?: boolean;
 }
 
@@ -84,6 +85,9 @@ export const useSettingStore = defineStore({
         contactText: "",
         contactLink: ""
       }
+    },
+    headerMenus: {
+      menus: []
     },
     inited: false
   }),

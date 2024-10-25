@@ -1,5 +1,5 @@
 import { Config, Controller, Get, Inject, Provide } from '@midwayjs/core';
-import { BaseController, Constants, SysInstallInfo, SysPublicSettings, SysSettingsService, SysSiteEnv, SysSiteInfo } from '@certd/lib-server';
+import { BaseController, Constants, SysHeaderMenus, SysInstallInfo, SysPublicSettings, SysSettingsService, SysSiteEnv, SysSiteInfo } from '@certd/lib-server';
 import { AppKey, getPlusInfo } from '@certd/pipeline';
 
 /**
@@ -30,6 +30,10 @@ export class BasicSettingsController extends BaseController {
     return await this.sysSettingsService.getSetting(SysSiteInfo);
   }
 
+  public async getHeaderMenus() {
+    return await this.sysSettingsService.getSetting(SysHeaderMenus);
+  }
+
   public async getSiteEnv() {
     const env: SysSiteEnv = {
       agent: this.agentConfig,
@@ -48,12 +52,14 @@ export class BasicSettingsController extends BaseController {
     const siteInfo = await this.getSiteInfo();
     const siteEnv = await this.getSiteEnv();
     const plusInfo = await this.plusInfo();
+    const headerMenus = await this.getHeaderMenus();
     return this.ok({
       sysPublic,
       installInfo,
       siteInfo,
       siteEnv,
       plusInfo,
+      headerMenus,
     });
   }
 }

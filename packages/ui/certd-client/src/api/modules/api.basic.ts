@@ -32,6 +32,16 @@ export type SysPublicSetting = {
 export type SysInstallInfo = {
   siteId: string;
 };
+export type MenuItem = {
+  id: string;
+  title: string;
+  icon?: string;
+  path?: string;
+  children?: MenuItem[];
+};
+export type HeaderMenus = {
+  menus: MenuItem[];
+};
 
 export type AllSettings = {
   sysPublic: SysPublicSetting;
@@ -39,6 +49,7 @@ export type AllSettings = {
   plusInfo: PlusInfo;
   siteInfo: SiteInfo;
   siteEnv: SiteEnv;
+  headerMenus: HeaderMenus;
 };
 
 export async function loadAllSettings(): Promise<AllSettings> {

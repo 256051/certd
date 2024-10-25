@@ -78,8 +78,8 @@
 
 <script setup lang="ts">
 import { reactive } from "vue";
-import * as api from "./api";
-import { SettingKeys } from "./api";
+import * as api from "../api";
+import { SettingKeys } from "../api";
 import * as emailApi from "./api.email";
 import { notification } from "ant-design-vue";
 import { useSettingStore } from "/src/store/modules/settings";

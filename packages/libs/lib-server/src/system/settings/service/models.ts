@@ -102,3 +102,20 @@ export class SysSiteEnv {
     contactLink?: string;
   };
 }
+
+export type MenuItem = {
+  id: string;
+  title: string;
+  icon: string;
+  link: string;
+  auth: boolean;
+  permission?: string;
+  children?: MenuItem[];
+};
+export class SysHeaderMenus extends BaseSettings {
+  static __title__ = '顶部菜单';
+  static __key__ = 'sys.header.menus';
+  static __access__ = 'public';
+
+  menus: MenuItem[];
+}
