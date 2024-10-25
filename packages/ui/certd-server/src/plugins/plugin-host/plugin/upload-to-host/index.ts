@@ -20,45 +20,50 @@ import dayjs from 'dayjs';
 export class UploadCertToHostPlugin extends AbstractTaskPlugin {
   @TaskInput({
     title: '证书保存路径',
-    helper: '全链证书，需要有写入权限，路径要包含证书文件名，文件名不能用*?!等特殊符号，例如：/tmp/cert.pem',
+    helper: '全链证书，需要有写入权限，路径要包含证书文件名，例如：/tmp/cert.pem',
     component: {
       placeholder: '/root/deploy/nginx/full_chain.pem',
     },
+    rules: [{ type: 'filepath' }],
   })
   crtPath!: string;
   @TaskInput({
     title: '私钥保存路径',
-    helper: '需要有写入权限，路径要包含私钥文件名，文件名不能用*?!等特殊符号，例如：/tmp/cert.key',
+    helper: '需要有写入权限，路径要包含私钥文件名，例如：/tmp/cert.key',
     component: {
       placeholder: '/root/deploy/nginx/cert.key',
     },
+    rules: [{ type: 'filepath' }],
   })
   keyPath!: string;
 
   @TaskInput({
     title: '中间证书保存路径',
-    helper: '一般情况传上面两个文件即可，极少数情况需要这个中间证书',
+    helper: '路径要包含文件名，一般情况传上面两个文件即可，极少数情况需要这个中间证书',
     component: {
       placeholder: '/root/deploy/nginx/intermediate.pem',
     },
+    rules: [{ type: 'filepath' }],
   })
   icPath!: string;
 
   @TaskInput({
     title: 'PFX证书保存路径',
-    helper: '用于IIS证书部署，需要有写入权限，路径要包含私钥文件名，文件名不能用*?!等特殊符号，例如：/tmp/cert.pfx',
+    helper: '用于IIS证书部署，需要有写入权限，路径要包含证书文件名，例如：/tmp/cert.pfx',
     component: {
       placeholder: '/root/deploy/nginx/cert.pfx',
     },
+    rules: [{ type: 'filepath' }],
   })
   pfxPath!: string;
 
   @TaskInput({
     title: 'DER证书保存路径',
-    helper: '用于Apache证书部署，需要有写入权限，路径要包含私钥文件名，文件名不能用*?!等特殊符号，例如：/tmp/cert.der',
+    helper: '用于Apache证书部署，需要有写入权限，路径要包含证书文件名，例如：/tmp/cert.der',
     component: {
       placeholder: '/root/deploy/nginx/cert.der',
     },
+    rules: [{ type: 'filepath' }],
   })
   derPath!: string;
 

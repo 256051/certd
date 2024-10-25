@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isDomain } from "/@/plugin/validator";
+import { isDomain, isFilePath } from "/@/plugin/validator";
 
 describe("domain_validator", () => {
   it("ok", () => {
@@ -40,5 +40,36 @@ describe("domain_validator", () => {
 
     value = [".cc.com"];
     expect(test).to.throw(Error, "域名有误：.cc.com，请输入正确的域名");
+  });
+
+  it("isFilePath", () => {
+    let value = "/a/$/bc";
+
+    function test() {
+      return isFilePath({}, value);
+    }
+
+    expect(test()).to.be.true;
+
+    value = "/a/&/bc";
+    expect(test()).to.be.true;
+
+    //*?“<>|等特殊字符
+
+    value = "/a/&/b>c.txt";
+    const errorMessage = '文件名不能包含*?"<>|等特殊字符';
+    expect(test).to.throw(Error, errorMessage);
+
+    value = "/a/&/b<c.txt";
+    expect(test).to.throw(Error, errorMessage);
+
+    value = "/a/&/b|c.txt";
+    expect(test).to.throw(Error, errorMessage);
+
+    value = "/a/&/b?c.txt";
+    expect(test).to.throw(Error, errorMessage);
+
+    value = "/a/&/b*c.txt";
+    expect(test).to.throw(Error, errorMessage);
   });
 });

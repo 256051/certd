@@ -19,46 +19,51 @@ import path from 'path';
 export class CopyCertToLocalPlugin extends AbstractTaskPlugin {
   @TaskInput({
     title: '证书保存路径',
-    helper: '全链证书，路径要包含文件名，文件名不能用*?!等特殊符号' + '\n推荐使用相对路径，将写入与数据库同级目录，无需映射，例如：./tmp/cert.pem',
+    helper: '全链证书，路径要包含文件名' + '\n推荐使用相对路径，将写入与数据库同级目录，无需映射，例如：./tmp/cert.pem',
     component: {
       placeholder: './tmp/full_chain.pem',
     },
+    rules: [{ type: 'filepath' }],
   })
   crtPath!: string;
   @TaskInput({
     title: '私钥保存路径',
-    helper: '路径要包含文件名，文件名不能用*?!等特殊符号\n推荐使用相对路径，将写入与数据库同级目录，无需映射，例如：./tmp/cert.key',
+    helper: '路径要包含文件名\n推荐使用相对路径，将写入与数据库同级目录，无需映射，例如：./tmp/cert.key',
     component: {
       placeholder: './tmp/cert.key',
     },
+    rules: [{ type: 'filepath' }],
   })
   keyPath!: string;
 
   @TaskInput({
     title: '中间证书保存路径',
-    helper: '一般情况传上面两个文件就行了，极少数情况需要这个中间证书',
+    helper: '路径要包含文件名，一般情况传上面两个文件就行了，极少数情况需要这个中间证书',
     component: {
       placeholder: '/root/deploy/nginx/intermediate.pem',
     },
+    rules: [{ type: 'filepath' }],
   })
   icPath!: string;
 
   @TaskInput({
     title: 'PFX证书保存路径',
-    helper: '用于IIS证书部署，路径要包含文件名，文件名不能用*?!等特殊符号\n推荐使用相对路径，将写入与数据库同级目录，无需映射，例如：./tmp/cert.pfx',
+    helper: '用于IIS证书部署，路径要包含文件名\n推荐使用相对路径，将写入与数据库同级目录，无需映射，例如：./tmp/cert.pfx',
     component: {
       placeholder: './tmp/cert.pfx',
     },
+    rules: [{ type: 'filepath' }],
   })
   pfxPath!: string;
 
   @TaskInput({
     title: 'DER证书保存路径',
     helper:
-      '用户Apache证书部署，路径要包含文件名，文件名不能用*?!等特殊符号\n推荐使用相对路径，将写入与数据库同级目录，无需映射，例如：./tmp/cert.der\n.der和.cer是相同的东西，改个后缀名即可',
+      '用于Apache证书部署，路径要包含文件名\n推荐使用相对路径，将写入与数据库同级目录，无需映射，例如：./tmp/cert.der\n.der和.cer是相同的东西，改个后缀名即可',
     component: {
       placeholder: './tmp/cert.der 或 ./tmp/cert.cer',
     },
+    rules: [{ type: 'filepath' }],
   })
   derPath!: string;
 

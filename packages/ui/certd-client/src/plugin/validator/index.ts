@@ -21,5 +21,18 @@ export function isDomain(rule: any, value: any) {
   }
   return true;
 }
+
 // 注册自定义验证器
 Validator.register("domains", isDomain);
+
+export function isFilePath(rule: any, value: any) {
+  if (value == null) {
+    return true;
+  }
+  // 文件名不能用*?"<>|等特殊符号
+  if (!/^[^*?"<>|]*$/.test(value)) {
+    throw new Error(`文件名不能包含*?"<>|等特殊字符`);
+  }
+  return true;
+}
+Validator.register("filepath", isFilePath);
