@@ -388,7 +388,7 @@ export class AcmeService {
         timeout: 10000,
       });
     } catch (e) {
-      this.logger.error(`${directoryUrl}，测试访问失败`, e.stack);
+      this.logger.error(`${directoryUrl}，测试访问失败`, e.message);
       return false;
     }
     this.logger.info(`${directoryUrl}，测试访问成功`);

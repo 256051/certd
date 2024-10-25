@@ -20,7 +20,7 @@ _acme-challenge.cert.com ---> xxxxx.cname.proxy.com ----> txt-record-abcdefg
 ```
 * 证书颁发机构就可以从`_acme-challenge.cert.com`查到TXT记录 `txt-record-abcdefg`，从而完成域名所有权校验。
 * 以上可以看出 `xxxxx.cname.proxy.com ----> txt-record-abcdefg` 这一段`Certd`可以自动添加的。
-* 剩下的只需要在你的`proxy.com`域名中手动添加一条固定的`CNAME解析`即可
+* 剩下的只需要在你的`cert.com`域名中手动添加一条固定的`CNAME解析`即可
                          
 
 ## 3. Certd CNAME使用步骤
