@@ -40,7 +40,7 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
       name: "a-input",
       vModel: "value",
     },
-    rules: [{ type: "email" }],
+    rules: [{ type: "email", message: "请输入正确的邮箱" }],
     required: true,
     order: -1,
     helper: "请输入邮箱",

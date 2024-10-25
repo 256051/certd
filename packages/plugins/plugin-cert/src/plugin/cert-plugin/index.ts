@@ -162,7 +162,7 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
     maybeNeed: true,
     required: false,
     helper:
-      "需要提供EAB授权\nZeroSSL：请前往[zerossl开发者中心](https://app.zerossl.com/developer),生成 'EAB Credentials'\n Google:请查看[google获取eab帮助文档](https://gitee.com/certd/certd/blob/v2/doc/google/google.md)，用过一次后会绑定邮箱，后续复用EAB要用同一个邮箱",
+      "需要提供EAB授权\nZeroSSL：请前往[zerossl开发者中心](https://app.zerossl.com/developer),生成 'EAB Credentials'\n Google:请查看[google获取eab帮助文档](https://certd.docmirror.cn/guide/use/google/)，用过一次后会绑定邮箱，后续复用EAB要用同一个邮箱",
     mergeScript: `
     return {
         show: ctx.compute(({form})=>{
@@ -182,7 +182,7 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
     maybeNeed: true,
     required: false,
     helper:
-      "google服务账号授权与EAB授权选填其中一个，[服务账号授权获取方法](https://gitee.com/certd/certd/blob/v2/doc/google/google.md)\n服务账号授权需要配置代理或者服务器本身在海外",
+      "google服务账号授权与EAB授权选填其中一个，[服务账号授权获取方法](https://certd.docmirror.cn/guide/use/google/)\n服务账号授权需要配置代理或者服务器本身在海外",
     mergeScript: `
     return {
         show: ctx.compute(({form})=>{

@@ -28,9 +28,9 @@ export default {
         });
       }
       options.value = array;
-      if (props.modelValue == null && options.value.length > 0) {
-        ctx.emit("update:modelValue", options.value[0].value);
-      }
+      // if (props.modelValue == null && options.value.length > 0) {
+      //   ctx.emit("update:modelValue", options.value[0].value);
+      // }
     }
     onCreate();
 

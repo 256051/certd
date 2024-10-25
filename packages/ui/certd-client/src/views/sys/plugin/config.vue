@@ -11,9 +11,17 @@
           <div class="helper">
             <div>设置公共Google EAB授权给用户使用，避免用户自己去翻墙获取Google EAB授权</div>
             <div>
-              <a href="https://gitee.com/certd/certd/blob/v2/doc/google/google.md#21-%E7%9B%B4%E6%8E%A5%E8%8E%B7%E5%8F%96eab-%E6%8E%A8%E8%8D%90">
-                获取Google EAB授权方法
-              </a>
+              <a href="https://certd.docmirror.cn/guide/use/google/">获取Google EAB授权方法 </a>
+            </div>
+          </div>
+        </a-form-item>
+
+        <a-form-item label="公共ZeroSSL EAB授权" :name="['CertApply', 'sysSetting', 'input', 'zerosslCommonEabAccessId']">
+          <access-selector v-model:model-value="formState.CertApply.sysSetting.input.zerosslCommonEabAccessId" type="eab" from="sys"></access-selector>
+          <div class="helper">
+            <div>设置公共ZeroSSL EAB授权给用户使用，避免用户自己去翻墙获取Zero EAB授权，注意：ZeroSSL免费证书有数量限制</div>
+            <div>
+              <a href="https://app.zerossl.com/developer">zerossl开发者中心获取EAB </a>
             </div>
           </div>
         </a-form-item>

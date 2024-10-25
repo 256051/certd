@@ -78,7 +78,7 @@ export class SshAccess extends BaseAccess implements ConnectConfig {
 
   @AccessInput({
     title: '是否Windows',
-    helper: '如果是Windows主机，请勾选此项\n并且需要windows[安装OpenSSH](https://gitee.com/certd/certd/blob/v2/doc/host/host.md)',
+    helper: '如果是Windows主机，请勾选此项\n并且需要windows[安装OpenSSH](https://certd.docmirror.cn/guide/use/host/windows.html)',
     component: {
       name: 'a-switch',
       vModel: 'checked',
