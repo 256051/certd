@@ -38,19 +38,23 @@ function findStepFromPipeline(targetStepId: string) {
 }
 
 const errorRef = ref("");
-function getDomainFromPipeline(inputKey: string) {
+function getStepIdFromInputKey(inputKey: string) {
   if (!inputKey) {
     errorRef.value = "请先选择域名证书";
     return;
   }
-  const targetStepId = inputKey.split(".")[1];
+  return inputKey.split(".")[1];
+}
+function getDomainFromPipeline(inputKey: string) {
+  let targetStepId = getStepIdFromInputKey(inputKey);
   let certStep = findStepFromPipeline(targetStepId);
   if (!certStep) {
     errorRef.value = "找不到目标步骤，请先选择域名证书";
     return;
   }
-  if (certStep.type !== "CertApply" || certStep.type !== "CertApplyLego") {
-    certStep = findStepFromPipeline(certStep.input?.cert);
+  if (certStep.type !== "CertApply" && certStep.type !== "CertApplyLego") {
+    targetStepId = getStepIdFromInputKey(certStep.input?.cert);
+    certStep = findStepFromPipeline(targetStepId);
     if (!certStep) {
       errorRef.value = "找不到目标步骤，请先选择域名证书";
       return;

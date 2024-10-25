@@ -17,6 +17,8 @@ import { fileUtils } from './util.file.js';
 import * as _ from 'lodash-es';
 import { cache } from './util.cache.js';
 import dayjs from 'dayjs';
+import { domainUtils } from './util.domain.js';
+import { optionsUtils } from './util.options.js';
 
 export const utils = {
   sleep,
@@ -30,4 +32,6 @@ export const utils = {
   cache,
   nanoid,
   dayjs,
+  domain: domainUtils,
+  options: optionsUtils,
 };
