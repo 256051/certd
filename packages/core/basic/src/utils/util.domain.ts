@@ -26,21 +26,21 @@ function match(targetDomains: string | string[], inDomains: string[]) {
 
       if (!inDomain.startsWith('*.')) {
         //不可能匹配
-        break;
+        continue;
       }
       //子域名匹配通配符即可
-      if (targetDomain === inDomain.substring(2)) {
+      const firstDotIndex = targetDomain.indexOf('.');
+      const targetDomainSuffix = targetDomain.substring(firstDotIndex + 1);
+      if (targetDomainSuffix === inDomain.substring(2)) {
         matched = true;
         break;
       }
     }
     //有一个没有匹配上，就失败
-    if (matched) {
-      //这个匹配上了，检查下一个
-      break;
-    } else {
+    if (!matched) {
       return false;
     }
+    //这个匹配上了，检查下一个
   }
   //没有提前return 全部匹配上了
   return true;
