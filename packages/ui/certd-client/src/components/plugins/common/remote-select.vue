@@ -22,7 +22,8 @@
 </template>
 <script setup lang="ts">
 import { ComponentPropsType, doRequest } from "/@/components/plugins/lib";
-import { ref, useAttrs, watch } from "vue";
+import { inject, ref, useAttrs, watch } from "vue";
+import { PluginDefine } from "@certd/pipeline";
 
 defineOptions({
   name: "RemoteSelect"
@@ -40,14 +41,40 @@ const emit = defineEmits<{
 
 const attrs = useAttrs();
 
+const getCurrentPluginDefine: any = inject("getCurrentPluginDefine");
 const optionsRef = ref([]);
 const message = ref("");
 const hasError = ref(false);
 const loading = ref(false);
 const getOptions = async () => {
+  if (loading.value) {
+    return;
+  }
+
+  if (!getCurrentPluginDefine) {
+    return;
+  }
+
+  const define: PluginDefine = getCurrentPluginDefine()?.value;
+  if (!define) {
+    return;
+  }
+  for (let key in define.input) {
+    const inWatches = props.watches.includes(key);
+    const inputDefine = define.input[key];
+    if (inWatches && inputDefine.required) {
+      const value = props.form[key];
+      if (value == null || value === "") {
+        console.log("remote-select required", key);
+        return;
+      }
+    }
+  }
+
   message.value = "";
   hasError.value = false;
   loading.value = true;
+  optionsRef.value = [];
   try {
     const res = await doRequest(
       {
@@ -67,6 +94,7 @@ const getOptions = async () => {
     if (res && res.length > 0) {
       message.value = "获取数据成功，请从下拉框中选择";
     }
+    optionsRef.value = res;
     return res;
   } finally {
     loading.value = false;
@@ -77,17 +105,14 @@ const filterOption = (input: string, option: any) => {
   return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 || String(option.value).toLowerCase().indexOf(input.toLowerCase());
 };
 
-let isFirst = true;
 async function onClick() {
-  if (!isFirst) {
-    return;
+  if (optionsRef.value?.length === 0) {
+    await refreshOptions();
   }
-  isFirst = false;
-  await refreshOptions();
 }
 
 async function refreshOptions() {
-  optionsRef.value = await getOptions();
+  await getOptions();
 }
 
 watch(
@@ -102,7 +127,10 @@ watch(
     };
   },
   async () => {
-    optionsRef.value = await getOptions();
+    await getOptions();
+  },
+  {
+    immediate: true
   }
 );
 </script>

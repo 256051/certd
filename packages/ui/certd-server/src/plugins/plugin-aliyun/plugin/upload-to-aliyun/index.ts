@@ -1,13 +1,32 @@
 import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput, TaskOutput } from '@certd/pipeline';
-import { appendTimeSuffix, checkRet } from '../../utils/index.js';
-import { AliyunAccess, AliyunClient } from '@certd/plugin-plus';
+import { AliyunAccess } from '@certd/plugin-plus';
+import { AliyunSslClient } from '@certd/plugin-plus';
+
+/**
+ * 华东1（杭州）	cn-hangzhou	cas.aliyuncs.com	cas-vpc.cn-hangzhou.aliyuncs.com
+ * 马来西亚（吉隆坡）	ap-southeast-3	cas.ap-southeast-3.aliyuncs.com	cas-vpc.ap-southeast-3.aliyuncs.com
+ * 新加坡	ap-southeast-1	cas.ap-southeast-1.aliyuncs.com	cas-vpc.ap-southeast-1.aliyuncs.com
+ * 印度尼西亚（雅加达）	ap-southeast-5	cas.ap-southeast-5.aliyuncs.com	cas-vpc.ap-southeast-5.aliyuncs.com
+ * 中国香港	cn-hongkong	cas.cn-hongkong.aliyuncs.com	cas-vpc.cn-hongkong.aliyuncs.com
+ *  欧洲与美洲
+ * 名称	区域 ID	服务地址	VPC 地址
+ * 德国（法兰克福）	eu-central-1	cas.eu-central-1.aliyuncs.com
+ */
+const regionDict = [
+  { value: 'cn-hangzhou', endpoint: 'cas.aliyuncs.com', label: 'cn-hangzhou-中国大陆' },
+  { value: 'eu-central-1', endpoint: 'cas.eu-central-1.aliyuncs.com', label: 'eu-central-1-德国（法兰克福）' },
+  { value: 'ap-southeast-1', endpoint: 'cas.ap-southeast-1.aliyuncs.com', label: 'ap-southeast-1-新加坡' },
+  { value: 'ap-southeast-3', endpoint: 'cas.ap-southeast-3.aliyuncs.com', label: 'ap-southeast-3-马来西亚（吉隆坡）' },
+  { value: 'ap-southeast-5', endpoint: 'cas.ap-southeast-5.aliyuncs.com', label: 'ap-southeast-5-印度尼西亚（雅加达）' },
+  { value: 'cn-hongkong', endpoint: 'cas.cn-hongkong.aliyuncs.com', label: 'cn-hongkong-中国香港' },
+];
 
 @IsTaskPlugin({
   name: 'uploadCertToAliyun',
   title: '上传证书到阿里云',
   icon: 'ant-design:aliyun-outlined',
   group: pluginGroups.aliyun.key,
-  desc: '',
+  desc: '如果不想在阿里云上同一份证书上传多次，可以把此任务作为前置任务，其他阿里云任务证书那一项选择此任务的输出',
   default: {
     strategy: {
       runStrategy: RunStrategy.SkipWhenSucceed,
@@ -27,7 +46,7 @@ export class UploadCertToAliyun extends AbstractTaskPlugin {
     component: {
       name: 'a-auto-complete',
       vModel: 'value',
-      options: [{ value: 'cn-hangzhou' }, { value: 'eu-central-1' }, { value: 'ap-southeast-1' }],
+      options: regionDict,
     },
     required: true,
   })
@@ -65,36 +84,23 @@ export class UploadCertToAliyun extends AbstractTaskPlugin {
   async execute(): Promise<void> {
     this.logger.info('开始部署证书到阿里云cdn');
     const access: AliyunAccess = await this.accessService.getById(this.accessId);
-    const client = await this.getClient(access);
-    const certName = appendTimeSuffix(this.name);
-    const params = {
-      RegionId: this.regionId || 'cn-hangzhou',
-      Name: certName,
-      Cert: this.cert.crt,
-      Key: this.cert.key,
-    };
 
-    const requestOption = {
-      method: 'POST',
-    };
-
-    const ret: any = await client.request('CreateUserCertificate', params, requestOption);
-    checkRet(ret);
-    this.logger.info('证书上传成功：aliyunCertId=', ret.CertId);
-
-    //output
-    this.aliyunCertId = ret.CertId;
-  }
-
-  async getClient(aliyunProvider: AliyunAccess) {
-    const client = new AliyunClient({ logger: this.logger });
-    await client.init({
-      accessKeyId: aliyunProvider.accessKeyId,
-      accessKeySecret: aliyunProvider.accessKeySecret,
-      endpoint: 'https://cas.aliyuncs.com',
-      apiVersion: '2020-04-07',
+    let endpoint = '';
+    for (const region of regionDict) {
+      if (region.value === this.regionId) {
+        endpoint = region.endpoint;
+        break;
+      }
+    }
+    const client = new AliyunSslClient({
+      access,
+      logger: this.logger,
+      endpoint,
     });
-    return client;
+    this.aliyunCertId = await client.uploadCert({
+      name: this.appendTimeSuffix('certd'),
+      cert: this.cert,
+    });
   }
 }
 //注册插件

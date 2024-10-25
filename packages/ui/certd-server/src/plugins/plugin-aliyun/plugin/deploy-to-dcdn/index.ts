@@ -1,6 +1,8 @@
 import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
 import dayjs from 'dayjs';
-import { AliyunAccess, AliyunClient } from '@certd/plugin-plus';
+import { AliyunAccess, AliyunClient, createCertDomainGetterInputDefine } from '@certd/plugin-plus';
+import { CertInfo } from '@certd/plugin-cert';
+
 @IsTaskPlugin({
   name: 'DeployCertToAliyunDCDN',
   title: '部署证书至阿里云DCDN',
@@ -15,28 +17,18 @@ import { AliyunAccess, AliyunClient } from '@certd/plugin-plus';
 })
 export class DeployCertToAliyunDCDN extends AbstractTaskPlugin {
   @TaskInput({
-    title: 'DCDN加速域名',
-    helper: '你在阿里云上配置的CDN加速域名，比如:certd.docmirror.cn',
-    required: true,
-  })
-  domainName!: string;
-
-  @TaskInput({
-    title: '证书名称',
-    helper: '上传后将以此名称作为前缀备注',
-  })
-  certName!: string;
-
-  @TaskInput({
     title: '域名证书',
     helper: '请选择前置任务输出的域名证书',
     component: {
       name: 'output-selector',
-      from: ['CertApply', 'CertApplyLego'],
+      from: ['CertApply', 'CertApplyLego', 'uploadCertToAliyun'],
     },
     required: true,
   })
-  cert!: string;
+  cert!: CertInfo | number;
+
+  @TaskInput(createCertDomainGetterInputDefine({ props: { required: false } }))
+  certDomains!: string[];
 
   @TaskInput({
     title: 'Access授权',
@@ -48,6 +40,19 @@ export class DeployCertToAliyunDCDN extends AbstractTaskPlugin {
     required: true,
   })
   accessId!: string;
+
+  @TaskInput({
+    title: 'DCDN加速域名',
+    helper: '你在阿里云上配置的CDN加速域名，比如:certd.docmirror.cn',
+    required: true,
+  })
+  domainName!: string;
+
+  @TaskInput({
+    title: '证书名称',
+    helper: '上传后将以此名称作为前缀备注',
+  })
+  certName!: string;
 
   async onInstance() {}
   async execute(): Promise<void> {
@@ -72,6 +77,20 @@ export class DeployCertToAliyunDCDN extends AbstractTaskPlugin {
 
   async buildParams() {
     const CertName = (this.certName ?? 'certd') + '-' + dayjs().format('YYYYMMDDHHmmss');
+
+    if (typeof this.cert !== 'object') {
+      const certId = this.cert;
+      this.logger.info('使用已上传的证书:', certId);
+      return {
+        DomainName: this.domainName,
+        SSLProtocol: 'on',
+        CertType: 'cas',
+        CertName: CertName,
+        CertId: certId,
+      };
+    }
+
+    this.logger.info('上传证书:', CertName);
     const cert: any = this.cert;
     return {
       DomainName: this.domainName,

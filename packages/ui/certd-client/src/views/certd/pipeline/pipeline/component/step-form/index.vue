@@ -107,7 +107,7 @@
 
 <script lang="tsx">
 import { message, Modal } from "ant-design-vue";
-import { computed, inject, Ref, ref, watch } from "vue";
+import { computed, inject, Ref, ref, watch, provide } from "vue";
 import _ from "lodash-es";
 import { nanoid } from "nanoid";
 import { CopyOutlined } from "@ant-design/icons-vue";
@@ -219,6 +219,9 @@ export default {
       };
 
       const currentPluginDefine = ref();
+      provide("getCurrentPluginDefine", () => {
+        return currentPluginDefine;
+      });
 
       function getContext() {
         return {
