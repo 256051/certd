@@ -38,7 +38,7 @@ jobs:
         with:
           time: '10' # for 60 seconds
       - name: deploy-certd-demo
-        id: request
+        id: request-demo
         uses: tyrrrz/action-http-request@master
         with:
           url: http://flow-openapi.aliyun.com/pipeline/webhook/lzCzlGrLCOHQaTMMt0mG
@@ -53,7 +53,7 @@ jobs:
           retry-delay: 5000
 
       - name: deploy-certd-doc
-        id: request
+        id: request-doc
         uses: tyrrrz/action-http-request@master
         with:
           url: http://flow-openapi.aliyun.com/pipeline/webhook/IiSxLDp9aOhgDUxJPytv
