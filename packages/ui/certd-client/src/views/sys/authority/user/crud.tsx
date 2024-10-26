@@ -118,6 +118,21 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
             }
           }
         },
+        status: {
+          title: "状态",
+          type: "dict-switch",
+          dict: dict({
+            data: [
+              { label: "启用", value: 1, color: "green" },
+              { label: "禁用", value: 0, color: "red" }
+            ]
+          }),
+          column: {
+            align: "center",
+            sorter: true,
+            width: 100
+          }
+        },
         remark: {
           title: "备注",
           type: "text",

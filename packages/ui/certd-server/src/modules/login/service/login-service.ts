@@ -35,6 +35,9 @@ export class LoginService {
     if (!right) {
       throw new CommonException('用户名或密码错误');
     }
+    if (info.status === 0) {
+      throw new CommonException('用户已被禁用');
+    }
 
     const roleIds = await this.roleService.getRoleIdsByUserId(info.id);
     return this.generateToken(info, roleIds);
