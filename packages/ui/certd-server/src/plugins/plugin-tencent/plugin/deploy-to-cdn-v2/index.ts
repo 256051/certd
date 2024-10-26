@@ -31,7 +31,7 @@ export class TencentDeployCertToCDNv2 extends AbstractTaskPlugin {
     createRemoteSelectInputDefine({
       title: 'CDN域名',
       helper: '请选择域名或输入域名',
-      typeName: TencentDeployCertToCDNv2.name,
+      typeName: 'TencentDeployCertToCDNv2',
       action: TencentDeployCertToCDNv2.prototype.onGetDomainList.name,
     })
   )

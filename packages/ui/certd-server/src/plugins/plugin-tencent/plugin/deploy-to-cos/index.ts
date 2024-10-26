@@ -79,7 +79,7 @@ export class DeployCertToTencentCosPlugin extends AbstractPlusTaskPlugin {
     createRemoteSelectInputDefine({
       title: 'COS域名',
       helper: '请选择域名',
-      typeName: DeployCertToTencentCosPlugin.name,
+      typeName: 'DeployCertToTencentCosPlugin',
       action: DeployCertToTencentCosPlugin.prototype.onGetDomainList.name,
       watches: ['bucket', 'region'],
     })
