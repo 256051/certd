@@ -94,6 +94,7 @@ export default defineConfig({
             { text: "腾讯云密钥获取", link: "/guide/use/tencent/" },
             { text: "连接windows主机", link: "/guide/use/host/windows.md" },
             { text: "Google EAB获取", link: "/guide/use/google/" },
+            { text: "阿里云相关", link: "/guide/use/aliyun/" },
             { text: "忘记密码", link: "/guide/use/forgotpasswd/" },
             { text: "数据备份", link: "/guide/use/backup/" },
             { text: "如何贡献代码", link: "/guide/development/index.md" },
