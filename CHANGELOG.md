@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.26.14](https://github.com/certd/certd/compare/v1.26.13...v1.26.14) (2024-10-26)
+
+### Bug Fixes
+
+* 修复阿里云部署大杀器报插件_还未注册错误的bug ([abd2dcf](https://github.com/certd/certd/commit/abd2dcf2e85a545321bae6451406d081f773b132))
+* 修复启动时自签证书无法保存的bug ([526c484](https://github.com/certd/certd/commit/526c48450bcd37b3ccded9b448f17de8140bdc6e))
+
+### Performance Improvements
+
+* 顶部菜单自定义 ([54d136c](https://github.com/certd/certd/commit/54d136cc6ae122f7c891b7a5c7232fe5de8e5cb5))
+* 禁用readonly用户 ([d10d42e](https://github.com/certd/certd/commit/d10d42e20619bb55a50d636b8867ff33db4e3b4b))
+* 限制其他用户流水线数量 ([315e437](https://github.com/certd/certd/commit/315e43746baf01682737f82e41579237a48409af))
+* 用户管理优化头像上传 ([661293c](https://github.com/certd/certd/commit/661293c189a3abf3cdc953b5225192372f57930d))
+
 ## [1.26.13](https://github.com/certd/certd/compare/v1.26.12...v1.26.13) (2024-10-26)
 
 ### Bug Fixes

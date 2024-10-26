@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.26.14](https://github.com/publishlab/node-acme-client/compare/v1.26.13...v1.26.14) (2024-10-26)
+
+### Bug Fixes
+
+* 修复启动时自签证书无法保存的bug ([526c484](https://github.com/publishlab/node-acme-client/commit/526c48450bcd37b3ccded9b448f17de8140bdc6e))
+
 ## [1.26.13](https://github.com/publishlab/node-acme-client/compare/v1.26.12...v1.26.13) (2024-10-26)
 
 **Note:** Version bump only for package @certd/acme-client
