@@ -1,5 +1,6 @@
 import * as api from "./api";
 import { AddReq, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
+import { useUserStore } from "/@/store/modules/user";
 
 export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const pageRequest = async (query: UserPageQuery): Promise<UserPageRes> => {
@@ -16,6 +17,8 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
   const addRequest = async ({ form }: AddReq) => {
     return await api.AddObj(form);
   };
+
+  const userStore = useUserStore();
 
   return {
     crudOptions: {
@@ -114,6 +117,35 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
               style: {
                 height: "30px",
                 width: "auto"
+              },
+              buildUrl(key: string) {
+                return `/api/basic/file/download?&key=` + key;
+              }
+            }
+          },
+          form: {
+            component: {
+              vModel: "modelValue",
+              valueType: "key",
+              cropper: {
+                aspectRatio: 1,
+                autoCropArea: 1,
+                viewMode: 0
+              },
+              onReady: null,
+              uploader: {
+                type: "form",
+                action: "/basic/file/upload",
+                name: "file",
+                headers: {
+                  Authorization: "Bearer " + userStore.getToken
+                },
+                successHandle(res: any) {
+                  return res;
+                }
+              },
+              buildUrl(key: string) {
+                return `/api/basic/file/download?&key=` + key;
               }
             }
           }

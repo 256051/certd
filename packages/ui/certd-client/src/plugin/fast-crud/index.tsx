@@ -185,7 +185,8 @@ function install(app: App, options: any = {}) {
     defaultType: "form",
     form: {
       keepName: true,
-      action: "http://www.docmirror.cn:7070/api/upload/form/upload",
+      type: "form",
+      action: "/basic/file/upload",
       name: "file",
       withCredentials: false,
       uploadRequest: async ({ action, file, onProgress }: any) => {
@@ -205,12 +206,8 @@ function install(app: App, options: any = {}) {
           }
         });
       },
-      successHandle(ret: any) {
-        // 上传完成后的结果处理， 此处应返回格式为{url:xxx}
-        return {
-          url: "http://www.docmirror.cn:7070" + ret,
-          key: ret.replace("/api/upload/form/download?key=", "")
-        };
+      successHandle(res: any) {
+        return res;
       }
     }
   });

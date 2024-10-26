@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { UserEntity } from '../entity/user.js';
 import * as _ from 'lodash-es';
 import md5 from 'md5';
-import { CommonException } from '@certd/lib-server';
+import { CommonException, FileService } from '@certd/lib-server';
 import { BaseService } from '@certd/lib-server';
 import { RoleService } from './role-service.js';
 import { PermissionService } from './permission-service.js';
@@ -33,6 +33,9 @@ export class UserService extends BaseService<UserEntity> {
 
   @Inject()
   sysSettingsService: SysSettingsService;
+
+  @Inject()
+  fileService: FileService;
 
   //@ts-ignore
   getRepository() {
@@ -68,6 +71,11 @@ export class UserService extends BaseService<UserEntity> {
     const plainPassword = param.password ?? RandomUtil.randomStr(6);
     param.passwordVersion = 2;
     param.password = await this.genPassword(plainPassword, param.passwordVersion); // 默认密码  建议未改密码不能登陆
+
+    if (param.avatar) {
+      param.avatar = await this.fileService.saveFile(0, param.avatar, 'public');
+    }
+
     await super.add(param);
     //添加角色
     if (param.roles && param.roles.length > 0) {
@@ -97,6 +105,10 @@ export class UserService extends BaseService<UserEntity> {
       param.password = await this.genPassword(param.password, param.passwordVersion);
     } else {
       delete param.password;
+    }
+
+    if (param.avatar) {
+      param.avatar = await this.fileService.saveFile(userInfo.id, param.avatar, 'public');
     }
     await super.update(param);
     await this.roleService.updateRoles(param.id, param.roles);

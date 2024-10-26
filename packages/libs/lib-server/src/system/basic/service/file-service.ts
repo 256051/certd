@@ -1,4 +1,4 @@
-import { Provide } from '@midwayjs/core';
+import { Provide, Scope, ScopeEnum } from '@midwayjs/core';
 import dayjs from 'dayjs';
 import path from 'path';
 import fs from 'fs';
@@ -14,6 +14,7 @@ export const uploadTmpFileCacheKey = 'tmpfile_key_';
 /**
  */
 @Provide()
+@Scope(ScopeEnum.Singleton)
 export class FileService {
   async saveFile(userId: number, tmpCacheKey: any, permission: 'public' | 'private') {
     if (tmpCacheKey.startsWith(`/${permission}`)) {
