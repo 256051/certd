@@ -36,14 +36,18 @@ http://ip:7001
 
 ## 三、如何升级
 
-### 1. 通用方式
+### 1. 应用商店安装，直接更新镜像即可
 
-先主机上拉取最新镜像，然后面板上重启容器
+![img.png](./images/upgrade.png)
+
+
+### 2. latest更新方式
+在主机上拉取最新镜像，然后面板上重启容器
 ```shell
 docker pull registry.cn-shenzhen.aliyuncs.com/handsfree/certd:latest
 ```
 
-### 2. 固定版本号方式
+### 3. 固定版本号方式
 
 修改容器编排模版中的镜像版本号，然后面板上重启容器
 ```shell
