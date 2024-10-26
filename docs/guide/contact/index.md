@@ -2,19 +2,14 @@
 
 ## 1. 交流群
 如有疑问，欢迎加入群聊（请备注certd）
-###  QQ群：141236433    
-<p align="center">
-<img height="230" src="./images/qq.png">
-</p>
+如有疑问，欢迎加入群聊（请备注certd）
 
-
-### 微信群： 
-<p align="center">
-<img height="230" src="./images/wx.png">
-</p>
-
+| 加群 | 微信群 | QQ群 |
+|---------|-------|-------|
+| 二维码 | <img height="230" src="./images/wx.png"> | <img height="230" src="./images/qq.png"> |
 
 ## 2. 加作者好友
-<p align="center">
-<img height="230" src="./images/me.png">
-</p>
+
+| 加作者好友 | 微信 QQ                                                       |
+|---------|-------------------------------------------------------------|
+| 二维码 | <img height="230" src="./images/me.png"> |

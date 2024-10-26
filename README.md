@@ -50,60 +50,16 @@ https://certd.handsfree.work/
 
 ## 四、私有化部署
 
-由于证书、授权信息等属于高度敏感数据，请务必私有化部署，保障数据安全
+由于证书、授权信息等属于高度敏感数据，请务必私有化部署，保障数据安全    
 
-### 4.1 宝塔面板一键部署
+您可以根据实际情况从如下方式中选择一种方式进行私有化部署：
 
-1. 安装宝塔面板，前往 [宝塔面板](https://www.bt.cn/u/CL3JHS) 官网，选择9.2.0以上正式版的脚本下载安装
+1. [宝塔面板方式部署](./install/baota/)
+2. [1Panel面板方式部署](./install/1panel/)
+2. [Docker方式部署](./install/docker/)
+3. [源码方式部署](./install/source/)
 
-2. 安装后登录宝塔面板，在菜单栏中点击 Docker，首次进入会提示安装Docker服务，点击立即安装，按提示完成安装
-
-3. 安装完成后在应用商店中找到`certd`（要先点右上角更新应用），点击安装，配置域名等基本信息即可完成安装
-
-### 4.2 宝塔面板容器编排部署
-
-[宝塔面板容器编排部署教程](./doc/deploy/baota/baota.md)
-
-### 4.3 Docker部署
-#### 1. 安装docker、docker-compose
-
-1.1 准备一台云服务器
-* 【阿里云】云服务器2核2G，新老用户同享，99元/年，续费同价！【 [立即购买](https://www.aliyun.com/benefit?scm=20140722.M_10244282._.V_1&source=5176.11533457&userCode=qya11txb )】
-* 【腾讯云】云服务器2核2G，新老用户同享，99元/年，续费同价！【 [立即购买](https://cloud.tencent.com/act/cps/redirect?redirect=6094&cps_key=b3ef73330335d7a6efa4a4bbeeb6b2c9&from=console)】
-
-1.2 安装docker      
-
-https://docs.docker.com/engine/install/   
-选择对应的操作系统，按照官方文档执行命令即可   
-
-#### 2. 运行certd
-
-[docker-compose.yaml 下载](https://gitee.com/certd/certd/raw/v2/docker/run/docker-compose.yaml)
-
-当前版本号： ![](https://img.shields.io/npm/v/%40certd%2Fpipeline)
-
-```bash
-# 随便创建一个目录
-mkdir certd
-# 进入目录
-cd certd
-# 下载docker-compose.yaml文件，或者手动下载放到certd目录下
-wget https://gitee.com/certd/certd/raw/v2/docker/run/docker-compose.yaml
-
-# 可以根据需要修改里面的配置
-# 1.修改镜像版本号【可选】
-# 2.配置数据保存路径【可选】
-# 3.修改端口号【可选】
-vi docker-compose.yaml # 【可选】
-
-# 启动certd
-docker compose up -d
-
-```
-> 如果提示 没有compose命令,请安装docker-compose   
-> https://docs.docker.com/compose/install/linux/
-
-#### 3. 镜像说明：
+#### Docker镜像说明：
 * 国内镜像地址:
   * `registry.cn-shenzhen.aliyuncs.com/handsfree/certd:latest`
   * `registry.cn-shenzhen.aliyuncs.com/handsfree/certd:armv7`、`[version]-armv7`
@@ -116,24 +72,6 @@ docker compose up -d
   * [点我查看镜像构建日志](https://github.com/certd/certd/actions/workflows/build-image.yml) 
 
 ![](./doc/images/action-build.jpg)
-
-#### 4. 访问测试
-
-http://your_server_ip:7001    
-默认账号密码：admin/123456    
-记得修改密码   
-
-### 4.4 源码部署
-```shell
-# 克隆代码
-git clone https://github.com/certd/certd
-git checkout v1.26.7  # 这里换成最新版本号
-cd certd
-# 启动服务
-./start.sh  
-# 数据默认保存在 ./packages/ui/certd-server/data 目录下,注意数据备份
-```
-如果是windows，请先安装`git for windows` ，然后右键，选择`open git bash here`打开终端，再执行`./start.sh`命令
 
 
 ## 五、 升级
@@ -157,7 +95,7 @@ docker compose up -d
 
 
 ## 六、一些说明
-* 本项目ssl证书提供商为letencrypt
+* 本项目ssl证书提供商为letencrypt/Google/ZeroSSL
 * 申请过程遵循acme协议
 * 需要验证域名所有权，一般有两种方式（目前本项目仅支持dns-01）
   * http-01： 在网站根目录下放置一份txt文件
@@ -172,42 +110,25 @@ docker compose up -d
 ## 七、不同平台的设置说明
 
 * 已迁移到新的文档网站，请到常见问题章节查看
-* [最新文档站链接 certd.docmirror.cn](https://certd.docmirror.cn/)
+* [最新文档站链接 https://certd.docmirror.cn](https://certd.docmirror.cn/)
 
 ## 八、问题处理
 ### 7.1 忘记管理员密码   
-解决方法如下：
-1. 修改docker-compose.yaml文件，将环境变量`certd_system_resetAdminPasswd`改为`true`
-```yaml
-services:
-  certd:
-    environment: # 环境变量
-      - certd_system_resetAdminPasswd=false
-```
-2. 重启容器
-```shell
-docker compose up -d
-docker logs -f --tail 500 certd
-# 观察日志，当日志中输出“重置1号管理员用户的密码完成”，即可操作下一步
-```
-3. 修改docker-compose.yaml，将`certd_system_resetAdminPasswd`改回`false`
-4. 再次重启容器
-```shell
-docker compose up -d
-```
-5. 使用`admin/123456`登录系统，请及时修改管理员密码
+[重置管理员密码方法](https://certd.docmirror.cn/guide/use/forgotpasswd/)
 
 ## 九、联系作者
 如有疑问，欢迎加入群聊（请备注certd）
-* QQ群：141236433
-* 微信群：   
-  ![](https://ai.handsfree.work/images/exchange_wxqroup.png)
 
+| 加群 | 微信群 | QQ群 |
+|---------|-------|-------|
+| 二维码 | <img height="230" src="./docs/guide/contact/images/wx.png"> | <img height="230" src="./docs/guide/contact/images/qq.png"> |
 
-加作者好友
-<p align="center">
-<img height="230" src="./doc/images/me.png">
-</p>
+也可以加作者好友
+
+| 加作者好友 | 微信 QQ                                                       |
+|---------|-------------------------------------------------------------|
+| 二维码 | <img height="230" src="./docs/guide/contact/images/me.png"> |
+
 
 ## 十、捐赠
 ************************
@@ -223,18 +144,18 @@ https://afdian.com/a/greper
 
 专业版特权对比
 
-| 功能      | 免费版                    | 专业版                   |
-|---------|------------------------|-----------------------|
-| 免费证书申请  | 免费无限制                  | 免费无限制                 |
-| 自动部署插件  | 阿里云CDN、腾讯云、七牛CDN、主机部署等 | 支持群晖、宝塔、1Panel等，持续开发中 |
-| 发邮件功能   | 需要配置                   | 免配置                   |
-| 证书流水线条数 | 10条                    | 无限制                   |
+| 功能      | 免费版               | 专业版                   |
+|---------|-------------------|-----------------------|
+| 免费证书申请  | 免费无限制             | 免费无限制                 |
+| 自动部署插件  | 阿里云、腾讯云、七牛云、主机部署等 | 支持群晖、宝塔、1Panel等，持续开发中 |
+| 发邮件功能   | 需要配置              | 免配置                   |
+| 证书流水线条数 | 10条               | 无限制                   |
 
 ************************
 
 ## 十一、贡献代码
 
-1. 本地开发 [贡献插件教程](./doc/dev/development.md)
+1. 本地开发 [贡献插件教程](https://certd.docmirror.cn/guide/development/)
 2. 作为贡献者，代表您同意您贡献的代码如下许可：
    1. 可以调整开源协议以使其更严格或更宽松。
    2. 可以用于商业用途。
@@ -248,9 +169,12 @@ https://afdian.com/a/greper
 * 如需商业授权，请联系作者。
 
 ## 十三、我的其他项目（求Star）
-* [袖手GPT](https://ai.handsfree.work/) ChatGPT，国内可用，无需FQ，每日免费额度
-* [fast-crud](https://gitee.com/fast-crud/fast-crud/) 基于vue3的crud快速开发框架
-* [dev-sidecar](https://github.com/docmirror/dev-sidecar/) 直连访问github工具，无需FQ，解决github无法访问的问题
+
+| 项目名称                                                    | stars                                                                                                 | 项目描述                              | 
+|---------------------------------------------------------|-------------------------------------------------------------------------------------------------------|-----------------------------------|
+| [袖手AI](https://ai.handsfree.work/)                    |                                                                                                       | 袖手GPT，国内可用，无需FQ，每日免费额度            | 
+| [fast-crud](https://gitee.com/fast-crud/fast-crud/)     | <img alt="GitHub stars" src="https://img.shields.io/github/stars/fast-crud/fast-crud?logo=github"/>   | 基于vue3的crud快速开发框架                 |  
+| [dev-sidecar](https://github.com/docmirror/dev-sidecar/) | <img alt="GitHub stars" src="https://img.shields.io/github/stars/docmirror/dev-sidecar?logo=github"/> | 直连访问github工具，无需FQ，解决github无法访问的问题 |                       
 
 
 
