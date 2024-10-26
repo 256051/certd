@@ -29,6 +29,7 @@
 
         <a-form-item label="HTTP代理" :name="['private', 'httpProxy']" :rules="urlRules">
           <a-input v-model:value="formState.private.httpProxy" placeholder="http://192.168.1.2:18010/" />
+          <div class="helper">当某些网站被墙时可以配置</div>
         </a-form-item>
 
         <a-form-item label="HTTPS代理" :name="['private', 'httpsProxy']" :rules="urlRules">
