@@ -2,6 +2,7 @@ import { logger } from '@certd/pipeline';
 import fs from 'fs';
 // @ts-ignore
 import forge from 'node-forge';
+import path from 'path';
 
 export function createSelfCertificate(opts: { crtPath: string; keyPath: string }) {
   // 生成密钥对
@@ -32,6 +33,14 @@ export function createSelfCertificate(opts: { crtPath: string; keyPath: string }
   logger.info('生成自签名证书成功');
   logger.info(`自签证书保存路径: ${opts.crtPath}`);
   logger.info(`自签私钥保存路径: ${opts.keyPath}`);
+  const crtDir = path.dirname(opts.crtPath);
+  if (!fs.existsSync(crtDir)) {
+    fs.mkdirSync(crtDir, { recursive: true });
+  }
+  const keyDir = path.dirname(opts.keyPath);
+  if (!fs.existsSync(keyDir)) {
+    fs.mkdirSync(keyDir, { recursive: true });
+  }
   fs.writeFileSync(opts.crtPath, pemCert);
   fs.writeFileSync(opts.keyPath, pemKey);
 

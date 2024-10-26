@@ -57,6 +57,7 @@ defineOptions({
 const formState = reactive<Partial<SysSettings>>({
   public: {
     registerEnabled: false,
+    limitUserPipelineCount: 10,
     managerOtherUserPipeline: false,
     icpNo: ""
   },

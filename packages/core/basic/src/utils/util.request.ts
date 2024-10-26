@@ -61,14 +61,7 @@ let defaultAgents = createAgent();
 
 export function setGlobalProxy(opts: { httpProxy?: string; httpsProxy?: string }) {
   logger.info('setGlobalProxy:', opts);
-  if (opts.httpProxy) {
-    process.env.HTTP_PROXY = opts.httpProxy;
-  }
-  if (opts.httpsProxy) {
-    process.env.HTTPS_PROXY = opts.httpsProxy;
-  }
-
-  defaultAgents = createAgent();
+  defaultAgents = createAgent(opts);
 }
 
 export function getGlobalAgents() {
@@ -192,9 +185,13 @@ export type HttpClient = {
   request<D = any, R = any>(config: HttpRequestConfig<D>): Promise<HttpClientResponse<R>>;
 };
 
-export function createAgent(opts: nodeHttp.AgentOptions = {}) {
+export type CreateAgentOptions = {
+  httpProxy?: string;
+  httpsProxy?: string;
+} & nodeHttp.AgentOptions;
+export function createAgent(opts: CreateAgentOptions = {}) {
   let httpAgent, httpsAgent;
-  const httpProxy = process.env.HTTP_PROXY || process.env.http_proxy;
+  const httpProxy = opts.httpProxy || process.env.HTTP_PROXY || process.env.http_proxy;
   if (httpProxy) {
     logger.info('use httpProxy:', httpProxy);
     httpAgent = new HttpProxyAgent(httpProxy, opts as any);
@@ -202,7 +199,7 @@ export function createAgent(opts: nodeHttp.AgentOptions = {}) {
   } else {
     httpAgent = new nodeHttp.Agent(opts);
   }
-  const httpsProxy = process.env.HTTPS_PROXY || process.env.https_proxy;
+  const httpsProxy = opts.httpsProxy || process.env.HTTPS_PROXY || process.env.https_proxy;
   if (httpsProxy) {
     logger.info('use httpsProxy:', httpsProxy);
     httpsAgent = new HttpsProxyAgent(httpsProxy, opts as any);

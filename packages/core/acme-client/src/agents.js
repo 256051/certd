@@ -8,7 +8,7 @@ function createAgent(opts = {}) {
     let httpAgent;
     let
         httpsAgent;
-    const httpProxy = process.env.HTTP_PROXY || process.env.http_proxy;
+    const httpProxy = opts.httpProxy || process.env.HTTP_PROXY || process.env.http_proxy;
     if (httpProxy) {
         log(`acme use httpProxy:${httpProxy}`);
         httpAgent = new HttpProxyAgent(httpProxy, opts);
@@ -16,7 +16,7 @@ function createAgent(opts = {}) {
     else {
         httpAgent = new nodeHttp.Agent(opts);
     }
-    const httpsProxy = process.env.HTTPS_PROXY || process.env.https_proxy;
+    const httpsProxy = opts.httpsProxy || process.env.HTTPS_PROXY || process.env.https_proxy;
     if (httpsProxy) {
         log(`acme use httpsProxy:${httpsProxy}`);
         httpsAgent = new HttpsProxyAgent(httpsProxy, opts);
@@ -38,14 +38,7 @@ function getGlobalAgents() {
 
 function setGlobalProxy(opts) {
     log('acme setGlobalProxy:', opts);
-    if (opts.httpProxy) {
-        process.env.HTTP_PROXY = opts.httpProxy;
-    }
-    if (opts.httpsProxy) {
-        process.env.HTTPS_PROXY = opts.httpsProxy;
-    }
-
-    defaultAgents = createAgent();
+    defaultAgents = createAgent(opts);
 }
 
 class HttpError extends Error {
