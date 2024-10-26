@@ -23,8 +23,11 @@ https://1panel.cn/docs/installation/online_installation/
 
 3. 访问测试
 
-http://ip:7001
-https://ip:7002
+http://ip:7001   
+https://ip:7002   
+默认账号密码      
+admin/123456     
+登录后请及时修改密码  
 
 ## 三、升级
 
