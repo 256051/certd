@@ -5,6 +5,7 @@ export type SysSettings = { public: SysPublicSetting; private: SysPrivateSetting
 
 export type SysPublicSetting = {
   registerEnabled?: boolean;
+  limitUserPipelineCount?: number;
   managerOtherUserPipeline?: boolean;
   icpNo?: string;
 };

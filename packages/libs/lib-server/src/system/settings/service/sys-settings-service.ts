@@ -127,14 +127,12 @@ export class SysSettingsService extends BaseService<SysSettingsEntity> {
 
   async reloadPrivateSettings() {
     const bean = await this.getPrivateSettings();
-    if (bean.httpProxy || bean.httpsProxy) {
-      const opts = {
-        httpProxy: bean.httpProxy,
-        httpsProxy: bean.httpsProxy,
-      };
-      setGlobalProxy(opts);
-      agents.setGlobalProxy(opts);
-    }
+    const opts = {
+      httpProxy: bean.httpProxy,
+      httpsProxy: bean.httpsProxy,
+    };
+    setGlobalProxy(opts);
+    agents.setGlobalProxy(opts);
   }
 
   async updateByKey(key: string, setting: any) {

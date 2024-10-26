@@ -1,7 +1,7 @@
 import { Config, Inject, Provide, Scope, ScopeEnum, sleep } from '@midwayjs/core';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { In, Repository } from 'typeorm';
-import { BaseService, NeedVIPException, PageReq } from '@certd/lib-server';
+import { BaseService, NeedVIPException, PageReq, SysPublicSettings, SysSettingsService } from '@certd/lib-server';
 import { PipelineEntity } from '../entity/pipeline.js';
 import { PipelineDetail } from '../entity/vo/pipeline-detail.js';
 import { Executor, isPlus, logger, Pipeline, ResultType, RunHistory, UserInfo } from '@certd/pipeline';
@@ -46,6 +46,9 @@ export class PipelineService extends BaseService<PipelineEntity> {
 
   @Inject()
   pluginConfigGetter: PluginConfigGetter;
+
+  @Inject()
+  sysSettingsService: SysSettingsService;
 
   @Inject()
   userService: UserService;
@@ -121,16 +124,27 @@ export class PipelineService extends BaseService<PipelineEntity> {
       old = await this.info(bean.id);
     }
     const isUpdate = bean.id > 0 && old != null;
-    if (!isPlus()) {
-      let count = await this.repository.count();
-      if (!isUpdate) {
-        //如果是添加要加1
-        count += 1;
+    if (!isUpdate) {
+      //如果是添加，校验数量
+      if (!isPlus()) {
+        const count = await this.repository.count();
+        if (count >= freeCount) {
+          throw new NeedVIPException(`基础版最多只能创建${freeCount}条流水线`);
+        }
       }
-      if (count > freeCount) {
-        throw new NeedVIPException('基础版最多只能创建10个pipeline');
+      const userId = bean.userId;
+      const userIsAdmin = await this.userService.isAdmin(userId);
+      if (!userIsAdmin) {
+        //非管理员用户，限制pipeline数量
+        const count = await this.repository.count({ where: { userId } });
+        const sysPublic = await this.sysSettingsService.getSetting<SysPublicSettings>(SysPublicSettings);
+        const limitUserPipelineCount = sysPublic.limitUserPipelineCount;
+        if (limitUserPipelineCount && limitUserPipelineCount > 0 && count >= limitUserPipelineCount) {
+          throw new NeedVIPException(`您最多只能创建${limitUserPipelineCount}条流水线`);
+        }
       }
     }
+
     if (!isUpdate) {
       //如果是添加，先保存一下，获取到id，更新pipeline.id
       await this.addOrUpdate(bean);

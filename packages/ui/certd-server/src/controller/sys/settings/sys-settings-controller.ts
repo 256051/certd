@@ -111,7 +111,9 @@ export class SysSettingsController extends CrudController<SysSettingsService> {
       await http.request({
         url: google,
         method: 'GET',
-        timeout: 4000,
+        timeout: 5000,
+        logRes: false,
+        logParams: false,
       });
       googleRes = true;
     } catch (e) {
@@ -123,7 +125,9 @@ export class SysSettingsController extends CrudController<SysSettingsService> {
       await http.request({
         url: baidu,
         method: 'GET',
-        timeout: 4000,
+        timeout: 5000,
+        logRes: false,
+        logParams: false,
       });
       baiduRes = true;
     } catch (e) {

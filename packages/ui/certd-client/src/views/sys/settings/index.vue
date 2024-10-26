@@ -16,6 +16,10 @@
         <a-form-item label="开启自助注册" :name="['public', 'registerEnabled']">
           <a-switch v-model:checked="formState.public.registerEnabled" />
         </a-form-item>
+        <a-form-item label="限制用户流水线数量" :name="['public', 'limitUserPipelineCount']">
+          <a-input-number v-model:value="formState.public.limitUserPipelineCount" />
+          <div class="helper">0为不限制</div>
+        </a-form-item>
         <a-form-item label="管理其他用户流水线" :name="['public', 'managerOtherUserPipeline']">
           <a-switch v-model:checked="formState.public.managerOtherUserPipeline" />
         </a-form-item>
@@ -30,7 +34,7 @@
         <a-form-item label="HTTPS代理" :name="['private', 'httpsProxy']" :rules="urlRules">
           <div class="flex">
             <a-input v-model:value="formState.private.httpsProxy" placeholder="http://192.168.1.2:18010/" />
-            <a-button class="ml-5" type="primary" title="保存后，再点击测试" @click="testProxy">测试</a-button>
+            <a-button class="ml-5" type="primary" :loading="testProxyLoading" title="保存后，再点击测试" @click="testProxy">测试</a-button>
           </div>
           <div class="helper">一般这两个代理填一样的</div>
         </a-form-item>
@@ -57,7 +61,7 @@ defineOptions({
 const formState = reactive<Partial<SysSettings>>({
   public: {
     registerEnabled: false,
-    limitUserPipelineCount: 10,
+    limitUserPipelineCount: 0,
     managerOtherUserPipeline: false,
     icpNo: ""
   },
@@ -101,13 +105,19 @@ async function stopOtherUserTimer() {
   });
 }
 
+const testProxyLoading = ref(false);
 async function testProxy() {
-  const res = await api.TestProxy();
-  const content = `测试google:${res.google === true ? "成功" : "失败" + res.google}，测试百度:${res.baidu === true ? "成功" : "失败:" + res.baidu}`;
-  notification.success({
-    message: "测试完成",
-    description: content
-  });
+  testProxyLoading.value = true;
+  try {
+    const res = await api.TestProxy();
+    const content = `测试google:${res.google === true ? "成功" : "失败" + res.google}，测试百度:${res.baidu === true ? "成功" : "失败:" + res.baidu}`;
+    notification.success({
+      message: "测试完成",
+      description: content
+    });
+  } finally {
+    testProxyLoading.value = false;
+  }
 }
 </script>
 
