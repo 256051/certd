@@ -37,7 +37,7 @@ jobs:
       - uses: GuillaumeFalourd/wait-sleep-action@v1
         with:
           time: '10' # for 60 seconds
-      - name: Send HTTP request
+      - name: deploy-certd-demo
         id: request
         uses: tyrrrz/action-http-request@master
         with:
@@ -52,4 +52,13 @@ jobs:
           retry-count: 3
           retry-delay: 5000
 
-
+      - name: deploy-certd-doc
+        id: request
+        uses: tyrrrz/action-http-request@master
+        with:
+          url: http://flow-openapi.aliyun.com/pipeline/webhook/IiSxLDp9aOhgDUxJPytv
+          method: POST
+          headers: |
+            Content-Type: application/json
+          retry-count: 3
+          retry-delay: 5000
