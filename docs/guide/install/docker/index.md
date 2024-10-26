@@ -45,9 +45,10 @@ docker compose up -d
 
 ### 3. 访问测试
 
-http://your_server_ip:7001    
-默认账号密码：admin/123456    
-记得修改密码
+http://your_server_ip:7001   
+https://your_server_ip:7002   
+默认账号密码：admin/123456     
+记得修改密码  
 
 
 ## 二、升级

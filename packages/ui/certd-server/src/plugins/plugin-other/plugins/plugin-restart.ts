@@ -30,7 +30,7 @@ export class RestartCertdPlugin extends AbstractTaskPlugin {
     }
     this.logger.info(`Certd 将在 ${this.delay} 秒后关闭`);
     setTimeout(() => {
-      this.logger.info('重启 Certd');
+      this.logger.info('关闭 Certd');
       process.exit(1);
     }, this.delay * 1000);
   }

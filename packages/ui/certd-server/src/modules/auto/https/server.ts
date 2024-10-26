@@ -13,10 +13,7 @@ export type HttpsServerOptions = {
 };
 
 export async function startHttpsServer(opts: HttpsServerOptions) {
-  // const httpsServer = https.createServer({
-  //   key: fs.readFileSync(path.join(__dirname, '../ssl/2_certd.cn.key')),
-  //   cert
-
+  logger.info('=========================================');
   if (!opts.key || !opts.cert) {
     logger.error('证书路径未配置，无法启动https服务，请先配置：koa.https.key和koa.https.cert');
     return;

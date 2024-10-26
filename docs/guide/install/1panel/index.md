@@ -24,7 +24,7 @@ https://1panel.cn/docs/installation/online_installation/
 3. 访问测试
 
 http://ip:7001
-
+https://ip:7002
 
 ## 三、升级
 
