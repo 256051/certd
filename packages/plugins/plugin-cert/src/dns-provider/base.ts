@@ -31,7 +31,7 @@ export async function createDnsProvider(opts: { dnsProviderType: string; context
   const DnsProviderClass = dnsProviderPlugin.target;
   const dnsProviderDefine = dnsProviderPlugin.define as DnsProviderDefine;
   if (dnsProviderDefine.deprecated) {
-    throw new Error(dnsProviderDefine.deprecated);
+    context.logger.warn(dnsProviderDefine.deprecated);
   }
   // @ts-ignore
   const dnsProvider: IDnsProvider = new DnsProviderClass();
