@@ -1,5 +1,6 @@
 import { App, Configuration } from '@midwayjs/core';
 import * as koa from '@midwayjs/koa';
+import { IMidwayKoaContext, NextFunction } from '@midwayjs/koa';
 import * as orm from '@midwayjs/typeorm';
 import * as cache from '@midwayjs/cache';
 import * as validate from '@midwayjs/validate';
@@ -18,7 +19,7 @@ import * as libServer from '@certd/lib-server';
 import * as commercial from '@certd/commercial-core';
 import * as upload from '@midwayjs/upload';
 import { setLogger } from '@certd/acme-client';
-import { IMidwayKoaContext, NextFunction } from '@midwayjs/koa';
+
 process.on('uncaughtException', error => {
   console.error('未捕获的异常：', error);
   // 在这里可以添加日志记录、发送错误通知等操作

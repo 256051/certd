@@ -24,6 +24,12 @@ const development = {
   koa: {
     port: 7001,
   },
+  https: {
+    enabled: true,
+    port: 7002,
+    key: './data/ssl/cert.key',
+    cert: './data/ssl/cert.crt',
+  },
   staticFile: {
     usePrecompiledGzip: true,
     buffer: true,

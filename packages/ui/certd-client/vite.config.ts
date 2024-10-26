@@ -16,6 +16,7 @@ process.env.VITE_APP_VERSION = require("./package.json").version;
 process.env.VITE_APP_BUILD_TIME = require("dayjs")().format("YYYY-M-D HH:mm:ss");
 
 import { theme } from "ant-design-vue";
+import * as https from "node:https";
 
 const { defaultAlgorithm, defaultSeed } = theme;
 
@@ -103,7 +104,9 @@ export default ({ command, mode }) => {
         // with options
         "/api": {
           //配套后端 https://github.com/fast-crud/fs-server-js
-          target: "http://127.0.0.1:7001"
+          target: "https://127.0.0.1:7002",
+          //忽略证书
+          agent: new https.Agent({ rejectUnauthorized: false })
         }
       }
     }
