@@ -4,7 +4,7 @@ import { SysInstallInfo, SysSettingsService } from '@certd/lib-server';
 import { getVersion } from '../../utils/version.js';
 import dayjs from 'dayjs';
 import { Application } from '@midwayjs/koa';
-import { HttpsServerOptions, startHttpsServer } from './https/server.js';
+import { httpsServer, HttpsServerOptions } from './https/server.js';
 
 @Autoload()
 @Scope(ScopeEnum.Singleton)
@@ -41,7 +41,7 @@ export class AutoZPrint {
       logger.info('Https server is not enabled');
       return;
     }
-    await startHttpsServer({
+    httpsServer.start({
       ...this.httpsConfig,
       app: this.app,
     });

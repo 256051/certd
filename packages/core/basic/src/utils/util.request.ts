@@ -86,7 +86,7 @@ export function createAxiosService({ logger }: { logger: Logger }) {
   service.interceptors.request.use(
     (config: any) => {
       logger.info(`http request:${config.url}，method:${config.method}`);
-      if (config.logParams !== false) {
+      if (config.logParams !== false && config.params) {
         logger.info(`params:${JSON.stringify(config.params)}`);
       }
       if (config.timeout == null) {
@@ -182,7 +182,7 @@ export function createAxiosService({ logger }: { logger: Logger }) {
 
 export const http = createAxiosService({ logger }) as HttpClient;
 export type HttpClientResponse<R> = any;
-export type HttpRequestConfig<D=any> = {
+export type HttpRequestConfig<D = any> = {
   skipSslVerify?: boolean;
   skipCheckRes?: boolean;
   logParams?: boolean;
