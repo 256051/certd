@@ -33,8 +33,12 @@ kill -9 $(lsof -t -i:7001)
 # 重新编译启动
 ./start.sh
 ```
+
+## 三、数据备份
 > 数据默认保存在 `./packages/ui/certd-server/data` 目录下    
 > 建议配置一条[数据库备份流水线](../../use/backup/)  自动备份
 
 
+## 四、备份恢复
 
+将备份的`db.sqlite`覆盖到原来的位置即可

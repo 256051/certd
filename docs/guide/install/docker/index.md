@@ -64,6 +64,10 @@ docker pull registry.cn-shenzhen.aliyuncs.com/handsfree/certd:latest
 docker compose down
 docker compose up -d
 ```
-
+## 三、数据备份
 > 数据默认存在`/data/certd`目录下，不用担心数据丢失   
 > 建议配置一条[数据库备份流水线](../../use/backup/) 自动备份
+
+## 四、备份恢复
+
+将备份的`db.sqlite`覆盖到原来的位置即可
