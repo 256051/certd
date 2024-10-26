@@ -58,6 +58,8 @@ jobs:
         with:
           url: http://flow-openapi.aliyun.com/pipeline/webhook/IiSxLDp9aOhgDUxJPytv
           method: POST
+          body: |
+            {}
           headers: |
             Content-Type: application/json
           retry-count: 3
