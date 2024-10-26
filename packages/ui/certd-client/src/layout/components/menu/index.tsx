@@ -89,11 +89,12 @@ export default defineComponent({
           }
         }
         const title: any = () => {
-          if (sub?.meta?.icon) {
+          const icon = sub.icon || sub?.meta?.icon;
+          if (icon) {
             // @ts-ignore
             return (
               <div class={"menu-item-title"}>
-                <fsIcon class={"anticon"} icon={sub.meta.icon} />
+                <fsIcon class={"anticon"} icon={icon} />
                 <span>{sub.title}</span>
               </div>
             );

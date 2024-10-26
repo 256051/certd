@@ -1,6 +1,6 @@
 <template>
   <a-dropdown class="fs-locale-picker">
-    <div>
+    <div style="display: block">
       <fs-iconify icon="ion-globe-outline" @click.prevent></fs-iconify>
     </div>
 

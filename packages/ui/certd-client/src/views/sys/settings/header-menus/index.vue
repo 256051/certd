@@ -12,7 +12,7 @@ import { onMounted } from "vue";
 import { useFs } from "@fast-crud/fast-crud";
 import createCrudOptions from "./crud";
 import { useSettingStore } from "/@/store/modules/settings";
-import { cloneDeep } from "lodash-es";
+
 defineOptions({
   name: "SettingsHeaderMenus"
 });
@@ -21,7 +21,7 @@ const { crudBinding, crudRef, crudExpose, context } = useFs({ createCrudOptions 
 const settingStore = useSettingStore();
 // 页面打开后获取列表数据
 onMounted(() => {
-  crudBinding.value.data = cloneDeep(settingStore.headerMenus.menus || []);
+  crudExpose.doRefresh();
 });
 </script>
 <style lang="less"></style>

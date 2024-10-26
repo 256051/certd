@@ -68,20 +68,20 @@ export const sysResources = [
           permission: "sys:settings:view"
         }
       },
-      // {
-      //   title: "顶部菜单设置",
-      //   name: "HeaderMenus",
-      //   path: "/sys/settings/header-menus",
-      //   component: "/sys/settings/header-menus/index.vue",
-      //   meta: {
-      //     show: () => {
-      //       const settingStore = useSettingStore();
-      //       return settingStore.isComm;
-      //     },
-      //     icon: "ion:document-text-outline",
-      //     permission: "sys:settings:view"
-      //   }
-      // },
+      {
+        title: "顶部菜单设置",
+        name: "HeaderMenus",
+        path: "/sys/settings/header-menus",
+        component: "/sys/settings/header-menus/index.vue",
+        meta: {
+          show: () => {
+            const settingStore = useSettingStore();
+            return settingStore.isComm;
+          },
+          icon: "ion:document-text-outline",
+          permission: "sys:settings:view"
+        }
+      },
       {
         title: "系统级授权",
         name: "SysAccess",

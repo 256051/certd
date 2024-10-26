@@ -1,99 +1,124 @@
 import { useI18n } from "vue-i18n";
 import { Ref, ref } from "vue";
 import { useRouter } from "vue-router";
-import { compute, CreateCrudOptionsProps, CreateCrudOptionsRet } from "@fast-crud/fast-crud";
+import { AddReq, compute, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
 import { useSettingStore } from "/@/store/modules/settings";
-import { cloneDeep } from "lodash-es";
+import { cloneDeep, find, merge, remove } from "lodash-es";
 import { nanoid } from "nanoid";
+import { SettingsSave } from "../api";
 
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const { crudBinding } = crudExpose;
   const router = useRouter();
   const { t } = useI18n();
   const settingStore = useSettingStore();
-  const menusRef = ref(cloneDeep(settingStore.headerMenus?.menus || []));
 
-  const selectedRowKeys: Ref<any[]> = ref([]);
-  context.selectedRowKeys = selectedRowKeys;
+  async function saveMenus() {
+    const menus = settingStore.headerMenus;
+    await SettingsSave("sys.header.menus", menus);
+  }
+
+  function eachTree(tree: any[], callback: (item: any) => void) {
+    tree.forEach((item) => {
+      callback(item);
+      if (item.children) {
+        eachTree(item.children, callback);
+      }
+    });
+  }
+
+  const expandedRowKeys = ref<string[]>([]);
+  const pageRequest = async (query: UserPageQuery): Promise<UserPageRes> => {
+    const records = cloneDeep(settingStore.headerMenus?.menus || []);
+    expandedRowKeys.value = [];
+    eachTree(records, (item) => {
+      if (item.children && item.children.length > 0) {
+        expandedRowKeys.value.push(item.id);
+      }
+    });
+
+    return {
+      records: records,
+      total: records.length,
+      limit: 9999999,
+      offset: 0
+    };
+  };
+  const editRequest = async ({ form, row }: EditReq) => {
+    form.id = row.id;
+    let found: any = undefined;
+    eachTree(settingStore.headerMenus?.menus || [], (item) => {
+      if (item.id === row.id) {
+        merge(item, form);
+        found = item;
+      }
+    });
+    await saveMenus();
+    return found;
+  };
+  const delRequest = async ({ row }: DelReq) => {
+    eachTree([{ children: settingStore.headerMenus?.menus }], (item) => {
+      if (item.children) {
+        remove(item.children, (child) => child.id === row.id);
+      }
+    });
+    await saveMenus();
+  };
+
+  const addRequest = async ({ form }: AddReq) => {
+    form.id = nanoid();
+    if (form.parentId) {
+      eachTree(settingStore.headerMenus?.menus || [], (item) => {
+        if (item.id === form.parentId) {
+          if (!item.children) {
+            item.children = [];
+          }
+          item.children.push(form);
+        }
+      });
+    } else {
+      settingStore.headerMenus?.menus.push(form);
+    }
+    parent.value = null;
+    await saveMenus();
+    return form;
+  };
 
   return {
     crudOptions: {
-      settings: {
-        plugins: {
-          //这里使用行选择插件，生成行选择crudOptions配置，最终会与crudOptions合并
-          rowSelection: {
-            enabled: true,
-            order: -2,
-            before: true,
-            // handle: (pluginProps,useCrudProps)=>CrudOptions,
-            props: {
-              multiple: true,
-              crossPage: true,
-              selectedRowKeys
-            }
-          }
-        }
-      },
-      actionbar: {
-        buttons: {
-          add: {
-            show: false
-          },
-          addRow: {
-            show: true,
-            click: () => {
-              crudBinding.value.data.push({ id: nanoid() });
-            }
-          },
-          save: {
-            text: "保存菜单",
-            type: "primary",
-            click: async () => {
-              await settingStore.saveHeaderMenus({ menus: menusRef.value });
-            }
-          }
-        }
+      request: {
+        pageRequest,
+        addRequest,
+        editRequest,
+        delRequest
       },
       search: {
         show: false
       },
-      toolbar: {
-        buttons: {
-          refresh: {
-            show: false
-          }
-        }
-      },
-      mode: {
-        name: "local",
-        isMergeWhenUpdate: true,
-        isAppendWhenAdd: true
-      },
       table: {
-        defaultExpandAllRows: true,
         expandRowByClick: true,
-        editable: {
-          enabled: true,
-          mode: "row",
-          activeDefault: true,
-          showAction: true,
-          rowKey: "id"
+        defaultExpandAllRows: true,
+        expandedRowKeys: expandedRowKeys,
+        "onUpdate:expandedRowKeys": (val: string[]) => {
+          expandedRowKeys.value = val;
         }
       },
       pagination: { show: false, pageSize: 9999999 },
       rowHandle: {
         width: 300,
         fixed: "right",
-        group: {
-          editRow: {
-            addChild: {
-              text: "添加子菜单",
-              click: ({ row }) => {
-                if (row.children == null) {
-                  row.children = [];
+        buttons: {
+          addChild: {
+            title: "添加子菜单",
+            text: null,
+            type: "link",
+            icon: "ion:add-circle-outline",
+            click: ({ row }) => {
+              crudExpose.openAdd({
+                row: {
+                  parentId: row.id
                 }
-                row.children.push({ id: nanoid() });
-              }
+              });
             }
           }
         }
@@ -104,7 +129,8 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           key: "id",
           type: "text",
           column: {
-            width: 200
+            width: 200,
+            show: false
           },
           form: {
             show: false
@@ -115,20 +141,60 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           type: "text",
           column: {
             width: 300
+          },
+          form: {
+            rules: [
+              {
+                required: true,
+                message: "请输入标题"
+              }
+            ]
           }
         },
         icon: {
           title: "图标",
           type: "text",
           column: {
-            width: 300
+            width: 300,
+            cellRender: ({ row }) => {
+              return <fs-icon class={"fs-16"} icon={row.icon}></fs-icon>;
+            }
+          },
+          form: {
+            component: {
+              placeholder: "ion:add-circle"
+            },
+            helper: {
+              render: () => {
+                return (
+                  <span>
+                    <a href="https://icon-sets.iconify.design/" target="_blank">
+                      图标库
+                    </a>
+                    <span>--搜索--选择图标--复制名称--填到这里</span>
+                  </span>
+                );
+              }
+            }
           }
         },
-        link: {
+        path: {
           title: "链接",
-          type: "text",
+          type: "link",
           column: {
             width: 300
+          },
+          form: {
+            rules: [
+              {
+                required: true,
+                message: "请输入链接"
+              },
+              {
+                type: "url",
+                message: "请输入正确的链接"
+              }
+            ]
           }
         }
       }

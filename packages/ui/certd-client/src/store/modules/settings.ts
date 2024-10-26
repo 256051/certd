@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { Modal, notification, theme } from "ant-design-vue";
-import _ from "lodash-es";
+import _, { cloneDeep } from "lodash-es";
 // @ts-ignore
 import { LocalStorage } from "/src/utils/util.storage";
 
@@ -10,6 +10,7 @@ import { useUserStore } from "/@/store/modules/user";
 import { mitter } from "/@/utils/util.mitt";
 import { env } from "/@/utils/util.env";
 import { toRef } from "vue";
+import { util } from "/@/utils";
 
 export type ThemeToken = {
   token: {
@@ -120,6 +121,9 @@ export const useSettingStore = defineStore({
         comm: "商业版"
       };
       return vipLabelMap[this.plusInfo?.vipType || "free"];
+    },
+    getHeaderMenus() {
+      return this.headerMenus?.menus || [];
     }
   },
   actions: {
@@ -137,6 +141,7 @@ export const useSettingStore = defineStore({
       _.merge(this.installInfo, allSettings.installInfo || {});
       _.merge(this.siteEnv, allSettings.siteEnv || {});
       _.merge(this.plusInfo, allSettings.plusInfo || {});
+      _.merge(this.headerMenus, allSettings.headerMenus || {});
       //@ts-ignore
       this.initSiteInfo(allSettings.siteInfo || {});
     },
