@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.26.13](https://github.com/certd/certd/compare/v1.26.12...v1.26.13) (2024-10-26)
+
+### Bug Fixes
+
+* 修复对话框全屏按钮与关闭按钮重叠的bug ([95df56c](https://github.com/certd/certd/commit/95df56cc5ca5e3eb843cd17cb7078cde47729f1e))
+
+### Performance Improvements
+
+* 支持同时监听https端口，7002 ([d5a17f9](https://github.com/certd/certd/commit/d5a17f9e6afd63fda2df0981118480f25a1fac2e))
+
 ## [1.26.12](https://github.com/certd/certd/compare/v1.26.11...v1.26.12) (2024-10-25)
 
 ### Performance Improvements
