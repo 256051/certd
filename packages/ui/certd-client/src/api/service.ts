@@ -124,7 +124,7 @@ function createRequestFunction(service: any) {
       headers: {
         "Content-Type": get(config, "headers.Content-Type", "application/json")
       },
-      timeout: 10000,
+      timeout: 16000,
       baseURL: env.API,
       data: {}
     };
