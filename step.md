@@ -106,9 +106,5 @@ cron格式，例如： `0 0 3 * * *` 表示每天凌晨3点执行
 
 以上，演示了从创建证书申请任务到自动部署证书全流程。   
 
-如有疑问，欢迎加入群聊（请备注certd）
-* QQ群：141236433
-* 微信群：   
-  ![](https://ai.handsfree.work/images/exchange_wxqroup.png)
-
+如有任何疑问，[欢迎联系我们](https://certd.docmirror.cn/guide/contact/)
 

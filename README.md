@@ -46,7 +46,7 @@ https://certd.handsfree.work/
 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑     
 
 当前支持的部署插件列表
-![演示](./doc/images/plugins.png)
+![演示](./docs/images/plugins/list.png)
 
 ## 四、私有化部署
 
@@ -71,7 +71,7 @@ https://certd.handsfree.work/
 * 镜像构建通过`Actions`自动执行，过程公开透明，请放心使用
   * [点我查看镜像构建日志](https://github.com/certd/certd/actions/workflows/build-image.yml) 
 
-![](./doc/images/action-build.jpg)
+![](./docs/images/action/action-build.jpg)
 
 
 ## 五、 升级
