@@ -14,7 +14,7 @@ import dayjs from 'dayjs';
     },
   },
 })
-export class DeployToClbPlugin extends AbstractTaskPlugin {
+export class DeployCertToTencentCLB extends AbstractTaskPlugin {
   @TaskInput({
     title: '大区',
     component: {

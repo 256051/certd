@@ -162,4 +162,4 @@ export class DeployCertToTencentCosPlugin extends AbstractPlusTaskPlugin {
   }
 }
 
-// new DeployCertToTencentCosPlugin()
+new DeployCertToTencentCosPlugin();

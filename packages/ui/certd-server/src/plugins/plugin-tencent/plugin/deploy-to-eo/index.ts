@@ -13,7 +13,7 @@ import { TencentAccess } from '@certd/plugin-plus';
     },
   },
 })
-export class DeployToEOPlugin extends AbstractTaskPlugin {
+export class DeployCertToTencentEO extends AbstractTaskPlugin {
   @TaskInput({
     title: '已上传证书ID',
     helper: '请选择前置任务上传到腾讯云的证书',
@@ -131,3 +131,5 @@ export class DeployToEOPlugin extends AbstractTaskPlugin {
     }
   }
 }
+
+new DeployCertToTencentEO();

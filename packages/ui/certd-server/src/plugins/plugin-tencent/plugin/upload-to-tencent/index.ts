@@ -13,7 +13,7 @@ import dayjs from 'dayjs';
     },
   },
 })
-export class UploadToTencentPlugin extends AbstractTaskPlugin {
+export class UploadCertToTencent extends AbstractTaskPlugin {
   @TaskInput({ title: '证书名称' })
   name!: string;
 
