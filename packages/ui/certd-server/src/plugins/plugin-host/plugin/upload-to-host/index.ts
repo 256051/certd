@@ -7,10 +7,10 @@ import dayjs from 'dayjs';
 
 @IsTaskPlugin({
   name: 'uploadCertToHost',
-  title: '上传证书到主机',
+  title: '部署证书到主机',
   icon: 'line-md:uploading-loop',
   group: pluginGroups.host.key,
-  desc: '支持上传完成后执行脚本命令',
+  desc: '上传证书到主机，然后执行部署脚本命令',
   default: {
     strategy: {
       runStrategy: RunStrategy.SkipWhenSucceed,
