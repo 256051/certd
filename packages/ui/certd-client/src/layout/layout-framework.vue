@@ -252,8 +252,6 @@ const { token } = useToken();
       justify-content: flex-end;
       align-items: center;
       display: flex;
-    }
-    .header-menu {
       flex: 1;
     }
   }
