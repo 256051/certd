@@ -43,6 +43,14 @@ export function createAccessApi(from = "user") {
       });
     },
 
+    async GetSecretPlain(id: number, key: string) {
+      return await request({
+        url: apiPrefix + "/getSecretPlain",
+        method: "post",
+        data: { id, key }
+      });
+    },
+
     async GetProviderDefine(type: string) {
       return await request({
         url: apiPrefix + "/define",
