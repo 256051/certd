@@ -67,6 +67,12 @@ export class AccessController extends CrudController<AccessService> {
     return this.ok(access);
   }
 
+  @Post('/getSecretPlain', { summary: Constants.per.authOnly })
+  async getSecretPlain(@Body(ALL) body: { id: number; key: string }) {
+    const value = await this.service.getById(body.id, this.getUserId());
+    return this.ok(value[body.key]);
+  }
+
   @Post('/accessTypeDict', { summary: Constants.per.authOnly })
   async getAccessTypeDict() {
     const list = this.service.getDefineList();

@@ -61,7 +61,7 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
 
   @TaskInput({
     title: "更新天数",
-    value: 20,
+    value: 35,
     component: {
       name: "a-input-number",
       vModel: "value",
@@ -212,7 +212,7 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
       this.logger.info("input hash 有变更，检查是否需要重新申请证书");
       //判断域名有没有变更
       /**
-       *                      "renewDays": 20,
+       *                      "renewDays": 35,
        *                     "certApplyPlugin": "CertApply",
        *                     "sslProvider": "letsencrypt",
        *                     "privateKeyType": "rsa_2048_pkcs1",

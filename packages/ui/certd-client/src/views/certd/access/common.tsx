@@ -1,9 +1,11 @@
 import { ColumnCompositionProps, dict } from "@fast-crud/fast-crud";
-import { computed, ref, toRef } from "vue";
+import { computed, provide, ref, toRef } from "vue";
 import { useReference } from "/@/use/use-refrence";
 import { forEach, get, merge, set } from "lodash-es";
+import SecretPlainGetter from "/@/views/certd/access/access-selector/access/secret-plain-getter.vue";
 
 export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
+  provide("accessApi", api);
   const AccessTypeDictRef = dict({
     url: "/pi/access/accessTypeDict"
   });
@@ -32,6 +34,13 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
       };
       const column = merge({ title: key }, defaultPluginConfig, field);
 
+      if (value.encrypt === true) {
+        column.suffixRender = (scope: { form: any; key: string }) => {
+          const { form, key } = scope;
+          const inputKey = scope.key.replace("access.", "");
+          return <SecretPlainGetter accessId={form.id} inputKey={inputKey} v-model={form[key]} />;
+        };
+      }
       //eval
       useReference(column);
 
