@@ -124,7 +124,7 @@ export default function ({ crudExpose, context: { certdFormRef } }: CreateCrudOp
                   {
                     title: "申请证书",
                     input: {
-                      renewDays: 20,
+                      renewDays: 35,
                       ...form
                     },
                     strategy: {

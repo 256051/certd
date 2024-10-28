@@ -55,4 +55,21 @@ export class TencentSslClient {
     this.checkRet(res);
     return res;
   }
+
+  async DescribeCertificates(params: any) {
+    const client = await this.getSslClient();
+    const res = await client.DescribeCertificates(params);
+    this.checkRet(res);
+    return res;
+  }
+
+  async doRequest(action: string, params: any) {
+    const client = await this.getSslClient();
+    if (!client[action]) {
+      throw new Error(`action ${action} not found`);
+    }
+    const res = await client[action](params);
+    this.checkRet(res);
+    return res;
+  }
 }

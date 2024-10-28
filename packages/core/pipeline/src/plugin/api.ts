@@ -111,6 +111,12 @@ export abstract class AbstractTaskPlugin implements ITaskPlugin {
     return this._result.files;
   }
 
+  checkSignal() {
+    if (this.ctx.signal && this.ctx.signal.aborted) {
+      throw new Error("用户取消");
+    }
+  }
+
   setCtx(ctx: TaskInstanceContext) {
     this.ctx = ctx;
     this.logger = ctx.logger;
