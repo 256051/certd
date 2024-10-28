@@ -2,8 +2,21 @@
   <div class="fs-multiple-page-control-group">
     <div class="fs-multiple-page-control-content">
       <div class="fs-multiple-page-control-content-inner">
-        <a-tabs class="fs-multiple-page-control fs-multiple-page-sort" :active-key="page.getCurrent" type="editable-card" hide-add @tab-click="handleClick" @edit="handleTabEdit">
-          <a-tab-pane v-for="item in page.getOpened" :key="item.fullPath" :tab="item.meta?.title || '未命名'" :name="item.fullPath" :closable="isTabClosable(item)" />
+        <a-tabs
+          class="fs-multiple-page-control fs-multiple-page-sort"
+          :active-key="page.getCurrent"
+          type="editable-card"
+          hide-add
+          @tab-click="handleClick"
+          @edit="handleTabEdit"
+        >
+          <a-tab-pane
+            v-for="item in page.getOpened"
+            :key="item.fullPath"
+            :tab="item.meta?.title || '未命名'"
+            :name="item.fullPath"
+            :closable="isTabClosable(item)"
+          />
         </a-tabs>
         <!--        <fs-contextmenu v-model:open="contextmenuFlag" :x="contentmenuX" :y="contentmenuY">-->
         <!--          <fs-contextmenu-list-->

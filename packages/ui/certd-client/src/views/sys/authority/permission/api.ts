@@ -16,7 +16,7 @@ export async function GetTree() {
 }
 
 export async function AddObj(obj: any) {
-  return await  request({
+  return await request({
     url: apiPrefix + "/add",
     method: "post",
     data: obj

@@ -2,7 +2,7 @@ import { request } from "/@/api/service";
 export type ComponentPropsType = {
   type: string;
   typeName: string;
-  action: string;
+  action?: string;
   form: any;
   value?: any;
 };

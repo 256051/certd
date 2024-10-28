@@ -16,8 +16,6 @@ export class PluginManager {
     }
     this.map = map;
   }
-
-
 }
 
 export const pluginManager = new PluginManager();

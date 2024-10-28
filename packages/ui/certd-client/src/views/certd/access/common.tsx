@@ -16,7 +16,7 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
     }
   };
 
-  function buildDefineFields(define: any, form: any) {
+  function buildDefineFields(define: any, form: any, mode: string) {
     const formWrapperRef = crudExpose.getFormWrapperRef();
     const columnsRef = toRef(formWrapperRef.formOptions, "columns");
 
@@ -34,7 +34,7 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
       };
       const column = merge({ title: key }, defaultPluginConfig, field);
 
-      if (value.encrypt === true) {
+      if (value.encrypt === true && mode != "add") {
         column.suffixRender = (scope: { form: any; key: string }) => {
           const { form, key } = scope;
           const inputKey = scope.key.replace("access.", "");
@@ -92,7 +92,7 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
             if (!immediate) {
               form.access = {};
             }
-            buildDefineFields(define, form);
+            buildDefineFields(define, form, mode);
           }
         },
         helper: computed(() => {
