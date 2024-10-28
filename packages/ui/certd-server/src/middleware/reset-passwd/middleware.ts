@@ -30,6 +30,7 @@ export class ResetPasswdMiddleware implements IWebMiddleware {
       logger.info('开始重置1号管理员用户的密码');
       const newPasswd = '123456';
       await this.userService.resetPassword(1, newPasswd);
+      await this.userService.updateStatus(1, 1);
       logger.info(`重置1号管理员用户的密码完成，新密码为：${newPasswd}`);
     }
   }

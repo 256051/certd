@@ -198,6 +198,9 @@ export class UserService extends BaseService<UserEntity> {
   }
 
   async resetPassword(userId: any, newPasswd: string) {
+    if (!userId) {
+      throw new CommonException('userId不能为空');
+    }
     const param = {
       id: userId,
       password: newPasswd,
@@ -210,15 +213,19 @@ export class UserService extends BaseService<UserEntity> {
       ids = ids.split(',');
       ids = ids.map(id => parseInt(id));
     }
-    if (ids instanceof Array) {
-      if (ids.includes(1)) {
-        throw new CommonException('不能删除管理员');
-      }
+    if (ids.length === 0) {
+      return;
+    }
+    if (ids.includes(1)) {
+      throw new CommonException('不能删除管理员');
     }
     await super.delete(ids);
   }
 
   async isAdmin(userId: any) {
+    if (!userId) {
+      throw new CommonException('userId不能为空');
+    }
     const userRoles = await this.userRoleService.find({
       where: {
         userId,
@@ -228,5 +235,14 @@ export class UserService extends BaseService<UserEntity> {
     if (roleIds.includes(1)) {
       return true;
     }
+  }
+
+  async updateStatus(id: number, status: number) {
+    if (!id) {
+      throw new CommonException('userId不能为空');
+    }
+    await this.repository.update(id, {
+      status,
+    });
   }
 }
