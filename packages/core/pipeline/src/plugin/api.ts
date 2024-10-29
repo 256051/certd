@@ -123,7 +123,7 @@ export abstract class AbstractTaskPlugin implements ITaskPlugin {
     this.accessService = ctx.accessService;
   }
 
-  async getAccess(accessId: string) {
+  async getAccess<T = any>(accessId: string) {
     if (accessId == null) {
       throw new Error("您还没有配置授权");
     }
@@ -131,7 +131,7 @@ export abstract class AbstractTaskPlugin implements ITaskPlugin {
     if (res == null) {
       throw new Error("授权不存在，可能已被删除，请前往任务配置里面重新选择授权");
     }
-    return res;
+    return res as T;
   }
 
   randomFileId() {
