@@ -48,14 +48,14 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
   email!: string;
 
   @TaskInput({
-    title: "PFX证书密码",
+    title: "证书密码",
     component: {
       name: "input-password",
       vModel: "value",
     },
     required: false,
     order: 100,
-    helper: "PFX格式证书是否需要加密",
+    helper: "PFX、P12格式证书是否需要加密",
   })
   pfxPassword!: string;
 
@@ -150,18 +150,27 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
     }
     this._result.pipelinePrivateVars.cert = cert;
 
-    if (cert.pfx == null || cert.der == null) {
+    if (cert.pfx == null || cert.der == null || cert.p12 == null) {
       try {
         const converter = new CertConverter({ logger: this.logger });
         const res = await converter.convert({
           cert,
           pfxPassword: this.pfxPassword,
         });
-        const pfxBuffer = fs.readFileSync(res.pfxPath);
-        cert.pfx = pfxBuffer.toString("base64");
+        if (res.pfxPath) {
+          const pfxBuffer = fs.readFileSync(res.pfxPath);
+          cert.pfx = pfxBuffer.toString("base64");
+        }
 
-        const derBuffer = fs.readFileSync(res.derPath);
-        cert.der = derBuffer.toString("base64");
+        if (res.derPath) {
+          const derBuffer = fs.readFileSync(res.derPath);
+          cert.der = derBuffer.toString("base64");
+        }
+
+        if (res.p12Path) {
+          const p12Buffer = fs.readFileSync(res.p12Path);
+          cert.p12 = p12Buffer.toString("base64");
+        }
 
         this.logger.info("转换证书格式成功");
         isNew = true;
@@ -186,11 +195,15 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
     zip.file("cert.crt", cert.crt);
     zip.file("cert.key", cert.key);
     zip.file("intermediate.crt", cert.ic);
+
     if (cert.pfx) {
       zip.file("cert.pfx", Buffer.from(cert.pfx, "base64"));
     }
     if (cert.der) {
       zip.file("cert.der", Buffer.from(cert.der, "base64"));
+    }
+    if (cert.p12) {
+      zip.file("cert.p12", Buffer.from(cert.p12, "base64"));
     }
     const content = await zip.generateAsync({ type: "nodebuffer" });
     this.saveFile(filename, content);

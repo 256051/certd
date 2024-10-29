@@ -19,18 +19,18 @@ import path from 'path';
 export class CopyCertToLocalPlugin extends AbstractTaskPlugin {
   @TaskInput({
     title: '证书保存路径',
-    helper: '全链证书，路径要包含文件名' + '\n推荐使用相对路径，将写入与数据库同级目录，无需映射，例如：./tmp/cert.pem',
+    helper: '全链证书，路径要包含文件名' + '\n推荐使用相对路径，将写入与数据库同级目录，无需映射，例如：tmp/cert.pem',
     component: {
-      placeholder: './tmp/full_chain.pem',
+      placeholder: 'tmp/full_chain.pem',
     },
     rules: [{ type: 'filepath' }],
   })
   crtPath!: string;
   @TaskInput({
     title: '私钥保存路径',
-    helper: '路径要包含文件名\n推荐使用相对路径，将写入与数据库同级目录，无需映射，例如：./tmp/cert.key',
+    helper: '路径要包含文件名\n推荐使用相对路径，将写入与数据库同级目录，无需映射，例如：tmp/cert.key',
     component: {
-      placeholder: './tmp/cert.key',
+      placeholder: 'tmp/cert.key',
     },
     rules: [{ type: 'filepath' }],
   })
@@ -48,9 +48,9 @@ export class CopyCertToLocalPlugin extends AbstractTaskPlugin {
 
   @TaskInput({
     title: 'PFX证书保存路径',
-    helper: '用于IIS证书部署，路径要包含文件名\n推荐使用相对路径，将写入与数据库同级目录，无需映射，例如：./tmp/cert.pfx',
+    helper: '用于IIS证书部署，路径要包含文件名\n推荐使用相对路径，将写入与数据库同级目录，无需映射，例如：tmp/cert.pfx',
     component: {
-      placeholder: './tmp/cert.pfx',
+      placeholder: 'tmp/cert.pfx',
     },
     rules: [{ type: 'filepath' }],
   })
@@ -59,13 +59,23 @@ export class CopyCertToLocalPlugin extends AbstractTaskPlugin {
   @TaskInput({
     title: 'DER证书保存路径',
     helper:
-      '用于Apache证书部署，路径要包含文件名\n推荐使用相对路径，将写入与数据库同级目录，无需映射，例如：./tmp/cert.der\n.der和.cer是相同的东西，改个后缀名即可',
+      '用于Apache证书部署，路径要包含文件名\n推荐使用相对路径，将写入与数据库同级目录，无需映射，例如：tmp/cert.der\n.der和.cer是相同的东西，改个后缀名即可',
     component: {
-      placeholder: './tmp/cert.der 或 ./tmp/cert.cer',
+      placeholder: 'tmp/cert.der 或 tmp/cert.cer',
     },
     rules: [{ type: 'filepath' }],
   })
   derPath!: string;
+
+  @TaskInput({
+    title: 'p12证书保存路径',
+    helper: '用于java，路径要包含文件名，例如：tmp/cert.p12',
+    component: {
+      placeholder: 'tmp/cert.p12',
+    },
+    rules: [{ type: 'filepath' }],
+  })
+  p12Path!: string;
 
   @TaskInput({
     title: '域名证书',
@@ -108,6 +118,12 @@ export class CopyCertToLocalPlugin extends AbstractTaskPlugin {
   })
   hostDerPath!: string;
 
+  @TaskOutput({
+    title: 'P12保存路径',
+    type: 'HostP12Path',
+  })
+  hostP12Path!: string;
+
   async onInstance() {}
 
   copyFile(srcFile: string, destFile: string) {
@@ -123,10 +139,10 @@ export class CopyCertToLocalPlugin extends AbstractTaskPlugin {
       throw new Error('只有管理员才能运行此任务');
     }
 
-    let { crtPath, keyPath, icPath, pfxPath, derPath } = this;
+    let { crtPath, keyPath, icPath, pfxPath, derPath, p12Path } = this;
     const certReader = new CertReader(this.cert);
 
-    const handle = async ({ reader, tmpCrtPath, tmpKeyPath, tmpDerPath, tmpPfxPath, tmpIcPath }) => {
+    const handle = async ({ reader, tmpCrtPath, tmpKeyPath, tmpDerPath, tmpPfxPath, tmpIcPath, tmpP12Path }) => {
       this.logger.info('复制到目标路径');
       if (crtPath) {
         crtPath = crtPath.startsWith('/') ? crtPath : path.join(Constants.dataDir, crtPath);
@@ -152,6 +168,11 @@ export class CopyCertToLocalPlugin extends AbstractTaskPlugin {
         derPath = derPath.startsWith('/') ? derPath : path.join(Constants.dataDir, derPath);
         this.copyFile(tmpDerPath, derPath);
         this.hostDerPath = derPath;
+      }
+      if (p12Path) {
+        p12Path = p12Path.startsWith('/') ? p12Path : path.join(Constants.dataDir, p12Path);
+        this.copyFile(tmpP12Path, p12Path);
+        this.hostP12Path = p12Path;
       }
       this.logger.info('请注意，如果使用的是相对路径，那么文件就在你的数据库同级目录下，默认是/data/certd/下面');
       this.logger.info(
