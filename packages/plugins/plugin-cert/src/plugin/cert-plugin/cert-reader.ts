@@ -13,6 +13,7 @@ export type CertReaderHandleContext = {
   tmpPfxPath?: string;
   tmpDerPath?: string;
   tmpIcPath?: string;
+  tmpJksPath?: string;
 };
 export type CertReaderHandle = (ctx: CertReaderHandleContext) => Promise<void>;
 export type HandleOpts = { logger: ILogger; handle: CertReaderHandle };
@@ -72,14 +73,14 @@ export class CertReader {
     return domains;
   }
 
-  saveToFile(type: "crt" | "key" | "pfx" | "der" | "ic", filepath?: string) {
+  saveToFile(type: "crt" | "key" | "pfx" | "der" | "ic" | "jks", filepath?: string) {
     if (!this.cert[type]) {
       return;
     }
 
     if (filepath == null) {
       //写入临时目录
-      filepath = path.join(os.tmpdir(), "/certd/tmp/", Math.floor(Math.random() * 1000000) + "", `cert.${type}`);
+      filepath = path.join(os.tmpdir(), "/certd/tmp/", Math.floor(Math.random() * 1000000) + `_cert.${type}`);
     }
 
     const dir = path.dirname(filepath);
@@ -103,6 +104,7 @@ export class CertReader {
     const tmpIcPath = this.saveToFile("ic");
     logger.info("本地文件写入成功");
     const tmpDerPath = this.saveToFile("der");
+    const tmpJksPath = this.saveToFile("jks");
     try {
       return await opts.handle({
         reader: this,
@@ -111,6 +113,7 @@ export class CertReader {
         tmpPfxPath: tmpPfxPath,
         tmpDerPath: tmpDerPath,
         tmpIcPath: tmpIcPath,
+        tmpJksPath: tmpJksPath,
       });
     } catch (err) {
       throw err;
@@ -127,6 +130,7 @@ export class CertReader {
       removeFile(tmpPfxPath);
       removeFile(tmpDerPath);
       removeFile(tmpIcPath);
+      removeFile(tmpJksPath);
     }
   }
 

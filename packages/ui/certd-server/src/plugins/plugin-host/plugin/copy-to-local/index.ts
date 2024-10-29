@@ -68,14 +68,14 @@ export class CopyCertToLocalPlugin extends AbstractTaskPlugin {
   derPath!: string;
 
   @TaskInput({
-    title: 'p12证书保存路径',
-    helper: '用于java，路径要包含文件名，例如：tmp/cert.p12',
+    title: 'jks证书保存路径',
+    helper: '用于java，路径要包含文件名，例如：tmp/cert.jks',
     component: {
-      placeholder: 'tmp/cert.p12',
+      placeholder: 'tmp/cert.jks',
     },
     rules: [{ type: 'filepath' }],
   })
-  p12Path!: string;
+  jksPath!: string;
 
   @TaskInput({
     title: '域名证书',
@@ -119,10 +119,10 @@ export class CopyCertToLocalPlugin extends AbstractTaskPlugin {
   hostDerPath!: string;
 
   @TaskOutput({
-    title: 'P12保存路径',
-    type: 'HostP12Path',
+    title: 'jks保存路径',
+    type: 'HostJksPath',
   })
-  hostP12Path!: string;
+  hostJksPath!: string;
 
   async onInstance() {}
 
@@ -139,10 +139,10 @@ export class CopyCertToLocalPlugin extends AbstractTaskPlugin {
       throw new Error('只有管理员才能运行此任务');
     }
 
-    let { crtPath, keyPath, icPath, pfxPath, derPath, p12Path } = this;
+    let { crtPath, keyPath, icPath, pfxPath, derPath, jksPath } = this;
     const certReader = new CertReader(this.cert);
 
-    const handle = async ({ reader, tmpCrtPath, tmpKeyPath, tmpDerPath, tmpPfxPath, tmpIcPath, tmpP12Path }) => {
+    const handle = async ({ reader, tmpCrtPath, tmpKeyPath, tmpDerPath, tmpPfxPath, tmpIcPath, tmpJksPath }) => {
       this.logger.info('复制到目标路径');
       if (crtPath) {
         crtPath = crtPath.startsWith('/') ? crtPath : path.join(Constants.dataDir, crtPath);
@@ -169,10 +169,10 @@ export class CopyCertToLocalPlugin extends AbstractTaskPlugin {
         this.copyFile(tmpDerPath, derPath);
         this.hostDerPath = derPath;
       }
-      if (p12Path) {
-        p12Path = p12Path.startsWith('/') ? p12Path : path.join(Constants.dataDir, p12Path);
-        this.copyFile(tmpP12Path, p12Path);
-        this.hostP12Path = p12Path;
+      if (jksPath) {
+        jksPath = jksPath.startsWith('/') ? jksPath : path.join(Constants.dataDir, jksPath);
+        this.copyFile(tmpJksPath, jksPath);
+        this.hostJksPath = jksPath;
       }
       this.logger.info('请注意，如果使用的是相对路径，那么文件就在你的数据库同级目录下，默认是/data/certd/下面');
       this.logger.info(

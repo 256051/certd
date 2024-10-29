@@ -68,14 +68,14 @@ export class UploadCertToHostPlugin extends AbstractTaskPlugin {
   derPath!: string;
 
   @TaskInput({
-    title: 'p12证书保存路径',
-    helper: '需要有写入权限，路径要包含证书文件名，例如：/tmp/cert.p12',
+    title: 'jks证书保存路径',
+    helper: '需要有写入权限，路径要包含证书文件名，例如：/tmp/cert.jks',
     component: {
-      placeholder: '/root/deploy/nginx/cert.p12',
+      placeholder: '/root/deploy/nginx/cert.jks',
     },
     rules: [{ type: 'filepath' }],
   })
-  p12Path!: string;
+  jksPath!: string;
 
   @TaskInput({
     title: '域名证书',
@@ -158,9 +158,9 @@ export class UploadCertToHostPlugin extends AbstractTaskPlugin {
   })
   hostDerPath!: string;
   @TaskOutput({
-    title: 'P12保存路径',
+    title: 'jks保存路径',
   })
-  hostP12Path!: string;
+  hostJksPath!: string;
 
   async onInstance() {}
 
@@ -181,7 +181,7 @@ export class UploadCertToHostPlugin extends AbstractTaskPlugin {
     const certReader = new CertReader(cert);
 
     const handle = async (opts: CertReaderHandleContext) => {
-      const { tmpCrtPath, tmpKeyPath, tmpDerPath, tmpP12Path, tmpPfxPath, tmpIcPath } = opts;
+      const { tmpCrtPath, tmpKeyPath, tmpDerPath, tmpJksPath, tmpPfxPath, tmpIcPath } = opts;
       // if (this.copyToThisHost) {
       //   this.logger.info('复制到目标路径');
       //   this.copyFile(tmpCrtPath, crtPath);
@@ -241,12 +241,12 @@ export class UploadCertToHostPlugin extends AbstractTaskPlugin {
         });
         this.logger.info(`上传DER证书到主机：${this.derPath}`);
       }
-      if (this.p12Path) {
+      if (this.jksPath) {
         transports.push({
-          localPath: tmpP12Path,
-          remotePath: this.p12Path,
+          localPath: tmpJksPath,
+          remotePath: this.jksPath,
         });
-        this.logger.info(`上传p12证书到主机：${this.p12Path}`);
+        this.logger.info(`上传jks证书到主机：${this.jksPath}`);
       }
       this.logger.info('开始上传文件到服务器');
       await sshClient.uploadFiles({
@@ -261,7 +261,7 @@ export class UploadCertToHostPlugin extends AbstractTaskPlugin {
       this.hostIcPath = this.icPath;
       this.hostPfxPath = this.pfxPath;
       this.hostDerPath = this.derPath;
-      this.hostP12Path = this.p12Path;
+      this.hostJksPath = this.jksPath;
     };
 
     await certReader.readCertFile({

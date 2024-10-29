@@ -4,7 +4,10 @@
 
 ## windows开启OpenSSH Server
 ### 1. 安装OpenSSH Server    
-请前往Microsoft官方文档查看如何开启openSSH    
+
+* 下载安装包安装： https://github.com/PowerShell/Win32-OpenSSH/releases  OpenSSH-Win64-vxx.xx.x.msi
+
+* 前往Microsoft官方文档查看如何开启openSSH，以及其他设置    
 https://learn.microsoft.com/zh-cn/windows-server/administration/openssh/openssh_install_firstuse?tabs=gui#install-openssh-for-windows
 
 ### 2. 启动OpenSSH Server服务

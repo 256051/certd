@@ -17,12 +17,12 @@ export class CertConverter {
   async convert(opts: { cert: CertInfo; pfxPassword: string }): Promise<{
     pfxPath: string;
     derPath: string;
-    p12Path: string;
+    jksPath: string;
   }> {
     const certReader = new CertReader(opts.cert);
     let pfxPath: string;
     let derPath: string;
-    let p12Path: string;
+    let jksPath: string;
     const handle = async (ctx: CertReaderHandleContext) => {
       // 调用openssl 转pfx
       pfxPath = await this.convertPfx(ctx, opts.pfxPassword);
@@ -30,7 +30,7 @@ export class CertConverter {
       // 转der
       derPath = await this.convertDer(ctx);
 
-      p12Path = await this.convertP12(ctx, opts.pfxPassword);
+      jksPath = await this.convertJks(ctx, pfxPath, opts.pfxPassword);
     };
 
     await certReader.readCertFile({ logger: this.logger, handle });
@@ -38,11 +38,12 @@ export class CertConverter {
     return {
       pfxPath,
       derPath,
-      p12Path,
+      jksPath,
     };
   }
 
   async exec(cmd: string) {
+    process.env.LANG = "zh_CN.GBK";
     await sp.spawn({
       cmd: cmd,
       logger: this.logger,
@@ -52,7 +53,7 @@ export class CertConverter {
   private async convertPfx(opts: CertReaderHandleContext, pfxPassword: string) {
     const { tmpCrtPath, tmpKeyPath } = opts;
 
-    const pfxPath = path.join(os.tmpdir(), "/certd/tmp/", Math.floor(Math.random() * 1000000) + "", "cert.pfx");
+    const pfxPath = path.join(os.tmpdir(), "/certd/tmp/", Math.floor(Math.random() * 1000000) + "_cert.pfx");
 
     const dir = path.dirname(pfxPath);
     if (!fs.existsSync(dir)) {
@@ -75,7 +76,7 @@ export class CertConverter {
 
   private async convertDer(opts: CertReaderHandleContext) {
     const { tmpCrtPath } = opts;
-    const derPath = path.join(os.tmpdir(), "/certd/tmp/", Math.floor(Math.random() * 1000000) + "", `cert.der`);
+    const derPath = path.join(os.tmpdir(), "/certd/tmp/", Math.floor(Math.random() * 1000000) + `_cert.der`);
 
     const dir = path.dirname(derPath);
     if (!fs.existsSync(dir)) {
@@ -94,21 +95,28 @@ export class CertConverter {
     // this.saveFile(filename, fileBuffer);
   }
 
-  async convertP12(opts: CertReaderHandleContext, pfxPassword: string) {
-    const { tmpCrtPath, tmpKeyPath } = opts;
-    const p12Path = path.join(os.tmpdir(), "/certd/tmp/", Math.floor(Math.random() * 1000000) + "", `cert.p12`);
-
-    const dir = path.dirname(p12Path);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
+  async convertJks(opts: CertReaderHandleContext, pfxPath: string, pfxPassword = "") {
+    const jksPassword = pfxPassword || "123456";
     try {
-      let passwordArg = "-passout pass:";
-      if (pfxPassword) {
-        passwordArg = `-password pass:${pfxPassword}`;
+      const randomStr = Math.floor(Math.random() * 1000000) + "";
+
+      // const p12Path = path.join(os.tmpdir(), "/certd/tmp/", randomStr + `_cert.p12`);
+      // const { tmpCrtPath, tmpKeyPath } = opts;
+      // let passwordArg = "-passout pass:";
+      // if (pfxPassword) {
+      //   passwordArg = `-password pass:${pfxPassword}`;
+      // }
+      // await this.exec(`openssl pkcs12 -export -in ${tmpCrtPath} -inkey ${tmpKeyPath} -out ${p12Path} -name certd ${passwordArg}`);
+
+      const jksPath = path.join(os.tmpdir(), "/certd/tmp/", randomStr + `_cert.jks`);
+      const dir = path.dirname(jksPath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
       }
-      await this.exec(`openssl pkcs12 -export -in ${tmpCrtPath} -inkey ${tmpKeyPath} -out ${p12Path} -name certd ${passwordArg}`);
-      return p12Path;
+      await this.exec(
+        `keytool -importkeystore -srckeystore ${pfxPath} -srcstoretype PKCS12 -srcstorepass "${pfxPassword}" -destkeystore ${jksPath} -deststoretype PKCS12 -deststorepass "${jksPassword}" `
+      );
+      return jksPath;
     } catch (e) {
       this.logger.error("转换jks失败", e);
       return;

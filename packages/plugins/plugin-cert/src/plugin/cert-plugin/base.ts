@@ -55,7 +55,7 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
     },
     required: false,
     order: 100,
-    helper: "PFX、P12格式证书是否需要加密",
+    helper: "PFX、jks格式证书是否加密；jks必须设置密码，不传则默认123456",
   })
   pfxPassword!: string;
 
@@ -150,7 +150,7 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
     }
     this._result.pipelinePrivateVars.cert = cert;
 
-    if (cert.pfx == null || cert.der == null || cert.p12 == null) {
+    if (cert.pfx == null || cert.der == null || cert.jks == null) {
       try {
         const converter = new CertConverter({ logger: this.logger });
         const res = await converter.convert({
@@ -160,16 +160,19 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
         if (res.pfxPath) {
           const pfxBuffer = fs.readFileSync(res.pfxPath);
           cert.pfx = pfxBuffer.toString("base64");
+          fs.unlinkSync(res.pfxPath);
         }
 
         if (res.derPath) {
           const derBuffer = fs.readFileSync(res.derPath);
           cert.der = derBuffer.toString("base64");
+          fs.unlinkSync(res.derPath);
         }
 
-        if (res.p12Path) {
-          const p12Buffer = fs.readFileSync(res.p12Path);
-          cert.p12 = p12Buffer.toString("base64");
+        if (res.jksPath) {
+          const jksBuffer = fs.readFileSync(res.jksPath);
+          cert.jks = jksBuffer.toString("base64");
+          fs.unlinkSync(res.jksPath);
         }
 
         this.logger.info("转换证书格式成功");
@@ -202,8 +205,8 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
     if (cert.der) {
       zip.file("cert.der", Buffer.from(cert.der, "base64"));
     }
-    if (cert.p12) {
-      zip.file("cert.p12", Buffer.from(cert.p12, "base64"));
+    if (cert.jks) {
+      zip.file("cert.jks", Buffer.from(cert.jks, "base64"));
     }
     const content = await zip.generateAsync({ type: "nodebuffer" });
     this.saveFile(filename, content);
