@@ -97,16 +97,16 @@ export class HauweiDeployCertToCDN extends AbstractTaskPlugin {
     const request = new cdn.ListDomainsRequest();
     request.pageNumber = 1;
     request.pageSize = 1000;
-    const result = await client.listDomains(request);
+    const result: any = await client.listDomains(request);
     if (!result || !result.domains || result.domains.length === 0) {
       throw new Error('未找到CDN域名，您可以手动输入');
     }
 
     const domains = result.domains.map(domain => {
       return {
-        value: domain.domainName,
-        label: domain.domainName,
-        domain: domain.domainName,
+        value: domain.domain_name,
+        label: domain.domain_name,
+        domain: domain.domain_name,
       };
     });
 
