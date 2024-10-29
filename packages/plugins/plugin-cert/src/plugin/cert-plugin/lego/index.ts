@@ -118,7 +118,7 @@ export class CertApplyLegoPlugin extends CertApplyBasePlugin {
     this.logger.info(`环境变量:${JSON.stringify(env)}`);
     let eabArgs = "";
     if (this.eab) {
-      eabArgs = ` --eab "${this.eab.kid}" --kid "${this.eab.kid}" --hmac "${this.eab.hmacKey}"`;
+      eabArgs = ` --eab --kid "${this.eab.kid}" --hmac "${this.eab.hmacKey}"`;
     }
     const keyType = "-k rsa2048";
 
