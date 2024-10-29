@@ -1,4 +1,4 @@
-import log4js, { LoggingEvent, Logger } from "log4js";
+import log4js, { LoggingEvent, Logger } from 'log4js';
 
 const OutputAppender = {
   configure: (config: any, layouts: any, findAppender: any, levels: any) => {
@@ -18,18 +18,22 @@ const OutputAppender = {
   },
 };
 
-// @ts-ignore
-log4js.configure({
-  appenders: { std: { type: "stdout" }, output: { type: OutputAppender } },
-  categories: { default: { appenders: ["std"], level: "info" }, pipeline: { appenders: ["std", "output"], level: "info" } },
-});
-export const logger = log4js.getLogger("default");
+export function resetLogConfigure() {
+  // @ts-ignore
+  log4js.configure({
+    appenders: { std: { type: 'stdout' }, output: { type: OutputAppender } },
+    categories: { default: { appenders: ['std'], level: 'info' }, pipeline: { appenders: ['std', 'output'], level: 'info' } },
+  });
+}
+resetLogConfigure();
+export const logger = log4js.getLogger('default');
 
 export function buildLogger(write: (text: string) => void) {
-  const logger = log4js.getLogger("pipeline");
-  logger.addContext("outputHandler", {
+  const logger = log4js.getLogger('pipeline');
+  logger.addContext('outputHandler', {
     write,
   });
   return logger;
 }
+
 export type ILogger = Logger;
