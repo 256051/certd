@@ -117,11 +117,11 @@ export default function (certPluginGroup: PluginGroup, formWrapperRef: any): Cre
             helper: {
               render: () => {
                 if (settingStore.isPlus) {
-                  return "";
+                  return "建议启用";
                 }
                 return (
                   <div>
-                    需要配置<router-link to={{ path: "/sys/settings/email" }}>邮件服务器</router-link>才能发送邮件(专业版请忽略)
+                    建议启用，需要配置<router-link to={{ path: "/sys/settings/email" }}>邮件服务器</router-link>才能发送邮件(专业版请忽略)
                   </div>
                 );
               }
