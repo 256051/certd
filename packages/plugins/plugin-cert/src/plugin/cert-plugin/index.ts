@@ -55,12 +55,12 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
     },
     required: true,
     helper:
-      "DNS直接验证：适合域名是在阿里云、腾讯云、华为云、Cloudflare、西数注册的，需要提供Access授权信息。\nCNAME代理验证：支持任何注册商注册的域名，并且不需要提供Access授权信息，但第一次需要手动添加CNAME记录",
+      "DNS直接验证：域名是在阿里云、腾讯云、华为云、Cloudflare、西数注册的，选它。\nCNAME代理验证：支持任何注册商注册的域名，并且不需要提供Access授权信息，但第一次需要手动添加CNAME记录",
   })
   challengeType!: string;
 
   @TaskInput({
-    title: "DNS提供商",
+    title: "DNS解析服务商",
     component: {
       name: "dns-provider-selector",
     },
@@ -72,7 +72,7 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
     }
     `,
     required: true,
-    helper: "请选择dns解析提供商，您的域名是在哪里注册的，或者域名的dns解析服务器属于哪个平台\n如果这里没有您需要的dns解析提供商，请选择CNAME代理验证校验方式",
+    helper: "请选择dns解析服务商，您的域名是在哪里注册的，或者域名的dns解析服务器属于哪个平台\n如果这里没有您需要的dns解析服务商，请选择CNAME代理验证校验方式",
   })
   dnsProviderType!: string;
 
@@ -82,7 +82,7 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
       name: "access-selector",
     },
     required: true,
-    helper: "请选择dns解析提供商授权",
+    helper: "请选择dns解析服务商授权",
     mergeScript: `return {
       component:{
         type: ctx.compute(({form})=>{
@@ -134,7 +134,7 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
         { value: "zerossl", label: "ZeroSSL" },
       ],
     },
-    helper: "Let's Encrypt最简单，Google兼容性最好，如果使用ZeroSSL、Google证书，需要提供EAB授权",
+    helper: "Let's Encrypt：申请最简单\nGoogle：大厂光环，兼容性好，需要翻墙获取EAB授权\nZeroSSL：有数量限制，获取EAB授权无需翻墙",
     required: true,
   })
   sslProvider!: SSLProvider;
