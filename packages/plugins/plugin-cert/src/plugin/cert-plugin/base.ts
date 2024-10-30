@@ -48,14 +48,15 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
   email!: string;
 
   @TaskInput({
-    title: "证书密码",
+    title: "PFX证书密码",
     component: {
       name: "input-password",
       vModel: "value",
     },
     required: false,
     order: 100,
-    helper: "PFX、jks格式证书是否加密；jks必须设置密码，不传则默认123456",
+    // helper: "PFX、jks格式证书是否加密；jks必须设置密码，不传则默认123456",
+    helper: "PFX证书是否加密",
   })
   pfxPassword!: string;
 
@@ -150,7 +151,7 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
     }
     this._result.pipelinePrivateVars.cert = cert;
 
-    if (cert.pfx == null || cert.der == null || cert.jks == null) {
+    if (cert.pfx == null || cert.der == null) {
       try {
         const converter = new CertConverter({ logger: this.logger });
         const res = await converter.convert({
@@ -161,22 +162,24 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
           const pfxBuffer = fs.readFileSync(res.pfxPath);
           cert.pfx = pfxBuffer.toString("base64");
           fs.unlinkSync(res.pfxPath);
+          isNew = true;
         }
 
         if (res.derPath) {
           const derBuffer = fs.readFileSync(res.derPath);
           cert.der = derBuffer.toString("base64");
           fs.unlinkSync(res.derPath);
+          isNew = true;
         }
 
         if (res.jksPath) {
           const jksBuffer = fs.readFileSync(res.jksPath);
           cert.jks = jksBuffer.toString("base64");
           fs.unlinkSync(res.jksPath);
+          isNew = true;
         }
 
         this.logger.info("转换证书格式成功");
-        isNew = true;
       } catch (e) {
         this.logger.error("转换证书格式失败", e);
       }

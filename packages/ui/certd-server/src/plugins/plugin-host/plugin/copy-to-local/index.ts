@@ -67,14 +67,14 @@ export class CopyCertToLocalPlugin extends AbstractTaskPlugin {
   })
   derPath!: string;
 
-  @TaskInput({
-    title: 'jks证书保存路径',
-    helper: '用于java，路径要包含文件名，例如：tmp/cert.jks',
-    component: {
-      placeholder: 'tmp/cert.jks',
-    },
-    rules: [{ type: 'filepath' }],
-  })
+  // @TaskInput({
+  //   title: 'jks证书保存路径',
+  //   helper: '用于java，路径要包含文件名，例如：tmp/cert.jks',
+  //   component: {
+  //     placeholder: 'tmp/cert.jks',
+  //   },
+  //   rules: [{ type: 'filepath' }],
+  // })
   jksPath!: string;
 
   @TaskInput({

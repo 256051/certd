@@ -13,7 +13,7 @@ RUN cd /workspace/certd-server && pnpm install && npm run build-on-docker
 
 FROM node:18-alpine
 RUN apk add --no-cache openssl
-RUN apk add --no-cache openjdk11
+RUN #apk add --no-cache openjdk11-jdk
 WORKDIR /app/
 COPY --from=builder /workspace/certd-server/ /app/
 RUN chmod +x /app/tools/linux/*
