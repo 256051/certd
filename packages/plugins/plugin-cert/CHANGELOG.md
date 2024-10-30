@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.26.16](https://github.com/certd/certd/compare/v1.26.15...v1.26.16) (2024-10-30)
+
+### Bug Fixes
+
+* 修复lego No help topic for 错误 ([aaaf8d7](https://github.com/certd/certd/commit/aaaf8d7db34896cf8f2ff8f12eec1ab0cae58f0f))
+
 ## [1.26.15](https://github.com/certd/certd/compare/v1.26.14...v1.26.15) (2024-10-28)
 
 ### Performance Improvements
