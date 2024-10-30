@@ -26,6 +26,7 @@ const props = defineProps<{
 </script>
 <style lang="less">
 .statistic-card {
+  margin-bottom: 10px;
   .icon-text {
     display: inline-flex;
     justify-content: left;

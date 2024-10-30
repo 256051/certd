@@ -6,7 +6,7 @@ import { createCertDomainGetterInputDefine, createRemoteSelectInputDefine } from
 @IsTaskPlugin({
   name: 'HauweiDeployCertToCDN',
   title: '部署证书至华为云CDN',
-  icon: 'ant-design:huawei-outlined',
+  icon: 'svg:icon-huawei',
   group: pluginGroups.huawei.key,
   desc: '',
   default: {

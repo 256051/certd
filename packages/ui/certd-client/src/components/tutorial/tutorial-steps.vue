@@ -31,7 +31,7 @@ type Step = {
   items: StepItems[];
 };
 type StepItems = {
-  image: string;
+  image?: string;
   title: string;
   descriptions?: string[];
 };
@@ -56,22 +56,7 @@ const steps = ref<Step[]>([
         descriptions: ["点击添加证书流水线，填写证书申请信息"]
       },
       {
-        image: "/static/doc/images/2-access-provider.png",
-        title: "DNS授权",
-        descriptions: ["证书申请需要给域名添加TXT解析记录来验证域名所有权", "根据你的域名注册商，选择对应的平台授权"]
-      },
-      {
-        image: "/static/doc/images/3-add-access.png",
-        title: "第一次使用，需要添加DNS授权",
-        descriptions: ["选择DNS授权，确认创建"]
-      },
-      // {
-      //   image: "/static/doc/images/3-add-access.png",
-      //   title: "确定创建流水线",
-      //   descriptions: ["选择DNS授权，信息填写无误，确认创建"]
-      // },
-      {
-        image: "/static/doc/images/4-add-success.png",
+        image: "/static/doc/images/3-add-success.png",
         title: "流水线创建成功",
         descriptions: ["此时证书申请任务已经建好", "点击手动触发即可测试证书申请", "接下来演示如何添加部署任务"]
       }
@@ -79,57 +64,32 @@ const steps = ref<Step[]>([
   },
   {
     title: "添加部署证书任务",
-    description: "演示部署到阿里云CDN和Nginx",
+    description: "演示部署到主机上的Nginx",
     items: [
       {
-        image: "/static/doc/images/6-1-add-task.png",
-        title: "添加部署任务",
-        descriptions: ["演示第一个部署任务，部署到阿里云CDN"]
+        image: "/static/doc/images/5-1-add-host.png",
+        title: "添加nginx部署任务",
+        descriptions: ["演示第一个部署任务，部署到nginx"]
       },
       {
-        image: "/static/doc/images/6-2-add-task.png",
-        title: "选择任务插件",
-        descriptions: ["可以搜索插件，这里选择阿里云CDN插件"]
+        image: "/static/doc/images/5-2-add-host.png",
+        title: "填写任务参数",
+        descriptions: ["填写主机上证书文件的路径", "选择主机ssh登录授权"]
       },
       {
-        image: "/static/doc/images/6-3-add-task.png",
-        title: "配置任务参数",
-        descriptions: ["填写CDN的域名和证书ID", "任务保存之后，阿里云CDN的部署任务就配置好了"]
+        image: "/static/doc/images/5-3-add-host.png",
+        title: "让新证书生效",
+        descriptions: ["执行重启脚本", "让证书生效"]
       },
       {
-        image: "/static/doc/images/7-1-add-host-task.png",
-        title: "添加主机部署任务",
-        descriptions: ["接下来演示配置第二个部署任务，部署到主机", "部署到主机分两步: 1. 上传证书到主机 2. 运行主机命令"]
+        image: "/static/doc/images/5-4-add-host.png",
+        title: "部署任务添加成功",
+        descriptions: ["现在可以运行"]
       },
       {
-        image: "/static/doc/images/7-2-add-host-task.png",
-        title: "配置上传到主机任务",
-        descriptions: ["填写上传到主机任务参数", "比如证书保存路径"]
-      },
-      {
-        image: "/static/doc/images/7-3-add-host-task.png",
-        title: "添加主机ssh登录授权",
-        descriptions: ["填写主机ip、用户名、密码，授权只需添加一次，后续其他任务可以复用"]
-      },
-      {
-        image: "/static/doc/images/8-1-add-host-task.png",
-        title: "上传到主机任务配置完成",
-        descriptions: ["接下来配置主机执行脚本，去部署证书"]
-      },
-      {
-        image: "/static/doc/images/8-2-add-host-task.png",
-        title: "选择添加主机远程命令任务",
-        descriptions: ["选择主机远程命令任务"]
-      },
-      {
-        image: "/static/doc/images/8-4-add-host-task.png",
-        title: "填写证书部署脚本",
-        descriptions: ["选择主机授权，编写部署脚本，这里演示部署到nginx，需要重启nginx，让证书生效"]
-      },
-      {
-        image: "/static/doc/images/8-5-add-host-task.png",
-        title: "上传到主机任务的两个步骤配置完成",
-        descriptions: ["接下来测试运行"]
+        image: "/static/doc/images/5-5-plugin-list.png",
+        title: "还可以添加其他更多部署任务",
+        descriptions: ["插件列表"]
       }
     ]
   },
@@ -171,11 +131,6 @@ const steps = ref<Step[]>([
         image: "/static/doc/images/13-1-result.png",
         title: "查看证书部署成功",
         descriptions: ["访问nginx上的网站，可以看到证书已经部署成功"]
-      },
-      {
-        image: "/static/doc/images/13-2-result.png",
-        title: "阿里云CDN也部署成功",
-        descriptions: ["阿里云CDN上已经更新证书，证书名称已certd开头"]
       },
       {
         image: "/static/doc/images/13-3-download.png",
