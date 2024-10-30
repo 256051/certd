@@ -65,6 +65,15 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           }
         }
       },
+      search: {
+        formItem: {
+          labelCol: {
+            style: {
+              width: "120px"
+            }
+          }
+        }
+      },
       rowHandle: {
         minWidth: 200,
         fixed: "right",

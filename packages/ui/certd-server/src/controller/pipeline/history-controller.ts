@@ -47,6 +47,7 @@ export class HistoryController extends CrudController<HistoryService> {
 
     let pipelineIds: any = null;
     const pipelineTitle = body.query?.pipelineTitle;
+    delete body.query.pipelineTitle;
     if (pipelineTitle) {
       const pipelines = await this.pipelineService.list({
         query: pipelineQuery,
