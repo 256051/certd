@@ -5,6 +5,8 @@ import { CertApplyBasePlugin } from "../base.js";
 import fs from "fs";
 import { EabAccess } from "../../../access/index.js";
 import path from "path";
+import { utils } from "@certd/basic";
+import JSZip from "jszip";
 
 export { CertReader };
 export type { CertInfo };
@@ -126,6 +128,25 @@ export class CertApplyLegoPlugin extends CertApplyBasePlugin {
     const savePathArgs = `--path "${saveDir}"`;
     const os_type = process.platform === "win32" ? "windows" : "linux";
     const legoPath = path.resolve("./tools", os_type, "lego");
+    if (!fs.existsSync(legoPath)) {
+      //解压缩
+      if (os_type === "linux") {
+        await utils.sp.spawn({
+          cmd: "tar -zxvf ./tools/linux/lego_*.tar.gz -C ./tools/linux/",
+        });
+        this.logger.info("解压lego成功");
+      } else {
+        const zip = new JSZip();
+        const data = fs.readFileSync("./tools/windows/lego_windows_amd64.zip");
+        const zipData = await zip.loadAsync(data);
+        const files = Object.keys(zipData.files);
+        for (const file of files) {
+          const content = await zipData.files[file].async("nodebuffer");
+          fs.writeFileSync(`./tools/windows/${file}`, content);
+        }
+        this.logger.info("解压lego成功");
+      }
+    }
     let serverArgs = "";
     if (this.acmeServer) {
       serverArgs = ` --server ${this.acmeServer}`;
