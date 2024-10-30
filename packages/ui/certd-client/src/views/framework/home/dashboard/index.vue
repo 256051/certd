@@ -10,6 +10,7 @@
           <a-tag color="green" class="flex-inline"> <fs-icon icon="ion:time-outline" class="mr-5"></fs-icon> {{ now }}</a-tag>
         </div>
       </div>
+      <div class="suggest"></div>
     </div>
 
     <div class="statistic-data m-20">
@@ -19,6 +20,9 @@
         </a-col>
         <a-col span="6">
           <statistic-card title="授权数量"></statistic-card>
+        </a-col>
+        <a-col span="6">
+          <statistic-card title="运行次数"></statistic-card>
         </a-col>
         <a-col span="6">
           <statistic-card title="下次触发时间"></statistic-card>
