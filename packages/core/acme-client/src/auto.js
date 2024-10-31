@@ -5,6 +5,7 @@
 const { readCsrDomains } = require('./crypto');
 const { log } = require('./logger');
 const { wait } = require('./wait');
+const { CancelError } = require('./error');
 
 const defaultOpts = {
     csr: null,
@@ -250,7 +251,7 @@ module.exports = async (client, userOpts) => {
             i += 1;
             log(`开始第${i}组`);
             if (opts.signal && opts.signal.aborted) {
-                throw new Error('用户取消');
+                throw new CancelError('用户取消');
             }
 
             try {

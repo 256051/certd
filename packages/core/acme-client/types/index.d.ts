@@ -198,6 +198,8 @@ export const agents: any;
  * Logger
  */
 
-export function setLogger(fn: (msg: string) => void): void;
+export function setLogger(fn: (...msg: any) => void): void;
 
 export function walkTxtRecord(record: any): Promise<string[]>;
+
+export const CancelError: Error;

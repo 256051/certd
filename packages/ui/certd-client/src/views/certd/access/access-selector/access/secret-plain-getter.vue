@@ -1,6 +1,6 @@
 <template>
-  <a-button class="cd-secret-plain-getter ml-5">
-    <fs-icon class="pointer" :icon="computedIcon" @click="showPlain" />
+  <a-button class="cd-secret-plain-getter ml-5" @click="showPlain">
+    <fs-icon class="pointer" :icon="computedIcon" />
   </a-button>
 </template>
 <script lang="ts" setup>

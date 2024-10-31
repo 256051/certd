@@ -135,7 +135,12 @@ export class Executor {
       this.runtime.success(runnable);
       return ResultType.success;
     } catch (e: any) {
-      this.runtime.error(runnable, e);
+      if (e.name === "CancelError" || this.abort.signal.aborted) {
+        this.runtime.cancel(runnable);
+        return ResultType.canceled;
+      } else {
+        this.runtime.error(runnable, e);
+      }
       throw e;
     } finally {
       this.runtime.finally(runnable);

@@ -1,4 +1,5 @@
 export * from './util.request.js';
+export * from './util.env.js';
 export * from './util.log.js';
 export * from './util.file.js';
 export * from './util.sp.js';

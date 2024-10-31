@@ -7,6 +7,7 @@ import { CertReader } from "./cert-reader.js";
 import { CertApplyBasePlugin } from "./base.js";
 import { GoogleClient } from "../../libs/google.js";
 import { EabAccess } from "../../access";
+import { CancelError } from "@certd/pipeline";
 
 export type { CertInfo };
 export * from "./cert-reader.js";
@@ -293,6 +294,7 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
       useMappingProxy: this.useProxy,
       reverseProxy: this.reverseProxy,
       privateKeyType: this.privateKeyType,
+      signal: this.ctx.signal,
       // cnameProxyService: this.ctx.cnameProxyService,
       // dnsProviderCreator: this.createDnsProvider.bind(this),
     });
@@ -346,6 +348,9 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
       if (message != null && message.indexOf("redundant with a wildcard domain in the same request") >= 0) {
         this.logger.error(e);
         throw new Error(`通配符域名已经包含了普通域名，请删除其中一个（${message}）`);
+      }
+      if (e.name === "CancelError") {
+        throw new CancelError(e.message);
       }
       throw e;
     }

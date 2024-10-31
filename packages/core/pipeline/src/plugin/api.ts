@@ -4,7 +4,7 @@ import { FileStore } from "../core/file-store.js";
 import { Logger } from "log4js";
 import { IAccessService } from "../access/index.js";
 import { ICnameProxyService, IEmailService } from "../service/index.js";
-import { IContext, PluginRequestHandleReq, RunnableCollection } from "../core/index.js";
+import { CancelError, IContext, PluginRequestHandleReq, RunnableCollection } from "../core/index.js";
 import { ILogger, logger, utils } from "../utils/index.js";
 import { HttpClient } from "../utils/index.js";
 import dayjs from "dayjs";
@@ -113,7 +113,7 @@ export abstract class AbstractTaskPlugin implements ITaskPlugin {
 
   checkSignal() {
     if (this.ctx.signal && this.ctx.signal.aborted) {
-      throw new Error("用户取消");
+      throw new CancelError("用户取消");
     }
   }
 

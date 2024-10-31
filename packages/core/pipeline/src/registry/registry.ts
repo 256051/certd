@@ -1,4 +1,4 @@
-import { logger } from "../utils/index.js";
+import { isDev, logger } from "../utils/index.js";
 
 export type Registrable = {
   name: string;

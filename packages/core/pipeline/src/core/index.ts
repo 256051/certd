@@ -5,3 +5,4 @@ export * from "./storage.js";
 export * from "./file-store.js";
 export * from "./license.js";
 export * from "./handler.js";
+export * from "./exceptions.js";

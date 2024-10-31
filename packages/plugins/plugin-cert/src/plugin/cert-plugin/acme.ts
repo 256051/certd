@@ -60,8 +60,8 @@ export class AcmeService {
     this.sslProvider = options.sslProvider || "letsencrypt";
     this.eab = options.eab;
     this.skipLocalVerify = options.skipLocalVerify ?? false;
-    acme.setLogger((text: string) => {
-      this.logger.info(text);
+    acme.setLogger((...text: any) => {
+      this.logger.info(...text);
     });
   }
 
