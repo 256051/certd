@@ -175,17 +175,21 @@ export class HistoryService extends BaseService<HistoryEntity> {
     }
   }
 
-  async dayCount(param: { days: number; userId: any }) {
+  async countPerDay(param: { days: number; userId?: any }) {
     const todayEnd = dayjs().endOf('day');
+    const where: any = {
+      // 0点
+      // userId: param.userId,
+      createTime: MoreThan(todayEnd.add(-param.days, 'day').toDate()),
+    };
+    if (param.userId > 0) {
+      where.userId = param.userId;
+    }
     const result = await this.getRepository()
       .createQueryBuilder('main')
       .select('date(main.createTime)  AS date') // 将UNIX时间戳转换为日期
       .addSelect('COUNT(*) AS count')
-      .where({
-        // 0点
-        userId: param.userId,
-        createTime: MoreThan(todayEnd.add(-param.days, 'day').toDate()),
-      })
+      .where(where)
       .groupBy('date')
       .getRawMany();
 

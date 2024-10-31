@@ -1,5 +1,5 @@
 <template>
-  <v-chart class="chart" :option="option" autoresize />
+  <v-chart v-if="props.data" class="chart" :option="option" autoresize />
 </template>
 
 <script setup lang="ts">
@@ -8,45 +8,48 @@ import { CanvasRenderer } from "echarts/renderers";
 import { PieChart, LineChart } from "echarts/charts";
 import { TitleComponent, TooltipComponent, LegendComponent, GridComponent } from "echarts/components";
 import VChart, { THEME_KEY } from "vue-echarts";
-import { ref, provide, defineProps } from "vue";
+import { ref, provide, defineProps, computed } from "vue";
 import { ChartItem } from "/@/views/framework/home/dashboard/charts/d";
 
 use([CanvasRenderer, PieChart, LineChart, TitleComponent, TooltipComponent, GridComponent, LegendComponent]);
 
 provide(THEME_KEY, "");
 
-const props = defineProps<{
-  data: ChartItem[];
-}>();
-
-const dates = props.data.map((item) => {
-  return item.name;
-});
-const counts = props.data.map((item) => {
-  return item.value;
-});
-
-var noDataOption = {
-  // 使用系统提供的 noData 图形
-  graphic: {
-    type: "text",
-    left: "center",
-    top: "center",
-    style: {
-      text: "无数据",
-      textAlign: "center",
-      fill: "#ccc"
+const props = withDefaults(
+  defineProps<{
+    data: ChartItem[];
+    title: string;
+  }>(),
+  {
+    data: () => {
+      return [];
     }
   }
-};
+);
 
+const dates = computed(() => {
+  return props.data.map((item) => {
+    return item.name;
+  });
+});
+const counts = computed(() => {
+  return props.data.map((item) => {
+    return item.value;
+  });
+});
 const option = ref({
-  noDataSchema: noDataOption,
   color: ["#91cc75", "#73c0de", "#ee6666", "#fac858", "#3ba272", "#fc8452", "#9a60b4", "#ea7ccc", "#5470c6"],
-  // title: {
-  //   text: "",
-  //   left: "center"
-  // },
+  title: {
+    show: props.data.length === 0, // 没数据才显示
+    extStyle: {
+      color: "grey",
+      fontSize: 20
+    },
+    text: "暂无数据",
+    left: "center",
+    top: "center"
+  },
+
   tooltip: {
     trigger: "item"
   },
@@ -83,7 +86,7 @@ const option = ref({
   ],
   series: [
     {
-      name: "运行次数",
+      name: props.title,
       type: "line",
       stack: "Total",
       label: {

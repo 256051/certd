@@ -1,6 +1,6 @@
 import { Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
 import { InjectEntityModel } from '@midwayjs/typeorm';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { UserEntity } from '../entity/user.js';
 import * as _ from 'lodash-es';
 import md5 from 'md5';
@@ -15,6 +15,7 @@ import bcrypt from 'bcryptjs';
 import { SysSettingsService } from '@certd/lib-server';
 import { SysInstallInfo } from '@certd/lib-server';
 import { RandomUtil } from '../../../../utils/random.js';
+import dayjs from 'dayjs';
 
 /**
  * 系统用户
@@ -244,5 +245,30 @@ export class UserService extends BaseService<UserEntity> {
     await this.repository.update(id, {
       status,
     });
+  }
+
+  async count(param: { userId?: any } = {}) {
+    const count = await this.repository.count({
+      where: {
+        id: param.userId,
+      },
+    });
+    return count;
+  }
+
+  async registerCountPerDay(param: { days: number } = { days: 7 }) {
+    const todayEnd = dayjs().endOf('day');
+    const result = await this.getRepository()
+      .createQueryBuilder('main')
+      .select('date(main.createTime)  AS date') // 将UNIX时间戳转换为日期
+      .addSelect('COUNT(*) AS count')
+      .where({
+        // 0点
+        createTime: MoreThan(todayEnd.add(-param.days, 'day').toDate()),
+      })
+      .groupBy('date')
+      .getRawMany();
+
+    return result;
   }
 }

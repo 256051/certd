@@ -8,7 +8,8 @@
         </div>
         <div class="content">
           <div v-if="!slots.default" class="statistic">
-            <div class="value">{{ count }}</div>
+            <div v-if="count !== 0" class="value">{{ count }}</div>
+            <a-empty v-else></a-empty>
           </div>
           <slot></slot>
         </div>

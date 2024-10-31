@@ -62,7 +62,7 @@
         </a-col>
         <a-col :span="6">
           <statistic-card title="最近运行统计" :footer="false">
-            <day-count v-if="count.runningCount" :data="count.runningCount"></day-count>
+            <day-count v-if="count.historyCountPerDay" :data="count.historyCountPerDay" title="运行次数"></day-count>
           </statistic-card>
         </a-col>
         <a-col :span="6">
@@ -153,9 +153,9 @@ function transformStatusCount() {
   ];
   const result = [];
   for (const item of sorted) {
-    const find = data.find((v: any) => v.name === item.name);
+    const find = data.find((v: any) => v.status === item.name);
     if (find) {
-      result.push({ name: item.label, value: find.value });
+      result.push({ name: item.label, value: find.count });
     } else {
       result.push({ name: item.label, value: 0 });
     }
@@ -165,6 +165,12 @@ function transformStatusCount() {
 async function loadCount() {
   count.value = await GetStatisticCount();
   transformStatusCount();
+  count.value.historyCountPerDay = count.value.historyCountPerDay.map((item) => {
+    return {
+      name: item.date,
+      value: item.count
+    };
+  });
 }
 
 async function loadPluginGroups() {

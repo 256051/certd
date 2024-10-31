@@ -1,6 +1,6 @@
 import { Config, Inject, Provide, Scope, ScopeEnum, sleep } from '@midwayjs/core';
 import { InjectEntityModel } from '@midwayjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { In, MoreThan, Repository } from 'typeorm';
 import { BaseService, NeedVIPException, PageReq, SysPublicSettings, SysSettingsService } from '@certd/lib-server';
 import { PipelineEntity } from '../entity/pipeline.js';
 import { PipelineDetail } from '../entity/vo/pipeline-detail.js';
@@ -19,6 +19,7 @@ import { AccessGetter } from './access-getter.js';
 import { CnameRecordService } from '../../cname/service/cname-record-service.js';
 import { CnameProxyService } from './cname-proxy-service.js';
 import { PluginConfigGetter } from '../../plugin/service/plugin-config-getter.js';
+import dayjs from 'dayjs';
 
 const runningTasks: Map<string | number, Executor> = new Map();
 const freeCount = 10;
@@ -473,7 +474,7 @@ export class PipelineService extends BaseService<PipelineEntity> {
     await this.historyLogService.addOrUpdate(logEntity);
   }
 
-  async count(param: { userId: any }) {
+  async count(param: { userId?: any }) {
     const count = await this.repository.count({
       where: {
         userId: param.userId,
@@ -482,7 +483,7 @@ export class PipelineService extends BaseService<PipelineEntity> {
     return count;
   }
 
-  async statusCount(param: { userId: any }) {
+  async statusCount(param: { userId?: any } = {}) {
     const statusCount = await this.repository
       .createQueryBuilder()
       .select('status')
@@ -515,5 +516,21 @@ export class PipelineService extends BaseService<PipelineEntity> {
     });
 
     return list.slice(0, 5);
+  }
+
+  async createCountPerDay(param: { days: number } = { days: 7 }) {
+    const todayEnd = dayjs().endOf('day');
+    const result = await this.getRepository()
+      .createQueryBuilder('main')
+      .select('date(main.createTime)  AS date') // 将UNIX时间戳转换为日期
+      .addSelect('COUNT(*) AS count')
+      .where({
+        // 0点
+        createTime: MoreThan(todayEnd.add(-param.days, 'day').toDate()),
+      })
+      .groupBy('date')
+      .getRawMany();
+
+    return result;
   }
 }
