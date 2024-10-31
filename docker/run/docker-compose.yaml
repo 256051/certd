@@ -35,7 +35,6 @@ services:
       #- certd_https_cert=./data/ssl/cert.crt
       #- certd_https_enabled=true
       #- certd_https_port=7002
-      -
       #                             ↓↓↓↓ ------------------------------- 使用postgresql数据库
 #      - certd_flyway_scriptDir=./db/migration-pg               # 升级脚本目录
 #      - certd_typeorm_dataSource_default_type=postgres         # 数据库类型
