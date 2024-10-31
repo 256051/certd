@@ -10,7 +10,7 @@
       <div class="text">
         <div class="left">
           <div>
-            <span>您好，{{ userInfo.nickName || userInfo.username }}。 欢迎使用 {{ siteInfo.title }}</span>
+            <span>您好，{{ userInfo.nickName || userInfo.username }}， 欢迎使用 【{{ siteInfo.title }}】</span>
           </div>
           <div>
             <a-tag color="green" class="flex-inline"> <fs-icon icon="ion:time-outline" class="mr-5"></fs-icon> {{ now }}</a-tag>
@@ -215,7 +215,7 @@ onMounted(async () => {
         flex-direction: column;
         justify-content: center;
         > div {
-          margin: 2px;
+          margin: 4px;
         }
       }
     }

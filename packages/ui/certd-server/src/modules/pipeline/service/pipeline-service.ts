@@ -20,6 +20,7 @@ import { CnameRecordService } from '../../cname/service/cname-record-service.js'
 import { CnameProxyService } from './cname-proxy-service.js';
 import { PluginConfigGetter } from '../../plugin/service/plugin-config-getter.js';
 import dayjs from 'dayjs';
+import { DbAdapter } from '../../db/index.js';
 
 const runningTasks: Map<string | number, Executor> = new Map();
 const freeCount = 10;
@@ -59,6 +60,9 @@ export class PipelineService extends BaseService<PipelineEntity> {
 
   @Config('certd')
   private certdConfig: any;
+
+  @Inject()
+  dbAdapter: DbAdapter;
 
   //@ts-ignore
   getRepository() {
@@ -522,8 +526,8 @@ export class PipelineService extends BaseService<PipelineEntity> {
     const todayEnd = dayjs().endOf('day');
     const result = await this.getRepository()
       .createQueryBuilder('main')
-      .select('date(main.createTime)  AS date') // 将UNIX时间戳转换为日期
-      .addSelect('COUNT(*) AS count')
+      .select(`${this.dbAdapter.date('main.createTime')}  AS date`) // 将UNIX时间戳转换为日期
+      .addSelect('COUNT(1) AS count')
       .where({
         // 0点
         createTime: MoreThan(todayEnd.add(-param.days, 'day').toDate()),

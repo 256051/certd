@@ -4,18 +4,15 @@ import { MoreThan, Repository } from 'typeorm';
 import { UserEntity } from '../entity/user.js';
 import * as _ from 'lodash-es';
 import md5 from 'md5';
-import { CommonException, FileService } from '@certd/lib-server';
-import { BaseService } from '@certd/lib-server';
+import { BaseService, CommonException, Constants, FileService, SysInstallInfo, SysSettingsService } from '@certd/lib-server';
 import { RoleService } from './role-service.js';
 import { PermissionService } from './permission-service.js';
 import { UserRoleService } from './user-role-service.js';
-import { Constants } from '@certd/lib-server';
 import { UserRoleEntity } from '../entity/user-role.js';
 import bcrypt from 'bcryptjs';
-import { SysSettingsService } from '@certd/lib-server';
-import { SysInstallInfo } from '@certd/lib-server';
 import { RandomUtil } from '../../../../utils/random.js';
 import dayjs from 'dayjs';
+import { DbAdapter } from '../../../db/index.js';
 
 /**
  * 系统用户
@@ -37,6 +34,8 @@ export class UserService extends BaseService<UserEntity> {
 
   @Inject()
   fileService: FileService;
+  @Inject()
+  dbAdapter: DbAdapter;
 
   //@ts-ignore
   getRepository() {
@@ -260,8 +259,8 @@ export class UserService extends BaseService<UserEntity> {
     const todayEnd = dayjs().endOf('day');
     const result = await this.getRepository()
       .createQueryBuilder('main')
-      .select('date(main.createTime)  AS date') // 将UNIX时间戳转换为日期
-      .addSelect('COUNT(*) AS count')
+      .select(`${this.dbAdapter.date('main.createTime')}  AS date`) // 将UNIX时间戳转换为日期
+      .addSelect('COUNT(1) AS count')
       .where({
         // 0点
         createTime: MoreThan(todayEnd.add(-param.days, 'day').toDate()),

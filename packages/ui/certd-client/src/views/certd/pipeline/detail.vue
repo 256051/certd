@@ -1,7 +1,7 @@
 <template>
   <fs-page class="fs-pipeline-detail">
     <pipeline-edit v-model:edit-mode="editMode" :pipeline-id="pipelineId" :options="pipelineOptionsRef"></pipeline-edit>
-    <a-tour v-model:current="tourCurrent" :open="tourOpen" :steps="tourSteps" @close="tourHandleOpen(false)" />
+    <a-tour v-bind="tour" v-model:current="tour.current" />
   </fs-page>
 </template>
 
@@ -14,6 +14,7 @@ import * as api from "./api";
 import { useRoute } from "vue-router";
 import { PipelineDetail, PipelineOptions, PluginGroups, RunHistory } from "./pipeline/type";
 import { TourProps } from "ant-design-vue";
+import { LocalStorage } from "/@/utils/util.storage";
 
 defineOptions({
   name: "PipelineDetail"
@@ -24,7 +25,7 @@ const pipelineId: Ref = ref(route.query.id);
 const pipelineOptions: PipelineOptions = {
   async getPipelineDetail({ pipelineId }) {
     const detail = await api.GetDetail(pipelineId);
-    onLoaded();
+    onLoaded(detail);
     return {
       pipeline: {
         id: detail.pipeline.id,
@@ -70,30 +71,37 @@ if (route.query.editMode !== "false") {
 }
 
 function useTour() {
-  const tourOpen = ref<boolean>(false);
-
-  const tourCurrent = ref(0);
-  //@ts-ignore
-  const tourSteps: TourProps["steps"] = ref([]);
+  const tour = ref({
+    open: false,
+    current: 0,
+    steps: [],
+    onClose: () => {
+      tour.value.open = false;
+    },
+    onFinish: () => {
+      tour.value.open = false;
+      LocalStorage.set("tour-off", true, 999999999);
+    }
+  });
 
   const tourHandleOpen = (val: boolean): void => {
     initSteps();
-    tourOpen.value = val;
+    tour.value.open = val;
   };
 
   function initSteps() {
     //@ts-ignore
-    tourSteps.value = [
+    tour.value.steps = [
       {
         title: "恭喜创建证书流水线成功",
-        description: "这里就是我们刚创建的证书任务,点击可以修改证书申请参数",
+        description: "这里就是我们刚创建的证书任务，点击可以修改证书申请参数",
         target: () => {
           return document.querySelector(".pipeline .stages .stage_0 .task");
         }
       },
       {
         title: "添加部署证书任务",
-        description: "证书申请成功之后还需要部署证书，点击这里可以添加部署任务",
+        description: "证书申请成功之后还需要部署证书，点击这里可以添加证书部署任务",
         target: () => {
           return document.querySelector(".pipeline .stages .last-stage .tasks .task");
         }
@@ -109,18 +117,28 @@ function useTour() {
   }
 
   return {
-    tourOpen,
-    tourCurrent,
-    tourSteps,
+    tour,
     tourHandleOpen
   };
 }
 
-const { tourOpen, tourCurrent, tourSteps, tourHandleOpen } = useTour();
+const { tour, tourHandleOpen } = useTour();
 
-async function onLoaded() {
-  await nextTick();
-  tourHandleOpen(true);
+async function onLoaded(pipeline: PipelineDetail) {
+  const count = LocalStorage.get("pipeline-count") ?? 0;
+  if (count > 1) {
+    return;
+  }
+  const off = LocalStorage.get("tour-off") ?? false;
+  if (off) {
+    return;
+  }
+  const res = await api.GetCount();
+  LocalStorage.set("pipeline-count", res.count);
+  if (res.count <= 1) {
+    await nextTick();
+    tourHandleOpen(true);
+  }
 }
 </script>
 <style lang="less">

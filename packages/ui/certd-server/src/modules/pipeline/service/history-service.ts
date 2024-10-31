@@ -6,10 +6,10 @@ import { HistoryEntity } from '../entity/history.js';
 import { PipelineEntity } from '../entity/pipeline.js';
 import { HistoryDetail } from '../entity/vo/history-detail.js';
 import { HistoryLogService } from './history-log-service.js';
-import { FileItem, Pipeline, RunnableCollection } from '@certd/pipeline';
-import { FileStore } from '@certd/pipeline';
-import { logger } from '@certd/pipeline';
+import { FileItem, FileStore, logger, Pipeline, RunnableCollection } from '@certd/pipeline';
 import dayjs from 'dayjs';
+import { DbAdapter } from '../../db/index.js';
+
 /**
  * 证书申请
  */
@@ -23,6 +23,9 @@ export class HistoryService extends BaseService<HistoryEntity> {
   pipelineRepository: Repository<PipelineEntity>;
   @Inject()
   logService: HistoryLogService;
+
+  @Inject()
+  dbAdapter: DbAdapter;
 
   @Config('certd')
   private certdConfig: any;
@@ -178,8 +181,6 @@ export class HistoryService extends BaseService<HistoryEntity> {
   async countPerDay(param: { days: number; userId?: any }) {
     const todayEnd = dayjs().endOf('day');
     const where: any = {
-      // 0点
-      // userId: param.userId,
       createTime: MoreThan(todayEnd.add(-param.days, 'day').toDate()),
     };
     if (param.userId > 0) {
@@ -187,8 +188,8 @@ export class HistoryService extends BaseService<HistoryEntity> {
     }
     const result = await this.getRepository()
       .createQueryBuilder('main')
-      .select('date(main.createTime)  AS date') // 将UNIX时间戳转换为日期
-      .addSelect('COUNT(*) AS count')
+      .select(`${this.dbAdapter.date('main.createTime')}  AS date`) // 将UNIX时间戳转换为日期
+      .addSelect('COUNT(1) AS count')
       .where(where)
       .groupBy('date')
       .getRawMany();
