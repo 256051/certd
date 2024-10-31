@@ -7,12 +7,13 @@
           <div class="more"></div>
         </div>
         <div class="content">
-          <div class="statistic">
+          <div v-if="!slots.default" class="statistic">
             <div class="value">80</div>
           </div>
+          <slot></slot>
         </div>
         <div class="footer">
-          <div class="icon-text"><fs-icon icon="ion:settings-outline" /> 管理流水线</div>
+          <div class="icon-text"><fs-icon icon="ion:settings-outline" />管理流水线</div>
         </div>
       </div>
     </a-card>
@@ -23,6 +24,7 @@ import { FsIcon } from "@fast-crud/fast-crud";
 const props = defineProps<{
   title: string;
 }>();
+const slots = defineSlots();
 </script>
 <style lang="less">
 .statistic-card {

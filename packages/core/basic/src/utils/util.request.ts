@@ -17,7 +17,7 @@ export class HttpError extends Error {
     if (!error) {
       return;
     }
-    super(error.message);
+    super(error.message || error.response?.statusText);
 
     if (error?.message?.indexOf('ssl3_get_record:wrong version number') >= 0) {
       this.message = 'http协议错误，服务端要求http协议，请检查是否使用了https请求';
@@ -25,7 +25,6 @@ export class HttpError extends Error {
 
     this.name = error.name;
     this.code = error.code;
-    this.cause = error.cause;
 
     this.status = error.response?.status;
     this.statusText = error.response?.statusText;
@@ -38,7 +37,7 @@ export class HttpError extends Error {
     };
     let url = error.config?.url;
     if (error.config?.baseURL) {
-      url = error.config?.baseURL + url;
+      url = (error.config?.baseURL || '') + url;
     }
     if (url) {
       this.message = `${this.message}  : url=${url}`;
@@ -48,6 +47,9 @@ export class HttpError extends Error {
       data: error.response?.data,
     };
 
+    // const { stack, cause } = error;
+    // this.cause = cause;
+    // this.stack = stack;
     delete error.response;
     delete error.config;
     delete error.request;

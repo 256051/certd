@@ -28,7 +28,7 @@
             <fs-icon :icon="menu.meta.icon"></fs-icon>
             <span class="ml-5">{{ menu.title }} </span>
           </div>
-          <tutorial-button class="flex-center header-btn" />
+          <tutorial-button v-if="!settingStore.isComm" class="flex-center header-btn" />
           <vip-button class="flex-center header-btn" mode="nav" />
         </div>
         <div class="header-right header-buttons">

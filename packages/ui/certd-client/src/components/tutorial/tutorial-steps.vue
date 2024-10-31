@@ -45,10 +45,7 @@ const steps = ref<Step[]>([
     items: [
       {
         title: "教程演示内容",
-        descriptions: [
-          "1. 本教程演示如何全自动申请和更新证书，部署证书到阿里云CDN和Nginx，证书到期后自动续期，自动部署",
-          "2. 演示流程：创建证书申请流水线 -> 添加部署任务 -> 运行测试 -> 设置定时执行和邮件通知"
-        ]
+        descriptions: ["本教程演示如何自动申请证书并部署到Nginx上"]
       },
       {
         image: "/static/doc/images/1-add.png",

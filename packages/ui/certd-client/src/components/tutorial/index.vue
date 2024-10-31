@@ -6,23 +6,16 @@ const openedRef = ref(false);
 function open() {
   openedRef.value = true;
 }
-function close() {
-  openedRef.value = false;
-}
-function prev() {
-  console.log("prev");
-}
-function next() {
-  console.log("next");
-}
-
-const settingStore = useSettingStore();
+const slots = defineSlots();
 </script>
 
 <template>
-  <div v-if="!settingStore.isComm" class="tutorial-button" @click="open">
-    <fs-icon icon="mingcute:question-line"></fs-icon>
-    <div class="ml-5">使用教程</div>
+  <div class="tutorial-button pointer" @click="open">
+    <template v-if="!slots.default">
+      <fs-icon icon="mingcute:question-line"></fs-icon>
+      <div class="ml-5">使用教程</div>
+    </template>
+    <slot></slot>
     <a-modal v-model:open="openedRef" class="tutorial-modal" width="90%">
       <template #title> 使用教程 </template>
       <tutorial-steps v-if="openedRef" />

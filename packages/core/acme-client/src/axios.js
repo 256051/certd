@@ -114,16 +114,18 @@ instance.interceptors.response.use(null, async (error) => {
             const code = response ? `HTTP ${response.status}` : error.code;
             log(`Caught ${code}, retry attempt ${config.retryAttempt}/${retryMaxAttempts} to URL ${config.url}`);
 
+            const retryAfter = (retryDefaultDelay * config.retryAttempt);
             /* Attempt to parse Retry-After header, fallback to default delay */
-            let retryAfter = response ? parseRetryAfterHeader(response.headers['retry-after']) : 0;
+            const headerRetryAfter = response ? parseRetryAfterHeader(response.headers['retry-after']) : 0;
 
-            if (retryAfter > 0) {
-                log(`Found retry-after response header with value: ${response.headers['retry-after']}, waiting ${retryAfter} seconds`);
+            if (headerRetryAfter > 0) {
+                const waitMinutes = (headerRetryAfter / 60).toFixed(1);
+                log(`Found retry-after response header with value: ${response.headers['retry-after']}, waiting ${waitMinutes} minutes`);
+                log(JSON.stringify(response.data));
+                return Promise.reject(new Agents.HttpError(error));
             }
-            else {
-                retryAfter = (retryDefaultDelay * config.retryAttempt);
-                log(`Unable to locate or parse retry-after response header, waiting ${retryAfter} seconds`);
-            }
+
+            log(`waiting ${retryAfter} seconds`);
 
             /* Wait and retry the request */
             await new Promise((resolve) => { setTimeout(resolve, (retryAfter * 1000)); });
