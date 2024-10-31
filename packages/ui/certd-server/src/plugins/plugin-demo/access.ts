@@ -1,5 +1,5 @@
 import { AccessInput, BaseAccess, IsAccess } from '@certd/pipeline';
-import { isDev } from "../../utils/env.js";
+import { isDev } from '../../utils/env.js';
 
 /**
  * 这个注解将注册一个授权配置

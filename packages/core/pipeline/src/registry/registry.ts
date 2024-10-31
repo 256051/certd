@@ -71,6 +71,9 @@ export class Registry<T> {
         if (define?.deprecated) {
           continue;
         }
+        if (!isDev() && define.name.startsWith("demo")) {
+          continue;
+        }
         list.push({ ...define, key });
       }
     }

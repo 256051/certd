@@ -13,23 +13,26 @@
             <span>您好，{{ userInfo.nickName || userInfo.username }}， 欢迎使用 【{{ siteInfo.title }}】</span>
           </div>
           <div>
-            <a-tag color="green" class="flex-inline"> <fs-icon icon="ion:time-outline" class="mr-5"></fs-icon> {{ now }}</a-tag>
-            <a-tag color="blue" class="flex-inline"> <fs-icon icon="ion:rocket-outline" class="mr-5"></fs-icon> v{{ version }}</a-tag>
+            <a-tag color="green" class="flex-inline pointer"> <fs-icon icon="ion:time-outline" class="mr-5"></fs-icon> {{ now }}</a-tag>
+            <a-badge v-if="userStore.isAdmin" :dot="hasNewVersion">
+              <a-tag color="blue" class="flex-inline pointer" :title="'最新版本:' + latestVersion">
+                <fs-icon icon="ion:rocket-outline" class="mr-5"></fs-icon>
+                v{{ version }}
+              </a-tag>
+            </a-badge>
           </div>
         </div>
       </div>
       <div class="suggest">
-        <div>
-          <tutorial-button class="flex-center">
-            <a-tooltip title="点击查看详细教程">
-              <a-tag color="blue" class="flex-center">
-                仅需3步，全自动申请部署证书
-                <fs-icon class="font-size-16 ml-5" icon="mingcute:question-line"></fs-icon>
-              </a-tag>
-            </a-tooltip>
-          </tutorial-button>
-          <simple-steps></simple-steps>
-        </div>
+        <tutorial-button class="flex-center mt-10">
+          <a-tooltip title="点击查看详细教程">
+            <a-tag color="blue" class="flex-center">
+              仅需3步，全自动申请部署证书
+              <fs-icon class="font-size-16 ml-5" icon="mingcute:question-line"></fs-icon>
+            </a-tag>
+          </a-tooltip>
+        </tutorial-button>
+        <SimpleSteps></SimpleSteps>
       </div>
     </div>
     <div v-if="!settingStore.isComm" class="warning">
@@ -49,12 +52,12 @@
           <statistic-card title="证书流水线数量" :count="count.pipelineCount">
             <template v-if="count.pipelineCount === 0" #default>
               <div class="flex-center flex-1 flex-col">
-                <div style="font-size: 20px; font-weight: 700">您还没有证书流水线</div>
-                <fs-button class="mt-10" icon="ion:add-circle-outline" type="primary" @click="goPipeline">立即添加</fs-button>
+                <div style="font-size: 18px; font-weight: 700">您还没有证书流水线</div>
+                <fs-button type="primary" class="mt-10" icon="ion:add-circle-outline" @click="goPipeline">立即创建</fs-button>
               </div>
             </template>
             <template #footer>
-              <router-link to="/certd/pipeline" class="flex"><fs-icon icon="ion:add-circle-outline" class="mr-5 fs-16" /> 管理流水线</router-link>
+              <router-link to="/certd/pipeline" class="flex"><fs-icon icon="ion:settings-outline" class="mr-5 fs-16" /> 管理流水线</router-link>
             </template>
           </statistic-card>
         </a-col>
@@ -104,7 +107,7 @@
 
 <script lang="ts" setup>
 import { FsIcon } from "@fast-crud/fast-crud";
-import SimpleSteps from "./simple-steps.vue";
+import SimpleSteps from "/@/components/tutorial/simple-steps.vue";
 import { useUserStore } from "/@/store/modules/user";
 import { computed, ComputedRef, onMounted, Ref, ref } from "vue";
 import dayjs from "dayjs";
@@ -121,12 +124,31 @@ import { SiteInfo } from "/@/api/modules/api.basic";
 import { UserInfoRes } from "/@/api/modules/api.user";
 import { GetStatisticCount } from "/@/views/framework/home/dashboard/api";
 import { useRouter } from "vue-router";
-
+import * as api from "./api";
 defineOptions({
   name: "DashboardUser"
 });
 
 const version = ref(import.meta.env.VITE_APP_VERSION);
+const latestVersion = ref();
+const hasNewVersion = computed(() => {
+  if (!latestVersion.value) {
+    return false;
+  }
+  //分段比较
+  const current = version.value.split(".");
+  const latest = latestVersion.value.split(".");
+  for (let i = 0; i < current.length; i++) {
+    if (parseInt(latest[i]) > parseInt(current[i])) {
+      return true;
+    }
+  }
+  return false;
+});
+async function loadLatestVersion() {
+  latestVersion.value = await api.GetLatestVersion();
+  console.log("latestVersion", latestVersion.value);
+}
 const settingStore = useSettingStore();
 const siteInfo: Ref<SiteInfo> = computed(() => {
   return settingStore.siteInfo;
@@ -183,6 +205,7 @@ async function loadPluginGroups() {
 
 const pluginGroups = ref();
 onMounted(async () => {
+  await loadLatestVersion();
   await loadCount();
   await loadPluginGroups();
 });
@@ -204,7 +227,7 @@ onMounted(async () => {
     background-color: #fff;
 
     .avatar {
-      margin-right: 20px;
+      margin-right: 10px;
     }
     .text {
       flex: 1;

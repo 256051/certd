@@ -1,5 +1,4 @@
-import { MidwayEnvironmentService } from '@midwayjs/core';
-import { Controller, Get, Inject, Provide } from '@midwayjs/core';
+import { Controller, Get, Inject, MidwayEnvironmentService, Provide } from '@midwayjs/core';
 import { logger } from '@certd/pipeline';
 import { Constants } from '@certd/lib-server';
 

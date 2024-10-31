@@ -27,6 +27,12 @@ function createService() {
       }
       // dataAxios 是 axios 返回数据中的 data
       const dataAxios = response.data;
+
+      if (response.config.unpack === false) {
+        //如果不需要解包
+        return dataAxios;
+      }
+
       // 这个状态码是和后端约定的
       const { code } = dataAxios;
       // 根据 code 进行判断
@@ -40,10 +46,6 @@ function createService() {
           case 0:
             // [ 示例 ] code === 0 代表没有错误
             // @ts-ignore
-            if (response.config.unpack === false) {
-              //如果不需要解包
-              return dataAxios;
-            }
             return dataAxios.data;
           default:
             // 不是正确的 code

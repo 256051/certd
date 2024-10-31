@@ -1,7 +1,6 @@
 import { ALL, Body, Controller, Inject, Post, Provide, Query } from '@midwayjs/core';
-import { CrudController } from '@certd/lib-server';
+import { Constants, CrudController } from '@certd/lib-server';
 import { AccessService } from '../../modules/pipeline/service/access-service.js';
-import { Constants } from '@certd/lib-server';
 
 /**
  * 授权
@@ -78,9 +77,6 @@ export class AccessController extends CrudController<AccessService> {
     const list = this.service.getDefineList();
     const dict = [];
     for (const item of list) {
-      if (item?.deprecated) {
-        continue;
-      }
       dict.push({
         value: item.name,
         label: item.title,

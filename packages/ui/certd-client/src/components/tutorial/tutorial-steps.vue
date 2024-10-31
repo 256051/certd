@@ -8,6 +8,9 @@
         <div class="description mt-5">
           <div v-for="desc of currentStepItem.descriptions">{{ desc }}</div>
         </div>
+        <div v-if="currentStepItem.body">
+          <fs-render :render-func="currentStepItem.body" />
+        </div>
       </div>
       <template v-if="currentStepItem.image">
         <div class="image-box">
@@ -17,13 +20,15 @@
     </div>
 
     <div class="flex-center actions">
-      <fs-button class="m-10" icon="mingcute:arrow-left-fill" @click="prev()">上一步</fs-button>
-      <fs-button class="m-10" type="primary" icon-right="mingcute:arrow-right-fill" @click="next()">下一步</fs-button>
+      <fs-button class="m-10" icon="ion:arrow-back-outline" @click="prev()">上一步</fs-button>
+      <fs-button class="m-10" type="primary" icon-right="ion:arrow-forward-outline" @click="next()">下一步</fs-button>
     </div>
   </div>
 </template>
 
 <script setup lang="tsx">
+import { FsRender } from "@fast-crud/fast-crud";
+import SimpleSteps from "./simple-steps.vue";
 type Step = {
   title: string;
   subTitle?: string;
@@ -34,6 +39,7 @@ type StepItems = {
   image?: string;
   title: string;
   descriptions?: string[];
+  body?: () => JSX.Element;
 };
 
 import { computed, nextTick, ref } from "vue";
@@ -45,7 +51,10 @@ const steps = ref<Step[]>([
     items: [
       {
         title: "教程演示内容",
-        descriptions: ["本教程演示如何自动申请证书并部署到Nginx上"]
+        descriptions: ["本教程演示如何自动申请证书并部署到Nginx上", "仅需3步，全自动申请部署证书"],
+        body: () => {
+          return <SimpleSteps></SimpleSteps>;
+        }
       },
       {
         image: "/static/doc/images/1-add.png",
@@ -289,6 +298,10 @@ function previewMask() {
   .ant-steps .ant-steps-item-description {
     font-size: 12px !important;
     color: #999 !important;
+  }
+
+  .description {
+    text-align: center;
   }
 }
 </style>

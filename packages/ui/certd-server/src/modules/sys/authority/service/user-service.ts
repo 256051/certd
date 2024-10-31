@@ -3,7 +3,6 @@ import { InjectEntityModel } from '@midwayjs/typeorm';
 import { MoreThan, Repository } from 'typeorm';
 import { UserEntity } from '../entity/user.js';
 import * as _ from 'lodash-es';
-import md5 from 'md5';
 import { BaseService, CommonException, Constants, FileService, SysInstallInfo, SysSettingsService } from '@certd/lib-server';
 import { RoleService } from './role-service.js';
 import { PermissionService } from './permission-service.js';
@@ -13,7 +12,7 @@ import bcrypt from 'bcryptjs';
 import { RandomUtil } from '../../../../utils/random.js';
 import dayjs from 'dayjs';
 import { DbAdapter } from '../../../db/index.js';
-
+import { utils } from '@certd/pipeline';
 /**
  * 系统用户
  */
@@ -116,7 +115,7 @@ export class UserService extends BaseService<UserEntity> {
 
   private async genPassword(rawPassword: any, passwordVersion: number) {
     if (passwordVersion == null || passwordVersion <= 1) {
-      return md5(rawPassword);
+      return utils.hash.md5(rawPassword);
     }
     const salt = bcrypt.genSaltSync(10);
     const plainPassword = await this.buildPlainPassword(rawPassword);
