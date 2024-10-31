@@ -131,8 +131,14 @@ export class CertApplyLegoPlugin extends CertApplyBasePlugin {
     if (!fs.existsSync(legoPath)) {
       //解压缩
       if (os_type === "linux") {
+        //判断当前是arm64 还是amd64
+        const arch = process.arch;
+        let platform = "amd64";
+        if (arch === "arm64" || arch === "arm") {
+          platform = "arm64";
+        }
         await utils.sp.spawn({
-          cmd: "tar -zxvf ./tools/linux/lego_*.tar.gz -C ./tools/linux/",
+          cmd: `tar -zxvf ./tools/linux/lego_linux_${platform}.tar.gz -C ./tools/linux/`,
         });
         this.logger.info("解压lego成功");
       } else {
