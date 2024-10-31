@@ -19,7 +19,7 @@ export class HttpError extends Error {
     }
     super(error.message || error.response?.statusText);
 
-    if (error?.message?.indexOf('ssl3_get_record:wrong version number') >= 0) {
+    if (error?.message?.indexOf && error?.message?.indexOf('ssl3_get_record:wrong version number') >= 0) {
       this.message = 'http协议错误，服务端要求http协议，请检查是否使用了https请求';
     }
 
