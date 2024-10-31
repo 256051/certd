@@ -16,7 +16,7 @@ RUN apk add --no-cache openssl
 # RUN apk add --no-cache openjdk11-jdk
 WORKDIR /app/
 COPY --from=builder /workspace/certd-server/ /app/
-RUN cd /app/tools/linux/ && tar -zxvf *.tar.gz -C .
+RUN cd /app/tools/linux/ && tar -zxvf lego_linux_amd64.tar.gz
 RUN chmod +x /app/tools/linux/*
 
 ENV TZ=Asia/Shanghai
