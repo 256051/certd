@@ -64,7 +64,10 @@ export class CertConverter {
     if (pfxPassword) {
       passwordArg = `-password pass:${pfxPassword}`;
     }
-    await this.exec(`openssl pkcs12 -export -out ${pfxPath} -inkey ${tmpKeyPath} -in ${tmpCrtPath} ${passwordArg}`);
+    // 兼容server 2016
+    const oldPfxCmd = `openssl pkcs12 -macalg SHA1 -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -export -out ${pfxPath} -inkey ${tmpKeyPath} -in ${tmpCrtPath} ${passwordArg}`;
+    // const newPfx = `openssl pkcs12 -export -out ${pfxPath} -inkey ${tmpKeyPath} -in ${tmpCrtPath} ${passwordArg}`;
+    await this.exec(oldPfxCmd);
     return pfxPath;
     // const fileBuffer = fs.readFileSync(pfxPath);
     // this.pfxCert = fileBuffer.toString("base64");
