@@ -21,9 +21,12 @@
       <div class="suggest">
         <div>
           <tutorial-button class="flex-center">
-            <a-tag color="blue" class="flex-center">
-              仅需3步，全自动申请部署证书<fs-icon class="font-size-16 ml-5" icon="mingcute:question-line"></fs-icon
-            ></a-tag>
+            <a-tooltip title="点击查看详细教程">
+              <a-tag color="blue" class="flex-center">
+                仅需3步，全自动申请部署证书
+                <fs-icon class="font-size-16 ml-5" icon="mingcute:question-line"></fs-icon>
+              </a-tag>
+            </a-tooltip>
           </tutorial-button>
           <simple-steps></simple-steps>
         </div>
@@ -79,7 +82,7 @@
           支持的部署任务列表 <a-tag color="green">{{ pluginGroups.groups.all.plugins.length }}</a-tag>
         </template>
         <a-row :gutter="10">
-          <a-col v-for="item of pluginGroups.groups.all.plugins" class="plugin-item-col" :span="4">
+          <a-col v-for="item of pluginGroups.groups.all.plugins" :key="item.name" class="plugin-item-col" :span="4">
             <a-card>
               <a-tooltip :title="item.desc">
                 <div class="plugin-item pointer">
@@ -165,7 +168,7 @@ function transformStatusCount() {
 async function loadCount() {
   count.value = await GetStatisticCount();
   transformStatusCount();
-  count.value.historyCountPerDay = count.value.historyCountPerDay.map((item) => {
+  count.value.historyCountPerDay = count.value.historyCountPerDay.map((item: any) => {
     return {
       name: item.date,
       value: item.count

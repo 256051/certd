@@ -1,7 +1,12 @@
 <template>
   <fs-page class="page-cert">
     <template #header>
-      <div class="title">CNAME记录管理</div>
+      <div class="title">
+        CNAME记录管理
+        <span class="sub">
+          <a href="https://certd.docmirror.cn/guide/feature/cname/" target="_blank">CNAME功能原理及使用说明</a>
+        </span>
+      </div>
     </template>
     <fs-crud ref="crudRef" v-bind="crudBinding">
       <template #pagination-left>
