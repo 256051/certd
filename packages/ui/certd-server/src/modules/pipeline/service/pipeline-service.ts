@@ -71,11 +71,18 @@ export class PipelineService extends BaseService<PipelineEntity> {
 
   async page(pageReq: PageReq<PipelineEntity>) {
     const result = await super.page(pageReq);
+    await this.fillLastVars(result.records);
+
+    return result;
+  }
+
+  private async fillLastVars(records: PipelineEntity[]) {
     const pipelineIds: number[] = [];
     const recordMap = {};
-    for (const record of result.records) {
+    for (const record of records) {
       pipelineIds.push(record.id);
       recordMap[record.id] = record;
+      record.title = record.title + '';
     }
     if (pipelineIds?.length > 0) {
       const vars = await this.storageService.findPipelineVars(pipelineIds);
@@ -87,8 +94,6 @@ export class PipelineService extends BaseService<PipelineEntity> {
         }
       }
     }
-
-    return result;
   }
 
   public async registerTriggerById(pipelineId) {
@@ -466,5 +471,49 @@ export class PipelineService extends BaseService<PipelineEntity> {
     logEntity.historyId = entity.id;
     logEntity.logs = JSON.stringify(history.logs);
     await this.historyLogService.addOrUpdate(logEntity);
+  }
+
+  async count(param: { userId: any }) {
+    const count = await this.repository.count({
+      where: {
+        userId: param.userId,
+      },
+    });
+    return count;
+  }
+
+  async statusCount(param: { userId: any }) {
+    const statusCount = await this.repository
+      .createQueryBuilder()
+      .select('status')
+      .addSelect('count(1)', 'count')
+      .where({
+        userId: param.userId,
+      })
+      .groupBy('status')
+      .getRawMany();
+    return statusCount;
+  }
+
+  async latestExpiringList({ userId }: any) {
+    let list = await this.repository.find({
+      select: {
+        id: true,
+        title: true,
+        status: true,
+      },
+      where: {
+        userId,
+      },
+    });
+    await this.fillLastVars(list);
+    list = list.filter(item => {
+      return item.lastVars?.certExpiresTime != null;
+    });
+    list = list.sort((a, b) => {
+      return a.lastVars.certExpiresTime - b.lastVars.certExpiresTime;
+    });
+
+    return list.slice(0, 5);
   }
 }

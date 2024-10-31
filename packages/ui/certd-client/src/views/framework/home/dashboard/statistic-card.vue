@@ -8,12 +8,12 @@
         </div>
         <div class="content">
           <div v-if="!slots.default" class="statistic">
-            <div class="value">80</div>
+            <div class="value">{{ count }}</div>
           </div>
           <slot></slot>
         </div>
-        <div class="footer">
-          <div class="icon-text"><fs-icon icon="ion:settings-outline" />管理流水线</div>
+        <div v-if="slots.footer" class="footer">
+          <slot name="footer"></slot>
         </div>
       </div>
     </a-card>
@@ -23,6 +23,7 @@
 import { FsIcon } from "@fast-crud/fast-crud";
 const props = defineProps<{
   title: string;
+  count?: number;
 }>();
 const slots = defineSlots();
 </script>
@@ -41,7 +42,7 @@ const slots = defineSlots();
   .data-item {
     display: flex;
     flex-direction: column;
-
+    height: 180px;
     .header {
       display: flex;
       justify-content: space-between;
@@ -51,7 +52,7 @@ const slots = defineSlots();
     .content {
       display: flex;
       flex-direction: column;
-      height: 100px;
+      flex: 1;
       .statistic {
         height: 100%;
         display: flex;
@@ -63,6 +64,9 @@ const slots = defineSlots();
           font-weight: 700;
           color: #2c254e;
         }
+      }
+
+      x-vue-echarts {
       }
     }
     .footer {
