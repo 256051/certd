@@ -82,6 +82,10 @@ export const useUserStore = defineStore({
       return userInfo;
     },
 
+    async loadUserInfo() {
+      await this.getUserInfoAction();
+    },
+
     async onLoginSuccess(loginData: any) {
       await this.getUserInfoAction();
       const userInfo = await this.getUserInfoAction();

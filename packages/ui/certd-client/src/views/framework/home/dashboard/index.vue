@@ -205,6 +205,7 @@ async function loadPluginGroups() {
 
 const pluginGroups = ref();
 onMounted(async () => {
+  await userStore.loadUserInfo();
   await loadLatestVersion();
   await loadCount();
   await loadPluginGroups();
