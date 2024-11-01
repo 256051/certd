@@ -306,8 +306,11 @@ export class PipelineService extends BaseService<PipelineEntity> {
       return;
     }
     cron = cron.trim();
+    if (cron.startsWith('* *')) {
+      cron = cron.replace('* *', '0 0');
+    }
     if (cron.startsWith('*')) {
-      cron = '0' + cron.substring(1, cron.length);
+      cron = cron.replace('*', '0');
     }
     const triggerId = trigger.id;
     const name = this.buildCronKey(pipelineId, triggerId);

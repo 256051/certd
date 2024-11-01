@@ -48,6 +48,15 @@ const onUpdate = (value: string) => {
   if (value === props.modelValue) {
     return;
   }
+  const arr: string[] = value.split(" ");
+  if (arr[0] === "*") {
+    arr[0] = "0";
+  }
+  if (arr[1] === "*") {
+    arr[1] = "0";
+  }
+  value = arr.join(" ");
+
   emit("update:modelValue", value);
   errorMessage.value = undefined;
 };
