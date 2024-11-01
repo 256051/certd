@@ -1,21 +1,18 @@
 import { Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
 import { InjectEntityModel } from '@midwayjs/typeorm';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { UserEntity } from '../entity/user.js';
 import * as _ from 'lodash-es';
-import md5 from 'md5';
-import { CommonException, FileService } from '@certd/lib-server';
-import { BaseService } from '@certd/lib-server';
+import { BaseService, CommonException, Constants, FileService, SysInstallInfo, SysSettingsService } from '@certd/lib-server';
 import { RoleService } from './role-service.js';
 import { PermissionService } from './permission-service.js';
 import { UserRoleService } from './user-role-service.js';
-import { Constants } from '@certd/lib-server';
 import { UserRoleEntity } from '../entity/user-role.js';
 import bcrypt from 'bcryptjs';
-import { SysSettingsService } from '@certd/lib-server';
-import { SysInstallInfo } from '@certd/lib-server';
 import { RandomUtil } from '../../../../utils/random.js';
-
+import dayjs from 'dayjs';
+import { DbAdapter } from '../../../db/index.js';
+import { utils } from '@certd/pipeline';
 /**
  * 系统用户
  */
@@ -36,6 +33,8 @@ export class UserService extends BaseService<UserEntity> {
 
   @Inject()
   fileService: FileService;
+  @Inject()
+  dbAdapter: DbAdapter;
 
   //@ts-ignore
   getRepository() {
@@ -116,7 +115,7 @@ export class UserService extends BaseService<UserEntity> {
 
   private async genPassword(rawPassword: any, passwordVersion: number) {
     if (passwordVersion == null || passwordVersion <= 1) {
-      return md5(rawPassword);
+      return utils.hash.md5(rawPassword);
     }
     const salt = bcrypt.genSaltSync(10);
     const plainPassword = await this.buildPlainPassword(rawPassword);
@@ -244,5 +243,30 @@ export class UserService extends BaseService<UserEntity> {
     await this.repository.update(id, {
       status,
     });
+  }
+
+  async count(param: { userId?: any } = {}) {
+    const count = await this.repository.count({
+      where: {
+        id: param.userId,
+      },
+    });
+    return count;
+  }
+
+  async registerCountPerDay(param: { days: number } = { days: 7 }) {
+    const todayEnd = dayjs().endOf('day');
+    const result = await this.getRepository()
+      .createQueryBuilder('main')
+      .select(`${this.dbAdapter.date('main.createTime')}  AS date`) // 将UNIX时间戳转换为日期
+      .addSelect('COUNT(1) AS count')
+      .where({
+        // 0点
+        createTime: MoreThan(todayEnd.add(-param.days, 'day').toDate()),
+      })
+      .groupBy('date')
+      .getRawMany();
+
+    return result;
   }
 }

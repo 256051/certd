@@ -49,6 +49,9 @@ export class RoleService extends BaseService<RoleEntity> {
   }
 
   async getPermissionByRoleIds(roleIds: any) {
+    if (!roleIds || roleIds.length === 0) {
+      return [];
+    }
     return await this.permissionService.repository
       .createQueryBuilder('permission')
       .innerJoinAndSelect(RolePermissionEntity, 'rp', 'rp.permissionId = permission.id and rp.roleId in (:...roleIds)', { roleIds })

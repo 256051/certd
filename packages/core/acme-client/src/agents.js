@@ -42,19 +42,20 @@ function setGlobalProxy(opts) {
 }
 
 class HttpError extends Error {
+    // eslint-disable-next-line constructor-super
     constructor(error) {
-        super(error || error.message);
         if (!error) {
             return;
         }
+        super(error.message);
 
-        if (error.message.indexOf('ssl3_get_record:wrong version number') >= 0) {
+        this.message = error.message;
+        if (this.message && this.message.indexOf('ssl3_get_record:wrong version number') >= 0) {
             this.message = 'http协议错误，服务端要求http协议，请检查是否使用了https请求';
         }
 
         this.name = error.name;
         this.code = error.code;
-        this.cause = error.cause;
 
         if (error.response) {
             this.status = error.response.status;
@@ -62,6 +63,9 @@ class HttpError extends Error {
             this.response = {
                 data: error.response.data,
             };
+            if (!this.message) {
+                this.message = this.statusText;
+            }
         }
 
         let url = '';
@@ -73,12 +77,18 @@ class HttpError extends Error {
                 params: error.config.params,
                 data: error.config.data,
             };
-            url = error.config.baseURL + error.config.url;
+            url = (error.config.baseURL || '') + error.config.url;
         }
         if (url) {
             this.message = `${this.message}:${url}`;
         }
-
+        // const { stack, cause } = error;
+        delete this.cause;
+        delete this.stack;
+        // this.cause = cause;
+        // this.stack = stack;
+        delete error.stack;
+        delete error.cause;
         delete error.response;
         delete error.config;
         delete error.request;

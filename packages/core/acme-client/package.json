@@ -3,7 +3,7 @@
     "description": "Simple and unopinionated ACME client",
     "private": false,
     "author": "nmorsman",
-    "version": "1.26.16",
+    "version": "1.27.0",
     "main": "src/index.js",
     "types": "types/index.d.ts",
     "license": "MIT",
@@ -60,5 +60,5 @@
     "bugs": {
         "url": "https://github.com/publishlab/node-acme-client/issues"
     },
-    "gitHead": "844fd4358c84251c72c5854ea633f238014244ad"
+    "gitHead": "c643d7edc3721a6d2ac701a35ef600f6b6ff4b34"
 }

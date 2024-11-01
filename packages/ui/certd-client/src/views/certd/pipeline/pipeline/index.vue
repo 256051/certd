@@ -66,7 +66,7 @@
               </template>
 
               <template #item="{ element: stage, index }">
-                <div :key="stage.id" class="stage" :class="{ 'last-stage': isLastStage(index) }">
+                <div :key="stage.id" class="stage" :class="{ 'last-stage': isLastStage(index), ['stage_' + index]: true }">
                   <div class="title">
                     <text-editable v-model="stage.title" :disabled="!editMode"></text-editable>
                     <div v-plus class="icon-box stage-move-handle">
@@ -252,7 +252,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, provide, Ref, watch } from "vue";
+import { defineComponent, ref, provide, Ref, watch, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import PiTaskForm from "./component/task-form/index.vue";
 import PiTriggerForm from "./component/trigger-form/index.vue";
@@ -261,7 +261,7 @@ import PiTaskView from "./component/task-view/index.vue";
 import PiStatusShow from "./component/status-show.vue";
 import VDraggable from "vuedraggable";
 import _ from "lodash-es";
-import { message, Modal, notification } from "ant-design-vue";
+import { message, Modal, notification, TourProps } from "ant-design-vue";
 import { nanoid } from "nanoid";
 import { PipelineDetail, PipelineOptions, PluginGroups, RunHistory } from "./type";
 import type { Runnable, Stage } from "@certd/pipeline";

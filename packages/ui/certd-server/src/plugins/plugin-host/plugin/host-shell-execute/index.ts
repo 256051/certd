@@ -6,6 +6,7 @@ import { SshClient } from '../../lib/ssh.js';
   title: '执行远程主机脚本命令',
   icon: 'tabler:brand-powershell',
   group: pluginGroups.host.key,
+  desc: '可以执行重启nginx等操作让证书生效',
   input: {},
   default: {
     strategy: {

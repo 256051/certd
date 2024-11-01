@@ -65,6 +65,9 @@ const onError = (error: any) => {
 };
 
 const nextTime = computed(() => {
+  if (props.modelValue == null) {
+    return "请先设置正确的cron表达式";
+  }
   try {
     const interval = parser.parseExpression(props.modelValue);
     const next = interval.next().getTime();

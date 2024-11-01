@@ -14,6 +14,20 @@ export const sysResources = [
     },
     children: [
       {
+        title: "控制台",
+        name: "SysConsole",
+        path: "/sys/console",
+        component: "/sys/console/index.vue",
+        meta: {
+          show: () => {
+            const settingStore = useSettingStore();
+            return settingStore.isComm;
+          },
+          icon: "ion:speedometer-outline",
+          permission: "sys:auth:user:view"
+        }
+      },
+      {
         title: "用户管理",
         name: "UserManager",
         path: "/sys/authority/user",

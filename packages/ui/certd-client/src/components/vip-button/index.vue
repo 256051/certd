@@ -105,7 +105,7 @@ const vipTypeDefine = {
   comm: {
     title: "商业版",
     type: "comm",
-    privilege: ["拥有专业版所有特权", "允许商用", "修改logo、标题", "多用户无限制", "支持用户支付（敬请期待）"]
+    privilege: ["拥有专业版所有特权", "允许商用，可修改logo、标题", "数据统计", "插件管理", "多用户无限制", "支持用户支付（敬请期待）"]
   }
 };
 
@@ -256,7 +256,7 @@ function openUpgrade() {
     padding: 10px;
     border: 1px solid #eee;
     border-radius: 5px;
-    height: 160px;
+    height: 170px;
     //background-color: rgba(250, 237, 167, 0.79);
     &.current {
       border-color: green;

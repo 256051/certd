@@ -23,19 +23,13 @@ services:
 #    extra_hosts:
       #  ↓↓↓↓ ---------------------------------------------------------- 这里可以配置自定义hosts，外网域名可以指向本地局域网ip地址
 #      - "localdomain.comm:192.168.1.3"
-    environment: # 环境变量
+    environment:
       - TZ=Asia/Shanghai
       # 设置环境变量即可自定义certd配置
       # 配置项见： packages/ui/certd-server/src/config/config.default.ts
       # 配置规则： certd_ + 配置项, 点号用_代替
       #                               ↓↓↓↓ ----------------------------- 如果忘记管理员密码，可以设置为true，重启之后，管理员密码将改成123456，然后请及时修改回false
       - certd_system_resetAdminPasswd=false
-      #                            ↓↓↓↓ -------------------------------- 默认同时启动https，https访问地址https://your.domain:7002
-      #- certd_https_key=./data/ssl/cert.key
-      #- certd_https_cert=./data/ssl/cert.crt
-      #- certd_https_enabled=true
-      #- certd_https_port=7002
-      -
       #                             ↓↓↓↓ ------------------------------- 使用postgresql数据库
 #      - certd_flyway_scriptDir=./db/migration-pg               # 升级脚本目录
 #      - certd_typeorm_dataSource_default_type=postgres         # 数据库类型

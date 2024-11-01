@@ -438,6 +438,9 @@ export default function ({ crudExpose, context: { certdFormRef } }: CreateCrudOp
         status: {
           title: "状态",
           type: "dict-select",
+          search: {
+            show: true
+          },
           dict: dict({
             data: statusUtil.getOptions()
           }),

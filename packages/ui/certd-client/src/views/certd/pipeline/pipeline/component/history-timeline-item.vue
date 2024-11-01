@@ -1,7 +1,7 @@
 <template>
-  <a-timeline-item v-if="status && runnable" class="pi-history-timeline-item" :color="status.color">
+  <a-timeline-item v-if="status && runnable" class="pi-history-timeline-item" :color="status.iconColor || status.color">
     <template #dot>
-      <fs-icon v-bind="status" />
+      <fs-icon v-bind="status" :color="status.iconColor || status.color" />
     </template>
     <p>
       <fs-date-format :model-value="runnable.status?.startTime"></fs-date-format>

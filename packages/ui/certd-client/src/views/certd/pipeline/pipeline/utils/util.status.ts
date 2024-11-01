@@ -42,6 +42,7 @@ const StatusEnum: StatusEnumType = {
     value: "canceled",
     label: "已取消",
     color: "yellow",
+    iconColor: "#d4b106",
     icon: "ant-design:minus-circle-twotone"
   },
   none: {

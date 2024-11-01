@@ -132,6 +132,18 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
                   }
                 }
               }
+            },
+            helper: {
+              render() {
+                const closeForm = () => {
+                  crudExpose.getFormWrapperRef().close();
+                };
+                return (
+                  <router-link to={"/sys/cname/provider"} onClick={closeForm}>
+                    前往设置CNAME服务
+                  </router-link>
+                );
+              }
             }
           },
           column: {

@@ -103,4 +103,10 @@ export class PipelineController extends CrudController<PipelineService> {
     await this.service.cancel(historyId);
     return this.ok({});
   }
+
+  @Post('/count', { summary: Constants.per.authOnly })
+  async count() {
+    const count = await this.service.count({ userId: this.getUserId() });
+    return this.ok({ count });
+  }
 }

@@ -1,4 +1,4 @@
-import { logger } from "../utils/index.js";
+import { isDev, logger } from "../utils/index.js";
 
 export type Registrable = {
   name: string;
@@ -69,6 +69,9 @@ export class Registry<T> {
       const define = this.getDefine(key);
       if (define) {
         if (define?.deprecated) {
+          continue;
+        }
+        if (!isDev() && define.name.startsWith("demo")) {
           continue;
         }
         list.push({ ...define, key });

@@ -14,7 +14,7 @@
             </template>
           </a-list-item-meta>
           <div>
-            <a-textarea :value="item.content" rows="5" />
+            <a-textarea :value="item.content" :rows="5" />
           </div>
         </a-list-item>
       </template>

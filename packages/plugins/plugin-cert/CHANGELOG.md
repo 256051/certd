@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.27.0](https://github.com/certd/certd/compare/v1.26.16...v1.27.0) (2024-10-31)
+
+### Bug Fixes
+
+* pfx兼容windows server 2016 ([e5e468a](https://github.com/certd/certd/commit/e5e468a463f66d02f235de54b7c1e09ace5f1cb1))
+
+### Features
+
+* 首页全新改版 ([63ec5b5](https://github.com/certd/certd/commit/63ec5b5519c760a3330569c0da6dac157302a330))
+
+### Performance Improvements
+
+* lego 升级到 4.19.2 ([129bf53](https://github.com/certd/certd/commit/129bf53edc9bbb001fe49fbd7e239bd1d09cc128))
+
 ## [1.26.16](https://github.com/certd/certd/compare/v1.26.15...v1.26.16) (2024-10-30)
 
 ### Bug Fixes

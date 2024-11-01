@@ -1,15 +1,16 @@
 <template>
   <fs-page class="home—index">
-    <page-content />
+    <!--    <page-content />-->
+    <dashboard-user />
   </fs-page>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import PageContent from "./content/index.vue";
-export default defineComponent({
-  components: { PageContent },
-  setup() {}
-});
+<script lang="ts" setup>
+// import PageContent from "./content/index.vue";
+import DashboardUser from "./dashboard/index.vue";
 </script>
-<style lang="less"></style>
+<style lang="less">
+.home—index {
+  background-color: #eee;
+}
+</style>

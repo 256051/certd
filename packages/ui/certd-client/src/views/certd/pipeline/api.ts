@@ -84,6 +84,13 @@ export async function GetFiles(pipelineId: number) {
   });
 }
 
+export async function GetCount() {
+  return await request({
+    url: apiPrefix + "/count",
+    method: "post"
+  });
+}
+
 export type CertInfo = {
   crt: string;
   key: string;

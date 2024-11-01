@@ -1,7 +1,7 @@
 {
   "name": "@certd/plugin-cert",
   "private": false,
-  "version": "1.26.16",
+  "version": "1.27.0",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -15,9 +15,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@certd/acme-client": "^1.26.16",
-    "@certd/basic": "^1.26.16",
-    "@certd/pipeline": "^1.26.16",
+    "@certd/acme-client": "^1.27.0",
+    "@certd/basic": "^1.27.0",
+    "@certd/pipeline": "^1.27.0",
     "@google-cloud/publicca": "^1.3.0",
     "dayjs": "^1.11.7",
     "jszip": "^3.10.1",
@@ -57,5 +57,5 @@
     "vite": "^3.1.0",
     "vue-tsc": "^0.38.9"
   },
-  "gitHead": "844fd4358c84251c72c5854ea633f238014244ad"
+  "gitHead": "c643d7edc3721a6d2ac701a35ef600f6b6ff4b34"
 }

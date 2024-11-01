@@ -48,3 +48,4 @@ exports.agents = require('./agents');
 exports.setLogger = require('./logger').setLogger;
 
 exports.walkTxtRecord = require('./verify').walkTxtRecord;
+exports.CancelError = require('./error').CancelError;

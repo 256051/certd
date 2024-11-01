@@ -3,7 +3,7 @@
     v-model:open="triggerDrawerVisible"
     placement="right"
     :closable="true"
-    width="600px"
+    width="650px"
     class="pi-trigger-form"
     @after-open-change="triggerDrawerOnAfterVisibleChange"
   >
@@ -58,8 +58,7 @@
                 name: 'cron-editor',
                 vModel: 'modelValue'
               },
-              helper:
-                '点击上面的按钮，选择每天几点几分定时执行，后面的分秒都要选择0。\n例如：0 0 4 * * *，每天凌晨4点0分0秒触发\n建议设置为每天触发一次，证书未到期之前任务会跳过，不会重复执行',
+              helper: '点击上面的按钮，选择每天几点几分定时执行，后面的分秒都要选择0。\n建议设置为每天触发一次，证书未到期之前任务会跳过，不会重复执行',
               rules: [{ required: true, message: '此项必填' }]
             }"
           />

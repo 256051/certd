@@ -1,14 +1,14 @@
 import { Config, Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
 import { InjectEntityModel } from '@midwayjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { In, MoreThan, Repository } from 'typeorm';
 import { BaseService, PageReq } from '@certd/lib-server';
 import { HistoryEntity } from '../entity/history.js';
 import { PipelineEntity } from '../entity/pipeline.js';
 import { HistoryDetail } from '../entity/vo/history-detail.js';
 import { HistoryLogService } from './history-log-service.js';
-import { FileItem, Pipeline, RunnableCollection } from '@certd/pipeline';
-import { FileStore } from '@certd/pipeline';
-import { logger } from '@certd/pipeline';
+import { FileItem, FileStore, logger, Pipeline, RunnableCollection } from '@certd/pipeline';
+import dayjs from 'dayjs';
+import { DbAdapter } from '../../db/index.js';
 
 /**
  * 证书申请
@@ -23,6 +23,9 @@ export class HistoryService extends BaseService<HistoryEntity> {
   pipelineRepository: Repository<PipelineEntity>;
   @Inject()
   logService: HistoryLogService;
+
+  @Inject()
+  dbAdapter: DbAdapter;
 
   @Config('certd')
   private certdConfig: any;
@@ -173,5 +176,24 @@ export class HistoryService extends BaseService<HistoryEntity> {
     } catch (e) {
       logger.error('删除文件失败', e);
     }
+  }
+
+  async countPerDay(param: { days: number; userId?: any }) {
+    const todayEnd = dayjs().endOf('day');
+    const where: any = {
+      createTime: MoreThan(todayEnd.add(-param.days, 'day').toDate()),
+    };
+    if (param.userId > 0) {
+      where.userId = param.userId;
+    }
+    const result = await this.getRepository()
+      .createQueryBuilder('main')
+      .select(`${this.dbAdapter.date('main.createTime')}  AS date`) // 将UNIX时间戳转换为日期
+      .addSelect('COUNT(1) AS count')
+      .where(where)
+      .groupBy('date')
+      .getRawMany();
+
+    return result;
   }
 }
