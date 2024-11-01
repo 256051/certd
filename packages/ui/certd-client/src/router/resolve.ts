@@ -40,11 +40,11 @@ function transformOneResource(resource: any, parent: any) {
     if (route.component == null) {
       route.component = LayoutPass;
     }
-    if (route?.meta?.cache !== false) {
+    if (route?.meta?.cache !== true) {
       if (route.meta == null) {
         route.meta = {};
       }
-      route.meta.cache = true;
+      route.meta.cache = false;
     }
   }
   if (resource.children) {
