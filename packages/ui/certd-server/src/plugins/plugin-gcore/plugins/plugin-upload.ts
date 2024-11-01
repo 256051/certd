@@ -1,11 +1,11 @@
 import { AbstractTaskPlugin, HttpClient, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
 import { CertInfo } from '@certd/plugin-cert';
-import { CacheflyAccess } from '../access.js';
+import { GcoreAccess } from '../access.js';
 
 @IsTaskPlugin({
-  name: 'CacheFly',
-  title: '部署证书到 CacheFly',
-  desc: '部署证书到 CacheFly',
+  name: 'Gcoreupload',
+  title: '部署证书到 Gcore',
+  desc: '仅上传 并不会部署到cdn',
   icon: 'clarity:plugin-line',
   group: pluginGroups.cdn.key,
   default: {
@@ -14,7 +14,13 @@ import { CacheflyAccess } from '../access.js';
     },
   },
 })
-export class CacheFlyPlugin extends AbstractTaskPlugin {
+export class GcoreuploadPlugin extends AbstractTaskPlugin {
+  @TaskInput({
+    title: '证书名称',
+    helper: '作为备注',
+  })
+  certName!: string;
+
   @TaskInput({
     title: '域名证书',
     helper: '请选择前置任务输出的域名证书',
@@ -27,16 +33,16 @@ export class CacheFlyPlugin extends AbstractTaskPlugin {
   cert!: CertInfo;
   @TaskInput({
     title: 'Access授权',
-    helper: 'CacheFly 的授权',
+    helper: 'Gcore',
     component: {
       name: 'access-selector',
-      type: 'CacheFly',
+      type: 'Gcore',
     },
     required: true,
   })
   accessId!: string;
   http!: HttpClient;
-  private readonly baseApi = 'https://api.cachefly.com';
+  private readonly baseApi = 'https://api.gcore.com';
 
   async onInstance() {
     this.http = this.ctx.http;
@@ -45,7 +51,7 @@ export class CacheFlyPlugin extends AbstractTaskPlugin {
   private async doRequestApi(url: string, data: any = null, method = 'post', token: string | null = null) {
     const headers = {
       'Content-Type': 'application/json',
-      ...(token ? { 'x-cf-authorization': `Bearer ${token}` } : {}),
+      ...(token ? { 'authorization': `Bearer ${token}` } : {}),
     };
     const res = await this.http.request<any, any>({
       url,
@@ -58,8 +64,8 @@ export class CacheFlyPlugin extends AbstractTaskPlugin {
   }
 
   async execute(): Promise<void> {
-    const { cert, accessId } = this;
-    const access = (await this.accessService.getById(accessId)) as CacheflyAccess;
+    const { cert,accessId } = this;
+    const access = (await this.accessService.getById(accessId)) as GcoreAccess;
     let otp = null;
     if (access.otpkey) {
       const response = await this.http.request<any, any>({
@@ -69,26 +75,27 @@ export class CacheFlyPlugin extends AbstractTaskPlugin {
       otp = response;
       this.logger.info('获取到otp:', otp);
     }
-    this.logger.info('获取到otp:', otp);
-    const loginResponse = await this.doRequestApi(`${this.baseApi}/api/2.6/auth/login`, {
+    const loginResponse = await this.doRequestApi(`${this.baseApi}/iam/auth/jwt/login`, {
       username: access.username,
       password: access.password,
       ...(otp && { otp }),
     });
-    const token = loginResponse.token;
+    const token = loginResponse.access;
     this.logger.info('Token 获取成功');
-    // 更新证书
+    this.logger.info('开始上传证书');
     await this.doRequestApi(
-      `${this.baseApi}/api/2.6/certificates`,
+      `${this.baseApi}/cdn/sslData`,
       {
-        certificate: cert.crt,
-        certificateKey: cert.key,
+        name: this.certName,
+        sslCertificate: cert.crt,
+        sslPrivateKey: cert.key,
+        validate_root_ca: true,
       },
       'post',
       token
     );
-    this.logger.info('证书更新成功');
+    this.logger.info('证书上传成功');
   }
 }
 
-new CacheFlyPlugin();
+new GcoreuploadPlugin();

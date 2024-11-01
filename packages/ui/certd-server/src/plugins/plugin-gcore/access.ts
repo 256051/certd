@@ -1,11 +1,11 @@
 import { AccessInput, BaseAccess, IsAccess } from '@certd/pipeline';
 
 @IsAccess({
-  name: 'CacheFly',
-  title: 'CacheFly',
-  desc: 'CacheFly',
+  name: 'Gcore',
+  title: 'Gcore',
+  desc: 'Gcore',
 })
-export class CacheflyAccess extends BaseAccess {
+export class GcoreAccess extends BaseAccess {
   @AccessInput({
     title: 'username',
     component: {
@@ -26,11 +26,11 @@ export class CacheflyAccess extends BaseAccess {
   @AccessInput({
     title: 'totp key',
     component: {
-      placeholder: '两步验证 key',
+      placeholder: 'totp key',
     },
     encrypt: true,
   })
   otpkey = '';
 }
 
-new CacheflyAccess();
+new GcoreAccess();
