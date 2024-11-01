@@ -69,7 +69,6 @@ export class CacheFlyPlugin extends AbstractTaskPlugin {
       otp = response;
       this.logger.info('获取到otp:', otp);
     }
-    this.logger.info('获取到otp:', otp);
     const loginResponse = await this.doRequestApi(`${this.baseApi}/api/2.6/auth/login`, {
       username: access.username,
       password: access.password,

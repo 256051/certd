@@ -26,7 +26,7 @@ export class CacheflyAccess extends BaseAccess {
   @AccessInput({
     title: 'totp key',
     component: {
-      placeholder: '两步验证 key',
+      placeholder: 'totp key',
     },
     encrypt: true,
   })
