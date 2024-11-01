@@ -64,18 +64,22 @@ const steps = ref<Step[]>([
       {
         image: "/static/doc/images/3-add-success.png",
         title: "流水线创建成功",
-        descriptions: ["此时证书申请任务已经建好", "点击手动触发即可测试证书申请", "接下来演示如何添加部署任务"]
+        descriptions: ["点击手动触发即可申请证书"]
+      },
+      {
+        title: "接下来演示如何自动部署证书",
+        descriptions: ["如果您只需要申请证书，那么到这一步就可以了"]
       }
     ]
   },
   {
     title: "添加部署证书任务",
-    description: "演示部署到主机上的Nginx",
+    description: "这里演示部署证书到Nginx",
     items: [
       {
         image: "/static/doc/images/5-1-add-host.png",
-        title: "添加nginx部署任务",
-        descriptions: ["演示第一个部署任务，部署到nginx"]
+        title: "添加证书部署任务",
+        descriptions: ["这里演示自动部署证书到nginx", "Certd提供茫茫多的部署插件，满足您的各种部署需求"]
       },
       {
         image: "/static/doc/images/5-2-add-host.png",
@@ -94,8 +98,8 @@ const steps = ref<Step[]>([
       },
       {
         image: "/static/doc/images/5-5-plugin-list.png",
-        title: "还可以添加其他更多部署任务",
-        descriptions: ["插件列表"]
+        title: "本系统提供茫茫多的部署插件",
+        descriptions: ["您可以根据自身需求将证书部署到各种应用和平台"]
       }
     ]
   },

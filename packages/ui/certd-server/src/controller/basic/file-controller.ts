@@ -41,6 +41,7 @@ export class FileController extends BaseController {
     }
     const filePath = this.fileService.getFile(key, userId);
     this.ctx.response.attachment(filePath);
+    this.ctx.response.set('Cache-Control', 'public,max-age=2592000');
     await send(this.ctx, filePath);
   }
 }

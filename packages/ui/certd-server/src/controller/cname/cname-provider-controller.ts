@@ -21,7 +21,7 @@ export class CnameProviderController extends BaseController {
   @Post('/list', { summary: Constants.per.authOnly })
   async list(@Body(ALL) body: any) {
     body.userId = this.getUserId();
-    const res = await this.providerService.find({});
+    const res = await this.providerService.list({});
     return this.ok(res);
   }
 }

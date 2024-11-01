@@ -40,7 +40,8 @@ export class CnameRecordController extends CrudController<CnameRecordService> {
   @Post('/list', { summary: Constants.per.authOnly })
   async list(@Body(ALL) body: any) {
     body.userId = this.getUserId();
-    return super.list(body);
+    const list = await this.getService().list(body);
+    return this.ok(list);
   }
 
   @Post('/add', { summary: Constants.per.authOnly })
