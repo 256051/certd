@@ -155,7 +155,7 @@ function openUpgrade() {
     title = "续期专业版/升级商业版";
   }
 
-  modal.confirm({
+  const modalRef = modal.confirm({
     title,
     async onOk() {
       return await doActive();
@@ -206,6 +206,10 @@ function openUpgrade() {
           </a-col>
         );
       }
+      function goAccount() {
+        router.push("/sys/account");
+        modalRef.destroy();
+      }
       return (
         <div class="mt-10 mb-10 vip-active-modal">
           <div class="vip-type-vs">
@@ -225,6 +229,9 @@ function openUpgrade() {
             <div class="mt-10">
               没有激活码？
               {activationCodeGetWay}
+            </div>
+            <div class="mt-10">
+              激活码使用过一次之后，不可再次使用，如果要更换站点，请<a onClick={goAccount}>绑定账号</a>，然后"转移VIP"即可
             </div>
           </div>
         </div>

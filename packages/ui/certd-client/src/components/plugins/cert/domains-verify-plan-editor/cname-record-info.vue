@@ -15,7 +15,11 @@
         <fs-values-format v-model="cnameRecord.status" :dict="statusDict" />
       </td>
       <td class="center">
-        <a-button v-if="cnameRecord.status !== 'valid'" type="primary" size="small" :loading="loading" @click="doVerify">点击验证</a-button>
+        <template v-if="cnameRecord.status !== 'valid'">
+          <a-button type="primary" size="small" :loading="loading" @click="doVerify">点击验证</a-button>
+          <cname-tip :record="cnameRecord"></cname-tip>
+        </template>
+
         <div v-else class="helper">不要删除CNAME</div>
       </td>
     </tr>
@@ -27,6 +31,7 @@ import { CnameRecord, GetByDomain } from "/@/components/plugins/cert/domains-ver
 import { ref, watch } from "vue";
 import { dict } from "@fast-crud/fast-crud";
 import * as api from "./api.js";
+import CnameTip from "./cname-tip.vue";
 const statusDict = dict({
   data: [
     { label: "待设置CNAME", value: "cname", color: "warning" },

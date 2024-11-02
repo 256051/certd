@@ -34,4 +34,6 @@ export class CnameProviderEntity {
     default: () => 'CURRENT_TIMESTAMP',
   })
   updateTime: Date;
+
+  title: string;
 }

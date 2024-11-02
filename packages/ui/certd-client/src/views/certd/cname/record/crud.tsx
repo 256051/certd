@@ -6,7 +6,7 @@ import { AddReq, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, Edi
 import { useUserStore } from "/@/store/modules/user";
 import { useSettingStore } from "/@/store/modules/settings";
 import { message } from "ant-design-vue";
-
+import CnameTip from "/@/components/plugins/cert/domains-verify-plan-editor/cname-tip.vue";
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const router = useRouter();
   const { t } = useI18n();
@@ -126,10 +126,17 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             component: {
               onDictChange: ({ form, dict }: any) => {
                 if (!form.cnameProviderId) {
-                  const item = dict.data.find((item: any) => item.isDefault);
+                  const item = dict.data.find((item: any) => item.isDefault && !item.disabled);
                   if (item) {
                     form.cnameProviderId = item.id;
                   }
+                }
+              },
+              renderLabel(item: any) {
+                if (item.title) {
+                  return `${item.domain}<${item.title}>`;
+                } else {
+                  return item.domain;
                 }
               }
             },
@@ -147,7 +154,13 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             }
           },
           column: {
-            show: false
+            cellRender({ value }) {
+              if (value < 0) {
+                return <a-tag color={"green"}>公共CNAME</a-tag>;
+              } else {
+                return <a-tag color={"blue"}>自定义CNAME</a-tag>;
+              }
+            }
           }
         },
         status: {
@@ -183,6 +196,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
               if (row.status === "valid") {
                 return "-";
               }
+
               async function doVerify() {
                 row._validating_ = true;
                 try {
@@ -199,9 +213,12 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
                 }
               }
               return (
-                <a-button onClick={doVerify} loading={row._validating_} size={"small"} type={"primary"}>
-                  点击验证
-                </a-button>
+                <div>
+                  <a-button onClick={doVerify} loading={row._validating_} size={"small"} type={"primary"}>
+                    点击验证
+                  </a-button>
+                  <CnameTip record={row} />
+                </div>
               );
             }
           }

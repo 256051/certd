@@ -1,16 +1,16 @@
 import { Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
-import { BaseService, ValidateException } from '@certd/lib-server';
+import { BaseService, PlusService, ValidateException } from '@certd/lib-server';
 import { CnameRecordEntity, CnameRecordStatusType } from '../entity/cname-record.js';
-import { v4 as uuidv4 } from 'uuid';
 import { createDnsProvider, IDnsProvider, parseDomain } from '@certd/plugin-cert';
 import { cache, CnameProvider, http, logger, utils } from '@certd/pipeline';
 import { AccessService } from '../../pipeline/service/access-service.js';
 import { isDev } from '../../../utils/env.js';
 import { walkTxtRecord } from '@certd/acme-client';
 import { CnameProviderService } from './cname-provider-service.js';
-import { CnameProviderEntity } from '../entity/cname_provider.js';
+import { CnameProviderEntity } from '../entity/cname-provider.js';
+import { CommonDnsProvider } from './common-provider.js';
 
 type CnameCheckCacheValue = {
   validating: boolean;
@@ -34,6 +34,10 @@ export class CnameRecordService extends BaseService<CnameRecordEntity> {
 
   @Inject()
   accessService: AccessService;
+
+  @Inject()
+  plusService: PlusService;
+
   //@ts-ignore
   getRepository() {
     return this.repository;
@@ -85,8 +89,8 @@ export class CnameRecordService extends BaseService<CnameRecordEntity> {
     }
     param.hostRecord = hostRecord;
 
-    const cnameKey = uuidv4().replaceAll('-', '');
-    param.recordValue = `${cnameKey}.${cnameProvider.domain}`;
+    const cnameKey = utils.id.simpleNanoId();
+    param.recordValue = `${param.domain}.${cnameKey}.${cnameProvider.domain}`;
   }
 
   async update(param: any) {
@@ -189,6 +193,15 @@ export class CnameRecordService extends BaseService<CnameRecordEntity> {
       if (cnameProvider == null) {
         throw new ValidateException(`CNAME服务:${bean.cnameProviderId} 已被删除，请修改CNAME记录，重新选择CNAME服务`);
       }
+
+      if (cnameProvider.id < 0) {
+        //公共CNAME
+        return new CommonDnsProvider({
+          config: cnameProvider,
+          plusService: this.plusService,
+        });
+      }
+
       const access = await this.accessService.getById(cnameProvider.accessId, cnameProvider.userId);
       const context = { access, logger, http, utils };
       const dnsProvider: IDnsProvider = await createDnsProvider({

@@ -1,5 +1,3 @@
-import { sysResources } from "/@/router/source/modules/sys";
-
 export const certdResources = [
   {
     title: "证书自动化",

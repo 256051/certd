@@ -9,7 +9,7 @@ export * from './util.merge.js';
 export * from './util.cache.js';
 import sleep from './util.sleep.js';
 import { http } from './util.request.js';
-import { nanoid } from 'nanoid';
+
 import { mergeUtils } from './util.merge.js';
 import { sp } from './util.sp.js';
 import { hashUtils } from './util.hash.js';
@@ -20,7 +20,8 @@ import { cache } from './util.cache.js';
 import dayjs from 'dayjs';
 import { domainUtils } from './util.domain.js';
 import { optionsUtils } from './util.options.js';
-
+import { nanoid } from 'nanoid';
+import * as id from './util.id.js';
 export const utils = {
   sleep,
   http,
@@ -32,6 +33,7 @@ export const utils = {
   mergeUtils,
   cache,
   nanoid,
+  id,
   dayjs,
   domain: domainUtils,
   options: optionsUtils,

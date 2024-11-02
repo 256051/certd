@@ -12,11 +12,16 @@ export class PlusService {
   plusServerBaseUrls: string[];
 
   async getPlusRequestService() {
-    const installInfo: SysInstallInfo = await this.sysSettingsService.getSetting(SysInstallInfo);
+    const subjectId = await this.getSubjectId();
     return new PlusRequestService({
       plusServerBaseUrls: this.plusServerBaseUrls,
-      subjectId: installInfo.siteId,
+      subjectId,
     });
+  }
+
+  async getSubjectId() {
+    const installInfo: SysInstallInfo = await this.sysSettingsService.getSetting(SysInstallInfo);
+    return installInfo.siteId;
   }
 
   async requestWithoutSign(config: any) {
