@@ -23,7 +23,7 @@
 流水线创建成功
 ![](packages/ui/certd-client/public/static/doc/images/4-add-success.png)
 
-### 2. 任务详情界面
+### 2. 流水线详情界面
 
 ![](packages/ui/certd-client/public/static/doc/images/5-view.png)
 
