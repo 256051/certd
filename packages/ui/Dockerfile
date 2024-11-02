@@ -13,7 +13,7 @@ RUN cd /workspace/certd-server && pnpm install && npm run build-on-docker
 
 FROM node:18-alpine
 RUN apk add --no-cache openssl
-# RUN apk add --no-cache openjdk11-jdk
+RUN apk add --no-cache openjdk8
 WORKDIR /app/
 COPY --from=builder /workspace/certd-server/ /app/
 #RUN cd /app/tools/linux/ && ls -lh && tar -zxvf lego_linux_amd64.tar.gz
