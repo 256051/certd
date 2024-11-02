@@ -1,10 +1,10 @@
 # 自定义脚本插件
 
-## 介绍
+## 1. 介绍
 
 自定义脚本插件是一个通用的插件，可以通过编写脚本来实现各种功能，例如：调用第三方API、执行系统命令、发送邮件等。
 
-## 使用示例
+## 2. 使用示例
 ```js
 const certPem = this.ctx.self.cert.crt
 const certKey = this.ctx.self.cert.key
@@ -22,8 +22,8 @@ this.ctx.logger.info("上传成功",res.data)
 
 
 ```
-## API
-
+## 3. API
+下面是`ctx`对象的`typescript`类型定义
 
 ```ts
 
