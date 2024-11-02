@@ -36,9 +36,12 @@ https://certd.handsfree.work/
 ### 1. 创建证书流水线
 ![演示](packages/ui/certd-client/public/static/doc/images/1-add.png)
 
+> 添加成功后，就可以直接运行流水线申请证书了
+
 ### 2. 添加部署任务
-此处演示部署证书到主机上的nginx上   
-certd支持海量的部署插件，您可以根据自身实际情况进行选择，比如部署到阿里云、腾讯云、CDN、宝塔、1Panel等应用或系统上
+当然我们一般需要把证书部署到应用上，certd支持海量的部署插件，您可以根据自身实际情况进行选择，比如部署到Nginx、阿里云、腾讯云、K8S、CDN、宝塔、1Panel等等
+
+此处演示部署证书到主机的nginx上  
 ![演示](packages/ui/certd-client/public/static/doc/images/5-1-add-host.png)
 
 ### 3. 定时运行
@@ -61,8 +64,8 @@ certd支持海量的部署插件，您可以根据自身实际情况进行选择
 
 1. [宝塔面板方式部署](https://certd.docmirror.cn/guide/install/docker/)
 2. [1Panel面板方式部署](https://certd.docmirror.cn/guide/install/1panel/)
-2. [Docker方式部署](https://certd.docmirror.cn/guide/install/docker/)
-3. [源码方式部署](https://certd.docmirror.cn/guide/install/source/)
+3. [Docker方式部署](https://certd.docmirror.cn/guide/install/docker/)
+4. [源码方式部署](https://certd.docmirror.cn/guide/install/source/)
 
 #### Docker镜像说明：
 * 国内镜像地址:
