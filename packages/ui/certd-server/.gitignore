@@ -20,4 +20,4 @@ run/
 
 .env.pgpl.yaml
 tools/*
-!tools/lego/.keep
+!tools/lego/readme.md
