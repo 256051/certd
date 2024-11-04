@@ -140,6 +140,9 @@ export class CertApplyLegoPlugin extends CertApplyBasePlugin {
         await utils.sp.spawn({
           cmd: `tar -zxvf ./tools/linux/lego_linux_${platform}.tar.gz -C ./tools/linux/`,
         });
+        await utils.sp.spawn({
+          cmd: `chmod +x ./tools/linux/*`,
+        });
         this.logger.info("解压lego成功");
       } else {
         const zip = new JSZip();
