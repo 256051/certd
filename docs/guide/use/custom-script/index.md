@@ -18,6 +18,7 @@ const res = await ctx.http.request({
     key : certKey
   }
 })
+//不能用console.log，需要用ctx.logger 才能把日志打印在ui上
 ctx.logger.info("上传成功",res.data)
 
 
