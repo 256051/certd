@@ -1,6 +1,6 @@
 import { Registrable } from "../registry/index.js";
 import { FormItemProps } from "../dt/index.js";
-import { HttpClient, ILogger, utils } from "../utils/index.js";
+import { HttpClient, ILogger, utils } from "@certd/basic";
 import _ from "lodash-es";
 import { AccessRequestHandleReq } from "../core";
 

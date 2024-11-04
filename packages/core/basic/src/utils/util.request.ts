@@ -6,6 +6,8 @@ import { HttpsProxyAgent } from 'https-proxy-agent';
 import nodeHttp from 'http';
 import * as https from 'node:https';
 import { merge } from 'lodash-es';
+import { safePromise } from './util.promise';
+import fs from 'fs';
 export class HttpError extends Error {
   status?: number;
   statusText?: string;
@@ -213,4 +215,39 @@ export function createAgent(opts: CreateAgentOptions = {}) {
     httpAgent,
     httpsAgent,
   };
+}
+
+export async function download(http: HttpClient, config: HttpRequestConfig, savePath: string) {
+  return safePromise((resolve, reject) => {
+    http
+      .request({
+        ...config,
+        responseType: 'stream',
+      })
+      .then(res => {
+        const writer = fs.createWriteStream(savePath);
+        res.data.pipe(writer);
+        writer.on('close', () => {
+          console.log('文件下载成功');
+          resolve(true);
+        });
+        //error
+        writer.on('error', err => {
+          console.error('下载失败', err);
+          reject(err);
+        });
+        //进度条打印
+        const totalLength = res.headers['content-length'];
+        let currentLength = 0;
+        res.data.on('data', (chunk: any) => {
+          currentLength += chunk.length;
+          const percent = ((currentLength / totalLength) * 100).toFixed(2);
+          console.log(`下载进度：${percent}%`);
+        });
+      })
+      .catch(err => {
+        console.error('下载失败', err);
+        reject(err);
+      });
+  });
 }

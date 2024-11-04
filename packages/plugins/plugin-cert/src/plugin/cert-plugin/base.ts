@@ -1,4 +1,4 @@
-import { AbstractTaskPlugin, HttpClient, IContext, Step, TaskInput, TaskOutput } from "@certd/pipeline";
+import { AbstractTaskPlugin, IContext, Step, TaskInput, TaskOutput } from "@certd/pipeline";
 import dayjs from "dayjs";
 import type { CertInfo } from "./acme.js";
 import { CertReader } from "./cert-reader.js";
@@ -6,6 +6,7 @@ import JSZip from "jszip";
 import { CertConverter } from "./convert.js";
 import fs from "fs";
 import { pick } from "lodash-es";
+import { HttpClient } from "@certd/basic";
 
 export { CertReader };
 export type { CertInfo };

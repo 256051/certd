@@ -1,5 +1,5 @@
 import { Config, Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
-import { AppKey, PlusRequestService, verify } from '@certd/pipeline';
+import { AppKey, PlusRequestService, verify } from '@certd/plus-core';
 import { logger } from '@certd/basic';
 import { SysInstallInfo, SysLicenseInfo, SysSettingsService } from '../../settings/index.js';
 

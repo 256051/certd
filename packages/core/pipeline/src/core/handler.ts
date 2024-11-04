@@ -1,4 +1,4 @@
-import { HttpClient, ILogger, utils } from "../utils/index.js";
+import { HttpClient, ILogger, utils } from "@certd/basic";
 
 export type PluginRequestHandleReq<T = any> = {
   typeName: string;

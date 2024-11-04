@@ -1,4 +1,4 @@
-import { logger } from "../utils/index.js";
+import { logger } from "@certd/basic";
 import { setLogger, isPlus, isComm } from "@certd/plus-core";
 setLogger(logger);
 export * from "@certd/plus-core";

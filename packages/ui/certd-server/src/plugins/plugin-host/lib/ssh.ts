@@ -86,6 +86,7 @@ export class AsyncSsh2Client {
       sftp.fastPut(localPath, remotePath, (err: Error) => {
         if (err) {
           reject(err);
+          this.logger.error('请确认路径是否包含文件名，路径本身不能是目录，路径不能有*?之类的特殊符号，要有写入权限');
           return;
         }
         this.logger.info(`上传文件成功：${localPath} => ${remotePath}`);

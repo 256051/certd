@@ -28,6 +28,7 @@
   "dependencies": {
     "@certd/acme-client": "^1.27.0",
     "@certd/basic": "^1.27.0",
+    "@certd/plus-core": "^1.27.0",
     "@certd/pipeline": "^1.27.0",
     "@midwayjs/cache": "~3.14.0",
     "@midwayjs/core": "~3.17.1",

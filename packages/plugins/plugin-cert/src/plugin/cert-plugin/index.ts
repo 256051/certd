@@ -1,4 +1,6 @@
-import { IsTaskPlugin, pluginGroups, RunStrategy, TaskInput, utils } from "@certd/pipeline";
+import { IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from "@certd/pipeline";
+import { utils } from "@certd/basic";
+
 import type { CertInfo, CnameVerifyPlan, DomainsVerifyPlan, PrivateKeyType, SSLProvider } from "./acme.js";
 import { AcmeService } from "./acme.js";
 import _ from "lodash-es";

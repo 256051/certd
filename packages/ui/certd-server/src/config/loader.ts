@@ -46,3 +46,14 @@ export function mergeConfig(config: any, envType: string) {
   }
   return config;
 }
+
+export function loadDotEnv() {
+  const envStr = fs.readFileSync('.env').toString();
+  envStr.split('\n').forEach(line => {
+    const [key, value] = line.split('=');
+    const oldValue = process.env[key];
+    if (!oldValue) {
+      process.env[key] = value;
+    }
+  });
+}

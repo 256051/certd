@@ -1,4 +1,4 @@
-import { ILogger, sp } from "@certd/pipeline";
+import { ILogger, sp } from "@certd/basic";
 import type { CertInfo } from "../cert-plugin/acme.js";
 import { CertReader, CertReaderHandleContext } from "../cert-plugin/cert-reader.js";
 import path from "path";

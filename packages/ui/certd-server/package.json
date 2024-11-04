@@ -38,6 +38,7 @@
     "@certd/plugin-cert": "^1.27.0",
     "@certd/plugin-plus": "^1.27.0",
     "@certd/plus-core": "^1.27.0",
+    "@certd/basic": "^1.27.0",
     "@huaweicloud/huaweicloud-sdk-cdn": "^3.1.120",
     "@huaweicloud/huaweicloud-sdk-core": "^3.1.120",
     "@koa/cors": "^5.0.0",

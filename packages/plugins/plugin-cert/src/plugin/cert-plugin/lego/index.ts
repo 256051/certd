@@ -1,11 +1,10 @@
-import { IsTaskPlugin, pluginGroups, RunStrategy, sp, Step, TaskInput } from "@certd/pipeline";
+import { IsTaskPlugin, pluginGroups, RunStrategy, Step, TaskInput } from "@certd/pipeline";
 import type { CertInfo } from "../acme.js";
 import { CertReader } from "../cert-reader.js";
 import { CertApplyBasePlugin } from "../base.js";
 import fs from "fs";
 import { EabAccess } from "../../../access/index.js";
 import path from "path";
-import { utils } from "@certd/basic";
 import JSZip from "jszip";
 
 export { CertReader };
@@ -127,31 +126,51 @@ export class CertApplyLegoPlugin extends CertApplyBasePlugin {
     const saveDir = `./data/.lego/pipeline_${this.pipeline.id}/`;
     const savePathArgs = `--path "${saveDir}"`;
     const os_type = process.platform === "win32" ? "windows" : "linux";
-    const legoPath = path.resolve("./tools", os_type, "lego");
+    const legoDir = "./tools/lego";
+    const legoPath = path.resolve(legoDir, "lego");
     if (!fs.existsSync(legoPath)) {
       //解压缩
+      const arch = process.arch;
+      let platform = "amd64";
+      if (arch === "arm64" || arch === "arm") {
+        platform = "arm64";
+      }
+      const LEGO_VERSION = process.env.LEGO_VERSION;
+      let legoZipFile = `${legoDir}/lego_v${LEGO_VERSION}_windows_${platform}.zip`;
       if (os_type === "linux") {
-        //判断当前是arm64 还是amd64
-        const arch = process.arch;
-        let platform = "amd64";
-        if (arch === "arm64" || arch === "arm") {
-          platform = "arm64";
-        }
-        await utils.sp.spawn({
-          cmd: `tar -zxvf ./tools/linux/lego_linux_${platform}.tar.gz -C ./tools/linux/`,
+        legoZipFile = `${legoDir}/lego_v${LEGO_VERSION}_linux_${platform}.tar.gz`;
+      }
+      if (!fs.existsSync(legoZipFile)) {
+        this.logger.info(`lego文件不存在:${legoZipFile},准备下载`);
+        const downloadUrl = `https://github.com/go-acme/lego/releases/download/v${LEGO_VERSION}/lego_v${LEGO_VERSION}_${os_type}_${platform}.tar.gz`;
+        await this.ctx.utils.download(
+          this.http,
+          {
+            url: downloadUrl,
+            method: "GET",
+          },
+          legoZipFile
+        );
+        this.logger.info("下载lego成功");
+      }
+
+      if (os_type === "linux") {
+        //tar是否存在
+        await this.ctx.utils.sp.spawn({
+          cmd: `tar -zxvf ${legoZipFile} -C ${legoDir}/`,
         });
-        await utils.sp.spawn({
-          cmd: `chmod +x ./tools/linux/*`,
+        await this.ctx.utils.sp.spawn({
+          cmd: `chmod +x ${legoDir}/*`,
         });
         this.logger.info("解压lego成功");
       } else {
         const zip = new JSZip();
-        const data = fs.readFileSync("./tools/windows/lego_windows_amd64.zip");
+        const data = fs.readFileSync(legoZipFile);
         const zipData = await zip.loadAsync(data);
         const files = Object.keys(zipData.files);
         for (const file of files) {
           const content = await zipData.files[file].async("nodebuffer");
-          fs.writeFileSync(`./tools/windows/${file}`, content);
+          fs.writeFileSync(legoPath, content);
         }
         this.logger.info("解压lego成功");
       }
@@ -166,7 +185,7 @@ export class CertApplyLegoPlugin extends CertApplyBasePlugin {
       } run`,
     ];
 
-    await sp.spawn({
+    await this.ctx.utils.sp.spawn({
       cmd: cmds,
       logger: this.logger,
       env,

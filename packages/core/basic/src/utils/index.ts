@@ -8,7 +8,7 @@ export * from './util.hash.js';
 export * from './util.merge.js';
 export * from './util.cache.js';
 import sleep from './util.sleep.js';
-import { http } from './util.request.js';
+import { http, download } from './util.request.js';
 
 import { mergeUtils } from './util.merge.js';
 import { sp } from './util.sp.js';
@@ -25,6 +25,7 @@ import * as id from './util.id.js';
 export const utils = {
   sleep,
   http,
+  download,
   sp,
   hash: hashUtils,
   promises,

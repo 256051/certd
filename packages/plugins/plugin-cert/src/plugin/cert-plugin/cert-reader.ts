@@ -3,7 +3,7 @@ import fs from "fs";
 import os from "os";
 import path from "path";
 import { crypto } from "@certd/acme-client";
-import { ILogger } from "@certd/pipeline";
+import { ILogger } from "@certd/basic";
 import dayjs from "dayjs";
 
 export type CertReaderHandleContext = {

@@ -4,7 +4,8 @@ import { ClientExternalAccountBindingOptions, UrlMapping } from "@certd/acme-cli
 import _ from "lodash-es";
 import { Challenge } from "@certd/acme-client/types/rfc8555";
 import { Logger } from "log4js";
-import { IContext, utils } from "@certd/pipeline";
+import { IContext } from "@certd/pipeline";
+import { utils } from "@certd/basic";
 import { IDnsProvider, parseDomain } from "../../dns-provider/index.js";
 
 export type CnameVerifyPlan = {
