@@ -19,5 +19,5 @@ run/
 .clinic
 
 .env.pgpl.yaml
-tools/*
+tools/lego/*
 !tools/lego/readme.md
