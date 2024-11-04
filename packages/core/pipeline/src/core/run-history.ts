@@ -117,8 +117,8 @@ export class RunHistory {
   }
 
   logError(runnable: Runnable, e: Error) {
-    delete e.stack;
-    delete e.cause;
+    // delete e.stack;
+    // delete e.cause;
     const errorInfo = runnable.runnableType === "step" ? e : e.message;
     this._loggers[runnable.id].error(`[${runnable.runnableType}] [${runnable.title}]<id:${runnable.id}> ：`, errorInfo);
   }

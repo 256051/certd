@@ -1,12 +1,12 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { logger } from './util.log.js';
+import { ILogger, logger } from './util.log.js';
 import { Logger } from 'log4js';
 import { HttpProxyAgent } from 'http-proxy-agent';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import nodeHttp from 'http';
 import * as https from 'node:https';
 import { merge } from 'lodash-es';
-import { safePromise } from './util.promise';
+import { safePromise } from './util.promise.js';
 import fs from 'fs';
 export class HttpError extends Error {
   status?: number;
@@ -21,8 +21,13 @@ export class HttpError extends Error {
     }
     super(error.message || error.response?.statusText);
 
-    if (error?.message?.indexOf && error?.message?.indexOf('ssl3_get_record:wrong version number') >= 0) {
-      this.message = 'http协议错误，服务端要求http协议，请检查是否使用了https请求';
+    const message = error?.message;
+    if (message && typeof message === 'string') {
+      if (message.indexOf && message.indexOf('ssl3_get_record:wrong version number') >= 0) {
+        this.message = `${message}(http协议错误，服务端要求http协议，请检查是否使用了https请求)`;
+      } else if (message.indexOf('getaddrinfo EAI_AGAIN')) {
+        this.message = `${message}(无法解析域名，请检查网络连接或dns配置，更换docker-compose.yaml中dns配置)`;
+      }
     }
 
     this.name = error.name;
@@ -115,7 +120,12 @@ export function createAxiosService({ logger }: { logger: Logger }) {
   service.interceptors.response.use(
     (response: any) => {
       if (response?.config?.logRes !== false) {
-        logger.info(`http response : status=${response?.status},data=${JSON.stringify(response?.data)}`);
+        let resData = response?.data;
+        try {
+          resData = JSON.stringify(response?.data);
+        } catch (e) {}
+
+        logger.info(`http response : status=${response?.status},data=${resData}`);
       } else {
         logger.info('http response status:', response?.status);
       }
@@ -217,36 +227,42 @@ export function createAgent(opts: CreateAgentOptions = {}) {
   };
 }
 
-export async function download(http: HttpClient, config: HttpRequestConfig, savePath: string) {
+export async function download(req: { http: HttpClient; config: HttpRequestConfig; savePath: string; logger: ILogger }) {
+  const { http, config, savePath, logger } = req;
   return safePromise((resolve, reject) => {
     http
       .request({
-        ...config,
+        logRes: false,
         responseType: 'stream',
+        ...config,
       })
       .then(res => {
         const writer = fs.createWriteStream(savePath);
-        res.data.pipe(writer);
+        res.pipe(writer);
         writer.on('close', () => {
-          console.log('文件下载成功');
+          logger.info('文件下载成功');
           resolve(true);
         });
         //error
         writer.on('error', err => {
-          console.error('下载失败', err);
+          logger.error('下载失败', err);
           reject(err);
         });
         //进度条打印
         const totalLength = res.headers['content-length'];
         let currentLength = 0;
-        res.data.on('data', (chunk: any) => {
+        // 每5%打印一次
+        const step = (totalLength / 100) * 5;
+        res.on('data', (chunk: any) => {
           currentLength += chunk.length;
-          const percent = ((currentLength / totalLength) * 100).toFixed(2);
-          console.log(`下载进度：${percent}%`);
+          if (currentLength % step < chunk.length) {
+            const percent = ((currentLength / totalLength) * 100).toFixed(2);
+            logger.info(`下载进度：${percent}%`);
+          }
         });
       })
       .catch(err => {
-        console.error('下载失败', err);
+        logger.info('下载失败', err);
         reject(err);
       });
   });

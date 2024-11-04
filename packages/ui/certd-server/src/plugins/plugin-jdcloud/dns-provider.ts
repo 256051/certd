@@ -1,5 +1,6 @@
 import { AbstractDnsProvider, CreateRecordOptions, IsDnsProvider, RemoveRecordOptions } from '@certd/plugin-cert';
-import { Autowire, ILogger } from '@certd/pipeline';
+import { Autowire } from '@certd/pipeline';
+import { ILogger } from '@certd/basic';
 import { JDCloudAccess } from './access.js';
 function promisfy(func: any) {
   return (params: any, regionId: string) => {

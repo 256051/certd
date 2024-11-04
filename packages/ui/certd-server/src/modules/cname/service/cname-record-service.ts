@@ -4,7 +4,9 @@ import { Repository } from 'typeorm';
 import { BaseService, PlusService, ValidateException } from '@certd/lib-server';
 import { CnameRecordEntity, CnameRecordStatusType } from '../entity/cname-record.js';
 import { createDnsProvider, IDnsProvider, parseDomain } from '@certd/plugin-cert';
-import { cache, CnameProvider, http, logger, utils } from '@certd/pipeline';
+import { CnameProvider } from '@certd/pipeline';
+import { cache, http, logger, utils } from '@certd/basic';
+
 import { AccessService } from '../../pipeline/service/access-service.js';
 import { isDev } from '../../../utils/env.js';
 import { walkTxtRecord } from '@certd/acme-client';

@@ -5,7 +5,7 @@ import { Logger } from "log4js";
 import { IAccessService } from "../access/index.js";
 import { ICnameProxyService, IEmailService } from "../service/index.js";
 import { CancelError, IContext, PluginRequestHandleReq, RunnableCollection } from "../core/index.js";
-import { ILogger, logger, utils } from "@certd/basic";
+import { HttpRequestConfig, ILogger, logger, utils } from "@certd/basic";
 import { HttpClient } from "@certd/basic";
 import dayjs from "dayjs";
 import { IPluginConfigService } from "../service/config";
@@ -85,6 +85,8 @@ export type TaskInstanceContext = {
   userContext: IContext;
   //http请求客户端
   http: HttpClient;
+  //下载文件方法
+  download: (config: HttpRequestConfig, savePath: string) => Promise<void>;
   //文件存储
   fileStore: FileStore;
   //上一次执行结果状态

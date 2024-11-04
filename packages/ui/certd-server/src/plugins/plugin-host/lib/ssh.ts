@@ -2,7 +2,7 @@
 import ssh2, { ConnectConfig, ExecOptions } from 'ssh2';
 import path from 'path';
 import * as _ from 'lodash-es';
-import { ILogger } from '@certd/pipeline';
+import { ILogger } from '@certd/basic';
 import { SshAccess } from '../access/index.js';
 import stripAnsi from 'strip-ansi';
 import { SocksClient } from 'socks';

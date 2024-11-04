@@ -1,6 +1,10 @@
 import { Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
 import type { EmailSend } from '@certd/pipeline';
-import { IEmailService, isPlus, logger } from '@certd/pipeline';
+import { IEmailService } from '@certd/pipeline';
+
+import { logger } from '@certd/basic';
+import { isPlus } from '@certd/plus-core';
+
 import nodemailer from 'nodemailer';
 import type SMTPConnection from 'nodemailer/lib/smtp-connection';
 import { UserSettingsService } from '../../mine/service/user-settings-service.js';

@@ -1,5 +1,7 @@
 import { AbstractDnsProvider, CreateRecordOptions, IsDnsProvider, RemoveRecordOptions } from '@certd/plugin-cert';
-import { Autowire, ILogger } from '@certd/pipeline';
+import { Autowire } from '@certd/pipeline';
+import { ILogger } from '@certd/basic';
+
 import { DynadotAccess } from './access.js';
 import querystring from 'querystring';
 

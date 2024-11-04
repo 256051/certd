@@ -1,5 +1,7 @@
 import { AbstractDnsProvider, CreateRecordOptions, IsDnsProvider, RemoveRecordOptions } from '@certd/plugin-cert';
-import { Autowire, HttpClient, ILogger } from '@certd/pipeline';
+import { Autowire } from '@certd/pipeline';
+import { HttpClient, ILogger } from '@certd/basic';
+
 import { CloudflareAccess } from './access.js';
 
 export type CloudflareRecord = {

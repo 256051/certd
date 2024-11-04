@@ -1,6 +1,8 @@
 import * as _ from 'lodash-es';
 import { AbstractDnsProvider, CreateRecordOptions, IsDnsProvider, RemoveRecordOptions } from '@certd/plugin-cert';
-import { Autowire, ILogger } from '@certd/pipeline';
+import { Autowire } from '@certd/pipeline';
+import { ILogger } from '@certd/basic';
+
 import { HuaweiAccess } from '../access/index.js';
 import { ApiRequestOptions, HuaweiYunClient } from '@certd/lib-huawei';
 

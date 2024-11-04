@@ -4,7 +4,7 @@ import * as _ from 'lodash-es';
 import { PipelineService } from '../../../modules/pipeline/service/pipeline-service.js';
 import { UserSettingsService } from '../../../modules/mine/service/user-settings-service.js';
 import { getEmailSettings } from '../../../modules/sys/settings/fix.js';
-import { http, logger } from '@certd/pipeline';
+import { http, logger } from '@certd/basic';
 
 /**
  */

@@ -6,9 +6,11 @@ import { HistoryEntity } from '../entity/history.js';
 import { PipelineEntity } from '../entity/pipeline.js';
 import { HistoryDetail } from '../entity/vo/history-detail.js';
 import { HistoryLogService } from './history-log-service.js';
-import { FileItem, FileStore, logger, Pipeline, RunnableCollection } from '@certd/pipeline';
+import { FileItem, FileStore, Pipeline, RunnableCollection } from '@certd/pipeline';
+
 import dayjs from 'dayjs';
 import { DbAdapter } from '../../db/index.js';
+import { logger } from '@certd/basic';
 
 /**
  * 证书申请

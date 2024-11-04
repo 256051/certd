@@ -1,6 +1,7 @@
 import { ALL, Body, Controller, Inject, Post, Provide } from '@midwayjs/core';
 import { BaseController, PlusService, SysInstallInfo, SysSettingsService } from '@certd/lib-server';
-import { AppKey, logger } from '@certd/pipeline';
+import { AppKey } from '@certd/plus-core';
+import { logger } from '@certd/basic';
 
 /**
  */

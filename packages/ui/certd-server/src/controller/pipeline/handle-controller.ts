@@ -1,21 +1,11 @@
 import { ALL, Body, Controller, Inject, Post, Provide } from '@midwayjs/core';
 import { Constants } from '@certd/lib-server';
-import {
-  AccessRequestHandleReq,
-  http,
-  ITaskPlugin,
-  logger,
-  mergeUtils,
-  newAccess,
-  pluginRegistry,
-  PluginRequestHandleReq,
-  TaskInstanceContext,
-  utils,
-} from '@certd/pipeline';
+import { AccessRequestHandleReq, ITaskPlugin, newAccess, pluginRegistry, PluginRequestHandleReq, TaskInstanceContext } from '@certd/pipeline';
 import { BaseController } from '@certd/lib-server';
 import { AccessService } from '../../modules/pipeline/service/access-service.js';
 import { EmailService } from '../../modules/basic/service/email-service.js';
 import { AccessGetter } from '../../modules/pipeline/service/access-getter.js';
+import { http, HttpRequestConfig, logger, mergeUtils, utils } from '@certd/basic';
 
 @Provide()
 @Controller('/api/pi/handle')
@@ -64,12 +54,21 @@ export class HandleController extends BaseController {
 
     const accessGetter = new AccessGetter(userId, this.accessService.getById.bind(this.accessService));
 
+    const download = async (config: HttpRequestConfig, savePath: string) => {
+      await utils.download({
+        http,
+        logger,
+        config,
+        savePath,
+      });
+    };
     //@ts-ignore
     const taskCtx: TaskInstanceContext = {
       pipeline: undefined,
       step: undefined,
       lastStatus: undefined,
       http,
+      download,
       logger: logger,
       inputChanged: true,
       accessService: accessGetter,

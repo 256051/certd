@@ -12,7 +12,7 @@ import cors from '@koa/cors';
 import { GlobalExceptionMiddleware } from './middleware/global-exception.js';
 import { PreviewMiddleware } from './middleware/preview.js';
 import { AuthorityMiddleware } from './middleware/authority.js';
-import { logger } from '@certd/pipeline';
+import { logger } from '@certd/basic';
 import { ResetPasswdMiddleware } from './middleware/reset-passwd/middleware.js';
 import DefaultConfig from './config/config.default.js';
 import * as libServer from '@certd/lib-server';

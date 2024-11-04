@@ -1,4 +1,6 @@
-import { Autowire, HttpClient, ILogger } from '@certd/pipeline';
+import { Autowire } from '@certd/pipeline';
+import { HttpClient, ILogger } from '@certd/basic';
+
 import { AbstractDnsProvider, CreateRecordOptions, IsDnsProvider, RemoveRecordOptions } from '@certd/plugin-cert';
 import { TencentAccess } from '@certd/plugin-plus';
 

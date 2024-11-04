@@ -1,6 +1,6 @@
 import { TencentAccess } from '@certd/plugin-plus';
 import { CertInfo } from '@certd/plugin-cert';
-import { ILogger } from '@certd/pipeline';
+import { ILogger } from '@certd/basic';
 export class TencentSslClient {
   access: TencentAccess;
   logger: ILogger;

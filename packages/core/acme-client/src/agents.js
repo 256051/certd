@@ -50,8 +50,14 @@ class HttpError extends Error {
         super(error.message);
 
         this.message = error.message;
-        if (this.message && this.message.indexOf('ssl3_get_record:wrong version number') >= 0) {
-            this.message = 'http协议错误，服务端要求http协议，请检查是否使用了https请求';
+        const { message } = error;
+        if (message && typeof message === 'string') {
+            if (message.indexOf && message.indexOf('ssl3_get_record:wrong version number') >= 0) {
+                this.message = `${message}(http协议错误，服务端要求http协议，请检查是否使用了https请求)`;
+            }
+            else if (message.indexOf('getaddrinfo EAI_AGAIN')) {
+                this.message = `${message}(无法解析域名，请检查网络连接或dns配置)`;
+            }
         }
 
         this.name = error.name;

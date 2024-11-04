@@ -127,7 +127,7 @@ export class CertApplyLegoPlugin extends CertApplyBasePlugin {
     const savePathArgs = `--path "${saveDir}"`;
     const os_type = process.platform === "win32" ? "windows" : "linux";
     const legoDir = "./tools/lego";
-    const legoPath = path.resolve(legoDir, "lego");
+    const legoPath = path.resolve(legoDir, os_type === "windows" ? "lego.exe" : "lego");
     if (!fs.existsSync(legoPath)) {
       //解压缩
       const arch = process.arch;
@@ -136,20 +136,21 @@ export class CertApplyLegoPlugin extends CertApplyBasePlugin {
         platform = "arm64";
       }
       const LEGO_VERSION = process.env.LEGO_VERSION;
-      let legoZipFile = `${legoDir}/lego_v${LEGO_VERSION}_windows_${platform}.zip`;
+      let legoZipFileName = `lego_v${LEGO_VERSION}_windows_${platform}.zip`;
       if (os_type === "linux") {
-        legoZipFile = `${legoDir}/lego_v${LEGO_VERSION}_linux_${platform}.tar.gz`;
+        legoZipFileName = `lego_v${LEGO_VERSION}_linux_${platform}.tar.gz`;
       }
-      if (!fs.existsSync(legoZipFile)) {
-        this.logger.info(`lego文件不存在:${legoZipFile},准备下载`);
-        const downloadUrl = `https://github.com/go-acme/lego/releases/download/v${LEGO_VERSION}/lego_v${LEGO_VERSION}_${os_type}_${platform}.tar.gz`;
-        await this.ctx.utils.download(
-          this.http,
+      const legoZipFilePath = `${legoDir}/${legoZipFileName}`;
+      if (!fs.existsSync(legoZipFilePath)) {
+        this.logger.info(`lego文件不存在:${legoZipFilePath},准备下载`);
+        const downloadUrl = `https://github.com/go-acme/lego/releases/download/v${LEGO_VERSION}/${legoZipFileName}`;
+        await this.ctx.download(
           {
             url: downloadUrl,
             method: "GET",
+            logRes: false,
           },
-          legoZipFile
+          legoZipFilePath
         );
         this.logger.info("下载lego成功");
       }
@@ -157,7 +158,7 @@ export class CertApplyLegoPlugin extends CertApplyBasePlugin {
       if (os_type === "linux") {
         //tar是否存在
         await this.ctx.utils.sp.spawn({
-          cmd: `tar -zxvf ${legoZipFile} -C ${legoDir}/`,
+          cmd: `tar -zxvf ${legoZipFilePath} -C ${legoDir}/`,
         });
         await this.ctx.utils.sp.spawn({
           cmd: `chmod +x ${legoDir}/*`,
@@ -165,12 +166,12 @@ export class CertApplyLegoPlugin extends CertApplyBasePlugin {
         this.logger.info("解压lego成功");
       } else {
         const zip = new JSZip();
-        const data = fs.readFileSync(legoZipFile);
+        const data = fs.readFileSync(legoZipFilePath);
         const zipData = await zip.loadAsync(data);
         const files = Object.keys(zipData.files);
         for (const file of files) {
           const content = await zipData.files[file].async("nodebuffer");
-          fs.writeFileSync(legoPath, content);
+          fs.writeFileSync(`${legoDir}/${file}`, content);
         }
         this.logger.info("解压lego成功");
       }

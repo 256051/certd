@@ -2,7 +2,7 @@ import { Controller, Fields, Files, Get, Inject, Post, Provide, Query } from '@m
 import { BaseController, Constants, FileService, UploadFileItem, uploadTmpFileCacheKey } from '@certd/lib-server';
 import send from 'koa-send';
 import { nanoid } from 'nanoid';
-import { cache } from '@certd/pipeline';
+import { cache } from '@certd/basic';
 import { UploadFileInfo } from '@midwayjs/upload';
 
 /**

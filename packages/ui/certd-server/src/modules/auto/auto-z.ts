@@ -1,5 +1,7 @@
 import { App, Autoload, Config, Init, Inject, Scope, ScopeEnum } from '@midwayjs/core';
-import { getPlusInfo, isPlus, logger } from '@certd/pipeline';
+import { getPlusInfo, isPlus } from '@certd/plus-core';
+import { logger } from '@certd/basic';
+
 import { SysInstallInfo, SysSettingsService } from '@certd/lib-server';
 import { getVersion } from '../../utils/version.js';
 import dayjs from 'dayjs';

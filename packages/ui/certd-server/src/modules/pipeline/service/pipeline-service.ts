@@ -4,7 +4,7 @@ import { In, MoreThan, Repository } from 'typeorm';
 import { BaseService, NeedVIPException, PageReq, SysPublicSettings, SysSettingsService } from '@certd/lib-server';
 import { PipelineEntity } from '../entity/pipeline.js';
 import { PipelineDetail } from '../entity/vo/pipeline-detail.js';
-import { Executor, isPlus, logger, Pipeline, ResultType, RunHistory, UserInfo } from '@certd/pipeline';
+import { Executor, Pipeline, ResultType, RunHistory, UserInfo } from '@certd/pipeline';
 import { AccessService } from './access-service.js';
 import { DbStorage } from './db-storage.js';
 import { StorageService } from './storage-service.js';
@@ -21,6 +21,8 @@ import { CnameProxyService } from './cname-proxy-service.js';
 import { PluginConfigGetter } from '../../plugin/service/plugin-config-getter.js';
 import dayjs from 'dayjs';
 import { DbAdapter } from '../../db/index.js';
+import { isPlus } from '@certd/plus-core';
+import { logger } from '@certd/basic';
 
 const runningTasks: Map<string | number, Executor> = new Map();
 const freeCount = 10;

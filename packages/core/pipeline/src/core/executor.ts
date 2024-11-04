@@ -3,7 +3,7 @@ import { RunHistory, RunnableCollection } from "./run-history.js";
 import { AbstractTaskPlugin, PluginDefine, pluginRegistry, TaskInstanceContext, UserInfo } from "../plugin/index.js";
 import { ContextFactory, IContext } from "./context.js";
 import { IStorage } from "./storage.js";
-import { createAxiosService, hashUtils, logger, utils } from "@certd/basic";
+import { createAxiosService, hashUtils, HttpRequestConfig, logger, utils } from "@certd/basic";
 import { Logger } from "log4js";
 import { IAccessService } from "../access/index.js";
 import { RegistryItem } from "../registry/index.js";
@@ -290,11 +290,20 @@ export class Executor {
     }
 
     const http = createAxiosService({ logger: currentLogger });
+    const download = async (config: HttpRequestConfig, savePath: string) => {
+      await utils.download({
+        http,
+        logger: currentLogger,
+        config,
+        savePath,
+      });
+    };
     const taskCtx: TaskInstanceContext = {
       pipeline: this.pipeline,
       step,
       lastStatus,
       http,
+      download,
       logger: currentLogger,
       inputChanged,
       accessService: this.options.accessService,
