@@ -7,11 +7,11 @@ export type CnameProvider = {
   title: string;
 };
 export const CommonProviders = [
-  {
-    id: -1,
-    domain: 'cname.certd.com.cn',
-    title: '公共CNAME服务',
-  },
+  // {
+  //   id: -1,
+  //   domain: 'cname.certd.com.cn',
+  //   title: '公共CNAME服务',
+  // },
 ];
 
 export class CommonDnsProvider implements IDnsProvider {

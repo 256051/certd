@@ -85,7 +85,10 @@ export class CnameProviderService extends BaseService<CnameProviderEntity> {
     if (founds && founds.length > 0) {
       return founds[0];
     }
-    return CommonProviders[0] as CnameProviderEntity;
+    if (CommonProviders.length > 0) {
+      return CommonProviders[0] as CnameProviderEntity;
+    }
+    return null;
   }
 
   async list(req: ListReq): Promise<any[]> {
