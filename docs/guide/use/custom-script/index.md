@@ -6,11 +6,11 @@
 
 ## 2. 使用示例
 ```js
-const certPem = this.ctx.self.cert.crt
-const certKey = this.ctx.self.cert.key
+const certPem = ctx.self.cert.crt
+const certKey = ctx.self.cert.key
 
 //axios发起http请求上传证书
-const res = await this.ctx.http.request({
+const res = await ctx.http.request({
   url:"your_cert_deploy_url",
   method:"post",
   data:{
@@ -18,7 +18,7 @@ const res = await this.ctx.http.request({
     key : certKey
   }
 })
-this.ctx.logger.info("上传成功",res.data)
+ctx.logger.info("上传成功",res.data)
 
 
 ```
