@@ -1,5 +1,5 @@
 {
-    "compileOnSave": false,
+    "compileOnSave": true,
     "compilerOptions": {
         "module": "commonjs",
         "lib": ["es6"],
@@ -7,7 +7,7 @@
         "noEmit": false,
         "esModuleInterop": true,
         "baseUrl": ".",
-        "composite": true,
+        "composite": false,
         "paths": { "acme-client": ["."] }
     }
 }
