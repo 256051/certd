@@ -61,12 +61,34 @@ export class PlusService {
     const installInfo: SysInstallInfo = await this.sysSettingsService.getSetting(SysInstallInfo);
 
     const plusRequestService = await this.getPlusRequestService();
+
     return await verify({
-      subjectId: installInfo.siteId,
+      subjectId: plusRequestService.subjectId,
       license: licenseInfo.license,
       plusRequestService: plusRequestService,
       bindUrl: installInfo?.bindUrl,
     });
+  }
+
+  async register() {
+    const plusRequestService = await this.getPlusRequestService();
+    const licenseInfo: SysLicenseInfo = await this.sysSettingsService.getSetting(SysLicenseInfo);
+    const installInfo: SysInstallInfo = await this.sysSettingsService.getSetting(SysInstallInfo);
+    if (!licenseInfo?.license) {
+      //还没有license，注册一个
+      const res = await plusRequestService.requestWithoutSign({
+        url: '/activation/subject/register',
+        data: {
+          appKey: AppKey,
+          subjectId: installInfo.siteId,
+          installTime: installInfo.installTime,
+        },
+      });
+      if (res.license) {
+        await this.updateLicense(res.license);
+        logger.info('站点注册成功');
+      }
+    }
   }
 
   async bindUrl(subjectId: string, url: string) {
