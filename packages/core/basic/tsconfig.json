@@ -15,12 +15,12 @@
     "pretty": true,
     "declaration": true,
     "forceConsistentCasingInFileNames": true,
-    "typeRoots": [ "./typings", "./node_modules/@types"],
     "outDir": "dist",
     "rootDir": "src",
     "composite": true,
     "useDefineForClassFields": true,
     "strict": true,
+    "typeRoots": [ "./typings", "./node_modules/@types"],
 //    "sourceMap": true,
     "resolveJsonModule": true,
     "isolatedModules": false,
@@ -28,7 +28,6 @@
   },
   "include": [
     "src/**/*.ts",
-    "src/**/*.d.ts",
     "src/**/*.json"
   ],
   "exclude": [

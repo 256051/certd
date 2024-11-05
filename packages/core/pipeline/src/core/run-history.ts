@@ -1,7 +1,6 @@
 import { HistoryResult, Pipeline, ResultType, Runnable, RunnableMap, Stage, Step, Task } from "../dt/index.js";
 import _ from "lodash-es";
-import { buildLogger } from "@certd/basic";
-import { Logger } from "log4js";
+import { buildLogger, ILogger } from "@certd/basic";
 
 export type HistoryStatus = {
   result: HistoryResult;
@@ -25,7 +24,7 @@ export class RunHistory {
     [runnableId: string]: string[];
   } = {};
   _loggers: {
-    [runnableId: string]: Logger;
+    [runnableId: string]: ILogger;
   } = {};
   trigger!: RunTrigger;
 

@@ -1,7 +1,6 @@
 import { Registrable } from "../registry/index.js";
 import { FileItem, FormItemProps, Pipeline, Runnable, Step } from "../dt/index.js";
 import { FileStore } from "../core/file-store.js";
-import { Logger } from "log4js";
 import { IAccessService } from "../access/index.js";
 import { ICnameProxyService, IEmailService } from "../service/index.js";
 import { CancelError, IContext, PluginRequestHandleReq, RunnableCollection } from "../core/index.js";
@@ -68,7 +67,7 @@ export type TaskInstanceContext = {
   //步骤定义
   step: Step;
   //日志
-  logger: Logger;
+  logger: ILogger;
   //当前步骤输入参数跟上一次执行比较是否有变化
   inputChanged: boolean;
   //授权获取服务

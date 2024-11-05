@@ -7,11 +7,11 @@ export type CnameProvider = {
   title: string;
 };
 export const CommonProviders = [
-  // {
-  //   id: -1,
-  //   domain: 'cname.certd.com.cn',
-  //   title: '公共CNAME服务',
-  // },
+  {
+    id: -1,
+    domain: 'cname.certd.com.cn',
+    title: '公共CNAME服务',
+  },
 ];
 
 export class CommonDnsProvider implements IDnsProvider {
@@ -29,6 +29,9 @@ export class CommonDnsProvider implements IDnsProvider {
     if (!this.config.domain.endsWith(options.domain)) {
       throw new Error('cname服务域名不匹配');
     }
+
+    await this.plusService.register();
+
     const res = await this.plusService.requestWithoutSign({
       url: '/activation/certd/cname/recordCreate',
       data: {

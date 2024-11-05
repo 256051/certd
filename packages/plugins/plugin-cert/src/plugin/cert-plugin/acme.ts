@@ -3,9 +3,8 @@ import * as acme from "@certd/acme-client";
 import { ClientExternalAccountBindingOptions, UrlMapping } from "@certd/acme-client";
 import _ from "lodash-es";
 import { Challenge } from "@certd/acme-client/types/rfc8555";
-import { Logger } from "log4js";
 import { IContext } from "@certd/pipeline";
-import { utils } from "@certd/basic";
+import { ILogger, utils } from "@certd/basic";
 import { IDnsProvider, parseDomain } from "../../dns-provider/index.js";
 
 export type CnameVerifyPlan = {
@@ -37,7 +36,7 @@ export type SSLProvider = "letsencrypt" | "google" | "zerossl";
 export type PrivateKeyType = "rsa_1024" | "rsa_2048" | "rsa_3072" | "rsa_4096" | "ec_256" | "ec_384" | "ec_521";
 type AcmeServiceOptions = {
   userContext: IContext;
-  logger: Logger;
+  logger: ILogger;
   sslProvider: SSLProvider;
   eab?: ClientExternalAccountBindingOptions;
   skipLocalVerify?: boolean;
@@ -50,7 +49,7 @@ type AcmeServiceOptions = {
 export class AcmeService {
   options: AcmeServiceOptions;
   userContext: IContext;
-  logger: Logger;
+  logger: ILogger;
   sslProvider: SSLProvider;
   skipLocalVerify = true;
   eab?: ClientExternalAccountBindingOptions;

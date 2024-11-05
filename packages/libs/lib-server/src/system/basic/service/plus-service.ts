@@ -1,8 +1,7 @@
 import { Config, Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
-import { AppKey, PlusRequestService, verify } from '@certd/plus-core';
+import { AppKey, getPlusInfo, PlusRequestService, verify } from '@certd/plus-core';
 import { logger } from '@certd/basic';
 import { SysInstallInfo, SysLicenseInfo, SysSettingsService } from '../../settings/index.js';
-
 @Provide()
 @Scope(ScopeEnum.Singleton)
 export class PlusService {
@@ -79,5 +78,23 @@ export class PlusService {
         url,
       },
     });
+  }
+
+  async register() {
+    if (getPlusInfo().secret) {
+      return;
+    }
+    const plusRequestService = await this.getPlusRequestService();
+    const installInfo: SysInstallInfo = await this.sysSettingsService.getSetting(SysInstallInfo);
+    const res = await plusRequestService.requestWithoutSign({
+      url: '/activation/subject/register',
+      method: 'post',
+      data: {
+        appKey: AppKey,
+        subjectId: installInfo.siteId,
+        installTime: installInfo.installTime,
+      },
+    });
+    await this.updateLicense(res.license);
   }
 }

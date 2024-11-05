@@ -47,7 +47,7 @@ onMounted(() => {
       description: e.message
     });
   });
-  iframeClient.register("getSubjectInfo", async (req) => {
+  iframeClient.register("getSubjectInfo", async (req: any) => {
     const subjectInfo: SubjectInfo = {
       subjectId: settingStore.installInfo.siteId,
       installTime: settingStore.installInfo.installTime,
@@ -57,7 +57,7 @@ onMounted(() => {
     return subjectInfo;
   });
 
-  let preBindUserId = null;
+  let preBindUserId: any = null;
   iframeClient.register("preBindUser", async (req) => {
     const userId = req.data.userId;
     preBindUserId = userId;
@@ -75,7 +75,7 @@ onMounted(() => {
 
   iframeClient.register("updateLicense", async (req) => {
     await api.UpdateLicense(req.data);
-    await userStore.reInit();
+    await settingStore.init();
     notification.success({
       message: "更新成功",
       description: "专业版/商业版已激活"

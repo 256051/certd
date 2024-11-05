@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { Modal, notification, theme } from "ant-design-vue";
-import _, { cloneDeep } from "lodash-es";
+import _ from "lodash-es";
 // @ts-ignore
 import { LocalStorage } from "/src/utils/util.storage";
 
@@ -9,8 +9,6 @@ import { HeaderMenus, PlusInfo, SiteEnv, SiteInfo, SysInstallInfo, SysPublicSett
 import { useUserStore } from "/@/store/modules/user";
 import { mitter } from "/@/utils/util.mitt";
 import { env } from "/@/utils/util.env";
-import { toRef } from "vue";
-import { util } from "/@/utils";
 
 export type ThemeToken = {
   token: {
@@ -122,8 +120,10 @@ export const useSettingStore = defineStore({
       };
       return vipLabelMap[this.plusInfo?.vipType || "free"];
     },
+    // @ts-ignore
     getHeaderMenus() {
-      return this.headerMenus?.menus || [];
+      // @ts-ignore
+      return this.headerMenus?.menus || { menus: [] };
     }
   },
   actions: {

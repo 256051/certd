@@ -3,8 +3,7 @@ import { RunHistory, RunnableCollection } from "./run-history.js";
 import { AbstractTaskPlugin, PluginDefine, pluginRegistry, TaskInstanceContext, UserInfo } from "../plugin/index.js";
 import { ContextFactory, IContext } from "./context.js";
 import { IStorage } from "./storage.js";
-import { createAxiosService, hashUtils, HttpRequestConfig, logger, utils } from "@certd/basic";
-import { Logger } from "log4js";
+import { createAxiosService, hashUtils, HttpRequestConfig, ILogger, logger, utils } from "@certd/basic";
 import { IAccessService } from "../access/index.js";
 import { RegistryItem } from "../registry/index.js";
 import { Decorator } from "../decorator/index.js";
@@ -28,7 +27,7 @@ export class Executor {
   pipeline: Pipeline;
   runtime!: RunHistory;
   contextFactory: ContextFactory;
-  logger: Logger;
+  logger: ILogger;
   pipelineContext!: IContext;
   currentStatusMap!: RunnableCollection;
   lastStatusMap!: RunnableCollection;

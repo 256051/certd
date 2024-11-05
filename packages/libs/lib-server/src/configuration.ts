@@ -6,6 +6,6 @@ import { logger } from '@certd/basic';
 })
 export class LibServerConfiguration {
   async onReady(container: IMidwayContainer) {
-    logger.info('lib start');
+    logger.info('lib start...');
   }
 }

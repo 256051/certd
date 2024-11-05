@@ -17,5 +17,9 @@
     "rimraf": "^5.0.5",
     "rollup": "^3.7.4"
   },
+  "devDependencies": {
+    "tslib": "^2.8.1",
+    "prettier": "^2.8.8"
+  },
   "gitHead": "1d8515bce0b3ce5ece84db53ca57cfbd0c3f4d5a"
 }

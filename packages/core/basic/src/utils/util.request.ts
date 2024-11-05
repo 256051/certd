@@ -25,7 +25,7 @@ export class HttpError extends Error {
     if (message && typeof message === 'string') {
       if (message.indexOf && message.indexOf('ssl3_get_record:wrong version number') >= 0) {
         this.message = `${message}(http协议错误，服务端要求http协议，请检查是否使用了https请求)`;
-      } else if (message.indexOf('getaddrinfo EAI_AGAIN')) {
+      } else if (message.indexOf('getaddrinfo EAI_AGAIN') >= 0) {
         this.message = `${message}(无法解析域名，请检查网络连接或dns配置，更换docker-compose.yaml中dns配置)`;
       }
     }

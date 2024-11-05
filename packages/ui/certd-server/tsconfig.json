@@ -26,5 +26,9 @@
     "dist",
     "node_modules",
     "test"
-  ]
+  ],
+  "include": [
+    "src/**/*.ts",
+    "node_modules/@certd/**/src/**/*.ts"
+  ],
 }
