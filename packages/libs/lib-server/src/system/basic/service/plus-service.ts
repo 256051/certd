@@ -1,7 +1,8 @@
 import { Config, Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
-import { AppKey, getPlusInfo, PlusRequestService, verify } from '@certd/plus-core';
+import { AppKey, PlusRequestService, verify } from '@certd/plus-core';
 import { logger } from '@certd/basic';
 import { SysInstallInfo, SysLicenseInfo, SysSettingsService } from '../../settings/index.js';
+
 @Provide()
 @Scope(ScopeEnum.Singleton)
 export class PlusService {
@@ -69,6 +70,18 @@ export class PlusService {
     });
   }
 
+  async bindUrl(subjectId: string, url: string) {
+    const plusRequestService = await this.getPlusRequestService();
+    return await plusRequestService.request({
+      url: '/activation/subject/urlBind',
+      data: {
+        subjectId,
+        appKey: AppKey,
+        url,
+      },
+    });
+  }
+
   async register() {
     const plusRequestService = await this.getPlusRequestService();
     const licenseInfo: SysLicenseInfo = await this.sysSettingsService.getSetting(SysLicenseInfo);
@@ -88,35 +101,5 @@ export class PlusService {
         logger.info('站点注册成功');
       }
     }
-  }
-
-  async bindUrl(subjectId: string, url: string) {
-    const plusRequestService = await this.getPlusRequestService();
-    return await plusRequestService.request({
-      url: '/activation/subject/urlBind',
-      data: {
-        subjectId,
-        appKey: AppKey,
-        url,
-      },
-    });
-  }
-
-  async register() {
-    if (getPlusInfo().secret) {
-      return;
-    }
-    const plusRequestService = await this.getPlusRequestService();
-    const installInfo: SysInstallInfo = await this.sysSettingsService.getSetting(SysInstallInfo);
-    const res = await plusRequestService.requestWithoutSign({
-      url: '/activation/subject/register',
-      method: 'post',
-      data: {
-        appKey: AppKey,
-        subjectId: installInfo.siteId,
-        installTime: installInfo.installTime,
-      },
-    });
-    await this.updateLicense(res.license);
   }
 }
