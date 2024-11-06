@@ -1,7 +1,8 @@
 import { Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
-import { PlusRequestService } from '@certd/plus-core';
-import { logger } from '@certd/basic';
+import { AppKey, PlusRequestService } from '@certd/plus-core';
+import { http, HttpRequestConfig, logger } from '@certd/basic';
 import { SysInstallInfo, SysLicenseInfo, SysSettingsService } from '../../settings/index.js';
+import { merge } from 'lodash-es';
 
 @Provide()
 @Scope(ScopeEnum.Singleton)
@@ -65,9 +66,46 @@ export class PlusService {
     }
   }
 
+  async userPreBind(userId: number) {
+    const plusRequestService = await this.getPlusRequestService();
+    await plusRequestService.requestWithoutSign({
+      url: '/activation/subject/preBind',
+      method: 'POST',
+      data: {
+        userId,
+        appKey: AppKey,
+        subjectId: this.getSubjectId(),
+      },
+    });
+  }
+
+  async sendEmail(email: any) {
+    const plusRequestService = await this.getPlusRequestService();
+    await plusRequestService.request({
+      url: '/activation/emailSend',
+      data: {
+        subject: email.subject,
+        text: email.content,
+        to: email.receivers,
+      },
+    });
+  }
+
   async getAccessToken() {
     const plusRequestService = await this.getPlusRequestService();
     await this.register();
     return await plusRequestService.getAccessToken();
+  }
+
+  async requestWithToken(config: HttpRequestConfig) {
+    const plusRequestService = await this.getPlusRequestService();
+    const token = await this.getAccessToken();
+    merge(config, {
+      baseURL: plusRequestService.getBaseURL(),
+      headers: {
+        Authorization: token,
+      },
+    });
+    return await http.request(config);
   }
 }
