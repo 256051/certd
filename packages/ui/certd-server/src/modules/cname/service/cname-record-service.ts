@@ -4,11 +4,11 @@ import { Repository } from 'typeorm';
 import { BaseService, PlusService, ValidateException } from '@certd/lib-server';
 import { CnameRecordEntity, CnameRecordStatusType } from '../entity/cname-record.js';
 import { createDnsProvider, IDnsProvider, parseDomain } from '@certd/plugin-cert';
-import { CnameProvider } from '@certd/pipeline';
+import { CnameProvider, CnameRecord } from '@certd/pipeline';
 import { cache, http, logger, utils } from '@certd/basic';
 
 import { AccessService } from '../../pipeline/service/access-service.js';
-import { isDev } from '../../../utils/env.js';
+import { isDev } from '@certd/basic';
 import { walkTxtRecord } from '@certd/acme-client';
 import { CnameProviderService } from './cname-provider-service.js';
 import { CnameProviderEntity } from '../entity/cname-provider.js';
@@ -128,8 +128,17 @@ export class CnameRecordService extends BaseService<CnameRecordEntity> {
   // }
 
   async getWithAccessByDomain(domain: string, userId: number) {
-    const record = await this.getByDomain(domain, userId);
-    record.cnameProvider.access = await this.accessService.getAccessById(record.cnameProvider.accessId, false);
+    const record: CnameRecord = await this.getByDomain(domain, userId);
+    if (record.cnameProvider.id > 0) {
+      //自定义cname服务
+      record.cnameProvider.access = await this.accessService.getAccessById(record.cnameProvider.accessId, false);
+    } else {
+      record.commonDnsProvider = new CommonDnsProvider({
+        config: record.cnameProvider,
+        plusService: this.plusService,
+      });
+    }
+
     return record;
   }
 
@@ -158,7 +167,7 @@ export class CnameRecordService extends BaseService<CnameRecordEntity> {
       cnameProvider: {
         ...provider,
       } as CnameProvider,
-    };
+    } as CnameRecord;
   }
 
   /**
@@ -184,16 +193,19 @@ export class CnameRecordService extends BaseService<CnameRecordEntity> {
         startTime: new Date().getTime(),
       };
     }
-    let ttl = 60 * 60 * 15 * 1000;
+    let ttl = 15 * 60 * 1000;
     if (isDev()) {
       ttl = 30 * 1000;
     }
-    const recordValue = bean.recordValue.substring(0, bean.recordValue.indexOf('.'));
+    const testRecordValue = 'certd-cname-verify';
 
     const buildDnsProvider = async () => {
       const cnameProvider = await this.cnameProviderService.info(bean.cnameProviderId);
       if (cnameProvider == null) {
         throw new ValidateException(`CNAME服务:${bean.cnameProviderId} 已被删除，请修改CNAME记录，重新选择CNAME服务`);
+      }
+      if (cnameProvider.disabled === true) {
+        throw new Error(`CNAME服务:${bean.cnameProviderId} 已被禁用`);
       }
 
       if (cnameProvider.id < 0) {
@@ -218,16 +230,16 @@ export class CnameRecordService extends BaseService<CnameRecordEntity> {
         return true;
       }
       if (value.startTime + ttl < new Date().getTime()) {
-        logger.warn(`cname验证超时,停止检查,${bean.domain} ${recordValue}`);
+        logger.warn(`cname验证超时,停止检查,${bean.domain} ${testRecordValue}`);
         clearInterval(value.intervalId);
-        await this.updateStatus(bean.id, 'cname');
+        await this.updateStatus(bean.id, 'timeout');
         return false;
       }
 
       const originDomain = parseDomain(bean.domain);
       const fullDomain = `${bean.hostRecord}.${originDomain}`;
 
-      logger.info(`检查CNAME配置 ${fullDomain} ${recordValue}`);
+      logger.info(`检查CNAME配置 ${fullDomain} ${testRecordValue}`);
 
       // const txtRecords = await dns.promises.resolveTxt(fullDomain);
       // if (txtRecords.length) {
@@ -240,10 +252,10 @@ export class CnameRecordService extends BaseService<CnameRecordEntity> {
         logger.error(`获取TXT记录失败，${e.message}`);
       }
       logger.info(`检查到TXT记录 ${JSON.stringify(records)}`);
-      const success = records.includes(recordValue);
+      const success = records.includes(testRecordValue);
       if (success) {
         clearInterval(value.intervalId);
-        logger.info(`检测到CNAME配置,修改状态 ${fullDomain} ${recordValue}`);
+        logger.info(`检测到CNAME配置,修改状态 ${fullDomain} ${testRecordValue}`);
         await this.updateStatus(bean.id, 'valid');
         value.pass = true;
         cache.delete(cacheKey);
@@ -257,8 +269,8 @@ export class CnameRecordService extends BaseService<CnameRecordEntity> {
         } catch (e) {
           logger.error(`删除CNAME的校验DNS记录失败， ${e.message}，req:${JSON.stringify(value.recordReq)}，recordRes:${JSON.stringify(value.recordRes)}`, e);
         }
+        return success;
       }
-      return success;
     };
 
     if (value.validating) {
@@ -278,7 +290,7 @@ export class CnameRecordService extends BaseService<CnameRecordEntity> {
       fullRecord: fullRecord,
       hostRecord: hostRecord,
       type: 'TXT',
-      value: recordValue,
+      value: testRecordValue,
     };
     const dnsProvider = await buildDnsProvider();
     const recordRes = await dnsProvider.createRecord(req);

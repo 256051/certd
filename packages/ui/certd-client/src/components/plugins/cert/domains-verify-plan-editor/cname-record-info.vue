@@ -20,7 +20,7 @@
           <cname-tip :record="cnameRecord"></cname-tip>
         </template>
 
-        <div v-else class="helper">不要删除CNAME</div>
+        <div v-else class="helper" title="后续自动申请证书需要">不要删除CNAME</div>
       </td>
     </tr>
   </tbody>
@@ -37,7 +37,8 @@ const statusDict = dict({
     { label: "待设置CNAME", value: "cname", color: "warning" },
     { label: "验证中", value: "validating", color: "blue" },
     { label: "验证成功", value: "valid", color: "green" },
-    { label: "验证失败", value: "failed", color: "red" }
+    { label: "验证失败", value: "failed", color: "red" },
+    { label: "验证超时", value: "timeout", color: "red" }
   ]
 });
 
@@ -67,12 +68,24 @@ function onRecordChange() {
   });
 }
 
+let refreshIntervalId: any = null;
 async function doRefresh() {
   if (!props.domain) {
     return;
   }
   cnameRecord.value = await GetByDomain(props.domain);
   onRecordChange();
+
+  if (cnameRecord.value.status === "validating") {
+    if (!refreshIntervalId) {
+      refreshIntervalId = setInterval(async () => {
+        await doRefresh();
+      }, 9000);
+    }
+  } else {
+    clearInterval(refreshIntervalId);
+    refreshIntervalId = null;
+  }
 }
 
 watch(

@@ -171,7 +171,8 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
               { label: "待设置CNAME", value: "cname", color: "warning" },
               { label: "验证中", value: "validating", color: "blue" },
               { label: "验证成功", value: "valid", color: "green" },
-              { label: "验证失败", value: "failed", color: "red" }
+              { label: "验证失败", value: "failed", color: "red" },
+              { label: "验证超时", value: "timeout", color: "red" }
             ]
           }),
           addForm: {
@@ -204,7 +205,13 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
                   if (res === true) {
                     message.success("验证成功");
                     row.status = "valid";
+                  } else if (res === false) {
+                    message.success("验证超时");
+                    row.status = "timeout";
+                  } else {
+                    message.success("开始验证，请耐心等待");
                   }
+                  await crudExpose.doRefresh();
                 } catch (e: any) {
                   console.error(e);
                   message.error(e.message);

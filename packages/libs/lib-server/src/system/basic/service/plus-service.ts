@@ -1,6 +1,6 @@
 import { Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
 import { AppKey, PlusRequestService } from '@certd/plus-core';
-import { http, HttpRequestConfig, logger } from '@certd/basic';
+import { cache, http, HttpRequestConfig, logger } from '@certd/basic';
 import { SysInstallInfo, SysLicenseInfo, SysSettingsService } from '../../settings/index.js';
 import { merge } from 'lodash-es';
 
@@ -75,7 +75,7 @@ export class PlusService {
       data: {
         userId,
         appKey: AppKey,
-        subjectId: this.getSubjectId(),
+        subjectId: plusRequestService.getSubjectId(),
       },
     });
   }
@@ -93,9 +93,19 @@ export class PlusService {
   }
 
   async getAccessToken() {
+    const cacheKey = 'certd:subject:access_token';
+    const token = cache.get(cacheKey);
+    if (token) {
+      return token;
+    }
     const plusRequestService = await this.getPlusRequestService();
     await this.register();
-    return await plusRequestService.getAccessToken();
+    const res = await plusRequestService.getAccessToken();
+    const ttl = res.expiresIn * 1000 - Date.now().valueOf();
+    cache.set(cacheKey, res.accessToken, {
+      ttl,
+    });
+    return res.accessToken;
   }
 
   async requestWithToken(config: HttpRequestConfig) {
@@ -103,10 +113,15 @@ export class PlusService {
     const token = await this.getAccessToken();
     merge(config, {
       baseURL: plusRequestService.getBaseURL(),
+      method: 'post',
       headers: {
-        Authorization: token,
+        Authorization: `Berear ${token}`,
       },
     });
-    return await http.request(config);
+    const res = await http.request(config);
+    if (res.code !== 0) {
+      throw new Error(res.message);
+    }
+    return res.data;
   }
 }

@@ -378,10 +378,14 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
       } else {
         for (const key in domainVerifyPlan.cnameVerifyPlan) {
           const cnameRecord = await this.ctx.cnameProxyService.getByDomain(key);
+          let dnsProvider = cnameRecord.commonDnsProvider;
+          if (cnameRecord.cnameProvider.id > 0) {
+            dnsProvider = await this.createDnsProvider(cnameRecord.cnameProvider.dnsProviderType, cnameRecord.cnameProvider.access);
+          }
           cnameVerifyPlan[key] = {
             domain: cnameRecord.cnameProvider.domain,
             fullRecord: cnameRecord.recordValue,
-            dnsProvider: await this.createDnsProvider(cnameRecord.cnameProvider.dnsProviderType, cnameRecord.cnameProvider.access),
+            dnsProvider,
           };
         }
       }

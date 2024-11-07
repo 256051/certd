@@ -1,10 +1,10 @@
 import { CreateRecordOptions, DnsProviderContext, IDnsProvider, RemoveRecordOptions } from '@certd/plugin-cert';
 import { PlusService } from '@certd/lib-server';
 
-export type CnameProvider = {
+export type CommonCnameProvider = {
   id: number;
   domain: string;
-  title: string;
+  title?: string;
 };
 export const CommonProviders = [
   {
@@ -16,10 +16,10 @@ export const CommonProviders = [
 
 export class CommonDnsProvider implements IDnsProvider {
   ctx: DnsProviderContext;
-  config: CnameProvider;
+  config: CommonCnameProvider;
   plusService: PlusService;
 
-  constructor(opts: { config: CnameProvider; plusService: PlusService }) {
+  constructor(opts: { config: CommonCnameProvider; plusService: PlusService }) {
     this.config = opts.config;
     this.plusService = opts.plusService;
   }
@@ -34,8 +34,9 @@ export class CommonDnsProvider implements IDnsProvider {
 
     const res = await this.plusService.requestWithToken({
       url: '/activation/certd/cname/recordCreate',
+      method: 'post',
       data: {
-        subjectId: this.plusService.getSubjectId(),
+        subjectId: await this.plusService.getSubjectId(),
         domain: options.domain,
         hostRecord: options.hostRecord,
         recordValue: options.value,
@@ -47,12 +48,13 @@ export class CommonDnsProvider implements IDnsProvider {
   async removeRecord(options: RemoveRecordOptions<any>) {
     const res = await this.plusService.requestWithToken({
       url: '/activation/certd/cname/recordRemove',
+      method: 'post',
       data: {
-        subjectId: this.plusService.getSubjectId(),
+        subjectId: await this.plusService.getSubjectId(),
         domain: options.recordReq.domain,
         hostRecord: options.recordReq.hostRecord,
         recordValue: options.recordReq.value,
-        recordId: options.recordRes.id,
+        recordId: options.recordRes.recordId,
         providerId: this.config.id,
       },
     });

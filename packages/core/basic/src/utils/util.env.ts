@@ -1,3 +1,4 @@
 export function isDev() {
-  return process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'local';
+  const nodeEnv = process.env.NODE_ENV || '';
+  return nodeEnv === 'development' || nodeEnv.indexOf('local') >= 0;
 }
