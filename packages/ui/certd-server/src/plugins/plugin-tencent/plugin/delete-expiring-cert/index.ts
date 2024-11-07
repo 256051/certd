@@ -94,14 +94,15 @@ export class TencentDeleteExpiringCert extends AbstractPlusTaskPlugin {
     };
     const res = await sslClient.DescribeCertificates(params);
     let certificates = res?.Certificates;
-    if (!certificates && !certificates.length) {
+    if (!certificates && certificates.length === 0) {
       this.logger.info('没有找到证书');
       return;
     }
 
+    const lastDay = dayjs().add(this.expiringDays, 'day');
     certificates = certificates.filter((item: any) => {
       const endTime = item.CertEndTime;
-      return dayjs(endTime).add(this.expiringDays, 'day').isBefore(dayjs());
+      return dayjs(endTime).isBefore(lastDay);
     });
     for (const certificate of certificates) {
       this.logger.info(`证书ID:${certificate.CertificateId}, 过期时间:${certificate.CertEndTime}，Alias:${certificate.Alias}，证书域名:${certificate.Domain}`);
