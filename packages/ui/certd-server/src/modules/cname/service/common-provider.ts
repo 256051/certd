@@ -32,7 +32,7 @@ export class CommonDnsProvider implements IDnsProvider {
 
     await this.plusService.register();
 
-    const res = await this.plusService.requestWithoutSign({
+    const res = await this.plusService.requestWithToken({
       url: '/activation/certd/cname/recordCreate',
       data: {
         subjectId: this.plusService.getSubjectId(),
@@ -45,7 +45,7 @@ export class CommonDnsProvider implements IDnsProvider {
     return res;
   }
   async removeRecord(options: RemoveRecordOptions<any>) {
-    const res = await this.plusService.requestWithoutSign({
+    const res = await this.plusService.requestWithToken({
       url: '/activation/certd/cname/recordRemove',
       data: {
         subjectId: this.plusService.getSubjectId(),

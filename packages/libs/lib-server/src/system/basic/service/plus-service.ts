@@ -1,22 +1,35 @@
-import { Config, Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
-import { AppKey, PlusRequestService, verify } from '@certd/plus-core';
-import { logger } from '@certd/basic';
+import { Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
+import { AppKey, PlusRequestService } from '@certd/plus-core';
+import { http, HttpRequestConfig, logger } from '@certd/basic';
 import { SysInstallInfo, SysLicenseInfo, SysSettingsService } from '../../settings/index.js';
+import { merge } from 'lodash-es';
 
 @Provide()
 @Scope(ScopeEnum.Singleton)
 export class PlusService {
   @Inject()
   sysSettingsService: SysSettingsService;
-  @Config('plus.server.baseUrls')
-  plusServerBaseUrls: string[];
+
+  plusRequestService: PlusRequestService;
 
   async getPlusRequestService() {
-    const subjectId = await this.getSubjectId();
-    return new PlusRequestService({
-      plusServerBaseUrls: this.plusServerBaseUrls,
-      subjectId,
-    });
+    if (this.plusRequestService) {
+      return this.plusRequestService;
+    }
+    const installInfo: SysInstallInfo = await this.sysSettingsService.getSetting(SysInstallInfo);
+
+    const subjectId = installInfo.siteId;
+    const bindUrl = installInfo.bindUrl;
+    const installTime = installInfo.installTime;
+    const saveLicense = async (license: string) => {
+      let licenseInfo: SysLicenseInfo = await this.sysSettingsService.getSetting(SysLicenseInfo);
+      if (!licenseInfo) {
+        licenseInfo = new SysLicenseInfo();
+      }
+      licenseInfo.license = license;
+      await this.sysSettingsService.saveSetting(licenseInfo);
+    };
+    return new PlusRequestService({ subjectId, bindUrl, installTime, saveLicense });
   }
 
   async getSubjectId() {
@@ -24,82 +37,75 @@ export class PlusService {
     return installInfo.siteId;
   }
 
-  async requestWithoutSign(config: any) {
+  async active(code: string) {
     const plusRequestService = await this.getPlusRequestService();
-    return await plusRequestService.requestWithoutSign(config);
-  }
-  async request(config: any) {
-    const plusRequestService = await this.getPlusRequestService();
-    return await plusRequestService.request(config);
-  }
-
-  async active(formData: { code: any; appKey: string; subjectId: string }) {
-    const plusRequestService = await this.getPlusRequestService();
-    return await plusRequestService.requestWithoutSign({
-      url: '/activation/active',
-      method: 'post',
-      data: formData,
-    });
+    return await plusRequestService.active(code);
   }
 
   async updateLicense(license: string) {
-    let licenseInfo: SysLicenseInfo = await this.sysSettingsService.getSetting(SysLicenseInfo);
-    if (!licenseInfo) {
-      licenseInfo = new SysLicenseInfo();
-    }
-    licenseInfo.license = license;
-    await this.sysSettingsService.saveSetting(licenseInfo);
-    const verifyRes = await this.verify();
-    if (!verifyRes.isPlus) {
-      const message = verifyRes.message || '授权码校验失败';
-      logger.error(message);
-      throw new Error(message);
-    }
+    const plusRequestService = await this.getPlusRequestService();
+    await plusRequestService.updateLicense({ license });
   }
   async verify() {
-    const licenseInfo: SysLicenseInfo = await this.sysSettingsService.getSetting(SysLicenseInfo);
-    const installInfo: SysInstallInfo = await this.sysSettingsService.getSetting(SysInstallInfo);
-
     const plusRequestService = await this.getPlusRequestService();
-
-    return await verify({
-      subjectId: plusRequestService.subjectId,
-      license: licenseInfo.license,
-      plusRequestService: plusRequestService,
-      bindUrl: installInfo?.bindUrl,
-    });
+    const licenseInfo: SysLicenseInfo = await this.sysSettingsService.getSetting(SysLicenseInfo);
+    await plusRequestService.verify({ license: licenseInfo.license });
   }
 
-  async bindUrl(subjectId: string, url: string) {
+  async bindUrl(url: string) {
     const plusRequestService = await this.getPlusRequestService();
-    return await plusRequestService.request({
-      url: '/activation/subject/urlBind',
-      data: {
-        subjectId,
-        appKey: AppKey,
-        url,
-      },
-    });
+    return await plusRequestService.bindUrl(url);
   }
 
   async register() {
     const plusRequestService = await this.getPlusRequestService();
     const licenseInfo: SysLicenseInfo = await this.sysSettingsService.getSetting(SysLicenseInfo);
-    const installInfo: SysInstallInfo = await this.sysSettingsService.getSetting(SysInstallInfo);
-    if (!licenseInfo?.license) {
-      //还没有license，注册一个
-      const res = await plusRequestService.requestWithoutSign({
-        url: '/activation/subject/register',
-        data: {
-          appKey: AppKey,
-          subjectId: installInfo.siteId,
-          installTime: installInfo.installTime,
-        },
-      });
-      if (res.license) {
-        await this.updateLicense(res.license);
-        logger.info('站点注册成功');
-      }
+    if (!licenseInfo.license) {
+      await plusRequestService.register();
+      logger.info('站点注册成功');
     }
+  }
+
+  async userPreBind(userId: number) {
+    const plusRequestService = await this.getPlusRequestService();
+    await plusRequestService.requestWithoutSign({
+      url: '/activation/subject/preBind',
+      method: 'POST',
+      data: {
+        userId,
+        appKey: AppKey,
+        subjectId: this.getSubjectId(),
+      },
+    });
+  }
+
+  async sendEmail(email: any) {
+    const plusRequestService = await this.getPlusRequestService();
+    await plusRequestService.request({
+      url: '/activation/emailSend',
+      data: {
+        subject: email.subject,
+        text: email.content,
+        to: email.receivers,
+      },
+    });
+  }
+
+  async getAccessToken() {
+    const plusRequestService = await this.getPlusRequestService();
+    await this.register();
+    return await plusRequestService.getAccessToken();
+  }
+
+  async requestWithToken(config: HttpRequestConfig) {
+    const plusRequestService = await this.getPlusRequestService();
+    const token = await this.getAccessToken();
+    merge(config, {
+      baseURL: plusRequestService.getBaseURL(),
+      headers: {
+        Authorization: token,
+      },
+    });
+    return await http.request(config);
   }
 }
