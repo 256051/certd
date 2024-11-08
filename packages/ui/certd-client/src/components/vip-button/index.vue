@@ -12,7 +12,7 @@
   </div>
 </template>
 <script lang="tsx" setup>
-import { computed, reactive } from "vue";
+import { computed, reactive, ref } from "vue";
 import dayjs from "dayjs";
 import { message, Modal } from "ant-design-vue";
 import * as api from "./api";
@@ -123,6 +123,58 @@ async function doActive() {
 const computedSiteId = computed(() => settingStore.installInfo?.siteId);
 const [modal, contextHolder] = Modal.useModal();
 const userStore = useUserStore();
+
+function goAccount() {
+  Modal.destroyAll();
+  router.push("/sys/account");
+}
+
+function openTrialModal() {
+  Modal.destroyAll();
+
+  modal.confirm({
+    title: "7天专业版试用获取",
+    okText: "立即去绑定账号",
+    onOk() {
+      goAccount();
+    },
+    width: 600,
+    content: () => {
+      return (
+        <div class="flex-col mt-10 mb-10">
+          <div>感谢您对开源项目的支持</div>
+          <div>绑定袖手账号后，即可获取7天专业版试用</div>
+        </div>
+      );
+    }
+  });
+}
+
+function openStarModal() {
+  Modal.destroyAll();
+  const goGithub = () => {
+    window.open("https://github.com/certd/certd/");
+  };
+
+  modal.confirm({
+    title: "7天专业版试用获取",
+    okText: "立即去Star",
+    onOk() {
+      goGithub();
+      openTrialModal();
+    },
+    width: 600,
+    content: () => {
+      return (
+        <div class="flex mt-10 mb-10">
+          <div>可以先请您帮忙点个star吗？感谢感谢</div>
+          <img class="ml-5" src="https://img.shields.io/github/stars/certd/certd?logo=github" />
+        </div>
+      );
+    }
+  });
+}
+
 function openUpgrade() {
   if (!userStore.isAdmin) {
     message.info("仅限管理员操作");
@@ -149,9 +201,8 @@ function openUpgrade() {
       privilege: ["可加VIP群，需求优先实现", "证书流水线数量无限制", "免配置发邮件功能", "支持宝塔、易盾、群晖、1Panel、cdnfly等部署插件"],
       trial: {
         title: "7天试用",
-        message: "绑定账号即可获得7天专业版试用，点击立即前往绑定账号",
         click: () => {
-          goAccount();
+          openStarModal();
         }
       }
     },
@@ -161,11 +212,6 @@ function openUpgrade() {
       privilege: ["拥有专业版所有特权", "允许商用，可修改logo、标题", "数据统计", "插件管理", "多用户无限制", "支持用户支付（敬请期待）"]
     }
   };
-
-  function goAccount() {
-    router.push("/sys/account");
-    modalRef.destroy();
-  }
 
   const modalRef = modal.confirm({
     title,
