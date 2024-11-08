@@ -91,24 +91,6 @@ const formState = reactive({
   code: ""
 });
 
-const vipTypeDefine = {
-  free: {
-    title: "基础版",
-    type: "free",
-    privilege: ["证书申请功能无限制", "证书流水线数量10条", "常用的主机、cdn等部署插件"]
-  },
-  plus: {
-    title: "专业版",
-    type: "plus",
-    privilege: ["可加VIP群，需求优先实现", "证书流水线数量无限制", "免配置发邮件功能", "支持宝塔、易盾、群晖、1Panel、cdnfly等部署插件"]
-  },
-  comm: {
-    title: "商业版",
-    type: "comm",
-    privilege: ["拥有专业版所有特权", "允许商用，可修改logo、标题", "数据统计", "插件管理", "多用户无限制", "支持用户支付（敬请期待）"]
-  }
-};
-
 const router = useRouter();
 async function doActive() {
   if (!formState.code) {
@@ -155,6 +137,36 @@ function openUpgrade() {
     title = "续期专业版/升级商业版";
   }
 
+  const vipTypeDefine = {
+    free: {
+      title: "基础版",
+      type: "free",
+      privilege: ["证书申请功能无限制", "证书流水线数量10条", "常用的主机、cdn等部署插件"]
+    },
+    plus: {
+      title: "专业版",
+      type: "plus",
+      privilege: ["可加VIP群，需求优先实现", "证书流水线数量无限制", "免配置发邮件功能", "支持宝塔、易盾、群晖、1Panel、cdnfly等部署插件"],
+      trial: {
+        title: "7天试用",
+        message: "绑定账号即可获得7天专业版试用，点击立即前往绑定账号",
+        click: () => {
+          goAccount();
+        }
+      }
+    },
+    comm: {
+      title: "商业版",
+      type: "comm",
+      privilege: ["拥有专业版所有特权", "允许商用，可修改logo、标题", "数据统计", "插件管理", "多用户无限制", "支持用户支付（敬请期待）"]
+    }
+  };
+
+  function goAccount() {
+    router.push("/sys/account");
+    modalRef.destroy();
+  }
+
   const modalRef = modal.confirm({
     title,
     async onOk() {
@@ -193,7 +205,16 @@ function openUpgrade() {
         slots.push(
           <a-col span={8}>
             <div class={vipBlockClass}>
-              <h3 class="block-header">{item.title}</h3>
+              <h3 class="block-header">
+                <span>{item.title}</span>
+                {item.trial && (
+                  <span class="trial">
+                    <a-tooltip title={item.trial.message}>
+                      <a onClick={item.trial.click}>{item.trial.title}</a>
+                    </a-tooltip>
+                  </span>
+                )}
+              </h3>
               <ul>
                 {item.privilege.map((p: string) => (
                   <li>
@@ -205,10 +226,6 @@ function openUpgrade() {
             </div>
           </a-col>
         );
-      }
-      function goAccount() {
-        router.push("/sys/account");
-        modalRef.destroy();
       }
       return (
         <div class="mt-10 mb-10 vip-active-modal">
@@ -270,6 +287,12 @@ function openUpgrade() {
     }
     .block-header {
       padding: 0px;
+      display: flex;
+      justify-content: space-between;
+      .trial {
+        font-size: 12px;
+        font-wight: 400;
+      }
     }
   }
 

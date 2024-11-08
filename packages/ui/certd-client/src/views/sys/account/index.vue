@@ -36,9 +36,9 @@ const iframeSrcRef = computed(() => {
 
 type SubjectInfo = {
   subjectId: string;
-  installTime?: number;
+  installAt?: number;
   vipType?: string;
-  expiresTime?: number;
+  expiresAt?: number;
 };
 onMounted(() => {
   const iframeClient = new IframeClient(iframeRef.value, (e: any) => {
@@ -50,9 +50,9 @@ onMounted(() => {
   iframeClient.register("getSubjectInfo", async (req: any) => {
     const subjectInfo: SubjectInfo = {
       subjectId: settingStore.installInfo.siteId,
-      installTime: settingStore.installInfo.installTime,
+      installAt: settingStore.installInfo.installTime,
       vipType: settingStore.plusInfo.vipType || "free",
-      expiresTime: settingStore.plusInfo.expireTime
+      expiresAt: settingStore.plusInfo.expireTime
     };
     return subjectInfo;
   });
