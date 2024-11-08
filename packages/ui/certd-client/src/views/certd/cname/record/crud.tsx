@@ -126,7 +126,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             component: {
               onDictChange: ({ form, dict }: any) => {
                 if (!form.cnameProviderId) {
-                  const list = dict.data.filter((item) => {
+                  const list = dict.data.filter((item: any) => {
                     return !item.disabled;
                   });
                   let item = list.find((item: any) => item.isDefault);
