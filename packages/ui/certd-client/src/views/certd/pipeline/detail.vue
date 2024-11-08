@@ -15,6 +15,7 @@ import { useRoute } from "vue-router";
 import { PipelineDetail, PipelineOptions, PluginGroups, RunHistory } from "./pipeline/type";
 import { TourProps } from "ant-design-vue";
 import { LocalStorage } from "/@/utils/util.storage";
+import { useUserStore } from "/@/store/modules/user";
 
 defineOptions({
   name: "PipelineDetail"
@@ -124,7 +125,11 @@ function useTour() {
 
 const { tour, tourHandleOpen } = useTour();
 
+const userStore = useUserStore();
 async function onLoaded(pipeline: PipelineDetail) {
+  if (pipeline.pipeline?.userId !== userStore.getUserInfo?.id) {
+    return;
+  }
   const count = LocalStorage.get("pipeline-count") ?? 0;
   if (count > 1) {
     return;
