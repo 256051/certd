@@ -1,7 +1,7 @@
 // src/decorator/memoryCache.decorator.ts
 import { AccessContext, AccessDefine, AccessInputDefine } from "./api.js";
 import { Decorator } from "../decorator/index.js";
-import _ from "lodash-es";
+import * as _ from "lodash-es";
 import { accessRegistry } from "./registry.js";
 import { http, logger, utils } from "@certd/basic";
 

@@ -1,7 +1,7 @@
 import { Registrable } from "../registry/index.js";
 import { FormItemProps } from "../dt/index.js";
 import { HttpClient, ILogger, utils } from "@certd/basic";
-import _ from "lodash-es";
+import * as _ from "lodash-es";
 import { AccessRequestHandleReq } from "../core";
 
 export type AccessInputDefine = FormItemProps & {

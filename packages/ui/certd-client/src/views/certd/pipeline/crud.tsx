@@ -10,7 +10,7 @@ import { env } from "/@/utils/util.env";
 import { useUserStore } from "/@/store/modules/user";
 import dayjs from "dayjs";
 import { useSettingStore } from "/@/store/modules/settings";
-import _ from "lodash-es";
+import * as _ from "lodash-es";
 import { useModal } from "/@/use/use-modal";
 import CertView from "./cert-view.vue";
 import { eachStages } from "./utils";

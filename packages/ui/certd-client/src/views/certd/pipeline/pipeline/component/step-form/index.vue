@@ -108,7 +108,7 @@
 <script lang="tsx">
 import { message, Modal } from "ant-design-vue";
 import { computed, inject, Ref, ref, watch, provide } from "vue";
-import _ from "lodash-es";
+import * as _ from "lodash-es";
 import { nanoid } from "nanoid";
 import { CopyOutlined } from "@ant-design/icons-vue";
 import { PluginGroups } from "/@/views/certd/pipeline/pipeline/type";
