@@ -266,6 +266,7 @@ onMounted(async () => {
           overflow: hidden;
           text-overflow: ellipsis;
           word-break: keep-all;
+          white-space: nowrap;
         }
       }
     }
