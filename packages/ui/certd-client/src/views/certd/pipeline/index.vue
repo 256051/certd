@@ -14,13 +14,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted, onActivated } from "vue";
 import { useCrud, useFs } from "@fast-crud/fast-crud";
 import createCrudOptions from "./crud";
 import { useExpose } from "@fast-crud/fast-crud";
 import PiCertdForm from "./certd-form/index.vue";
 export default defineComponent({
-  name: "PipelineManager1",
+  name: "PipelineManager",
   components: { PiCertdForm },
   setup() {
     const certdFormRef = ref();
@@ -31,6 +31,10 @@ export default defineComponent({
 
     // 页面打开后获取列表数据
     onMounted(() => {
+      crudExpose.doRefresh();
+    });
+
+    onActivated(() => {
       crudExpose.doRefresh();
     });
 
