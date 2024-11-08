@@ -126,7 +126,13 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             component: {
               onDictChange: ({ form, dict }: any) => {
                 if (!form.cnameProviderId) {
-                  const item = dict.data.find((item: any) => item.isDefault && !item.disabled);
+                  const list = dict.data.filter((item) => {
+                    return !item.disabled;
+                  });
+                  let item = list.find((item: any) => item.isDefault);
+                  if (!item && list.length > 0) {
+                    item = list[0];
+                  }
                   if (item) {
                     form.cnameProviderId = item.id;
                   }
@@ -146,9 +152,12 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
                   crudExpose.getFormWrapperRef().close();
                 };
                 return (
-                  <router-link to={"/sys/cname/provider"} onClick={closeForm}>
-                    前往设置CNAME服务
-                  </router-link>
+                  <div>
+                    默认提供公共CNAME服务，您还可以
+                    <router-link to={"/sys/cname/provider"} onClick={closeForm}>
+                      自定义CNAME服务
+                    </router-link>
+                  </div>
                 );
               }
             }
