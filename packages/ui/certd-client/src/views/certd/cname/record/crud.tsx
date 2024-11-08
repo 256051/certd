@@ -154,6 +154,8 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             }
           },
           column: {
+            width: 120,
+            align: "center",
             cellRender({ value }) {
               if (value < 0) {
                 return <a-tag color={"green"}>公共CNAME</a-tag>;
