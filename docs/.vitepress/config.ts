@@ -57,7 +57,7 @@ export default defineConfig({
     nav: [
       { text: "首页", link: "/" },
       { text: "指南", link: "/guide/" },
-      { text: "Demo体验", link: "https://certd.handsfree.work" }
+      { text: "Demo体验", link: "https://certd.handfree.work" }
     ],
     sidebar: {
       "/guide/": [

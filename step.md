@@ -5,7 +5,7 @@
 > 申请证书->部署证书->设置定时执行->设置邮件通知
 
 ## 准备工作
-1. 已部署CertD服务（可官方Demo自助注册体验 https://certd.handsfree.work/ ）
+1. 已部署CertD服务（可官方Demo自助注册体验 https://certd.handfree.work/ ）
 2. 注册一个域名（支持阿里云万网、腾讯云DnsPod、华为云）
 3. 准备好以上DNS解析服务商的AccessKey 和 AccessSecret
 4. 证书要部署的目标（可选，单纯当成证书申请工具用也不错）
