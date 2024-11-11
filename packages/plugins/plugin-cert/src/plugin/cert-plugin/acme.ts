@@ -1,7 +1,7 @@
 // @ts-ignore
 import * as acme from "@certd/acme-client";
 import { ClientExternalAccountBindingOptions, UrlMapping } from "@certd/acme-client";
-import _ from "lodash-es";
+import * as _ from "lodash-es";
 import { Challenge } from "@certd/acme-client/types/rfc8555";
 import { IContext } from "@certd/pipeline";
 import { ILogger, utils } from "@certd/basic";

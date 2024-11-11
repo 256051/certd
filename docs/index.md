@@ -18,7 +18,7 @@ hero:
       link: /guide/tutorial.md
     - theme: alt
       text: demo体验
-      link: https://certd.handsfree.work
+      link: https://certd.handfree.work
 
 features:
   - title: 全自动申请证书

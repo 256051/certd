@@ -3,7 +3,7 @@ import { utils } from "@certd/basic";
 
 import type { CertInfo, CnameVerifyPlan, DomainsVerifyPlan, PrivateKeyType, SSLProvider } from "./acme.js";
 import { AcmeService } from "./acme.js";
-import _ from "lodash-es";
+import * as _ from "lodash-es";
 import { createDnsProvider, DnsProviderContext, IDnsProvider } from "../../dns-provider/index.js";
 import { CertReader } from "./cert-reader.js";
 import { CertApplyBasePlugin } from "./base.js";

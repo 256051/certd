@@ -1,5 +1,5 @@
 import { request } from "/src/api/service";
-import _ from "lodash-es";
+import * as _ from "lodash-es";
 import { PluginConfigBean, PluginSysSetting } from "/@/views/sys/plugin/api";
 const apiPrefix = "/pi/plugin";
 

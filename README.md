@@ -22,7 +22,7 @@ Certd 是一个免费全自动申请和自动部署更新SSL证书的管理系�
 
 官方Demo地址，自助注册后体验    
 
-https://certd.handsfree.work/
+https://certd.handfree.work/
 
 > 注意数据将不定期清理，不定期停止定时任务，生产使用请自行部署    
 > 包含敏感信息，务必自己本地部署进行生产使用

@@ -260,7 +260,7 @@ import PiNotificationForm from "./component/notification-form/index.vue";
 import PiTaskView from "./component/task-view/index.vue";
 import PiStatusShow from "./component/status-show.vue";
 import VDraggable from "vuedraggable";
-import _ from "lodash-es";
+import * as _ from "lodash-es";
 import { message, Modal, notification, TourProps } from "ant-design-vue";
 import { nanoid } from "nanoid";
 import { PipelineDetail, PipelineOptions, PluginGroups, RunHistory } from "./type";

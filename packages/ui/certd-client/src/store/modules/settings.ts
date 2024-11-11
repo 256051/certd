@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { Modal, notification, theme } from "ant-design-vue";
-import _ from "lodash-es";
+import * as _ from "lodash-es";
 // @ts-ignore
 import { LocalStorage } from "/src/utils/util.storage";
 

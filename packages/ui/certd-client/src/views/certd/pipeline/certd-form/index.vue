@@ -6,7 +6,7 @@
 import { useColumns, useExpose } from "@fast-crud/fast-crud";
 import createCrudOptions from "./crud.jsx";
 import { ref } from "vue";
-import _ from "lodash-es";
+import * as _ from "lodash-es";
 import * as api from "../api.plugin";
 import { PluginGroup, PluginGroups } from "/@/views/certd/pipeline/pipeline/type";
 export default {

@@ -1,5 +1,5 @@
 import { HistoryResult, Pipeline, ResultType, Runnable, RunnableMap, Stage, Step, Task } from "../dt/index.js";
-import _ from "lodash-es";
+import * as _ from "lodash-es";
 import { buildLogger, ILogger } from "@certd/basic";
 
 export type HistoryStatus = {
