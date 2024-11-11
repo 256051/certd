@@ -35,6 +35,9 @@ export class HttpError extends Error {
 
     this.status = error.response?.status;
     this.statusText = error.response?.statusText || error.code;
+    if (!this.message) {
+      this.message = error.code;
+    }
     this.request = {
       baseURL: error.config?.baseURL,
       url: error.config?.url,
