@@ -4,6 +4,7 @@
   "description": "midway with flyway, sql upgrade way ",
   "private": false,
   "type": "module",
+  "module": "./dist/index.js",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {

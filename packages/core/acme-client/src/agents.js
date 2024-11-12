@@ -1,17 +1,25 @@
-const nodeHttp = require('node:http');
-const https = require('node:https');
-const { HttpProxyAgent } = require('http-proxy-agent');
-const { HttpsProxyAgent } = require('https-proxy-agent');
-const { log } = require('./logger');
-
+import nodeHttp from 'node:http'
+import https from 'https'
+import {HttpProxyAgent} from "http-proxy-agent";
+import {HttpsProxyAgent} from "https-proxy-agent";
+import {log} from './logger.js'
+import {merge} from 'lodash-es'
 function createAgent(opts = {}) {
+    opts = merge(
+        {
+            autoSelectFamily: true,
+            autoSelectFamilyAttemptTimeout: 2000,
+        },
+        opts,
+    );
+
     let httpAgent;
-    let
-        httpsAgent;
+    let httpsAgent;
     const httpProxy = opts.httpProxy || process.env.HTTP_PROXY || process.env.http_proxy;
     if (httpProxy) {
         log(`acme use httpProxy:${httpProxy}`);
         httpAgent = new HttpProxyAgent(httpProxy, opts);
+        merge(httpAgent.options, opts);
     }
     else {
         httpAgent = new nodeHttp.Agent(opts);
@@ -20,6 +28,7 @@ function createAgent(opts = {}) {
     if (httpsProxy) {
         log(`acme use httpsProxy:${httpsProxy}`);
         httpsAgent = new HttpsProxyAgent(httpsProxy, opts);
+        merge(httpsAgent.options, opts);
     }
     else {
         httpsAgent = new https.Agent(opts);
@@ -102,7 +111,7 @@ class HttpError extends Error {
     }
 }
 
-module.exports = {
+export   {
     setGlobalProxy,
     createAgent,
     getGlobalAgents,

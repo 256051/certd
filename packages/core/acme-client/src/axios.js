@@ -1,12 +1,10 @@
 /**
  * Axios instance
  */
-const axios = require('axios');
-const { parseRetryAfterHeader } = require('./util');
-const { log } = require('./logger');
-const pkg = require('./../package.json');
-const Agents = require('./agents');
-
+import axios from 'axios';
+import { parseRetryAfterHeader } from './util.js';
+import { log } from './logger.js';
+import * as Agents from './agents.js';
 const { AxiosError } = axios;
 
 /**
@@ -16,7 +14,7 @@ const { AxiosError } = axios;
 const instance = axios.create();
 
 /* Default User-Agent */
-instance.defaults.headers.common['User-Agent'] = `node-${pkg.name}/${pkg.version}`;
+instance.defaults.headers.common['User-Agent'] = `@certd/acme-client`;
 
 /* Default ACME settings */
 instance.defaults.acmeSettings = {
@@ -144,4 +142,4 @@ instance.interceptors.response.use(null, async (error) => {
  * Export instance
  */
 
-module.exports = instance;
+export default instance;
