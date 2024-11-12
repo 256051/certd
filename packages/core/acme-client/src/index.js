@@ -32,14 +32,13 @@ export const directory = {
  */
 
 export * as crypto from './crypto/index.js'
-export * from './crypto/forge.js'
+export * as forge from './crypto/forge.js'
 
 /**
  * Axios
  */
 
 export *  from './axios.js'
-export * as agents from './agents.js'
 /**
  * Logger
  */

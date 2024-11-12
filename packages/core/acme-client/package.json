@@ -18,6 +18,7 @@
         "types"
     ],
     "dependencies": {
+        "@certd/basic": "^1.27.2",
         "@peculiar/x509": "^1.11.0",
         "asn1js": "^3.0.5",
         "axios": "^1.7.2",
