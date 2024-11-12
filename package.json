@@ -14,6 +14,7 @@
   },
   "scripts": {
     "start": "lerna bootstrap --hoist",
+    "devb": "lerna run dev-build",
     "i-all": "lerna link && lerna exec npm install  ",
     "publish": "npm run prepublishOnly2  && lerna publish --force-publish=pro/plus-core --conventional-commits --create-release github && npm run afterpublishOnly && npm run commitAll",
     "afterpublishOnly": "npm run copylogs && time /t >build.trigger && git add ./build.trigger && git commit -m \"build: trigger build image\" && TIMEOUT /T 10 && git push",
