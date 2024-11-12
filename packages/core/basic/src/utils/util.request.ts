@@ -207,6 +207,14 @@ export type CreateAgentOptions = {
   httpsProxy?: string;
 } & nodeHttp.AgentOptions;
 export function createAgent(opts: CreateAgentOptions = {}) {
+  opts = merge(
+    {
+      autoSelectFamily: true,
+      autoSelectFamilyAttemptTimeout: 2000,
+    },
+    opts
+  );
+
   let httpAgent, httpsAgent;
   const httpProxy = opts.httpProxy || process.env.HTTP_PROXY || process.env.http_proxy;
   if (httpProxy) {
