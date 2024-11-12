@@ -57,9 +57,9 @@ export class HttpError extends Error {
       data: error.response?.data,
     };
 
-    // const { stack, cause } = error;
-    // this.cause = cause;
-    // this.stack = stack;
+    const { stack, cause } = error;
+    this.cause = cause;
+    this.stack = stack;
     delete error.response;
     delete error.config;
     delete error.request;

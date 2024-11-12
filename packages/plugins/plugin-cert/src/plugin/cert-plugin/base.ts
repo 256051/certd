@@ -74,16 +74,16 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
   })
   renewDays!: number;
 
-  @TaskInput({
-    title: "强制更新",
-    component: {
-      name: "a-switch",
-      vModel: "checked",
-    },
-    order: 100,
-    helper: "是否强制重新申请证书",
-  })
-  forceUpdate!: string;
+  // @TaskInput({
+  //   title: "强制更新",
+  //   component: {
+  //     name: "a-switch",
+  //     vModel: "checked",
+  //   },
+  //   order: 100,
+  //   helper: "是否强制重新申请证书",
+  // })
+  // forceUpdate!: string;
 
   @TaskInput({
     title: "成功后邮件通知",
@@ -221,11 +221,11 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
    * 是否更新证书
    */
   async condition() {
-    if (this.forceUpdate) {
-      this.logger.info("强制更新证书选项已勾选，准备申请新证书");
-      this.logger.warn("申请完之后，切记取消强制更新，避免申请过多证书。");
-      return null;
-    }
+    // if (this.forceUpdate) {
+    //   this.logger.info("强制更新证书选项已勾选，准备申请新证书");
+    //   this.logger.warn("申请完之后，切记取消强制更新，避免申请过多证书。");
+    //   return null;
+    // }
 
     let inputChanged = this.ctx.inputChanged;
     if (inputChanged) {

@@ -5,6 +5,7 @@ export type StatusEnumItem = {
   icon: string;
   spin?: boolean;
   iconSpin?: boolean;
+  iconColor?: string;
 };
 export type StatusEnumType = {
   [key: string]: StatusEnumItem;

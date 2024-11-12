@@ -13,7 +13,8 @@ services:
       - "7001:7001"
       #  ↓↓↓↓ ---------------------------------------------------------- https端口，可以根据实际情况，是否暴露相关服务端口
       - "7002:7002"
-
+    networks:
+      - ip6net
 #   #↓↓↓↓ -------------------------------------------------------------- 如果出现getaddrinfo ENOTFOUND等错误，可以尝试设置dns配置
 #    dns:
 #      - 223.5.5.5
@@ -44,4 +45,9 @@ services:
 #      - certd_typeorm_dataSource_default_password=yourpasswd   # 密码
 #      - certd_typeorm_dataSource_default_database=certd        # 数据库名
 
-
+networks:
+  ip6net:
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: 2001:db8::/64

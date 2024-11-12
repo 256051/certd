@@ -88,11 +88,11 @@ class HttpError extends Error {
         if (url) {
             this.message = `${this.message}:${url}`;
         }
-        // const { stack, cause } = error;
-        delete this.cause;
-        delete this.stack;
-        // this.cause = cause;
-        // this.stack = stack;
+        const { stack, cause } = error;
+        // delete this.cause;
+        // delete this.stack;
+        this.cause = cause;
+        this.stack = stack;
         delete error.stack;
         delete error.cause;
         delete error.response;

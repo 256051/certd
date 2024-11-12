@@ -116,10 +116,14 @@ export class RunHistory {
   }
 
   logError(runnable: Runnable, e: Error) {
-    // delete e.stack;
-    // delete e.cause;
-    const errorInfo = runnable.runnableType === "step" ? e : e.message;
-    this._loggers[runnable.id].error(`[${runnable.runnableType}] [${runnable.title}]<id:${runnable.id}> ：`, errorInfo);
+    const { cause, stack } = e;
+    delete e.stack;
+    delete e.cause;
+    if (runnable.runnableType === "step") {
+      this._loggers[runnable.id].error(`[${runnable.runnableType}] [${runnable.title}]<id:${runnable.id}> ：`, e, stack, cause);
+    } else {
+      this._loggers[runnable.id].error(`[${runnable.runnableType}] [${runnable.title}]<id:${runnable.id}> ：`, e.message);
+    }
   }
 
   finally(runnable: Runnable) {
