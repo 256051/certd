@@ -86,7 +86,7 @@ class HttpError extends Error {
             url = (error.config.baseURL || '') + error.config.url;
         }
         if (url) {
-            this.message = `${this.message}:${url}`;
+            this.message = `${this.message} 【${url}】`;
         }
         const { stack, cause } = error;
         // delete this.cause;

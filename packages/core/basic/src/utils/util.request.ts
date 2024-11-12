@@ -50,7 +50,7 @@ export class HttpError extends Error {
       url = (error.config?.baseURL || '') + url;
     }
     if (url) {
-      this.message = `${this.message}  : url=${url}`;
+      this.message = `${this.message} 【${url}】`;
     }
 
     this.response = {
