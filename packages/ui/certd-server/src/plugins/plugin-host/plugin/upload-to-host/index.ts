@@ -67,14 +67,14 @@ export class UploadCertToHostPlugin extends AbstractTaskPlugin {
   })
   derPath!: string;
 
-  // @TaskInput({
-  //   title: 'jks证书保存路径',
-  //   helper: '需要有写入权限，路径要包含证书文件名，例如：/tmp/cert.jks',
-  //   component: {
-  //     placeholder: '/root/deploy/nginx/cert.jks',
-  //   },
-  //   rules: [{ type: 'filepath' }],
-  // })
+  @TaskInput({
+    title: 'jks证书保存路径',
+    helper: '需要有写入权限，路径要包含证书文件名，例如：/tmp/cert.jks',
+    component: {
+      placeholder: '/root/deploy/nginx/cert.jks',
+    },
+    rules: [{ type: 'filepath' }],
+  })
   jksPath!: string;
 
   @TaskInput({
