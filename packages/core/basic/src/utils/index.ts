@@ -7,6 +7,8 @@ export * from './util.promise.js';
 export * from './util.hash.js';
 export * from './util.merge.js';
 export * from './util.cache.js';
+export * from './util.string.js';
+import { stringUtils } from './util.string.js';
 import sleep from './util.sleep.js';
 import { http, download } from './util.request.js';
 
@@ -38,4 +40,5 @@ export const utils = {
   dayjs,
   domain: domainUtils,
   options: optionsUtils,
+  string: stringUtils,
 };

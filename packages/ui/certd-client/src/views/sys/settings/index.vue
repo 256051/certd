@@ -47,13 +47,14 @@
   </fs-page>
 </template>
 
-<script setup lang="ts">
+<script setup lang="tsx">
 import { reactive, ref } from "vue";
 import * as api from "./api";
 import { SysSettings } from "./api";
 import { notification } from "ant-design-vue";
 import { useSettingStore } from "/@/store/modules/settings";
 import { merge } from "lodash-es";
+import { util } from "/@/utils";
 
 defineOptions({
   name: "SysSettings"
@@ -111,7 +112,25 @@ async function testProxy() {
   testProxyLoading.value = true;
   try {
     const res = await api.TestProxy();
-    const content = `测试google:${res.google === true ? "成功" : "失败" + res.google}，测试百度:${res.baidu === true ? "成功" : "失败:" + res.baidu}`;
+    let success = true;
+    if (res.google !== true || res.baidu !== true) {
+      success = false;
+    }
+    const content = () => {
+      return (
+        <div>
+          <div>Google: {res.google === true ? "成功" : util.maxLength(res.google)}</div>
+          <div>Baidu: {res.baidu === true ? "成功" : util.maxLength(res.google)}</div>
+        </div>
+      );
+    };
+    if (!success) {
+      notification.error({
+        message: "测试失败",
+        description: content
+      });
+      return;
+    }
     notification.success({
       message: "测试完成",
       description: content
