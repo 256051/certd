@@ -39,6 +39,15 @@
           </div>
           <div class="helper">一般这两个代理填一样的</div>
         </a-form-item>
+
+        <a-form-item label="双栈网络" :name="['private', 'dnsResultOrder']">
+          <a-select v-model:value="formState.private.dnsResultOrder">
+            <a-select-option value="verbatim">默认</a-select-option>
+            <a-select-option value="ipv4first">IPV4优先</a-select-option>
+            <a-select-option value="ipv6first">IPV6优先</a-select-option>
+          </a-select>
+          <div class="helper">如果选择IPv6优先，需要在docker-compose.yaml中启用ipv6</div>
+        </a-form-item>
         <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
           <a-button :loading="saveLoading" type="primary" html-type="submit">保存</a-button>
         </a-form-item>

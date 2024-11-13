@@ -13,6 +13,7 @@ export type SysPublicSetting = {
 export type SysPrivateSetting = {
   httpProxy?: string;
   httpsProxy?: string;
+  dnsResultOrder?: string;
 };
 
 export const SettingKeys = {
