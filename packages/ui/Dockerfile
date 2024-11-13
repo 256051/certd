@@ -17,7 +17,7 @@ RUN apk add --no-cache openjdk8
 WORKDIR /app/
 COPY --from=builder /workspace/certd-server/ /app/
 
-ENV LEGO_VERSION=4.19.2
+ENV LEGO_VERSION 4.19.2
 ENV LEGO_DOWNLOAD_DIR /app/tools/lego
 RUN mkdir -p $LEGO_DOWNLOAD_DIR
 
@@ -31,9 +31,9 @@ RUN ARCH=$(uname -m) && \
         echo "Unsupported architecture: $ARCH"; \
     fi
 
-ENV TZ=Asia/Shanghai
-ENV NODE_ENV=production
-ENV MIDWAY_SERVER_ENV=production
+ENV TZ Asia/Shanghai
+ENV NODE_ENV production
+ENV MIDWAY_SERVER_ENV production
 CMD ["npm", "run","start"]
 
 
