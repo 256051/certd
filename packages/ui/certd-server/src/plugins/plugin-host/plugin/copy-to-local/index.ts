@@ -30,7 +30,7 @@ export class CopyCertToLocalPlugin extends AbstractTaskPlugin {
 
   @TaskInput({
     title: '证书类型',
-    helper: '支持pem、pfx、der、jks格式',
+    helper: '要部署的证书格式，支持pem、pfx、der、jks格式',
     component: {
       name: 'a-select',
       options: [
