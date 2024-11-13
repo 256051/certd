@@ -230,7 +230,7 @@ export default {
       }
       const { doComputed } = useCompute();
       const currentPlugin = doComputed(() => {
-        return currentPluginDefine.value;
+        return currentPluginDefine.value || {};
       }, getContext);
       const changeCurrentPlugin = async (step: any) => {
         const stepType = step.type;

@@ -348,6 +348,7 @@ export default function ({ crudExpose, context: { certdFormRef } }: CreateCrudOp
           type: "link",
           search: {
             show: true,
+            title: "关键字",
             component: {
               name: "a-input"
             }

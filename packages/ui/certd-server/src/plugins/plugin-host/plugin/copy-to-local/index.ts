@@ -18,11 +18,46 @@ import path from 'path';
 })
 export class CopyCertToLocalPlugin extends AbstractTaskPlugin {
   @TaskInput({
+    title: '域名证书',
+    helper: '请选择前置任务输出的域名证书',
+    component: {
+      name: 'output-selector',
+      from: ['CertApply', 'CertApplyLego'],
+    },
+    required: true,
+  })
+  cert!: CertInfo;
+
+  @TaskInput({
+    title: '证书类型',
+    helper: '支持pem、pfx、der、jks格式',
+    component: {
+      name: 'a-select',
+      options: [
+        { value: 'pem', label: 'pem，用于Nginx等大部分应用' },
+        { value: 'pfx', label: 'pfx，一般用于IIS' },
+        { value: 'der', label: 'der，一般用于Apache' },
+        { value: 'jks', label: 'jks，一般用于JAVA应用' },
+      ],
+    },
+    required: true,
+  })
+  certType!: string;
+
+  @TaskInput({
     title: '证书保存路径',
     helper: '全链证书，路径要包含文件名' + '\n推荐使用相对路径，将写入与数据库同级目录，无需映射，例如：tmp/cert.pem',
     component: {
       placeholder: 'tmp/full_chain.pem',
     },
+    mergeScript: `
+      return {
+        show: ctx.compute(({form})=>{
+          return form.certType === 'pem';
+        })
+      }
+    `,
+    required: true,
     rules: [{ type: 'filepath' }],
   })
   crtPath!: string;
@@ -32,6 +67,14 @@ export class CopyCertToLocalPlugin extends AbstractTaskPlugin {
     component: {
       placeholder: 'tmp/cert.key',
     },
+    mergeScript: `
+      return {
+        show: ctx.compute(({form})=>{
+          return form.certType === 'pem';
+        })
+      }
+    `,
+    required: true,
     rules: [{ type: 'filepath' }],
   })
   keyPath!: string;
@@ -42,6 +85,13 @@ export class CopyCertToLocalPlugin extends AbstractTaskPlugin {
     component: {
       placeholder: '/root/deploy/nginx/intermediate.pem',
     },
+    mergeScript: `
+      return {
+        show: ctx.compute(({form})=>{
+          return form.certType === 'pem';
+        })
+      }
+    `,
     rules: [{ type: 'filepath' }],
   })
   icPath!: string;
@@ -52,6 +102,14 @@ export class CopyCertToLocalPlugin extends AbstractTaskPlugin {
     component: {
       placeholder: 'tmp/cert.pfx',
     },
+    mergeScript: `
+      return {
+        show: ctx.compute(({form})=>{
+          return form.certType === 'pfx';
+        })
+      }
+    `,
+    required: true,
     rules: [{ type: 'filepath' }],
   })
   pfxPath!: string;
@@ -63,6 +121,14 @@ export class CopyCertToLocalPlugin extends AbstractTaskPlugin {
     component: {
       placeholder: 'tmp/cert.der 或 tmp/cert.cer',
     },
+    mergeScript: `
+      return {
+        show: ctx.compute(({form})=>{
+          return form.certType === 'der';
+        })
+      }
+    `,
+    required: true,
     rules: [{ type: 'filepath' }],
   })
   derPath!: string;
@@ -73,20 +139,17 @@ export class CopyCertToLocalPlugin extends AbstractTaskPlugin {
     component: {
       placeholder: 'tmp/cert.jks',
     },
+    mergeScript: `
+      return {
+        show: ctx.compute(({form})=>{
+          return form.certType === 'jks';
+        })
+      }
+    `,
+    required: true,
     rules: [{ type: 'filepath' }],
   })
   jksPath!: string;
-
-  @TaskInput({
-    title: '域名证书',
-    helper: '请选择前置任务输出的域名证书',
-    component: {
-      name: 'output-selector',
-      from: ['CertApply', 'CertApplyLego'],
-    },
-    required: true,
-  })
-  cert!: CertInfo;
 
   @TaskOutput({
     title: '证书保存路径',
