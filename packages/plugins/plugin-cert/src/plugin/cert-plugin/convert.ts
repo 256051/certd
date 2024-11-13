@@ -30,7 +30,7 @@ export class CertConverter {
       // 转der
       derPath = await this.convertDer(ctx);
 
-      //jksPath = await this.convertJks(ctx,  opts.pfxPassword);
+      jksPath = await this.convertJks(ctx, opts.pfxPassword);
     };
 
     await certReader.readCertFile({ logger: this.logger, handle });

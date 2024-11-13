@@ -152,28 +152,28 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
     }
     this._result.pipelinePrivateVars.cert = cert;
 
-    if (cert.pfx == null || cert.der == null) {
+    if (cert.pfx == null || cert.der == null || cert.jks == null) {
       try {
         const converter = new CertConverter({ logger: this.logger });
         const res = await converter.convert({
           cert,
           pfxPassword: this.pfxPassword,
         });
-        if (res.pfxPath) {
+        if (cert.pfx == null && res.pfxPath) {
           const pfxBuffer = fs.readFileSync(res.pfxPath);
           cert.pfx = pfxBuffer.toString("base64");
           fs.unlinkSync(res.pfxPath);
           isNew = true;
         }
 
-        if (res.derPath) {
+        if (cert.der == null && res.derPath) {
           const derBuffer = fs.readFileSync(res.derPath);
           cert.der = derBuffer.toString("base64");
           fs.unlinkSync(res.derPath);
           isNew = true;
         }
 
-        if (res.jksPath) {
+        if (cert.jks == null && res.jksPath) {
           const jksBuffer = fs.readFileSync(res.jksPath);
           cert.jks = jksBuffer.toString("base64");
           fs.unlinkSync(res.jksPath);
