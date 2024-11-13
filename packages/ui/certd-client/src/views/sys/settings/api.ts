@@ -53,6 +53,14 @@ export async function EmailSettingsGet() {
   });
 }
 
+export async function EmailSettingsSave(setting: any) {
+  return await request({
+    url: apiPrefix + "/saveEmailSettings",
+    method: "post",
+    data: setting
+  });
+}
+
 export async function stopOtherUserTimer() {
   return await request({
     url: apiPrefix + "/stopOtherUserTimer",
