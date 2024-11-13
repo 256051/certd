@@ -193,7 +193,7 @@ export class CnameRecordService extends BaseService<CnameRecordEntity> {
         startTime: new Date().getTime(),
       };
     }
-    let ttl = 15 * 60 * 1000;
+    let ttl = 5 * 60 * 1000;
     if (isDev()) {
       ttl = 30 * 1000;
     }
@@ -233,6 +233,7 @@ export class CnameRecordService extends BaseService<CnameRecordEntity> {
         logger.warn(`cname验证超时,停止检查,${bean.domain} ${testRecordValue}`);
         clearInterval(value.intervalId);
         await this.updateStatus(bean.id, 'timeout');
+        cache.delete(cacheKey);
         return false;
       }
 
