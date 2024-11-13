@@ -210,7 +210,7 @@ export function createAgent(opts: CreateAgentOptions = {}) {
   opts = merge(
     {
       autoSelectFamily: true,
-      autoSelectFamilyAttemptTimeout: 2000,
+      autoSelectFamilyAttemptTimeout: 1000,
     },
     opts
   );
