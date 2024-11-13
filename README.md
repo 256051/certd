@@ -41,8 +41,11 @@ https://certd.handfree.work/
 ### 2. 添加部署任务
 当然我们一般需要把证书部署到应用上，certd支持海量的部署插件，您可以根据自身实际情况进行选择，比如部署到Nginx、阿里云、腾讯云、K8S、CDN、宝塔、1Panel等等
 
-此处演示部署证书到主机的nginx上  
+此处演示部署证书到主机的nginx上    
 ![演示](packages/ui/certd-client/public/static/doc/images/5-1-add-host.png)
+
+如果目前的部署插件都无法满足，您也可以手动下载，然后自行部署   
+![演示](packages/ui/certd-client/public/static/doc/images/13-3-download.png)
 
 ### 3. 定时运行
 ![演示](packages/ui/certd-client/public/static/doc/images/12-1-log-success.png)
