@@ -73,16 +73,6 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
   })
   renewDays!: number;
 
-  // @TaskInput({
-  //   title: "强制更新",
-  //   component: {
-  //     name: "a-switch",
-  //     vModel: "checked",
-  //   },
-  //   order: 100,
-  //   helper: "是否强制重新申请证书",
-  // })
-  // forceUpdate!: string;
 
   @TaskInput({
     title: "成功后邮件通知",
