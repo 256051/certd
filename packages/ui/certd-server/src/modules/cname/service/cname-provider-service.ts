@@ -1,7 +1,7 @@
-import { Provide, Scope, ScopeEnum } from '@midwayjs/core';
+import { Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
-import { BaseService, ListReq, ValidateException } from '@certd/lib-server';
+import { BaseService, ListReq, SysPrivateSettings, SysSettingsService, ValidateException } from '@certd/lib-server';
 import { CnameProviderEntity } from '../entity/cname-provider.js';
 import { CommonProviders } from './common-provider.js';
 
@@ -13,6 +13,9 @@ import { CommonProviders } from './common-provider.js';
 export class CnameProviderService extends BaseService<CnameProviderEntity> {
   @InjectEntityModel(CnameProviderEntity)
   repository: Repository<CnameProviderEntity>;
+
+  @Inject()
+  settingsService: SysSettingsService;
 
   //@ts-ignore
   getRepository() {
@@ -85,7 +88,10 @@ export class CnameProviderService extends BaseService<CnameProviderEntity> {
     if (founds && founds.length > 0) {
       return founds[0];
     }
-    if (CommonProviders.length > 0) {
+
+    const sysPrivateSettings = await this.settingsService.getSetting<SysPrivateSettings>(SysPrivateSettings);
+
+    if (sysPrivateSettings.commonCnameEnabled !== false && CommonProviders.length > 0) {
       return CommonProviders[0] as CnameProviderEntity;
     }
     return null;
@@ -93,8 +99,12 @@ export class CnameProviderService extends BaseService<CnameProviderEntity> {
 
   async list(req: ListReq): Promise<any[]> {
     const list = await super.list(req);
+    const sysPrivateSettings = await this.settingsService.getSetting<SysPrivateSettings>(SysPrivateSettings);
 
-    return [...list, ...CommonProviders];
+    if (sysPrivateSettings.commonCnameEnabled !== false) {
+      return [...list, ...CommonProviders];
+    }
+    return list;
   }
 
   async info(id: any, infoIgnoreProperty?: any): Promise<any | null> {

@@ -23,6 +23,7 @@
         <a-form-item label="管理其他用户流水线" :name="['public', 'managerOtherUserPipeline']">
           <a-switch v-model:checked="formState.public.managerOtherUserPipeline" />
         </a-form-item>
+
         <a-form-item label="ICP备案号" :name="['public', 'icpNo']">
           <a-input v-model:value="formState.public.icpNo" placeholder="粤ICP备xxxxxxx号" />
         </a-form-item>
@@ -48,6 +49,11 @@
           </a-select>
           <div class="helper">如果选择IPv6优先，需要在docker-compose.yaml中启用ipv6</div>
         </a-form-item>
+
+        <a-form-item label="启用公共CNAME服务" :name="['private', 'commonCnameEnabled']">
+          <a-switch v-model:checked="formState.private.commonCnameEnabled" />
+        </a-form-item>
+
         <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
           <a-button :loading="saveLoading" type="primary" html-type="submit">保存</a-button>
         </a-form-item>

@@ -14,6 +14,7 @@ export type SysPrivateSetting = {
   httpProxy?: string;
   httpsProxy?: string;
   dnsResultOrder?: string;
+  commonCnameEnabled?: boolean;
 };
 
 export const SettingKeys = {
