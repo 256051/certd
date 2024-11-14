@@ -106,8 +106,8 @@ export class CertConverter {
       const p12Path = path.join(os.tmpdir(), "/certd/tmp/", randomStr + `_cert.p12`);
       const { tmpCrtPath, tmpKeyPath } = opts;
       let passwordArg = "-passout pass:";
-      if (pfxPassword) {
-        passwordArg = `-password pass:${pfxPassword}`;
+      if (jksPassword) {
+        passwordArg = `-password pass:${jksPassword}`;
       }
       await this.exec(`openssl pkcs12 -export -in ${tmpCrtPath} -inkey ${tmpKeyPath} -out ${p12Path} -name certd ${passwordArg}`);
 
@@ -117,7 +117,7 @@ export class CertConverter {
         fs.mkdirSync(dir, { recursive: true });
       }
       await this.exec(
-        `keytool -importkeystore -srckeystore ${p12Path} -srcstoretype PKCS12 -srcstorepass "${pfxPassword}" -destkeystore ${jksPath} -deststoretype PKCS12 -deststorepass "${jksPassword}" `
+        `keytool -importkeystore -srckeystore ${p12Path} -srcstoretype PKCS12 -srcstorepass "${jksPassword}" -destkeystore ${jksPath} -deststoretype PKCS12 -deststorepass "${jksPassword}" `
       );
       fs.unlinkSync(p12Path);
       return jksPath;

@@ -49,15 +49,14 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
   email!: string;
 
   @TaskInput({
-    title: "PFX证书密码",
+    title: "证书密码",
     component: {
       name: "input-password",
       vModel: "value",
     },
     required: false,
     order: 100,
-    // helper: "PFX、jks格式证书是否加密；jks必须设置密码，不传则默认123456",
-    helper: "PFX证书是否加密",
+    helper: "PFX、jks格式证书是否加密；jks必须设置密码，不传则默认123456",
   })
   pfxPassword!: string;
 
