@@ -18,10 +18,7 @@
 需要添加域名的DNS解析服务商的授权
 ![添加域名的DNS解析服务商的授权](packages/ui/certd-client/public/static/doc/images/2-access-provider.png)
 
-填写accessKey和accessSecret
-![](packages/ui/certd-client/public/static/doc/images/3-add-access.png)
 流水线创建成功
-![](packages/ui/certd-client/public/static/doc/images/4-add-success.png)
 
 ### 2. 流水线详情界面
 
