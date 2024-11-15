@@ -304,7 +304,6 @@ export default defineComponent({
     }
 
     const loadCurrentHistoryDetail = async () => {
-      console.log("load history logs");
       const detail: RunHistory = await props.options?.getHistoryDetail({ historyId: currentHistory.value.id });
       currentHistory.value.logs = detail.logs;
       _.merge(currentHistory.value.pipeline, detail.pipeline);
@@ -329,7 +328,6 @@ export default defineComponent({
       if (reload) {
         histories.value = [];
       }
-      console.log("load history list");
       const historyList = await props.options.getHistoryList({ pipelineId: pipeline.value.id });
       if (!historyList) {
         return;

@@ -140,7 +140,7 @@ async function onLoaded(pipeline: PipelineDetail) {
   }
   const res = await api.GetCount();
   LocalStorage.set("pipeline-count", res.count);
-  if (res.count <= 1) {
+  if (res.count <= 1 && editMode.value === true) {
     await nextTick();
     tourHandleOpen(true);
   }
