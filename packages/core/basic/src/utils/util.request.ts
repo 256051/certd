@@ -202,6 +202,9 @@ export type HttpClient = {
   request<D = any, R = any>(config: HttpRequestConfig<D>): Promise<HttpClientResponse<R>>;
 };
 
+// const http_proxy_backup = process.env.HTTP_PROXY || process.env.http_proxy;
+// const https_proxy_backup = process.env.HTTPS_PROXY || process.env.https_proxy;
+
 export type CreateAgentOptions = {
   httpProxy?: string;
   httpsProxy?: string;
@@ -216,20 +219,28 @@ export function createAgent(opts: CreateAgentOptions = {}) {
   );
 
   let httpAgent, httpsAgent;
-  const httpProxy = opts.httpProxy || process.env.HTTP_PROXY || process.env.http_proxy;
+  const httpProxy = opts.httpProxy;
   if (httpProxy) {
+    process.env.HTTP_PROXY = httpProxy;
+    process.env.http_proxy = httpProxy;
     logger.info('use httpProxy:', httpProxy);
     httpAgent = new HttpProxyAgent(httpProxy, opts as any);
     merge(httpAgent.options, opts);
   } else {
+    process.env.HTTP_PROXY = '';
+    process.env.http_proxy = '';
     httpAgent = new nodeHttp.Agent(opts);
   }
-  const httpsProxy = opts.httpsProxy || process.env.HTTPS_PROXY || process.env.https_proxy;
+  const httpsProxy = opts.httpsProxy;
   if (httpsProxy) {
+    process.env.HTTPS_PROXY = httpProxy;
+    process.env.https_proxy = httpProxy;
     logger.info('use httpsProxy:', httpsProxy);
     httpsAgent = new HttpsProxyAgent(httpsProxy, opts as any);
     merge(httpsAgent.options, opts);
   } else {
+    process.env.HTTPS_PROXY = '';
+    process.env.https_proxy = '';
     httpsAgent = new https.Agent(opts);
   }
   return {

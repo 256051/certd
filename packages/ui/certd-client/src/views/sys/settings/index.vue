@@ -38,7 +38,7 @@
             <a-input v-model:value="formState.private.httpsProxy" placeholder="http://192.168.1.2:18010/" />
             <a-button class="ml-5" type="primary" :loading="testProxyLoading" title="保存后，再点击测试" @click="testProxy">测试</a-button>
           </div>
-          <div class="helper">一般这两个代理填一样的</div>
+          <div class="helper">一般这两个代理填一样的，保存后再测试</div>
         </a-form-item>
 
         <a-form-item label="双栈网络" :name="['private', 'dnsResultOrder']">
