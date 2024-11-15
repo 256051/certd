@@ -1,6 +1,6 @@
 import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
 import { CertInfo, CertReader } from '@certd/plugin-cert';
-import { isDev } from '../../../utils/env.js';
+import { isDev } from '@certd/basic';
 
 @IsTaskPlugin({
   name: 'demoTest',
@@ -13,6 +13,8 @@ import { isDev } from '../../../utils/env.js';
       runStrategy: RunStrategy.SkipWhenSucceed,
     },
   },
+  // 你开发的插件要删除此项，否则不会在生产环墋中显示
+  deprecated: isDev() ? '测试插件,生产环境不显示' : undefined,
 })
 export class DemoTestPlugin extends AbstractTaskPlugin {
   //测试参数
@@ -101,8 +103,5 @@ export class DemoTestPlugin extends AbstractTaskPlugin {
     this.logger.info('授权id:', accessId);
   }
 }
-//TODO 这里实例化插件，进行注册
-if (isDev()) {
-  //你的实现 要去掉这个if，不然生产环境将不会显示
-  new DemoTestPlugin();
-}
+//实例化一下，注册插件
+new DemoTestPlugin();
