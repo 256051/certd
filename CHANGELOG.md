@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.27.4](https://github.com/certd/certd/compare/v1.27.3...v1.27.4) (2024-11-14)
+
+### Bug Fixes
+
+* 修复未设置pfx密码，导致jks转换报错的bug ([c3cfbd8](https://github.com/certd/certd/commit/c3cfbd8474155aed4379f91075de37d5d8c73ef0))
+
+### Performance Improvements
+
+* 公共cname服务支持关闭 ([f4ae512](https://github.com/certd/certd/commit/f4ae5125dc4cd97816976779cb3586b5ee78947e))
+
 ## [1.27.3](https://github.com/certd/certd/compare/v1.27.2...v1.27.3) (2024-11-13)
 
 ### Bug Fixes

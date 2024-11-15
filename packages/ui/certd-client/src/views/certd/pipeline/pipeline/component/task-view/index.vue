@@ -8,7 +8,7 @@
             <pi-status-show :status="item.node.status?.result" type="icon"></pi-status-show>
           </div>
         </template>
-        <div class="pi-task-view-logs" style="overflow: auto">
+        <div class="pi-task-view-logs" :class="item.node.id" style="overflow: auto">
           <template v-for="(logItem, index) of item.logs" :key="index">
             <span :class="logItem.color"> {{ logItem.time }}</span> <span>{{ logItem.content }}</span>
           </template>
@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { computed, inject, Ref, ref } from "vue";
+import { computed, inject, nextTick, Ref, ref, watch } from "vue";
 import { RunHistory } from "../../type";
 import PiStatusShow from "/@/views/certd/pipeline/pipeline/component/status-show.vue";
 
@@ -61,6 +61,7 @@ export default {
         if (currentHistory?.value?.logs != null) {
           node.logs = computed(() => {
             if (currentHistory?.value?.logs && currentHistory.value?.logs[node.node.id] != null) {
+              console.log("log changed", node.node.id);
               const logs = currentHistory.value?.logs[node.node.id];
               const list = [];
               for (let log of logs) {
@@ -78,6 +79,30 @@ export default {
             }
             return [];
           });
+
+          watch(
+            () => {
+              return node.logs.value.length;
+            },
+            async () => {
+              let el = document.querySelector(`.pi-task-view-logs.${node.node.id}`);
+              console.log("el", el);
+              //判断当前是否在底部
+              const isBottom = el ? el.scrollHeight - el.scrollTop === el.clientHeight : true;
+              await nextTick();
+              el = document.querySelector(`.pi-task-view-logs.${node.node.id}`);
+              //如果在底部则滚动到底部
+              if (isBottom && el) {
+                el?.scrollTo({
+                  top: el.scrollHeight,
+                  behavior: "smooth"
+                });
+              }
+            },
+            {
+              immediate: true
+            }
+          );
         }
       }
 

@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.27.4](https://github.com/certd/certd/compare/v1.27.3...v1.27.4) (2024-11-14)
+
+### Bug Fixes
+
+* 修复未设置pfx密码，导致jks转换报错的bug ([c3cfbd8](https://github.com/certd/certd/commit/c3cfbd8474155aed4379f91075de37d5d8c73ef0))
+
+### Performance Improvements
+
+* 公共cname服务支持关闭 ([f4ae512](https://github.com/certd/certd/commit/f4ae5125dc4cd97816976779cb3586b5ee78947e))
+
+## [1.27.3](https://github.com/certd/certd/compare/v1.27.2...v1.27.3) (2024-11-13)
+
+### Bug Fixes
+
+* 修复偶发性cname一直验证超时的bug ([d2ce72e](https://github.com/certd/certd/commit/d2ce72e4aaacdf726ba8b91fcd71db40a27714ba))
+* 修复邮件配置，忽略证书校验设置不生效的bug ([66a9690](https://github.com/certd/certd/commit/66a9690dc958732e1b3c672d965db502296446f9))
+* 修复ipv6未开启情况下，请求带有ipv6地址域名报ETIMEDOUT的bug ([a9a0967](https://github.com/certd/certd/commit/a9a0967a6f1d0bd27e69f3ec52c31d90d470bc23))
+
+### Performance Improvements
+
+* 修复站点个性化，浏览器标题没有生效的bug ([bcfac02](https://github.com/certd/certd/commit/bcfac02c96ceaf23d1a0b05b48d8047da933beaf))
+* 优化上传到主机插 路径选择，根据证书格式显示 ([8c3f86c](https://github.com/certd/certd/commit/8c3f86c6909ed91f48bb2880e78834e22f6f6a29))
+* 支持jks ([889eaae](https://github.com/certd/certd/commit/889eaaea92818f628b922dae540c026630611707))
+* ipv6支持 ([da6ac16](https://github.com/certd/certd/commit/da6ac1626b3574be2fabeeb18a1f10d60bdcbe49))
+
 ## [1.27.2](https://github.com/certd/certd/compare/v1.27.1...v1.27.2) (2024-11-08)
 
 ### Bug Fixes

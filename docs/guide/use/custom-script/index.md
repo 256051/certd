@@ -18,6 +18,10 @@ const res = await ctx.http.request({
     key : certKey
   }
 })
+if(!res || res.code !== 0){
+    //抛异常才能让任务失败
+    throw new Error("上传失败")
+}
 //不能用console.log，需要用ctx.logger 才能把日志打印在ui上
 ctx.logger.info("上传成功",res.data)
 
@@ -79,3 +83,4 @@ type CustomScriptPlugin = {
 }
 
 ```
+
