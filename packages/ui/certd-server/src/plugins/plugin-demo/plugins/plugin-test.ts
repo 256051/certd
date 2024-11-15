@@ -17,6 +17,7 @@ export class DemoTestPlugin extends AbstractTaskPlugin {
   //测试参数
   @TaskInput({
     title: '属性示例',
+    value: '默认值',
     component: {
       //前端组件配置，具体配置见组件文档 https://www.antdv.com/components/input-cn
       name: 'a-input',
