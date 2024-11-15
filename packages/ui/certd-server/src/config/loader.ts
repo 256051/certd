@@ -50,7 +50,7 @@ export function mergeConfig(config: any, envType: string) {
 export function loadDotEnv() {
   const envStr = fs.readFileSync('.env').toString();
   envStr.split('\n').forEach(line => {
-    const [key, value] = line.split('=');
+    const [key, value] = line.trim().split('=');
     const oldValue = process.env[key];
     if (!oldValue) {
       process.env[key] = value;
