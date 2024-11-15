@@ -6,6 +6,7 @@ import { isDev } from '../../../utils/env.js';
   name: 'demoTest',
   title: 'Demo测试插件',
   icon: 'clarity:plugin-line',
+  //插件分组
   group: pluginGroups.other.key,
   default: {
     strategy: {
@@ -58,7 +59,7 @@ export class DemoTestPlugin extends AbstractTaskPlugin {
       name: 'output-selector',
       from: ['CertApply', 'CertApplyLego'],
     },
-    // required: true,
+    // required: true, // 必填
   })
   cert!: CertInfo;
 
@@ -71,6 +72,7 @@ export class DemoTestPlugin extends AbstractTaskPlugin {
       type: 'demo', //固定授权类型
     },
     // rules: [{ required: true, message: '此项必填' }],
+    // required: true, //必填
   })
   accessId!: string;
 
