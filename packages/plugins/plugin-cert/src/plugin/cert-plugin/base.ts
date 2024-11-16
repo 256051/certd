@@ -73,7 +73,6 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
   })
   renewDays!: number;
 
-
   @TaskInput({
     title: "成功后邮件通知",
     value: true,

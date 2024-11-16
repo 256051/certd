@@ -108,6 +108,23 @@ export class PlusService {
     return res.accessToken;
   }
 
+  async getVipTrial() {
+    const plusRequestService = await this.getPlusRequestService();
+    await this.register();
+    const res = await plusRequestService.request({
+      url: '/activation/subject/vip/trialGet',
+      method: 'POST',
+    });
+    if (res.license) {
+      await this.updateLicense(res.license);
+      return {
+        duration: res.duration,
+      };
+    } else {
+      throw new Error('您已经领取过VIP试用了');
+    }
+  }
+
   async requestWithToken(config: HttpRequestConfig) {
     const plusRequestService = await this.getPlusRequestService();
     const token = await this.getAccessToken();

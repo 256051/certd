@@ -12,13 +12,14 @@
   </div>
 </template>
 <script lang="tsx" setup>
-import { computed, reactive, ref } from "vue";
+import { computed, reactive } from "vue";
 import dayjs from "dayjs";
 import { message, Modal } from "ant-design-vue";
 import * as api from "./api";
 import { useSettingStore } from "/@/store/modules/settings";
 import { useRouter } from "vue-router";
 import { useUserStore } from "/@/store/modules/user";
+
 const settingStore = useSettingStore();
 const props = withDefaults(
   defineProps<{
@@ -129,21 +130,27 @@ function goAccount() {
   router.push("/sys/account");
 }
 
+async function getVipTrial() {
+  const res = await api.getVipTrial();
+  message.success(`恭喜，您已获得专业版${res.duration}天试用`);
+  await settingStore.init();
+}
+
 function openTrialModal() {
   Modal.destroyAll();
 
   modal.confirm({
     title: "7天专业版试用获取",
-    okText: "立即去绑定账号",
+    okText: "立即获取",
     onOk() {
-      goAccount();
+      getVipTrial();
     },
     width: 600,
     content: () => {
       return (
         <div class="flex-col mt-10 mb-10">
           <div>感谢您对开源项目的支持</div>
-          <div>绑定袖手账号后，即可获取7天专业版试用</div>
+          <div>点击确认，即可获取7天专业版试用</div>
         </div>
       );
     }
