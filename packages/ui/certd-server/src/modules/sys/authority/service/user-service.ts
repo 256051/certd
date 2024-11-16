@@ -12,7 +12,7 @@ import bcrypt from 'bcryptjs';
 import { RandomUtil } from '../../../../utils/random.js';
 import dayjs from 'dayjs';
 import { DbAdapter } from '../../../db/index.js';
-import { utils } from '@certd/pipeline';
+import { utils } from '@certd/basic';
 /**
  * 系统用户
  */

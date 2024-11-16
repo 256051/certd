@@ -30,6 +30,8 @@ export class SysPrivateSettings extends BaseSettings {
 
   httpsProxy? = '';
   httpProxy? = '';
+  dnsResultOrder? = '';
+  commonCnameEnabled?: boolean = true;
 
   removeSecret() {
     const clone = cloneDeep(this);

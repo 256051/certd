@@ -1,6 +1,6 @@
 import { Controller, Get, Provide } from '@midwayjs/core';
 import { BaseController, Constants } from '@certd/lib-server';
-import { http, logger } from '@certd/pipeline';
+import { http, logger } from '@certd/basic';
 /**
  */
 @Provide()

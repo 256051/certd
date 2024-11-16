@@ -128,7 +128,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         },
         pipelineTitle: {
           title: "流水线名称",
-          type: "link",
+          type: "text",
           search: {
             show: true,
             component: {
@@ -136,7 +136,13 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             }
           },
           column: {
-            width: 300
+            width: 300,
+            cellRender: ({ row, value }) => {
+              debugger;
+              return (
+                <router-link to={{ path: "/certd/pipeline/detail", query: { id: row.pipelineId, editMode: false, historyId: row.id } }}>{value}</router-link>
+              );
+            }
           }
         },
         createTime: {

@@ -4,7 +4,8 @@ import * as _ from 'lodash-es';
 import { PipelineService } from '../../../modules/pipeline/service/pipeline-service.js';
 import { UserSettingsService } from '../../../modules/mine/service/user-settings-service.js';
 import { getEmailSettings } from '../../../modules/sys/settings/fix.js';
-import { http, logger } from '@certd/pipeline';
+import { http, logger } from '@certd/basic';
+import { merge } from 'lodash-es';
 
 /**
  */
@@ -74,6 +75,14 @@ export class SysSettingsController extends CrudController<SysSettingsService> {
   @Post('/getEmailSettings', { summary: 'sys:settings:edit' })
   async getEmailSettings(@Body(ALL) body) {
     const conf = await getEmailSettings(this.service, this.userSettingsService);
+    return this.ok(conf);
+  }
+
+  @Post('/saveEmailSettings', { summary: 'sys:settings:edit' })
+  async saveEmailSettings(@Body(ALL) body) {
+    const conf = await getEmailSettings(this.service, this.userSettingsService);
+    merge(conf, body);
+    await this.service.saveSetting(conf);
     return this.ok(conf);
   }
 

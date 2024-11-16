@@ -1,4 +1,4 @@
-import { isDev, logger } from "../utils/index.js";
+import { isDev, logger } from "@certd/basic";
 
 export type Registrable = {
   name: string;

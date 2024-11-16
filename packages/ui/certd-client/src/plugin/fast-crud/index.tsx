@@ -29,7 +29,7 @@ import {
 import "@fast-crud/fast-extends/dist/style.css";
 import UiAntdv from "@fast-crud/ui-antdv4";
 import "@fast-crud/ui-antdv4/dist/style.css";
-import _ from "lodash-es";
+import * as _ from "lodash-es";
 import { useCrudPermission } from "../permission";
 import { App } from "vue";
 import { notification } from "ant-design-vue";

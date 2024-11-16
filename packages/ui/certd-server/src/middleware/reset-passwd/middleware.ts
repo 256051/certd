@@ -2,7 +2,7 @@ import { Autoload, Config, Init, Inject, Provide, Scope, ScopeEnum } from '@midw
 import { IMidwayKoaContext, IWebMiddleware, NextFunction } from '@midwayjs/koa';
 import { CommonException } from '@certd/lib-server';
 import { UserService } from '../../modules/sys/authority/service/user-service.js';
-import { logger } from '@certd/pipeline';
+import { logger } from '@certd/basic';
 
 /**
  * 重置密码模式

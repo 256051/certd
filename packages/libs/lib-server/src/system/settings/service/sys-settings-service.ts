@@ -7,7 +7,7 @@ import { BaseSettings, SysInstallInfo, SysPrivateSettings, SysPublicSettings, Sy
 import * as _ from 'lodash-es';
 import { BaseService } from '../../../basic/index.js';
 import { logger, setGlobalProxy } from '@certd/basic';
-import { agents } from '@certd/acme-client';
+import * as dns from 'node:dns';
 /**
  * 设置
  */
@@ -132,7 +132,10 @@ export class SysSettingsService extends BaseService<SysSettingsEntity> {
       httpsProxy: bean.httpsProxy,
     };
     setGlobalProxy(opts);
-    agents.setGlobalProxy(opts);
+
+    if (bean.dnsResultOrder) {
+      dns.setDefaultResultOrder(bean.dnsResultOrder as any);
+    }
   }
 
   async updateByKey(key: string, setting: any) {

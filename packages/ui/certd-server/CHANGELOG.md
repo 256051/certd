@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.27.4](https://github.com/certd/certd/compare/v1.27.3...v1.27.4) (2024-11-14)
+
+### Performance Improvements
+
+* 公共cname服务支持关闭 ([f4ae512](https://github.com/certd/certd/commit/f4ae5125dc4cd97816976779cb3586b5ee78947e))
+
+## [1.27.3](https://github.com/certd/certd/compare/v1.27.2...v1.27.3) (2024-11-13)
+
+### Bug Fixes
+
+* 修复偶发性cname一直验证超时的bug ([d2ce72e](https://github.com/certd/certd/commit/d2ce72e4aaacdf726ba8b91fcd71db40a27714ba))
+* 修复邮件配置，忽略证书校验设置不生效的bug ([66a9690](https://github.com/certd/certd/commit/66a9690dc958732e1b3c672d965db502296446f9))
+
+### Performance Improvements
+
+* 优化上传到主机插 路径选择，根据证书格式显示 ([8c3f86c](https://github.com/certd/certd/commit/8c3f86c6909ed91f48bb2880e78834e22f6f6a29))
+
+## [1.27.2](https://github.com/certd/certd/compare/v1.27.1...v1.27.2) (2024-11-08)
+
+### Bug Fixes
+
+* 修复删除腾讯云过期证书时间判断上的bug，导致已过期仍然没有删除证书 ([1ba1007](https://github.com/certd/certd/commit/1ba10072615015d91b81fc56a3b01dae6a2ae9d1))
+
+### Performance Improvements
+
+* 优化部署到阿里云CDN插件，支持多域名，更易用 ([80c500f](https://github.com/certd/certd/commit/80c500f618b169a1f64c57fe442242a4d0d9d833))
+* 优化流水线页面切换回来不丢失查询条件 ([4dcf6e8](https://github.com/certd/certd/commit/4dcf6e87bc5f7657ce8a56c5331e8723a0fee8ee))
+* 支持公共cname服务 ([3c919ee](https://github.com/certd/certd/commit/3c919ee5d1aef5d26cf3620a7c49d920786bc941))
+* 执行历史支持点击查看流水线详情 ([8968639](https://github.com/certd/certd/commit/89686399f90058835435b92872fc236fac990148))
+* 专业版7天试用 ([c58250e](https://github.com/certd/certd/commit/c58250e1f065a9bd8b4e82acc1df754504c0010c))
+
+## [1.27.1](https://github.com/certd/certd/compare/v1.27.0...v1.27.1) (2024-11-04)
+
+### Performance Improvements
+
+* 优化时间选择器，自动填写分钟和秒钟 ([396dc34](https://github.com/certd/certd/commit/396dc34a841c7d016b033736afdba8366fb2d211))
+* cname 域名映射记录可读性优化 ([b1117ed](https://github.com/certd/certd/commit/b1117ed54a3ef015752999324ff72b821ef5e4b9))
+
 # [1.27.0](https://github.com/certd/certd/compare/v1.26.16...v1.27.0) (2024-10-31)
 
 ### Bug Fixes

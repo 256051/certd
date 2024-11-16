@@ -9,7 +9,6 @@ export * from './plugin-other/index.js';
 export * from './plugin-west/index.js';
 export * from './plugin-doge/index.js';
 export * from './plugin-qiniu/index.js';
-export * from './plugin-jdcloud/index.js';
 export * from './plugin-woai/index.js';
 export * from './plugin-cachefly/index.js';
 export * from './plugin-gcore/index.js';

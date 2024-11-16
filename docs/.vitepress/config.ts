@@ -57,7 +57,7 @@ export default defineConfig({
     nav: [
       { text: "首页", link: "/" },
       { text: "指南", link: "/guide/" },
-      { text: "Demo体验", link: "https://certd.handsfree.work" }
+      { text: "Demo体验", link: "https://certd.handfree.work" }
     ],
     sidebar: {
       "/guide/": [
@@ -98,6 +98,9 @@ export default defineConfig({
             { text: "忘记密码", link: "/guide/use/forgotpasswd/" },
             { text: "数据备份", link: "/guide/use/backup/" },
             { text: "Certd本身的证书更新", link: "/guide/use/https/index.md" },
+            { text: "js脚本插件使用", link: "/guide/use/custom-script/index.md" },
+            { text: "邮箱配置", link: "/guide/use/email/index.md" },
+            { text: "IPv6支持", link: "/guide/use/setting/ipv6.md" },
             { text: "如何贡献代码", link: "/guide/development/index.md" },
           ]
         },

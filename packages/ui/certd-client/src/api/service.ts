@@ -28,6 +28,7 @@ function createService() {
       // dataAxios 是 axios 返回数据中的 data
       const dataAxios = response.data;
 
+      // @ts-ignore
       if (response.config.unpack === false) {
         //如果不需要解包
         return dataAxios;

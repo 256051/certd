@@ -1,5 +1,3 @@
-import { sysResources } from "/@/router/source/modules/sys";
-
 export const certdResources = [
   {
     title: "证书自动化",
@@ -17,7 +15,8 @@ export const certdResources = [
         path: "/certd/pipeline",
         component: "/certd/pipeline/index.vue",
         meta: {
-          icon: "ion:analytics-sharp"
+          icon: "ion:analytics-sharp",
+          cache: true
         }
       },
       {
@@ -35,7 +34,8 @@ export const certdResources = [
         path: "/certd/history",
         component: "/certd/history/index.vue",
         meta: {
-          icon: "ion:timer-outline"
+          icon: "ion:timer-outline",
+          cache: true
         }
       },
       {
@@ -45,7 +45,8 @@ export const certdResources = [
         component: "/certd/access/index.vue",
         meta: {
           icon: "ion:disc-outline",
-          auth: true
+          auth: true,
+          cache: true
         }
       },
       {

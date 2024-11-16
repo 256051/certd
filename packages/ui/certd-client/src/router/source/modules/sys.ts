@@ -27,16 +27,7 @@ export const sysResources = [
           permission: "sys:auth:user:view"
         }
       },
-      {
-        title: "用户管理",
-        name: "UserManager",
-        path: "/sys/authority/user",
-        component: "/sys/authority/user/index.vue",
-        meta: {
-          icon: "ion:person-outline",
-          permission: "sys:auth:user:view"
-        }
-      },
+
       {
         title: "系统设置",
         name: "SysSettings",
@@ -92,7 +83,7 @@ export const sysResources = [
             const settingStore = useSettingStore();
             return settingStore.isComm;
           },
-          icon: "ion:document-text-outline",
+          icon: "ion:menu",
           permission: "sys:settings:view"
         }
       },
@@ -168,7 +159,17 @@ export const sysResources = [
           icon: "ion:people-outline",
           permission: "sys:auth:role:view"
         }
-      }
+      },
+      {
+        title: "用户管理",
+        name: "UserManager",
+        path: "/sys/authority/user",
+        component: "/sys/authority/user/index.vue",
+        meta: {
+          icon: "ion:person-outline",
+          permission: "sys:auth:user:view"
+        }
+      },
 
       // {
       //   title: "商业版设置",

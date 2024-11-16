@@ -13,6 +13,8 @@ export type SysPublicSetting = {
 export type SysPrivateSetting = {
   httpProxy?: string;
   httpsProxy?: string;
+  dnsResultOrder?: string;
+  commonCnameEnabled?: boolean;
 };
 
 export const SettingKeys = {
@@ -49,6 +51,14 @@ export async function EmailSettingsGet() {
   return await request({
     url: apiPrefix + "/getEmailSettings",
     method: "post"
+  });
+}
+
+export async function EmailSettingsSave(setting: any) {
+  return await request({
+    url: apiPrefix + "/saveEmailSettings",
+    method: "post",
+    data: setting
   });
 }
 

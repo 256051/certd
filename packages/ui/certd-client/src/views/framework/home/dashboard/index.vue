@@ -205,6 +205,7 @@ async function loadPluginGroups() {
 
 const pluginGroups = ref();
 onMounted(async () => {
+  await userStore.loadUserInfo();
   await loadLatestVersion();
   await loadCount();
   await loadPluginGroups();
@@ -265,6 +266,7 @@ onMounted(async () => {
           overflow: hidden;
           text-overflow: ellipsis;
           word-break: keep-all;
+          white-space: nowrap;
         }
       }
     }

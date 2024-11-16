@@ -12,7 +12,7 @@
   </div>
 </template>
 <script lang="tsx" setup>
-import { computed, reactive } from "vue";
+import { computed, reactive, ref } from "vue";
 import dayjs from "dayjs";
 import { message, Modal } from "ant-design-vue";
 import * as api from "./api";
@@ -91,24 +91,6 @@ const formState = reactive({
   code: ""
 });
 
-const vipTypeDefine = {
-  free: {
-    title: "基础版",
-    type: "free",
-    privilege: ["证书申请功能无限制", "证书流水线数量10条", "常用的主机、cdn等部署插件"]
-  },
-  plus: {
-    title: "专业版",
-    type: "plus",
-    privilege: ["可加VIP群，需求优先实现", "证书流水线数量无限制", "免配置发邮件功能", "支持宝塔、易盾、群晖、1Panel、cdnfly等部署插件"]
-  },
-  comm: {
-    title: "商业版",
-    type: "comm",
-    privilege: ["拥有专业版所有特权", "允许商用，可修改logo、标题", "数据统计", "插件管理", "多用户无限制", "支持用户支付（敬请期待）"]
-  }
-};
-
 const router = useRouter();
 async function doActive() {
   if (!formState.code) {
@@ -141,6 +123,58 @@ async function doActive() {
 const computedSiteId = computed(() => settingStore.installInfo?.siteId);
 const [modal, contextHolder] = Modal.useModal();
 const userStore = useUserStore();
+
+function goAccount() {
+  Modal.destroyAll();
+  router.push("/sys/account");
+}
+
+function openTrialModal() {
+  Modal.destroyAll();
+
+  modal.confirm({
+    title: "7天专业版试用获取",
+    okText: "立即去绑定账号",
+    onOk() {
+      goAccount();
+    },
+    width: 600,
+    content: () => {
+      return (
+        <div class="flex-col mt-10 mb-10">
+          <div>感谢您对开源项目的支持</div>
+          <div>绑定袖手账号后，即可获取7天专业版试用</div>
+        </div>
+      );
+    }
+  });
+}
+
+function openStarModal() {
+  Modal.destroyAll();
+  const goGithub = () => {
+    window.open("https://github.com/certd/certd/");
+  };
+
+  modal.confirm({
+    title: "7天专业版试用获取",
+    okText: "立即去Star",
+    onOk() {
+      goGithub();
+      openTrialModal();
+    },
+    width: 600,
+    content: () => {
+      return (
+        <div class="flex mt-10 mb-10">
+          <div>可以先请您帮忙点个star吗？感谢感谢</div>
+          <img class="ml-5" src="https://img.shields.io/github/stars/certd/certd?logo=github" />
+        </div>
+      );
+    }
+  });
+}
+
 function openUpgrade() {
   if (!userStore.isAdmin) {
     message.info("仅限管理员操作");
@@ -155,7 +189,31 @@ function openUpgrade() {
     title = "续期专业版/升级商业版";
   }
 
-  modal.confirm({
+  const vipTypeDefine = {
+    free: {
+      title: "基础版",
+      type: "free",
+      privilege: ["证书申请功能无限制", "证书流水线数量10条", "常用的主机、cdn等部署插件"]
+    },
+    plus: {
+      title: "专业版",
+      type: "plus",
+      privilege: ["可加VIP群，需求优先实现", "证书流水线数量无限制", "免配置发邮件功能", "支持宝塔、易盾、群晖、1Panel、cdnfly等部署插件"],
+      trial: {
+        title: "7天试用",
+        click: () => {
+          openStarModal();
+        }
+      }
+    },
+    comm: {
+      title: "商业版",
+      type: "comm",
+      privilege: ["拥有专业版所有特权", "允许商用，可修改logo、标题", "数据统计", "插件管理", "多用户无限制", "支持用户支付（敬请期待）"]
+    }
+  };
+
+  const modalRef = modal.confirm({
     title,
     async onOk() {
       return await doActive();
@@ -193,7 +251,16 @@ function openUpgrade() {
         slots.push(
           <a-col span={8}>
             <div class={vipBlockClass}>
-              <h3 class="block-header">{item.title}</h3>
+              <h3 class="block-header">
+                <span>{item.title}</span>
+                {item.trial && (
+                  <span class="trial">
+                    <a-tooltip title={item.trial.message}>
+                      <a onClick={item.trial.click}>{item.trial.title}</a>
+                    </a-tooltip>
+                  </span>
+                )}
+              </h3>
               <ul>
                 {item.privilege.map((p: string) => (
                   <li>
@@ -225,6 +292,9 @@ function openUpgrade() {
             <div class="mt-10">
               没有激活码？
               {activationCodeGetWay}
+            </div>
+            <div class="mt-10">
+              激活码使用过一次之后，不可再次使用，如果要更换站点，请<a onClick={goAccount}>绑定账号</a>，然后"转移VIP"即可
             </div>
           </div>
         </div>
@@ -263,6 +333,12 @@ function openUpgrade() {
     }
     .block-header {
       padding: 0px;
+      display: flex;
+      justify-content: space-between;
+      .trial {
+        font-size: 12px;
+        font-wight: 400;
+      }
     }
   }
 

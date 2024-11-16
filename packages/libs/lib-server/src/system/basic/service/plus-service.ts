@@ -1,78 +1,127 @@
-import { Config, Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
-import { AppKey, PlusRequestService, verify } from '@certd/pipeline';
-import { logger } from '@certd/basic';
+import { Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
+import { AppKey, PlusRequestService } from '@certd/plus-core';
+import { cache, http, HttpRequestConfig, logger } from '@certd/basic';
 import { SysInstallInfo, SysLicenseInfo, SysSettingsService } from '../../settings/index.js';
+import { merge } from 'lodash-es';
 
 @Provide()
 @Scope(ScopeEnum.Singleton)
 export class PlusService {
   @Inject()
   sysSettingsService: SysSettingsService;
-  @Config('plus.server.baseUrls')
-  plusServerBaseUrls: string[];
+
+  plusRequestService: PlusRequestService;
 
   async getPlusRequestService() {
+    if (this.plusRequestService) {
+      return this.plusRequestService;
+    }
     const installInfo: SysInstallInfo = await this.sysSettingsService.getSetting(SysInstallInfo);
-    return new PlusRequestService({
-      plusServerBaseUrls: this.plusServerBaseUrls,
-      subjectId: installInfo.siteId,
-    });
+
+    const subjectId = installInfo.siteId;
+    const bindUrl = installInfo.bindUrl;
+    const installTime = installInfo.installTime;
+    const saveLicense = async (license: string) => {
+      let licenseInfo: SysLicenseInfo = await this.sysSettingsService.getSetting(SysLicenseInfo);
+      if (!licenseInfo) {
+        licenseInfo = new SysLicenseInfo();
+      }
+      licenseInfo.license = license;
+      await this.sysSettingsService.saveSetting(licenseInfo);
+    };
+
+    return new PlusRequestService({ subjectId, bindUrl, installTime, saveLicense });
   }
 
-  async requestWithoutSign(config: any) {
-    const plusRequestService = await this.getPlusRequestService();
-    return await plusRequestService.requestWithoutSign(config);
-  }
-  async request(config: any) {
-    const plusRequestService = await this.getPlusRequestService();
-    return await plusRequestService.request(config);
+  async getSubjectId() {
+    const installInfo: SysInstallInfo = await this.sysSettingsService.getSetting(SysInstallInfo);
+    return installInfo.siteId;
   }
 
-  async active(formData: { code: any; appKey: string; subjectId: string }) {
+  async active(code: string) {
     const plusRequestService = await this.getPlusRequestService();
-    return await plusRequestService.requestWithoutSign({
-      url: '/activation/active',
-      method: 'post',
-      data: formData,
-    });
+    return await plusRequestService.active(code);
   }
 
   async updateLicense(license: string) {
-    let licenseInfo: SysLicenseInfo = await this.sysSettingsService.getSetting(SysLicenseInfo);
-    if (!licenseInfo) {
-      licenseInfo = new SysLicenseInfo();
-    }
-    licenseInfo.license = license;
-    await this.sysSettingsService.saveSetting(licenseInfo);
-    const verifyRes = await this.verify();
-    if (!verifyRes.isPlus) {
-      const message = verifyRes.message || '授权码校验失败';
-      logger.error(message);
-      throw new Error(message);
-    }
+    const plusRequestService = await this.getPlusRequestService();
+    await plusRequestService.updateLicense({ license });
   }
   async verify() {
-    const licenseInfo: SysLicenseInfo = await this.sysSettingsService.getSetting(SysLicenseInfo);
-    const installInfo: SysInstallInfo = await this.sysSettingsService.getSetting(SysInstallInfo);
-
     const plusRequestService = await this.getPlusRequestService();
-    return await verify({
-      subjectId: installInfo.siteId,
-      license: licenseInfo.license,
-      plusRequestService: plusRequestService,
-      bindUrl: installInfo?.bindUrl,
+    const licenseInfo: SysLicenseInfo = await this.sysSettingsService.getSetting(SysLicenseInfo);
+    await plusRequestService.verify({ license: licenseInfo.license });
+  }
+
+  async bindUrl(url: string) {
+    const plusRequestService = await this.getPlusRequestService();
+    return await plusRequestService.bindUrl(url);
+  }
+
+  async register() {
+    const plusRequestService = await this.getPlusRequestService();
+    const licenseInfo: SysLicenseInfo = await this.sysSettingsService.getSetting(SysLicenseInfo);
+    if (!licenseInfo.license) {
+      await plusRequestService.register();
+      logger.info('站点注册成功');
+    }
+  }
+
+  async userPreBind(userId: number) {
+    const plusRequestService = await this.getPlusRequestService();
+    await plusRequestService.requestWithoutSign({
+      url: '/activation/subject/preBind',
+      method: 'POST',
+      data: {
+        userId,
+        appKey: AppKey,
+        subjectId: plusRequestService.getSubjectId(),
+      },
     });
   }
 
-  async bindUrl(subjectId: string, url: string) {
+  async sendEmail(email: any) {
     const plusRequestService = await this.getPlusRequestService();
-    return await plusRequestService.request({
-      url: '/activation/subject/urlBind',
+    await plusRequestService.request({
+      url: '/activation/emailSend',
       data: {
-        subjectId,
-        appKey: AppKey,
-        url,
+        subject: email.subject,
+        text: email.content,
+        to: email.receivers,
       },
     });
+  }
+
+  async getAccessToken() {
+    const cacheKey = 'certd:subject:access_token';
+    const token = cache.get(cacheKey);
+    if (token) {
+      return token;
+    }
+    const plusRequestService = await this.getPlusRequestService();
+    await this.register();
+    const res = await plusRequestService.getAccessToken();
+    const ttl = res.expiresIn * 1000 - Date.now().valueOf();
+    cache.set(cacheKey, res.accessToken, {
+      ttl,
+    });
+    return res.accessToken;
+  }
+
+  async requestWithToken(config: HttpRequestConfig) {
+    const plusRequestService = await this.getPlusRequestService();
+    const token = await this.getAccessToken();
+    merge(config, {
+      baseURL: plusRequestService.getBaseURL(),
+      method: 'post',
+      headers: {
+        Authorization: `Berear ${token}`,
+      },
+    });
+    const res = await http.request(config);
+    if (res.code !== 0) {
+      throw new Error(res.message);
+    }
+    return res.data;
   }
 }

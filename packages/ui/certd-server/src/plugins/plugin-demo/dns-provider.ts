@@ -1,7 +1,9 @@
 import { AbstractDnsProvider, CreateRecordOptions, IsDnsProvider, RemoveRecordOptions } from '@certd/plugin-cert';
-import { Autowire, HttpClient, ILogger } from '@certd/pipeline';
+import { Autowire } from '@certd/pipeline';
+import { HttpClient, ILogger } from '@certd/basic';
+
 import { DemoAccess } from './access.js';
-import { isDev } from "../../utils/env.js";
+import { isDev } from '../../utils/env.js';
 
 type DemoRecord = {
   // 这里定义Record记录的数据结构，跟对应云平台接口返回值一样即可，一般是拿到id就行，用于删除txt解析记录，清理申请痕迹

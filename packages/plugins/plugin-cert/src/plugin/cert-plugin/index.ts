@@ -1,7 +1,9 @@
-import { IsTaskPlugin, pluginGroups, RunStrategy, TaskInput, utils } from "@certd/pipeline";
+import { IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from "@certd/pipeline";
+import { utils } from "@certd/basic";
+
 import type { CertInfo, CnameVerifyPlan, DomainsVerifyPlan, PrivateKeyType, SSLProvider } from "./acme.js";
 import { AcmeService } from "./acme.js";
-import _ from "lodash-es";
+import * as _ from "lodash-es";
 import { createDnsProvider, DnsProviderContext, IDnsProvider } from "../../dns-provider/index.js";
 import { CertReader } from "./cert-reader.js";
 import { CertApplyBasePlugin } from "./base.js";
@@ -376,10 +378,14 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
       } else {
         for (const key in domainVerifyPlan.cnameVerifyPlan) {
           const cnameRecord = await this.ctx.cnameProxyService.getByDomain(key);
+          let dnsProvider = cnameRecord.commonDnsProvider;
+          if (cnameRecord.cnameProvider.id > 0) {
+            dnsProvider = await this.createDnsProvider(cnameRecord.cnameProvider.dnsProviderType, cnameRecord.cnameProvider.access);
+          }
           cnameVerifyPlan[key] = {
             domain: cnameRecord.cnameProvider.domain,
             fullRecord: cnameRecord.recordValue,
-            dnsProvider: await this.createDnsProvider(cnameRecord.cnameProvider.dnsProviderType, cnameRecord.cnameProvider.access),
+            dnsProvider,
           };
         }
       }

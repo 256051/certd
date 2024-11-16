@@ -3,7 +3,7 @@ import { BaseService, PageReq } from '@certd/lib-server';
 import { PluginEntity } from '../entity/plugin.js';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
-import { isComm } from '@certd/pipeline';
+import { isComm } from '@certd/plus-core';
 import { BuiltInPluginService } from '../../pipeline/service/builtin-plugin-service.js';
 import { merge } from 'lodash-es';
 

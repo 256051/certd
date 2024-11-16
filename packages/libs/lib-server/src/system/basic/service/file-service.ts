@@ -2,7 +2,7 @@ import { Provide, Scope, ScopeEnum } from '@midwayjs/core';
 import dayjs from 'dayjs';
 import path from 'path';
 import fs from 'fs';
-import { cache, logger, utils } from '@certd/pipeline';
+import { cache, logger, utils } from '@certd/basic';
 import { NotFoundException, ParamException, PermissionException } from '../../../basic/index.js';
 
 export type UploadFileItem = {

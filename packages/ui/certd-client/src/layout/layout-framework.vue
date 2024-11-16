@@ -165,7 +165,7 @@ onMounted(async () => {
   await settingStore.checkUrlBound();
 });
 
-function menuClick(menu) {
+function menuClick(menu: any) {
   routerUtils.open(menu.path);
 }
 

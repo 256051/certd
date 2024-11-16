@@ -3,7 +3,7 @@ import * as sites from "./util.site";
 import * as storages from "./util.storage";
 import commons from "./util.common";
 import * as mitt from "./util.mitt";
-import router from "/util.router";
+import { routerUtils } from "./util.router";
 import { treeUtils } from "./util.tree";
 export const util = {
   ...envs,
@@ -11,6 +11,6 @@ export const util = {
   ...storages,
   ...commons,
   ...mitt,
-  ...router,
+  router: routerUtils,
   tree: treeUtils
 };

@@ -10,7 +10,7 @@ import { UserEntity } from '../modules/sys/authority/entity/user.js';
 import { PipelineEntity } from '../modules/pipeline/entity/pipeline.js';
 //import { logger } from '../utils/logger';
 // load .env file in process.cwd
-import { mergeConfig } from './loader.js';
+import { loadDotEnv, mergeConfig } from './loader.js';
 import { libServerEntities } from '@certd/lib-server';
 import { commercialEntities } from '@certd/commercial-core';
 import { tmpdir } from 'node:os';
@@ -123,6 +123,8 @@ const development = {
     contactLink: '',
   },
 } as MidwayConfig;
+loadDotEnv();
+
 mergeConfig(development, 'development');
 
 mergeConfig(development, env);

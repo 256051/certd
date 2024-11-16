@@ -1,6 +1,6 @@
 import { useRoute, useRouter } from "vue-router";
 import { ref, watch, onMounted, onUnmounted, resolveComponent, nextTick, defineComponent } from "vue";
-import _ from "lodash-es";
+import * as _ from "lodash-es";
 import BScroll from "better-scroll";
 import "./index.less";
 import { utils } from "@fast-crud/fast-crud";

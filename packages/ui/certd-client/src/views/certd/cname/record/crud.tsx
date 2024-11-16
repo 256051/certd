@@ -6,7 +6,7 @@ import { AddReq, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, Edi
 import { useUserStore } from "/@/store/modules/user";
 import { useSettingStore } from "/@/store/modules/settings";
 import { message } from "ant-design-vue";
-
+import CnameTip from "/@/components/plugins/cert/domains-verify-plan-editor/cname-tip.vue";
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const router = useRouter();
   const { t } = useI18n();
@@ -126,10 +126,23 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             component: {
               onDictChange: ({ form, dict }: any) => {
                 if (!form.cnameProviderId) {
-                  const item = dict.data.find((item: any) => item.isDefault);
+                  const list = dict.data.filter((item: any) => {
+                    return !item.disabled;
+                  });
+                  let item = list.find((item: any) => item.isDefault);
+                  if (!item && list.length > 0) {
+                    item = list[0];
+                  }
                   if (item) {
                     form.cnameProviderId = item.id;
                   }
+                }
+              },
+              renderLabel(item: any) {
+                if (item.title) {
+                  return `${item.domain}<${item.title}>`;
+                } else {
+                  return item.domain;
                 }
               }
             },
@@ -139,15 +152,26 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
                   crudExpose.getFormWrapperRef().close();
                 };
                 return (
-                  <router-link to={"/sys/cname/provider"} onClick={closeForm}>
-                    前往设置CNAME服务
-                  </router-link>
+                  <div>
+                    默认提供公共CNAME服务，您还可以
+                    <router-link to={"/sys/cname/provider"} onClick={closeForm}>
+                      自定义CNAME服务
+                    </router-link>
+                  </div>
                 );
               }
             }
           },
           column: {
-            show: false
+            width: 120,
+            align: "center",
+            cellRender({ value }) {
+              if (value < 0) {
+                return <a-tag color={"green"}>公共CNAME</a-tag>;
+              } else {
+                return <a-tag color={"blue"}>自定义CNAME</a-tag>;
+              }
+            }
           }
         },
         status: {
@@ -158,7 +182,8 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
               { label: "待设置CNAME", value: "cname", color: "warning" },
               { label: "验证中", value: "validating", color: "blue" },
               { label: "验证成功", value: "valid", color: "green" },
-              { label: "验证失败", value: "failed", color: "red" }
+              { label: "验证失败", value: "failed", color: "red" },
+              { label: "验证超时", value: "timeout", color: "red" }
             ]
           }),
           addForm: {
@@ -183,6 +208,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
               if (row.status === "valid") {
                 return "-";
               }
+
               async function doVerify() {
                 row._validating_ = true;
                 try {
@@ -190,7 +216,13 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
                   if (res === true) {
                     message.success("验证成功");
                     row.status = "valid";
+                  } else if (res === false) {
+                    message.success("验证超时");
+                    row.status = "timeout";
+                  } else {
+                    message.success("开始验证，请耐心等待");
                   }
+                  await crudExpose.doRefresh();
                 } catch (e: any) {
                   console.error(e);
                   message.error(e.message);
@@ -199,9 +231,12 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
                 }
               }
               return (
-                <a-button onClick={doVerify} loading={row._validating_} size={"small"} type={"primary"}>
-                  点击验证
-                </a-button>
+                <div>
+                  <a-button onClick={doVerify} loading={row._validating_} size={"small"} type={"primary"}>
+                    点击验证
+                  </a-button>
+                  <CnameTip record={row} />
+                </div>
               );
             }
           }

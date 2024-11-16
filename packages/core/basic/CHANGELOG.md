@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.27.4](https://github.com/certd/certd/compare/v1.27.3...v1.27.4) (2024-11-14)
+
+**Note:** Version bump only for package @certd/basic
+
+## [1.27.3](https://github.com/certd/certd/compare/v1.27.2...v1.27.3) (2024-11-13)
+
+### Bug Fixes
+
+* 修复ipv6未开启情况下，请求带有ipv6地址域名报ETIMEDOUT的bug ([a9a0967](https://github.com/certd/certd/commit/a9a0967a6f1d0bd27e69f3ec52c31d90d470bc23))
+
+## [1.27.2](https://github.com/certd/certd/compare/v1.27.1...v1.27.2) (2024-11-08)
+
+### Performance Improvements
+
+* 支持公共cname服务 ([3c919ee](https://github.com/certd/certd/commit/3c919ee5d1aef5d26cf3620a7c49d920786bc941))
+
+## [1.27.1](https://github.com/certd/certd/compare/v1.27.0...v1.27.1) (2024-11-04)
+
+### Performance Improvements
+
+* cname 域名映射记录可读性优化 ([b1117ed](https://github.com/certd/certd/commit/b1117ed54a3ef015752999324ff72b821ef5e4b9))
+
 # [1.27.0](https://github.com/certd/certd/compare/v1.26.16...v1.27.0) (2024-10-31)
 
 **Note:** Version bump only for package @certd/basic

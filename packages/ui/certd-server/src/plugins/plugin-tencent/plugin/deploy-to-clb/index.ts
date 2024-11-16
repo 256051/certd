@@ -1,4 +1,4 @@
-import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput, utils } from '@certd/pipeline';
+import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
 import { TencentAccess } from '@certd/plugin-plus';
 import dayjs from 'dayjs';
 
@@ -131,10 +131,10 @@ export class DeployCertToTencentCLB extends AbstractTaskPlugin {
     }
 
     try {
-      await utils.sleep(2000);
+      await this.ctx.utils.sleep(2000);
       let newCertId = await this.getCertIdFromProps(client);
       if ((lastCertId && newCertId === lastCertId) || (!lastCertId && !newCertId)) {
-        await utils.sleep(2000);
+        await this.ctx.utils.sleep(2000);
         newCertId = await this.getCertIdFromProps(client);
       }
       if (newCertId === lastCertId) {

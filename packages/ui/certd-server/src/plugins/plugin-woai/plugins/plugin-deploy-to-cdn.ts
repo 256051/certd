@@ -1,6 +1,7 @@
-import { AbstractTaskPlugin, HttpClient, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
+import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
 import { CertInfo } from '@certd/plugin-cert';
 import { WoaiAccess } from '../access.js';
+import { HttpClient } from '@certd/basic';
 
 @IsTaskPlugin({
   name: 'WoaiCDN',

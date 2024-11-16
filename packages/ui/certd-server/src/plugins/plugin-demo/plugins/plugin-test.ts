@@ -1,22 +1,26 @@
 import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
 import { CertInfo, CertReader } from '@certd/plugin-cert';
-import { isDev } from '../../../utils/env.js';
+import { isDev } from '@certd/basic';
 
 @IsTaskPlugin({
   name: 'demoTest',
   title: 'Demo测试插件',
   icon: 'clarity:plugin-line',
+  //插件分组
   group: pluginGroups.other.key,
   default: {
     strategy: {
       runStrategy: RunStrategy.SkipWhenSucceed,
     },
   },
+  // 你开发的插件要删除此项，否则不会在生产环墋中显示
+  deprecated: isDev() ? '测试插件,生产环境不显示' : undefined,
 })
 export class DemoTestPlugin extends AbstractTaskPlugin {
   //测试参数
   @TaskInput({
     title: '属性示例',
+    value: '默认值',
     component: {
       //前端组件配置，具体配置见组件文档 https://www.antdv.com/components/input-cn
       name: 'a-input',
@@ -57,7 +61,7 @@ export class DemoTestPlugin extends AbstractTaskPlugin {
       name: 'output-selector',
       from: ['CertApply', 'CertApplyLego'],
     },
-    // required: true,
+    // required: true, // 必填
   })
   cert!: CertInfo;
 
@@ -70,6 +74,7 @@ export class DemoTestPlugin extends AbstractTaskPlugin {
       type: 'demo', //固定授权类型
     },
     // rules: [{ required: true, message: '此项必填' }],
+    // required: true, //必填
   })
   accessId!: string;
 
@@ -98,8 +103,5 @@ export class DemoTestPlugin extends AbstractTaskPlugin {
     this.logger.info('授权id:', accessId);
   }
 }
-//TODO 这里实例化插件，进行注册
-if (isDev()) {
-  //你的实现 要去掉这个if，不然生产环境将不会显示
-  new DemoTestPlugin();
-}
+//实例化一下，注册插件
+new DemoTestPlugin();

@@ -1,6 +1,6 @@
 import { Config, Controller, Get, Inject, Provide } from '@midwayjs/core';
 import { BaseController, Constants, SysHeaderMenus, SysInstallInfo, SysPublicSettings, SysSettingsService, SysSiteEnv, SysSiteInfo } from '@certd/lib-server';
-import { AppKey, getPlusInfo } from '@certd/pipeline';
+import { AppKey, getPlusInfo } from '@certd/plus-core';
 
 /**
  */

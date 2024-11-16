@@ -23,6 +23,7 @@
         <a-form-item label="管理其他用户流水线" :name="['public', 'managerOtherUserPipeline']">
           <a-switch v-model:checked="formState.public.managerOtherUserPipeline" />
         </a-form-item>
+
         <a-form-item label="ICP备案号" :name="['public', 'icpNo']">
           <a-input v-model:value="formState.public.icpNo" placeholder="粤ICP备xxxxxxx号" />
         </a-form-item>
@@ -37,8 +38,22 @@
             <a-input v-model:value="formState.private.httpsProxy" placeholder="http://192.168.1.2:18010/" />
             <a-button class="ml-5" type="primary" :loading="testProxyLoading" title="保存后，再点击测试" @click="testProxy">测试</a-button>
           </div>
-          <div class="helper">一般这两个代理填一样的</div>
+          <div class="helper">一般这两个代理填一样的，保存后再测试</div>
         </a-form-item>
+
+        <a-form-item label="双栈网络" :name="['private', 'dnsResultOrder']">
+          <a-select v-model:value="formState.private.dnsResultOrder">
+            <a-select-option value="verbatim">默认</a-select-option>
+            <a-select-option value="ipv4first">IPV4优先</a-select-option>
+            <a-select-option value="ipv6first">IPV6优先</a-select-option>
+          </a-select>
+          <div class="helper">如果选择IPv6优先，需要在docker-compose.yaml中启用ipv6</div>
+        </a-form-item>
+
+        <a-form-item label="启用公共CNAME服务" :name="['private', 'commonCnameEnabled']">
+          <a-switch v-model:checked="formState.private.commonCnameEnabled" />
+        </a-form-item>
+
         <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
           <a-button :loading="saveLoading" type="primary" html-type="submit">保存</a-button>
         </a-form-item>
@@ -47,13 +62,14 @@
   </fs-page>
 </template>
 
-<script setup lang="ts">
+<script setup lang="tsx">
 import { reactive, ref } from "vue";
 import * as api from "./api";
 import { SysSettings } from "./api";
 import { notification } from "ant-design-vue";
 import { useSettingStore } from "/@/store/modules/settings";
 import { merge } from "lodash-es";
+import { util } from "/@/utils";
 
 defineOptions({
   name: "SysSettings"
@@ -111,7 +127,25 @@ async function testProxy() {
   testProxyLoading.value = true;
   try {
     const res = await api.TestProxy();
-    const content = `测试google:${res.google === true ? "成功" : "失败" + res.google}，测试百度:${res.baidu === true ? "成功" : "失败:" + res.baidu}`;
+    let success = true;
+    if (res.google !== true || res.baidu !== true) {
+      success = false;
+    }
+    const content = () => {
+      return (
+        <div>
+          <div>Google: {res.google === true ? "成功" : util.maxLength(res.google)}</div>
+          <div>Baidu: {res.baidu === true ? "成功" : util.maxLength(res.google)}</div>
+        </div>
+      );
+    };
+    if (!success) {
+      notification.error({
+        message: "测试失败",
+        description: content
+      });
+      return;
+    }
     notification.success({
       message: "测试完成",
       description: content

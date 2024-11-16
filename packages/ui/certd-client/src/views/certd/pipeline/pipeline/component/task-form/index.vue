@@ -80,7 +80,7 @@
 
 <script lang="ts">
 import { provide, Ref, ref } from "vue";
-import _ from "lodash-es";
+import * as _ from "lodash-es";
 import { nanoid } from "nanoid";
 import PiStepForm from "../step-form/index.vue";
 import { Modal } from "ant-design-vue";
