@@ -65,15 +65,33 @@ export class TencentDnsProvider extends AbstractDnsProvider {
     } catch (e: any) {
       if (e?.code === 'InvalidParameter.DomainRecordExist') {
         this.logger.info('域名解析已存在,无需重复添加:', fullRecord, value);
-        return {};
+        return await this.findRecord(options);
       }
       throw e;
     }
   }
 
+  async findRecord(options: CreateRecordOptions): Promise<any> {
+    const params = {
+      Domain: options.domain,
+      RecordType: [options.type],
+      Keyword: options.hostRecord,
+      RecordValue: options.value,
+    };
+    const ret = await this.client.DescribeRecordFilterList(params);
+    if (ret.RecordList && ret.RecordList.length > 0) {
+      this.logger.info('已存在解析记录:', ret.RecordList);
+      return ret.RecordList[0];
+    }
+    return {};
+  }
+
   async removeRecord(options: RemoveRecordOptions<any>) {
     const { fullRecord, value, domain } = options.recordReq;
     const record = options.recordRes;
+    if (!record) {
+      this.logger.info('解析记录recordId为空，不执行删除', fullRecord, value);
+    }
     const params = {
       Domain: domain,
       RecordId: record.RecordId,

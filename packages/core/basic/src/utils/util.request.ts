@@ -178,7 +178,10 @@ export function createAxiosService({ logger }: { logger: Logger }) {
       );
       logger.error('返回数据:', JSON.stringify(error.response?.data));
       if (error.response?.data) {
-        error.message = error.response.data.message || error.response.data.msg || error.response.data.error || error.response.data;
+        const message = error.response.data.message || error.response.data.msg || error.response.data.error;
+        if (typeof message === 'string') {
+          error.message = message;
+        }
       }
       if (error instanceof AggregateError) {
         logger.error('AggregateError', error);

@@ -49,19 +49,31 @@ export class CloudflareDnsProvider extends AbstractDnsProvider<CloudflareRecord>
   }
 
   private async doRequestApi(url: string, data: any = null, method = 'post') {
-    const res = await this.http.request<any, any>({
-      url,
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.access.apiToken}`,
-      },
-      data,
-    });
-    if (!res.success) {
-      throw new Error(`${JSON.stringify(res.errors)}`);
+    try {
+      const res = await this.http.request<any, any>({
+        url,
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.access.apiToken}`,
+        },
+        data,
+      });
+
+      if (!res.success) {
+        throw new Error(`${JSON.stringify(res.errors)}`);
+      }
+      return res;
+    } catch (e: any) {
+      const data = e.response?.data;
+      if (data && data.success === false && data.errors && data.errors.length > 0) {
+        if (data.errors[0].code === 81058) {
+          this.logger.info('dns解析记录重复');
+          return null;
+        }
+      }
+      throw e;
     }
-    return res;
   }
 
   /**
@@ -88,12 +100,28 @@ export class CloudflareDnsProvider extends AbstractDnsProvider<CloudflareRecord>
       type: type,
       ttl: 60,
     });
-    const record = res.result as CloudflareRecord;
-    this.logger.info(`添加域名解析成功:fullRecord=${fullRecord},value=${value}`);
-    this.logger.info(`dns解析记录:${JSON.stringify(record)}`);
-
+    let record: any = null;
+    if (res == null) {
+      //重复的记录
+      this.logger.info(`dns解析记录重复，无需重复添加`);
+      record = await this.findRecord(zoneId, options);
+    } else {
+      record = res.result as CloudflareRecord;
+      this.logger.info(`添加域名解析成功:fullRecord=${fullRecord},value=${value}`);
+      this.logger.info(`dns解析记录:${JSON.stringify(record)}`);
+    }
     //本接口需要返回本次创建的dns解析记录，这个记录会在删除的时候用到
     return record;
+  }
+
+  async findRecord(zoneId: string, options: CreateRecordOptions): Promise<CloudflareRecord | null> {
+    const { fullRecord, value } = options;
+    const url = `https://api.cloudflare.com/client/v4/zones/${zoneId}/dns_records?type=TXT&name=${fullRecord}&content=${value}`;
+    const res = await this.doRequestApi(url, null, 'get');
+    if (res.result.length === 0) {
+      return null;
+    }
+    return res.result[0] as CloudflareRecord;
   }
 
   /**
@@ -105,7 +133,7 @@ export class CloudflareDnsProvider extends AbstractDnsProvider<CloudflareRecord>
     const record = options.recordRes;
     this.logger.info('删除域名解析：', fullRecord, value);
     if (!record) {
-      this.logger.info('record不存在');
+      this.logger.info('record为空，不执行删除');
       return;
     }
     //这里调用删除txt dns解析记录接口
