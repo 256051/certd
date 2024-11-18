@@ -140,7 +140,7 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
     }
     this._result.pipelinePrivateVars.cert = cert;
 
-    if (cert.pfx == null || cert.der == null || cert.jks == null) {
+    if (isNew) {
       try {
         const converter = new CertConverter({ logger: this.logger });
         const res = await converter.convert({
@@ -151,21 +151,18 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
           const pfxBuffer = fs.readFileSync(res.pfxPath);
           cert.pfx = pfxBuffer.toString("base64");
           fs.unlinkSync(res.pfxPath);
-          isNew = true;
         }
 
         if (cert.der == null && res.derPath) {
           const derBuffer = fs.readFileSync(res.derPath);
           cert.der = derBuffer.toString("base64");
           fs.unlinkSync(res.derPath);
-          isNew = true;
         }
 
         if (cert.jks == null && res.jksPath) {
           const jksBuffer = fs.readFileSync(res.jksPath);
           cert.jks = jksBuffer.toString("base64");
           fs.unlinkSync(res.jksPath);
-          isNew = true;
         }
 
         this.logger.info("转换证书格式成功");
