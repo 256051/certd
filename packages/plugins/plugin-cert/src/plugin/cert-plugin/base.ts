@@ -291,7 +291,7 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
   }
 
   /**
-   * 检查是否过期，默认提前20天
+   * 检查是否过期，默认提前35天
    * @param expires
    * @param maxDays
    * @returns {boolean}
