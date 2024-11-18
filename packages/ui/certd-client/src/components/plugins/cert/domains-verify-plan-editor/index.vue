@@ -79,6 +79,7 @@ import CnameVerifyPlan from "./cname-verify-plan.vue";
 import psl from "psl";
 import { Form } from "ant-design-vue";
 import { DomainsVerifyPlanInput } from "./type";
+import { CnameRecord } from "./api";
 defineOptions({
   name: "DomainsVerifyPlanEditor"
 });
