@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.27.5](https://github.com/certd/certd/compare/v1.27.4...v1.27.5) (2024-11-18)
+
+### Bug Fixes
+
+* 修复1Panel面板本身证书更新导致判定执行失败的问题 ([2689e6d](https://github.com/certd/certd/commit/2689e6d6c03aba21da90d5d45232c6ba08696be1))
+* 修复角色无法删除的bug ([66629a5](https://github.com/certd/certd/commit/66629a591aecc2d8364ea415c7afc3f9d0406562))
+* 修复Cname情况下，无法使用DNS类型的bug ([26dad39](https://github.com/certd/certd/commit/26dad399d5768b3205da099ddc11809aef7d6224))
+
+### Performance Improvements
+
+* 日志查看自动滚动到底部 ([4a2f7eb](https://github.com/certd/certd/commit/4a2f7ebf87b7c027cebff7cb763f8f35f6d2aa36))
+* 系统设置中的代理设置优化为可全局生效，环境变量中的https_proxy设置将无效 ([381a37f](https://github.com/certd/certd/commit/381a37fbaa6b61c887eda743897ae00afb825bdf))
+* 新手导航在非编辑模式下不显示 ([18bfcc2](https://github.com/certd/certd/commit/18bfcc24ad0bde57bb04db8a4209861ec6b8ff1d))
+* 优化腾讯云 cloudflare 重复解析记录时的返回值 ([90d1b68](https://github.com/certd/certd/commit/90d1b68bd6cf232fbe085234efe07d29b7690044))
+* 支持namesilo ([80159ec](https://github.com/certd/certd/commit/80159ecca895103d0495f3217311199e66056572))
+* 专业版试用，无需绑定账号 ([c7c4318](https://github.com/certd/certd/commit/c7c4318c11b65a76089787aa58939832d338a232))
+
 ## [1.27.4](https://github.com/certd/certd/compare/v1.27.3...v1.27.4) (2024-11-14)
 
 ### Bug Fixes
