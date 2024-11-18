@@ -33,7 +33,7 @@
                       <span class="label">DNS类型：</span>
                       <span class="input">
                         <fs-dict-select
-                          v-model="item.dnsProviderType"
+                          v-model:value="item.dnsProviderType"
                           size="small"
                           :dict="dnsProviderTypeDict"
                           placeholder="DNS提供商"
