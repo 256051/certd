@@ -35,6 +35,12 @@ export class SysPlusController extends BaseController {
 
     return this.ok(true);
   }
+
+  @Post('/getVipTrial', { summary: 'sys:settings:edit' })
+  async getVipTrial(@Body(ALL) body) {
+    const res = await this.plusService.getVipTrial();
+    return this.ok(res);
+  }
   //
   // @Get('/test', { summary: Constants.per.guest })
   // async test() {

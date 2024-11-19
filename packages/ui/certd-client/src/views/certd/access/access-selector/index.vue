@@ -108,6 +108,7 @@ export default defineComponent({
         chooseForm.show = false;
         console.log("choose ok:", selectedId.value);
         refreshTarget(selectedId.value);
+        ctx.emit("change", selectedId.value);
         ctx.emit("update:modelValue", selectedId.value);
       }
     });

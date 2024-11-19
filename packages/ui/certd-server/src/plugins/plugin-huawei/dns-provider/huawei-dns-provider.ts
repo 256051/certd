@@ -105,6 +105,10 @@ export class HuaweiDnsProvider extends AbstractDnsProvider {
   async removeRecord(options: RemoveRecordOptions<any>): Promise<any> {
     const { fullRecord, value } = options.recordReq;
     const record = options.recordRes;
+    if (!record) {
+      this.logger.info('解析记录recordId为空，不执行删除', fullRecord, value);
+      return;
+    }
     const req: ApiRequestOptions = {
       url: `${this.dnsEndpoint}/v2/zones/${record.zone_id}/recordsets/${record.id}`,
       method: 'DELETE',

@@ -88,3 +88,21 @@ export class Registry<T> {
     return item.define;
   }
 }
+
+export function createRegistry<T>(type: string, onRegister?: OnRegister<T>) {
+  const pipelineregistrycacheKey = "PIPELINE_REGISTRY_CACHE";
+  // @ts-ignore
+  let cached: any = global[pipelineregistrycacheKey];
+  if (!cached) {
+    cached = {};
+    // @ts-ignore
+    global[pipelineregistrycacheKey] = cached;
+  }
+
+  if (cached[type]) {
+    return cached[type];
+  }
+  const newRegistry = new Registry<T>(type, onRegister);
+  cached[type] = newRegistry;
+  return newRegistry;
+}

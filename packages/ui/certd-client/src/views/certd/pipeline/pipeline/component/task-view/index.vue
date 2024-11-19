@@ -61,7 +61,6 @@ export default {
         if (currentHistory?.value?.logs != null) {
           node.logs = computed(() => {
             if (currentHistory?.value?.logs && currentHistory.value?.logs[node.node.id] != null) {
-              console.log("log changed", node.node.id);
               const logs = currentHistory.value?.logs[node.node.id];
               const list = [];
               for (let log of logs) {
@@ -86,7 +85,6 @@ export default {
             },
             async () => {
               let el = document.querySelector(`.pi-task-view-logs.${node.node.id}`);
-              console.log("el", el);
               //判断当前是否在底部
               const isBottom = el ? el.scrollHeight - el.scrollTop === el.clientHeight : true;
               await nextTick();

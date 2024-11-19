@@ -40,6 +40,7 @@ if (props.modelValue == null) {
 }
 const emit = defineEmits<{
   "update:modelValue": any;
+  change: any;
 }>();
 
 const errorMessage = ref<string | null>(null);
