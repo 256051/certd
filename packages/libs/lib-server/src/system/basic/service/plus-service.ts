@@ -28,7 +28,6 @@ export class PlusService {
       }
       licenseInfo.license = license;
       await this.sysSettingsService.saveSetting(licenseInfo);
-      await this.updateLicense(license);
     };
 
     return new PlusRequestService({ subjectId, bindUrl, installTime, saveLicense });
@@ -56,7 +55,9 @@ export class PlusService {
 
   async bindUrl(url: string) {
     const plusRequestService = await this.getPlusRequestService();
-    return await plusRequestService.bindUrl(url);
+    const res = await plusRequestService.bindUrl(url);
+    this.plusRequestService = null;
+    return res;
   }
 
   async register() {
@@ -65,6 +66,7 @@ export class PlusService {
     if (!licenseInfo.license) {
       await plusRequestService.register();
       logger.info('站点注册成功');
+      this.plusRequestService = null;
     }
   }
 
