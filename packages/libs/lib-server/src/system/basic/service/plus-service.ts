@@ -109,8 +109,8 @@ export class PlusService {
   }
 
   async getVipTrial() {
-    const plusRequestService = await this.getPlusRequestService();
     await this.register();
+    const plusRequestService = await this.getPlusRequestService();
     const res = await plusRequestService.request({
       url: '/activation/subject/vip/trialGet',
       method: 'POST',
