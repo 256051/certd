@@ -109,7 +109,7 @@
                                 </div>
                               </template>
                               <span class="flex-o w-100">
-                                <span class="ellipsis flex-1 task-title" :class="{ 'in-edit': editMode }">{{ task.title }}</span>
+                                <span class="ellipsis flex-1 task-title" :class="{ 'in-edit': editMode, deleted: task.disabled }">{{ task.title }}</span>
                                 <pi-status-show :status="task.status?.result"></pi-status-show>
                               </span>
                             </a-popover>
@@ -882,6 +882,9 @@ export default defineComponent({
               .task-title {
                 &.in-edit {
                   margin-right: 28px;
+                }
+                &.disabled{
+
                 }
               }
 
