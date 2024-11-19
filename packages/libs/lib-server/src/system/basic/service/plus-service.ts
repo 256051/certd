@@ -28,6 +28,7 @@ export class PlusService {
       }
       licenseInfo.license = license;
       await this.sysSettingsService.saveSetting(licenseInfo);
+      await this.updateLicense(license);
     };
 
     return new PlusRequestService({ subjectId, bindUrl, installTime, saveLicense });
