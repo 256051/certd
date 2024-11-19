@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.27.6](https://github.com/certd/certd/compare/v1.27.5...v1.27.6) (2024-11-19)
+
+### Performance Improvements
+
+* 当步骤全部都禁用时，任务本身显示删除线 ([9ab9a6e](https://github.com/certd/certd/commit/9ab9a6e8b083e19793894f23e59f29c604ec98e5))
+
 ## [1.27.5](https://github.com/certd/certd/compare/v1.27.4...v1.27.5) (2024-11-18)
 
 ### Bug Fixes

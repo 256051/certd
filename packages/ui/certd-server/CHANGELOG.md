@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.27.6](https://github.com/certd/certd/compare/v1.27.5...v1.27.6) (2024-11-19)
+
+### Bug Fixes
+
+* .env 读取 \r 问题 ([0e33dfa](https://github.com/certd/certd/commit/0e33dfa019a55ea76193c428ec756af386adeb9d))
+
 ## [1.27.5](https://github.com/certd/certd/compare/v1.27.4...v1.27.5) (2024-11-18)
 
 ### Bug Fixes

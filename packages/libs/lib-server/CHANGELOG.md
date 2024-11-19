@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.27.6](https://github.com/certd/certd/compare/v1.27.5...v1.27.6) (2024-11-19)
+
+### Bug Fixes
+
+* 修复vip试用secret报错的bug ([018dee6](https://github.com/certd/certd/commit/018dee6c383233560f078dfd30f6c2857a7e15ee))
+
 ## [1.27.5](https://github.com/certd/certd/compare/v1.27.4...v1.27.5) (2024-11-18)
 
 ### Performance Improvements
