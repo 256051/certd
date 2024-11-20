@@ -37,7 +37,7 @@ export class PipelineController extends CrudController<PipelineService> {
 
     const buildQuery = qb => {
       if (title) {
-        qb.andWhere('title like :title', { title: `%${title}%` }).orWhere('content like :content', { content: `%${title}%` });
+        qb.andWhere('(title like :title or content like :content)', { title: `%${title}%`, content: `%${title}%` });
       }
     };
     if (!body.sort || !body.sort?.prop) {
