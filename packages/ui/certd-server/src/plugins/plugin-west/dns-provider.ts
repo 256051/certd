@@ -1,7 +1,5 @@
 import { AbstractDnsProvider, CreateRecordOptions, IsDnsProvider, RemoveRecordOptions } from '@certd/plugin-cert';
 import { Autowire } from '@certd/pipeline';
-import { HttpClient, ILogger } from '@certd/basic';
-
 
 import { WestAccess } from './access.js';
 
@@ -26,13 +24,9 @@ export class WestDnsProvider extends AbstractDnsProvider<westRecord> {
   // 通过Autowire注入工具对象
   @Autowire()
   access!: WestAccess;
-  @Autowire()
-  logger!: ILogger;
-  http!: HttpClient;
 
   async onInstance() {
     // 也可以通过ctx成员变量传递context， 与Autowire效果一样
-    this.http = this.ctx.http;
     this.logger.debug('access:', this.access);
     //初始化的操作
     //...
@@ -45,7 +39,7 @@ export class WestDnsProvider extends AbstractDnsProvider<westRecord> {
     } else {
       data.apidomainkey = this.access.apidomainkey;
     }
-    const res = await this.http.request<any, any>({
+    const res = await this.ctx.http.request<any, any>({
       url,
       method,
       data,

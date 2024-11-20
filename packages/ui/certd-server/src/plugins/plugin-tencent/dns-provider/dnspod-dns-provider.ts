@@ -1,5 +1,4 @@
 import { Autowire } from '@certd/pipeline';
-import { HttpClient, ILogger } from '@certd/basic';
 
 import { AbstractDnsProvider, CreateRecordOptions, IsDnsProvider, RemoveRecordOptions } from '@certd/plugin-cert';
 import * as _ from 'lodash-es';
@@ -14,12 +13,7 @@ import { DnspodAccess } from '../access/index.js';
 })
 export class DnspodDnsProvider extends AbstractDnsProvider {
   @Autowire()
-  http!: HttpClient;
-
-  @Autowire()
   access!: DnspodAccess;
-  @Autowire()
-  logger!: ILogger;
 
   loginToken: any;
 

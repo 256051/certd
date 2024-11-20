@@ -1,5 +1,4 @@
 import { Autowire } from '@certd/pipeline';
-import { HttpClient, ILogger } from '@certd/basic';
 
 import { AbstractDnsProvider, CreateRecordOptions, IsDnsProvider, RemoveRecordOptions } from '@certd/plugin-cert';
 import { TencentAccess } from '@certd/plugin-plus';
@@ -12,12 +11,7 @@ import { TencentAccess } from '@certd/plugin-plus';
 })
 export class TencentDnsProvider extends AbstractDnsProvider {
   @Autowire()
-  http!: HttpClient;
-
-  @Autowire()
   access!: TencentAccess;
-  @Autowire()
-  logger!: ILogger;
 
   client!: any;
 

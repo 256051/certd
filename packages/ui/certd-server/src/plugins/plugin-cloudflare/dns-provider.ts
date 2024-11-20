@@ -1,6 +1,4 @@
 import { AbstractDnsProvider, CreateRecordOptions, IsDnsProvider, RemoveRecordOptions } from '@certd/plugin-cert';
-import { Autowire } from '@certd/pipeline';
-import { HttpClient, ILogger } from '@certd/basic';
 
 import { CloudflareAccess } from './access.js';
 
@@ -27,15 +25,11 @@ export type CloudflareRecord = {
 })
 export class CloudflareDnsProvider extends AbstractDnsProvider<CloudflareRecord> {
   // 通过Autowire传递context
-  @Autowire()
-  logger!: ILogger;
   access!: CloudflareAccess;
-  http!: HttpClient;
   async onInstance() {
     //一些初始化的操作
     // 也可以通过ctx成员变量传递context， 与Autowire效果一样
     this.access = this.ctx.access as CloudflareAccess;
-    this.http = this.ctx.http;
   }
 
   async getZoneId(domain: string) {

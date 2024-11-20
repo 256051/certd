@@ -102,6 +102,7 @@ export abstract class AbstractTaskPlugin implements ITaskPlugin {
   _result: TaskResult = { clearLastStatus: false, files: [], pipelineVars: {}, pipelinePrivateVars: {} };
   ctx!: TaskInstanceContext;
   logger!: ILogger;
+  http!: HttpClient;
   accessService!: IAccessService;
 
   clearLastStatus() {
@@ -122,6 +123,7 @@ export abstract class AbstractTaskPlugin implements ITaskPlugin {
     this.ctx = ctx;
     this.logger = ctx.logger;
     this.accessService = ctx.accessService;
+    this.http = ctx.http;
   }
 
   async getAccess<T = any>(accessId: string) {

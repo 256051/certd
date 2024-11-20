@@ -1,6 +1,4 @@
 import { AbstractDnsProvider, CreateRecordOptions, IsDnsProvider, RemoveRecordOptions } from '@certd/plugin-cert';
-import { Autowire } from '@certd/pipeline';
-import { HttpClient, ILogger } from '@certd/basic';
 import qs from 'qs';
 import { NamesiloAccess } from './access.js';
 import { merge } from 'lodash-es';
@@ -19,15 +17,11 @@ export type NamesiloRecord = {
 })
 export class NamesiloDnsProvider extends AbstractDnsProvider<NamesiloRecord> {
   // 通过Autowire传递context
-  @Autowire()
-  logger!: ILogger;
   access!: NamesiloAccess;
-  http!: HttpClient;
   async onInstance() {
     //一些初始化的操作
     // 也可以通过ctx成员变量传递context， 与Autowire效果一样
     this.access = this.ctx.access as NamesiloAccess;
-    this.http = this.ctx.http;
   }
 
   private async doRequest(url: string, params: any = null) {

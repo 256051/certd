@@ -96,7 +96,6 @@ export class CertApplyLegoPlugin extends CertApplyBasePlugin {
     this.accessService = this.ctx.accessService;
     this.logger = this.ctx.logger;
     this.userContext = this.ctx.userContext;
-    this.http = this.ctx.http;
     this.lastStatus = this.ctx.lastStatus as Step;
     if (this.legoEabAccessId) {
       this.eab = await this.accessService.getById(this.legoEabAccessId);

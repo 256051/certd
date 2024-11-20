@@ -120,6 +120,16 @@ export class DemoTestPlugin extends AbstractTaskPlugin {
     this.logger.info('select:', select);
     this.logger.info('switch:', this.switch);
     this.logger.info('授权id:', accessId);
+
+    const res = await this.http.request({
+      url: 'https://api.demo.com',
+      method: 'GET',
+    });
+    if (res.code !== 0) {
+      //检查res是否报错,你需要抛异常，来结束插件执行，否则会判定为执行成功，下次执行时会跳过本任务
+      throw new Error(res.message);
+    }
+    this.logger.info('部署成功:', res);
   }
 
   //此方法演示，如何让前端在添加插件时可以从后端获取选项，这里是后端返回选项的方法

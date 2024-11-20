@@ -1,4 +1,4 @@
-import { AbstractTaskPlugin, HttpClient, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
+import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
 import { CertInfo } from '@certd/plugin-cert';
 import { GcoreAccess } from '../access.js';
 
@@ -45,17 +45,14 @@ export class GcoreflushPlugin extends AbstractTaskPlugin {
     required: true,
   })
   accessId!: string;
-  http!: HttpClient;
   private readonly baseApi = 'https://api.gcore.com';
 
-  async onInstance() {
-    this.http = this.ctx.http;
-  }
+  async onInstance() {}
 
   private async doRequestApi(url: string, data: any = null, method = 'post', token: string | null = null) {
     const headers = {
       'Content-Type': 'application/json',
-      ...(token ? { 'authorization': `Bearer ${token}` } : {}),
+      ...(token ? { authorization: `Bearer ${token}` } : {}),
     };
     const res = await this.http.request<any, any>({
       url,
@@ -68,7 +65,7 @@ export class GcoreflushPlugin extends AbstractTaskPlugin {
   }
 
   async execute(): Promise<void> {
-    const { cert,accessId } = this;
+    const { cert, accessId } = this;
     const access = (await this.accessService.getById(accessId)) as GcoreAccess;
     let otp = null;
     if (access.otpkey) {

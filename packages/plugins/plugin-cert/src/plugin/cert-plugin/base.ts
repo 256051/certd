@@ -92,7 +92,6 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
   csrInfo!: string;
 
   userContext!: IContext;
-  http!: HttpClient;
   lastStatus!: Step;
 
   @TaskOutput({
@@ -102,7 +101,6 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
 
   async onInstance() {
     this.userContext = this.ctx.userContext;
-    this.http = this.ctx.http;
     this.lastStatus = this.ctx.lastStatus as Step;
     await this.onInit();
   }

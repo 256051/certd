@@ -1,4 +1,4 @@
-import { AbstractTaskPlugin, HttpClient, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
+import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
 import { CertInfo } from '@certd/plugin-cert';
 import { CacheflyAccess } from '../access.js';
 
@@ -35,12 +35,9 @@ export class CacheFlyPlugin extends AbstractTaskPlugin {
     required: true,
   })
   accessId!: string;
-  http!: HttpClient;
   private readonly baseApi = 'https://api.cachefly.com';
 
-  async onInstance() {
-    this.http = this.ctx.http;
-  }
+  async onInstance() {}
 
   private async doRequestApi(url: string, data: any = null, method = 'post', token: string | null = null) {
     const headers = {

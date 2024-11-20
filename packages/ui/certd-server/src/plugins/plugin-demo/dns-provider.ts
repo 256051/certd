@@ -1,6 +1,5 @@
 import { AbstractDnsProvider, CreateRecordOptions, IsDnsProvider, RemoveRecordOptions } from '@certd/plugin-cert';
 import { Autowire } from '@certd/pipeline';
-import { HttpClient, ILogger } from '@certd/basic';
 
 import { DemoAccess } from './access.js';
 import { isDev } from '../../utils/env.js';
@@ -22,13 +21,9 @@ export class DemoDnsProvider extends AbstractDnsProvider<DemoRecord> {
   // 通过Autowire注入工具对象
   @Autowire()
   access!: DemoAccess;
-  @Autowire()
-  logger!: ILogger;
-  http!: HttpClient;
 
   async onInstance() {
     // 也可以通过ctx成员变量传递context， 与Autowire效果一样
-    this.http = this.ctx.http;
     this.logger.debug('access', this.access);
     //初始化的操作
     //...

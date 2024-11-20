@@ -1,6 +1,5 @@
 import { AbstractDnsProvider, CreateRecordOptions, IsDnsProvider, RemoveRecordOptions } from '@certd/plugin-cert';
 import { Autowire } from '@certd/pipeline';
-import { ILogger } from '@certd/basic';
 
 import { AliyunAccess, AliyunClient } from '@certd/plugin-plus';
 
@@ -14,8 +13,6 @@ export class AliyunDnsProvider extends AbstractDnsProvider {
   client: any;
   @Autowire()
   access!: AliyunAccess;
-  @Autowire()
-  logger!: ILogger;
   async onInstance() {
     const access: any = this.access;
 
