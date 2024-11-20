@@ -107,6 +107,18 @@ export class AccessService extends BaseService<AccessEntity> {
     return await super.update(param);
   }
 
+  async getSimpleInfo(id: number) {
+    const entity = await this.info(id);
+    if (entity == null) {
+      throw new ValidateException('该授权配置不存在,请确认是否已被删除');
+    }
+    return {
+      id: entity.id,
+      name: entity.name,
+      userId: entity.userId,
+    };
+  }
+
   async getAccessById(id: any, checkUserId: boolean, userId?: number): Promise<any> {
     const entity = await this.info(id);
     if (entity == null) {

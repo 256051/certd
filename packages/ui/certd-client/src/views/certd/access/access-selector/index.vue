@@ -55,7 +55,7 @@ export default defineComponent({
     async function refreshTarget(value) {
       selectedId.value = value;
       if (value > 0) {
-        target.value = await api.GetObj(value);
+        target.value = await api.GetSimpleInfo(value);
       }
     }
 

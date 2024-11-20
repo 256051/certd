@@ -27,6 +27,7 @@ export class AuthService {
     }
   }
 
+  //管理员有权限查看其他用户的数据
   async checkEntityUserId(ctx: any, service: any, id: any = 0, userKey = 'userId') {
     const isAdmin = await this.isAdmin(ctx);
     if (isAdmin) {

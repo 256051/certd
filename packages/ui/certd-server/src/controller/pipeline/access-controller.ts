@@ -1,6 +1,7 @@
 import { ALL, Body, Controller, Inject, Post, Provide, Query } from '@midwayjs/core';
 import { Constants, CrudController } from '@certd/lib-server';
 import { AccessService } from '../../modules/pipeline/service/access-service.js';
+import { AuthService } from '../../modules/sys/authority/service/auth-service.js';
 
 /**
  * 授权
@@ -10,6 +11,8 @@ import { AccessService } from '../../modules/pipeline/service/access-service.js'
 export class AccessController extends CrudController<AccessService> {
   @Inject()
   service: AccessService;
+  @Inject()
+  authService: AuthService;
 
   getService(): AccessService {
     return this.service;
@@ -83,5 +86,12 @@ export class AccessController extends CrudController<AccessService> {
       });
     }
     return this.ok(dict);
+  }
+
+  @Post('/simpleInfo', { summary: Constants.per.authOnly })
+  async simpleInfo(@Query('id') id: number) {
+    await this.authService.checkEntityUserId(this.ctx, this.service, id);
+    const res = await this.service.getSimpleInfo(id);
+    return this.ok(res);
   }
 }
