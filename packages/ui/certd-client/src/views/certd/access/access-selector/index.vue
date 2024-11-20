@@ -17,9 +17,10 @@
 </template>
 
 <script>
-import { defineComponent, reactive, ref, watch } from "vue";
+import { defineComponent, reactive, ref, watch, inject } from "vue";
 import CertAccessModal from "./access/index.vue";
 import { createAccessApi } from "../api";
+import { message } from "ant-design-vue";
 
 export default defineComponent({
   name: "AccessSelector",
@@ -60,6 +61,10 @@ export default defineComponent({
     }
 
     function clear() {
+      if (pipeline && pipeline.userId !== target.value.userId) {
+        message.error("对不起，您不能修改他人流水线的授权");
+        return;
+      }
       selectedId.value = "";
       target.value = null;
       ctx.emit("update:modelValue", selectedId.value);
@@ -99,6 +104,9 @@ export default defineComponent({
       }
     );
 
+    //当不在pipeline中编辑时，可能为空
+    const pipeline = inject("pipeline", null);
+
     const chooseForm = reactive({
       show: false,
       open() {
@@ -108,6 +116,12 @@ export default defineComponent({
         chooseForm.show = false;
         console.log("choose ok:", selectedId.value);
         refreshTarget(selectedId.value);
+
+        if (pipeline && pipeline.userId !== target.value.userId) {
+          message.error("对不起，您不能修改他人流水线的授权");
+          return;
+        }
+
         ctx.emit("change", selectedId.value);
         ctx.emit("update:modelValue", selectedId.value);
       }
