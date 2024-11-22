@@ -52,6 +52,9 @@
 
         <a-form-item label="启用公共CNAME服务" :name="['private', 'commonCnameEnabled']">
           <a-switch v-model:checked="formState.private.commonCnameEnabled" />
+          <div class="helper">
+            是否可以使用公共CNAME服务，如果禁用，且没有设置<router-link to="/sys/cname/provider">自定义CNAME服务</router-link>，则无法使用CNAME代理方式申请证书
+          </div>
         </a-form-item>
 
         <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
