@@ -41,7 +41,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
   const typeRef = ref("");
   context.typeRef = typeRef;
   const commonColumnsDefine = getCommonColumnDefine(crudExpose, typeRef, api);
-  commonColumnsDefine.type.form.component.disabled = true;
+  commonColumnsDefine.type.editForm.component.disabled = true;
   return {
     typeRef,
     crudOptions: {

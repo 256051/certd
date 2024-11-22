@@ -138,7 +138,6 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           column: {
             width: 300,
             cellRender: ({ row, value }) => {
-              debugger;
               return (
                 <router-link to={{ path: "/certd/pipeline/detail", query: { id: row.pipelineId, editMode: false, historyId: row.id } }}>{value}</router-link>
               );

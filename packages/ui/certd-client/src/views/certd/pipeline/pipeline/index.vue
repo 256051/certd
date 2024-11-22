@@ -181,7 +181,7 @@
                       <div class="task">
                         <a-button shape="round" @click="notificationEdit(item, ii as number)">
                           <fs-icon icon="ion:notifications"></fs-icon>
-                          【通知】 {{ item.type }}
+                          【通知】 {{ item.title || item.type }}
                         </a-button>
                       </div>
                     </div>
@@ -199,8 +199,7 @@
                       <div class="task">
                         <a-button shape="round" @click="notificationEdit(item, index)">
                           <fs-icon icon="ion:notifications"></fs-icon>
-
-                          【通知】 {{ item.type }}
+                          【通知】 {{ item.title || item.type }}
                         </a-button>
                       </div>
                     </div>
@@ -883,8 +882,7 @@ export default defineComponent({
                 &.in-edit {
                   margin-right: 28px;
                 }
-                &.disabled{
-
+                &.disabled {
                 }
               }
 

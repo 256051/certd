@@ -86,6 +86,11 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
           color: "auto"
         }
       },
+      editForm: {
+        component: {
+          disabled: false
+        }
+      },
       form: {
         component: {
           disabled: false,
