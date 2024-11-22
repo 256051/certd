@@ -50,6 +50,17 @@ export const certdResources = [
         }
       },
       {
+        title: "通知设置",
+        name: "NotificationManager",
+        path: "/certd/notification",
+        component: "/certd/notification/index.vue",
+        meta: {
+          icon: "ion:disc-outline",
+          auth: true,
+          cache: true
+        }
+      },
+      {
         title: "CNAME记录管理",
         name: "CnameRecord",
         path: "/certd/cname/record",

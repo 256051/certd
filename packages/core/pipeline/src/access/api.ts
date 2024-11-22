@@ -2,7 +2,15 @@ import { Registrable } from "../registry/index.js";
 import { FormItemProps } from "../dt/index.js";
 import { HttpClient, ILogger, utils } from "@certd/basic";
 import * as _ from "lodash-es";
-import { AccessRequestHandleReq } from "../core";
+import { PluginRequestHandleReq } from "../plugin/index.js";
+
+export type AccessRequestHandleReqInput<T = any> = {
+  id?: number;
+  title?: string;
+  access: T;
+};
+
+export type AccessRequestHandleReq<T = any> = PluginRequestHandleReq<AccessRequestHandleReqInput<T>>;
 
 export type AccessInputDefine = FormItemProps & {
   title: string;

@@ -115,7 +115,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           }
         },
         cnameProviderId: {
-          title: "CNAME提供者",
+          title: "CNAME服务",
           type: "dict-select",
           dict: dict({
             url: "/cname/provider/list",

@@ -3,12 +3,20 @@ import { FileItem, FormItemProps, Pipeline, Runnable, Step } from "../dt/index.j
 import { FileStore } from "../core/file-store.js";
 import { IAccessService } from "../access/index.js";
 import { ICnameProxyService, IEmailService } from "../service/index.js";
-import { CancelError, IContext, PluginRequestHandleReq, RunnableCollection } from "../core/index.js";
+import { CancelError, IContext, RunnableCollection } from "../core/index.js";
 import { HttpRequestConfig, ILogger, logger, utils } from "@certd/basic";
 import { HttpClient } from "@certd/basic";
 import dayjs from "dayjs";
 import { IPluginConfigService } from "../service/config";
 import { upperFirst } from "lodash-es";
+
+export type PluginRequestHandleReq<T = any> = {
+  typeName: string;
+  action: string;
+  input: T;
+  data: any;
+};
+
 export type UserInfo = {
   role: "admin" | "user";
   id: any;

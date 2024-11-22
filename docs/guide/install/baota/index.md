@@ -81,4 +81,4 @@ services:
 
 ## 五、备份恢复
 
-将备份的`db.sqlite`覆盖到原来的位置即可
+将备份的`db.sqlite`覆盖到原来的位置，重启certd即可
