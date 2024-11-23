@@ -23,6 +23,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 
   const addRequest = async (req: AddReq) => {
     const { form } = req;
+    debugger;
     const res = await api.AddObj(form);
     return res;
   };

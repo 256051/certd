@@ -18,7 +18,7 @@ export function NewRunHistory(obj: any) {
   return history;
 }
 export class RunHistory {
-  id!: string;
+  id!: any;
   pipeline!: Pipeline;
   logs: {
     [runnableId: string]: string[];

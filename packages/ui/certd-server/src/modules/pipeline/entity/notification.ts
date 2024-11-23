@@ -6,7 +6,7 @@ export class NotificationEntity {
   id: number;
 
   @Column({ name: 'user_id', comment: 'UserId' })
-  userId: string;
+  userId: number;
 
   @Column({ name: 'type', comment: '通知类型' })
   type: string;

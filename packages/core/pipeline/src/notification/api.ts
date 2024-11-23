@@ -1,19 +1,20 @@
 import { PluginRequestHandleReq } from "../plugin";
 import { Registrable } from "../registry/index.js";
-import { FormItemProps } from "../dt/index.js";
+import { FormItemProps, HistoryResult, Pipeline } from "../dt/index.js";
 import { HttpClient, ILogger, utils } from "@certd/basic";
 import * as _ from "lodash-es";
-import { IEmailService } from "../service";
+import { IEmailService } from "../service/index.js";
 
 export type NotificationBody = {
   userId: number;
   title: string;
   content: string;
+  pipeline: Pipeline;
   pipelineId: number;
+  result?: HistoryResult;
   historyId: number;
-  url: string;
-  extra?: any;
-  options?: any;
+  errorMessage?: string;
+  url?: string;
 };
 
 export type NotificationRequestHandleReqInput<T = any> = {
@@ -34,11 +35,21 @@ export type NotificationDefine = Registrable & {
     [key: string]: NotificationInputDefine;
   };
 };
+
+export type NotificationInstanceConfig = {
+  id: number;
+  type: string;
+  userId: number;
+  setting: {
+    [key: string]: any;
+  };
+};
+
 export interface INotificationService {
-  send(body: NotificationBody): Promise<void>;
+  getById(id: number): Promise<NotificationInstanceConfig>;
 }
 
-export interface INotification extends INotificationService {
+export interface INotification {
   ctx: NotificationContext;
   [key: string]: any;
 }
@@ -55,6 +66,9 @@ export abstract class BaseNotification implements INotification {
   http!: HttpClient;
   logger!: ILogger;
   abstract send(body: NotificationBody): Promise<void>;
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  async onInstance() {}
   setCtx(ctx: NotificationContext) {
     this.ctx = ctx;
     this.http = ctx.http;

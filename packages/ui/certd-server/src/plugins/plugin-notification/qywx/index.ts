@@ -42,9 +42,10 @@ export class QywxNotification extends BaseNotification {
 
     await this.http.request({
       url: this.webhook,
+      method: 'POST',
       data: {
         msgtype: 'markdown',
-        text: {
+        markdown: {
           content: `# ${body.title}\n\n${body.content}\n[查看详情](${body.url})`,
           mentioned_list: this.mentionedList,
         },

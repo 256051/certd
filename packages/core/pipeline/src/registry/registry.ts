@@ -19,7 +19,7 @@ export type OnRegisterContext<T> = {
   value: RegistryItem<T>;
 };
 export type OnRegister<T> = (ctx: OnRegisterContext<T>) => void;
-export class Registry<T> {
+export class Registry<T = any> {
   type = "";
   storage: {
     [key: string]: RegistryItem<T>;
@@ -89,7 +89,7 @@ export class Registry<T> {
   }
 }
 
-export function createRegistry<T>(type: string, onRegister?: OnRegister<T>) {
+export function createRegistry<T>(type: string, onRegister?: OnRegister<T>): Registry<T> {
   const pipelineregistrycacheKey = "PIPELINE_REGISTRY_CACHE";
   // @ts-ignore
   let cached: any = global[pipelineregistrycacheKey];

@@ -41,7 +41,7 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
       }
       //字段配置赋值
       columnsRef.value[key] = column;
-      console.log("form", columnsRef.value);
+      console.log("form", columnsRef.value, form);
     });
   }
 
@@ -74,7 +74,7 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
       }
     },
     type: {
-      title: "类型",
+      title: "通知类型",
       type: "dict-select",
       dict: notificationTypeDictRef,
       search: {
@@ -100,7 +100,7 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
             return option.value.toLowerCase().indexOf(input) >= 0 || option.label.toLowerCase().indexOf(input) >= 0;
           }
         },
-        rules: [{ required: true, message: "请选择类型" }],
+        rules: [{ required: true, message: "请选择通知类型" }],
         valueChange: {
           immediate: true,
           async handle({ value, mode, form, immediate }) {
@@ -110,6 +110,7 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
             const define = await api.GetProviderDefine(value);
             currentDefine.value = define;
             console.log("define", define);
+            debugger;
             if (!immediate) {
               form.body = {};
             }
@@ -123,9 +124,6 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
           }
           return define.desc;
         })
-      },
-      addForm: {
-        value: typeRef
       }
     } as ColumnCompositionProps,
     setting: {

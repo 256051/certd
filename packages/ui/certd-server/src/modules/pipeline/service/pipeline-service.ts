@@ -23,6 +23,9 @@ import dayjs from 'dayjs';
 import { DbAdapter } from '../../db/index.js';
 import { isPlus } from '@certd/plus-core';
 import { logger } from '@certd/basic';
+import { UrlService } from './url-service.js';
+import { NotificationService } from './notification-service.js';
+import { NotificationGetter } from './notification-getter.js';
 
 const runningTasks: Map<string | number, Executor> = new Map();
 const freeCount = 10;
@@ -62,6 +65,12 @@ export class PipelineService extends BaseService<PipelineEntity> {
 
   @Config('certd')
   private certdConfig: any;
+
+  @Inject()
+  urlService: UrlService;
+
+  @Inject()
+  notificationService: NotificationService;
 
   @Inject()
   dbAdapter: DbAdapter;
@@ -384,6 +393,7 @@ export class PipelineService extends BaseService<PipelineEntity> {
     };
     const accessGetter = new AccessGetter(userId, this.accessService.getById.bind(this.accessService));
     const cnameProxyService = new CnameProxyService(userId, this.cnameRecordService.getWithAccessByDomain.bind(this.cnameRecordService));
+    const notificationGetter = new NotificationGetter(userId, this.notificationService.getById.bind(this.notificationService));
     const executor = new Executor({
       user,
       pipeline,
@@ -393,6 +403,8 @@ export class PipelineService extends BaseService<PipelineEntity> {
       pluginConfigService: this.pluginConfigGetter,
       storage: new DbStorage(userId, this.storageService),
       emailService: this.emailService,
+      urlService: this.urlService,
+      notificationService: notificationGetter,
       fileRootDir: this.certdConfig.fileRootDir,
     });
     try {

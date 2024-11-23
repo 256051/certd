@@ -6,7 +6,6 @@ import JSZip from "jszip";
 import { CertConverter } from "./convert.js";
 import fs from "fs";
 import { pick } from "lodash-es";
-import { HttpClient } from "@certd/basic";
 
 export { CertReader };
 export type { CertInfo };

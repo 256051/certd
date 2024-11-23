@@ -3,7 +3,7 @@ import { BaseService, ValidateException } from '@certd/lib-server';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
 import { NotificationEntity } from '../entity/notification.js';
-import { notificationRegistry } from '@certd/pipeline';
+import { NotificationInstanceConfig, notificationRegistry } from '@certd/pipeline';
 
 @Provide()
 @Scope(ScopeEnum.Singleton)
@@ -34,5 +34,30 @@ export class NotificationService extends BaseService<NotificationEntity> {
 
   getDefineByType(type: string) {
     return notificationRegistry.getDefine(type);
+  }
+
+  async getById(id: number, userId: number): Promise<NotificationInstanceConfig> {
+    if (!id) {
+      throw new ValidateException('id不能为空');
+    }
+    if (!userId) {
+      throw new ValidateException('userId不能为空');
+    }
+    const res = await this.repository.findOne({
+      where: {
+        id,
+        userId,
+      },
+    });
+    if (!res) {
+      throw new ValidateException('通知配置不存在');
+    }
+    const setting = JSON.parse(res.setting);
+    return {
+      id: res.id,
+      type: res.type,
+      userId: res.userId,
+      setting,
+    };
   }
 }

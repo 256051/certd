@@ -3,13 +3,14 @@ import { RunHistory, RunnableCollection } from "./run-history.js";
 import { AbstractTaskPlugin, PluginDefine, pluginRegistry, TaskInstanceContext, UserInfo } from "../plugin/index.js";
 import { ContextFactory, IContext } from "./context.js";
 import { IStorage } from "./storage.js";
-import { createAxiosService, hashUtils, HttpRequestConfig, ILogger, logger, utils } from "@certd/basic";
+import { createAxiosService, hashUtils, HttpRequestConfig, ILogger, logger, utils } from "@Certd/basic";
 import { IAccessService } from "../access/index.js";
 import { RegistryItem } from "../registry/index.js";
 import { Decorator } from "../decorator/index.js";
-import { ICnameProxyService, IEmailService, IPluginConfigService } from "../service/index.js";
+import { ICnameProxyService, IEmailService, IPluginConfigService, IUrlService } from "../service/index.js";
 import { FileStore } from "./file-store.js";
 import { cloneDeep, forEach, merge } from "lodash-es";
+import { INotificationService, NotificationBody, NotificationContext, notificationRegistry } from "../notification/index.js";
 
 export type ExecutorOptions = {
   pipeline: Pipeline;
@@ -17,10 +18,13 @@ export type ExecutorOptions = {
   onChanged: (history: RunHistory) => Promise<void>;
   accessService: IAccessService;
   emailService: IEmailService;
+  notificationService: INotificationService;
   cnameProxyService: ICnameProxyService;
   pluginConfigService: IPluginConfigService;
+  urlService: IUrlService;
   fileRootDir?: string;
   user: UserInfo;
+  baseURL?: string;
 };
 
 export class Executor {
@@ -357,20 +361,22 @@ export class Executor {
     if (!this.pipeline.notifications) {
       return;
     }
+    const url = await this.options.urlService.getPipelineDetailUrl(this.pipeline.id, this.runtime.id);
     let subject = "";
     let content = "";
+    const errorMessage = error?.message;
     if (when === "start") {
-      subject = `【CertD】开始执行，【${this.pipeline.id}】${this.pipeline.title}`;
-      content = `buildId:${this.runtime.id}`;
+      subject = `【Certd】开始执行，【${this.pipeline.id}】${this.pipeline.title}`;
+      content = `buildId:${this.runtime.id}\n查看详情:${url}`;
     } else if (when === "success") {
-      subject = `【CertD】执行成功，【${this.pipeline.id}】${this.pipeline.title}`;
-      content = `buildId:${this.runtime.id}`;
+      subject = `【Certd】执行成功，【${this.pipeline.id}】${this.pipeline.title}`;
+      content = `buildId:${this.runtime.id}\n查看详情:${url}`;
     } else if (when === "turnToSuccess") {
-      subject = `【CertD】执行成功（错误转成功），【${this.pipeline.id}】${this.pipeline.title}`;
-      content = `buildId:${this.runtime.id}`;
+      subject = `【Certd】执行成功（失败转成功），【${this.pipeline.id}】${this.pipeline.title}`;
+      content = `buildId:${this.runtime.id}\n查看详情:${url}`;
     } else if (when === "error") {
-      subject = `【CertD】执行失败，【${this.pipeline.id}】${this.pipeline.title}`;
-      content = `buildId:${this.runtime.id}\nerror:${error.message}`;
+      subject = `【Certd】执行失败，【${this.pipeline.id}】${this.pipeline.title}`;
+      content = `buildId:${this.runtime.id}\n查看详情:${url}\nerror:${error.message}`;
     } else {
       return;
     }
@@ -389,6 +395,39 @@ export class Executor {
           });
         } catch (e) {
           logger.error("send email error", e);
+        }
+      } else {
+        try {
+          //构建notification插件，发送通知
+          const notifyConfig = await this.options.notificationService.getById(notification.notificationId);
+          const notificationPlugin = notificationRegistry.get(notifyConfig.type);
+          const notificationCls: any = notificationPlugin.target;
+          const notificationSender = new notificationCls();
+          const notificationCtx: NotificationContext = {
+            http: utils.http,
+            logger,
+            utils,
+            emailService: this.options.emailService,
+          };
+          //设置参数
+          merge(notificationSender, notifyConfig.setting);
+          notificationSender.setCtx(notificationCtx);
+          await notificationSender.onInstance();
+          const body: NotificationBody = {
+            title: subject,
+            content,
+            userId: this.pipeline.userId,
+            pipeline: this.pipeline,
+            result: this.lastRuntime.pipeline.status,
+            pipelineId: this.pipeline.id,
+            historyId: this.runtime.id,
+            errorMessage,
+            url,
+          };
+          //发送通知
+          await notificationSender.send(body);
+        } catch (e) {
+          logger.error("send notification error", e);
         }
       }
     }

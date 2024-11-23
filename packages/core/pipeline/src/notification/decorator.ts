@@ -2,7 +2,6 @@
 import { Decorator } from "../decorator/index.js";
 import * as _ from "lodash-es";
 import { notificationRegistry } from "./registry.js";
-import { http, logger, utils } from "@certd/basic";
 import { NotificationContext, NotificationDefine, NotificationInputDefine } from "./api.js";
 
 // 提供一个唯一 key
@@ -39,7 +38,7 @@ export function NotificationInput(input?: NotificationInputDefine): PropertyDeco
   };
 }
 
-export function newNotification(type: string, input: any, ctx?: NotificationContext) {
+export function newNotification(type: string, input: any, ctx: NotificationContext) {
   const register = notificationRegistry.get(type);
   if (register == null) {
     throw new Error(`notification ${type} not found`);
@@ -50,11 +49,7 @@ export function newNotification(type: string, input: any, ctx?: NotificationCont
     access[key] = input[key];
   }
   if (!ctx) {
-    ctx = {
-      http,
-      logger,
-      utils,
-    };
+    throw new Error("ctx is required");
   }
   access.ctx = ctx;
   return access;

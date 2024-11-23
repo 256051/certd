@@ -68,7 +68,7 @@ const pipelineOptions: PipelineOptions = {
 const pipelineOptionsRef: Ref<PipelineOptions> = ref(pipelineOptions);
 
 const editMode = ref(false);
-if (route.query.editMode !== "false") {
+if (route.query.editMode === "true") {
   editMode.value = true;
 }
 
