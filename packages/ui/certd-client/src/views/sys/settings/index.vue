@@ -73,7 +73,7 @@ import { notification } from "ant-design-vue";
 import { useSettingStore } from "/@/store/modules/settings";
 import { merge } from "lodash-es";
 import { util } from "/@/utils";
-
+import NotificationSelector from "/src/views/certd/notification/notification-selector/index.vue";
 defineOptions({
   name: "SysSettings"
 });

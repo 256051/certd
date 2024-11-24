@@ -7,7 +7,7 @@
     <span v-else class="mlr-5 text-gray">{{ placeholder }}</span>
     <a-button class="ml-5" :disabled="disabled" :size="size" @click="chooseForm.open">选择</a-button>
     <a-form-item-rest v-if="chooseForm.show">
-      <a-modal v-model:open="chooseForm.show" title="选择通知" width="900px" @ok="chooseForm.ok">
+      <a-modal v-model:open="chooseForm.show" title="选择通知渠道" width="900px" @ok="chooseForm.ok">
         <div style="height: 400px; position: relative">
           <cert-notification-modal v-model="selectedId"></cert-notification-modal>
         </div>

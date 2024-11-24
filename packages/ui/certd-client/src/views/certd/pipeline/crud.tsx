@@ -14,7 +14,7 @@ import * as _ from "lodash-es";
 import { useModal } from "/@/use/use-modal";
 import CertView from "./cert-view.vue";
 import { eachStages } from "./utils";
-
+import { createApi as createNotificationApi } from "../notification/api";
 export default function ({ crudExpose, context: { certdFormRef } }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const router = useRouter();
   const { t } = useI18n();
@@ -102,13 +102,13 @@ export default function ({ crudExpose, context: { certdFormRef } }: CreateCrudOp
         triggers.push({ title: "定时触发", type: "timer", props: { cron: form.triggerCron } });
       }
       const notifications = [];
-      if (form.emailNotify) {
+      if (form.notification) {
+        const notify = await createNotificationApi().GetSimpleInfo(form.notification);
         notifications.push({
-          type: "email",
+          type: "custom",
           when: ["error", "turnToSuccess"],
-          options: {
-            receivers: [form.email]
-          }
+          notificationId: form.notification,
+          title: notify.name
         });
       }
       let pipeline = {

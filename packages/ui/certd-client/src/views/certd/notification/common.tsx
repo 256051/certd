@@ -110,7 +110,6 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
             const define = await api.GetProviderDefine(value);
             currentDefine.value = define;
             console.log("define", define);
-            debugger;
             if (!immediate) {
               form.body = {};
             }

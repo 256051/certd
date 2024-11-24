@@ -1,21 +1,8 @@
 // @ts-ignore
 import { request } from "/@/api/service";
+import { SysPrivateSetting, SysPublicSetting } from "/@/api/modules/api.basic";
 const apiPrefix = "/sys/settings";
 export type SysSettings = { public: SysPublicSetting; private: SysPrivateSetting };
-
-export type SysPublicSetting = {
-  registerEnabled?: boolean;
-  limitUserPipelineCount?: number;
-  managerOtherUserPipeline?: boolean;
-  icpNo?: string;
-};
-
-export type SysPrivateSetting = {
-  httpProxy?: string;
-  httpsProxy?: string;
-  dnsResultOrder?: string;
-  commonCnameEnabled?: boolean;
-};
 
 export const SettingKeys = {
   SysPublic: "sys.public",

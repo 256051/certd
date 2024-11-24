@@ -58,7 +58,7 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
     },
     required: true,
     helper:
-      "DNS直接验证：域名是在阿里云、腾讯云、华为云、Cloudflare、西数注册的，选它。\nCNAME代理验证：支持任何注册商注册的域名，但第一次需要手动添加CNAME记录",
+      "DNS直接验证：域名是在阿里云、腾讯云、华为云、Cloudflare、NameSilo、西数注册的，选它。\nCNAME代理验证：支持任何注册商注册的域名，但第一次需要手动添加CNAME记录",
   })
   challengeType!: string;
 

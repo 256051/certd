@@ -24,11 +24,18 @@ export type PlusInfo = {
   isComm?: boolean;
 };
 export type SysPublicSetting = {
-  registerEnabled: boolean;
-  managerOtherUserPipeline: boolean;
+  registerEnabled?: boolean;
+  limitUserPipelineCount?: number;
+  managerOtherUserPipeline?: boolean;
   icpNo?: string;
 };
 
+export type SysPrivateSetting = {
+  httpProxy?: string;
+  httpsProxy?: string;
+  dnsResultOrder?: string;
+  commonCnameEnabled?: boolean;
+};
 export type SysInstallInfo = {
   siteId: string;
 };

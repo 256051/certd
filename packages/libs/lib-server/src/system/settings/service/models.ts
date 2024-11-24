@@ -18,6 +18,8 @@ export class SysPublicSettings extends BaseSettings {
   limitUserPipelineCount = 0;
   managerOtherUserPipeline = false;
   icpNo?: string;
+  defaultCron?: string;
+  defaultNotification?: number;
   // triggerOnStartup = false;
 }
 

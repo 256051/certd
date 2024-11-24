@@ -5,6 +5,7 @@ import _, { merge } from "lodash-es";
 import { useUserStore } from "/@/store/modules/user";
 import { useSettingStore } from "/@/store/modules/settings";
 import * as api from "../api.plugin";
+import NotificationSelector from "/@/views/certd/notification/notification-selector/index.vue";
 export default function (certPluginGroup: PluginGroup, formWrapperRef: any): CreateCrudOptionsRet {
   const inputs: any = {};
   const userStore = useUserStore();
@@ -102,30 +103,16 @@ export default function (certPluginGroup: PluginGroup, formWrapperRef: any): Cre
             order: 100
           }
         },
-        emailNotify: {
-          title: "失败邮件通知",
-          type: "dict-switch",
-          dict: dict({
-            data: [
-              { value: true, label: "启用" },
-              { value: false, label: "不启用" }
-            ]
-          }),
+        notification: {
+          title: "失败通知",
+          type: "text",
           form: {
+            component: {
+              name: NotificationSelector,
+              vModel: "modelValue"
+            },
             order: 101,
-            value: true,
-            helper: {
-              render: () => {
-                if (settingStore.isPlus) {
-                  return "建议启用";
-                }
-                return (
-                  <div>
-                    建议启用，需要配置<router-link to={{ path: "/sys/settings/email" }}>邮件服务器</router-link>才能发送邮件
-                  </div>
-                );
-              }
-            }
+            helper: "建议设置，任务执行失败实时提醒"
           }
         }
       }
