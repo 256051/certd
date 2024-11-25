@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.27.7](https://github.com/certd/certd/compare/v1.27.6...v1.27.7) (2024-11-25)
+
+### Bug Fixes
+
+* 修复关键字查询bug ([fab6660](https://github.com/certd/certd/commit/fab66606b35a540fac31fee902331ba1ffdebc16))
+* 修复CNAME时子域名级数超出限制的问题 ([3af6d96](https://github.com/certd/certd/commit/3af6d96e6e353c9b2111cff81679b79c55195a0a))
+
+### Performance Improvements
+
+* 谷歌EAB绑定邮箱改成必填 ([81a8123](https://github.com/certd/certd/commit/81a8123725d7bf4bd6a32a64a066bd760b7b6a7f))
+* 华为云密钥获取提示及访问链接 ([de43391](https://github.com/certd/certd/commit/de43391e4c12dc3ad976f8fa8787f4eb70a41e75))
+* 通知管理 ([d9a00ee](https://github.com/certd/certd/commit/d9a00eeaf72735ced67c59d7983d84e3c730064a))
+* 通知渠道支持测试按钮 ([b54ae27](https://github.com/certd/certd/commit/b54ae272ebc2d31b32b049d44e2299a6be7f153c))
+* 优化插件开发，dnsProvider无需写http logger 变量 ([fcbb5e4](https://github.com/certd/certd/commit/fcbb5e46a112174150a62648319b8224fce3b7ed))
+* 支持部署到阿里云WAF ([c96fcb7](https://github.com/certd/certd/commit/c96fcb7afced979435cffa73591275008033c90d))
+* 支持企业微信群聊机器人通知 ([b805a29](https://github.com/certd/certd/commit/b805a2925984144a31575b8aaa622f0c30d41b56))
+
 ## [1.27.6](https://github.com/certd/certd/compare/v1.27.5...v1.27.6) (2024-11-19)
 
 ### Bug Fixes
