@@ -68,7 +68,7 @@ export class EmailService implements IEmailService {
         //自动使用plus发邮件
         return await this.sendByPlus(email);
       }
-      throw new Error('email settings 还未设置');
+      throw new Error('邮件服务器还未设置');
     }
 
     if (emailConf.usePlus && isPlus()) {
