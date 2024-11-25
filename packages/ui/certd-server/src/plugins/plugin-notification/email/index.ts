@@ -15,7 +15,7 @@ export class EmailNotification extends BaseNotification {
       open: false,
     },
     required: true,
-    helper: '可以填写多个，填写一个按回车键再填写下一个',
+    helper: '可以填写多个，填写一个按回车键再填写下一个\n需要先[配置邮件服务器](#/sys/settings/email)',
   })
   receivers!: string[];
 
