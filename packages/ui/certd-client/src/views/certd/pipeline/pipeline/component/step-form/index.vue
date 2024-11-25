@@ -86,13 +86,13 @@
                 },
                 rules: [{ required: true, message: '此项必填' }]
               }"
-              :get-context-fn="blankFn"
+              :get-context-fn="getScopeFunc"
             />
             <template v-for="(item, key) in currentPlugin.input" :key="key">
-              <fs-form-item v-if="item.show !== false" v-model="currentStep.input[key]" :item="item" :get-context-fn="blankFn" />
+              <fs-form-item v-if="item.show !== false" v-model="currentStep.input[key]" :item="item" :get-context-fn="getScopeFunc" />
             </template>
 
-            <fs-form-item v-model="currentStep.strategy.runStrategy" :item="runStrategyProps" :get-context-fn="blankFn" />
+            <fs-form-item v-model="currentStep.strategy.runStrategy" :item="runStrategyProps" :get-context-fn="getScopeFunc" />
           </a-form>
         </div>
         <template #footer>
@@ -305,8 +305,10 @@ export default {
         stepDrawerClose();
       };
 
-      const blankFn = () => {
-        return {};
+      const getScopeFunc = () => {
+        return {
+          form: currentStep.value
+        };
       };
 
       const pluginSearch = ref({
@@ -362,7 +364,7 @@ export default {
         stepSave,
         stepDelete,
         rules,
-        blankFn,
+        getScopeFunc,
         stepCopy,
         fullscreen
       };

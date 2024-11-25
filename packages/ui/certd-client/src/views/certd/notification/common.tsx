@@ -149,14 +149,7 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
         }),
         component: {
           name: "api-test",
-          type: "notification",
-          typeName: compute(({ form }) => {
-            return form.type;
-          }),
-          action: "TestRequest",
-          form: compute(({ form }) => {
-            return form;
-          })
+          action: "TestRequest"
         },
         order: 999
       },

@@ -87,7 +87,7 @@ const getOptions = async () => {
         type: pluginType,
         typeName: form.type,
         action: props.action,
-        input: form
+        input: pluginType === "plugin" ? form.input : form
       },
       {
         onError(err: any) {
