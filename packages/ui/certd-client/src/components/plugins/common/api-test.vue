@@ -11,11 +11,14 @@
 </template>
 <script setup lang="ts">
 import { ComponentPropsType, doRequest } from "/@/components/plugins/lib";
-import { ref } from "vue";
+import { ref, inject } from "vue";
 
 defineOptions({
   name: "ApiTest"
 });
+
+const getScope: any = inject("get:scope");
+const getPluginType: any = inject("get:plugin:type");
 
 const props = defineProps<{} & ComponentPropsType>();
 
@@ -31,16 +34,20 @@ const doTest = async () => {
     return;
   }
 
+  const { form } = getScope();
+  const pluginType = getPluginType();
+
   message.value = "";
   hasError.value = false;
   loading.value = true;
+  debugger;
   try {
     const res = await doRequest(
       {
-        type: props.type,
-        typeName: props.typeName,
+        type: pluginType,
+        typeName: form.type,
         action: props.action,
-        input: props.form
+        input: form
       },
       {
         onError(err: any) {
@@ -50,9 +57,7 @@ const doTest = async () => {
         showErrorNotify: false
       }
     );
-    if (res && res.length > 0) {
-      message.value = "测试请求成功";
-    }
+    message.value = "测试请求成功";
   } finally {
     loading.value = false;
   }

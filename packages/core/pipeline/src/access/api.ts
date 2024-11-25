@@ -41,6 +41,10 @@ export type AccessContext = {
 export abstract class BaseAccess implements IAccess {
   ctx!: AccessContext;
 
+  setCtx(ctx: AccessContext) {
+    this.ctx = ctx;
+  }
+
   async onRequest(req: AccessRequestHandleReq) {
     if (!req.action) {
       throw new Error("action is required");

@@ -222,6 +222,9 @@ export default {
       provide("getCurrentPluginDefine", () => {
         return currentPluginDefine;
       });
+      provide("get:plugin:type", () => {
+        return "plugin";
+      });
 
       function getContext() {
         return {

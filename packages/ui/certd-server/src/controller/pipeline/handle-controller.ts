@@ -1,11 +1,21 @@
 import { ALL, Body, Controller, Inject, Post, Provide } from '@midwayjs/core';
 import { Constants } from '@certd/lib-server';
-import { AccessRequestHandleReq, ITaskPlugin, newAccess, pluginRegistry, PluginRequestHandleReq, TaskInstanceContext } from '@certd/pipeline';
+import {
+  AccessRequestHandleReq,
+  ITaskPlugin,
+  newAccess,
+  newNotification,
+  NotificationRequestHandleReq,
+  pluginRegistry,
+  PluginRequestHandleReq,
+  TaskInstanceContext,
+} from '@certd/pipeline';
 import { BaseController } from '@certd/lib-server';
 import { AccessService } from '../../modules/pipeline/service/access-service.js';
 import { EmailService } from '../../modules/basic/service/email-service.js';
 import { AccessGetter } from '../../modules/pipeline/service/access-getter.js';
 import { http, HttpRequestConfig, logger, mergeUtils, utils } from '@certd/basic';
+import { NotificationService } from '../../modules/pipeline/service/notification-service.js';
 
 @Provide()
 @Controller('/api/pi/handle')
@@ -16,12 +26,18 @@ export class HandleController extends BaseController {
   @Inject()
   emailService: EmailService;
 
+  @Inject()
+  notificationService: NotificationService;
+
   @Post('/access', { summary: Constants.per.authOnly })
   async accessRequest(@Body(ALL) body: AccessRequestHandleReq) {
     let inputAccess = body.input.access;
     if (body.input.id > 0) {
       const oldEntity = await this.accessService.info(body.input.id);
       if (oldEntity) {
+        if (oldEntity.userId !== this.getUserId()) {
+          throw new Error('access not found');
+        }
         const param: any = {
           type: body.typeName,
           setting: JSON.stringify(body.input.access),
@@ -34,6 +50,34 @@ export class HandleController extends BaseController {
     const access = newAccess(body.typeName, inputAccess);
 
     const res = await access.onRequest(body);
+
+    return this.ok(res);
+  }
+
+  @Post('/notification', { summary: Constants.per.authOnly })
+  async notificationRequest(@Body(ALL) body: NotificationRequestHandleReq) {
+    const input = body.input.body;
+    // if (body.input.id > 0) {
+    //   const oldEntity = await this.notificationService.info(body.input.id);
+    //   if (oldEntity) {
+    //     if (oldEntity.userId !== this.getUserId()) {
+    //       throw new Error('notification not found');
+    //     }
+    //     const param: any = {
+    //       type: body.typeName,
+    //       setting: JSON.stringify(body.input.access),
+    //     };
+    //   }
+    // }
+
+    const notification = newNotification(body.typeName, input, {
+      http,
+      logger,
+      utils,
+      emailService: this.emailService,
+    });
+
+    const res = await notification.onRequest(body);
 
     return this.ok(res);
   }

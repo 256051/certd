@@ -1,10 +1,13 @@
-import { ColumnCompositionProps, dict } from "@fast-crud/fast-crud";
+import { ColumnCompositionProps, compute, dict } from "@fast-crud/fast-crud";
 import { computed, provide, ref, toRef } from "vue";
 import { useReference } from "/@/use/use-refrence";
 import { forEach, get, merge, set } from "lodash-es";
 
 export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
   provide("notificationApi", api);
+  provide("get:plugin:type", () => {
+    return "notification";
+  });
   const notificationTypeDictRef = dict({
     url: "/pi/notification/getTypeDict"
   });
@@ -125,6 +128,26 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
         })
       }
     } as ColumnCompositionProps,
+    test: {
+      title: "测试",
+      form: {
+        component: {
+          name: "api-test",
+          type: "notification",
+          typeName: compute(({ form }) => {
+            return form.type;
+          }),
+          action: "TestRequest",
+          form: compute(({ form }) => {
+            return form;
+          })
+        },
+        order: 999
+      },
+      column: {
+        show: false
+      }
+    },
     setting: {
       column: { show: false },
       form: {

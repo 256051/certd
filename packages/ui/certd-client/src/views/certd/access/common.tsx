@@ -6,6 +6,9 @@ import SecretPlainGetter from "/@/views/certd/access/access-selector/access/secr
 
 export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
   provide("accessApi", api);
+  provide("get:plugin:type", () => {
+    return "access";
+  });
   const AccessTypeDictRef = dict({
     url: "/pi/access/accessTypeDict"
   });

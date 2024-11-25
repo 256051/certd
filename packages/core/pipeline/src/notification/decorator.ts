@@ -44,13 +44,13 @@ export function newNotification(type: string, input: any, ctx: NotificationConte
     throw new Error(`notification ${type} not found`);
   }
   // @ts-ignore
-  const access = new register.target();
+  const plugin = new register.target();
   for (const key in input) {
-    access[key] = input[key];
+    plugin[key] = input[key];
   }
   if (!ctx) {
     throw new Error("ctx is required");
   }
-  access.ctx = ctx;
-  return access;
+  plugin.setCtx(ctx);
+  return plugin;
 }

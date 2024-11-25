@@ -19,7 +19,6 @@ defineOptions({
 });
 
 const props = defineProps<ComponentPropsType>();
-
 const emit = defineEmits<{
   "update:value": any;
 }>();

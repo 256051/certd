@@ -93,4 +93,19 @@ export abstract class BaseNotification implements INotification {
     }
     throw new Error(`action ${req.action} not found`);
   }
+
+  async onTestRequest() {
+    await this.send({
+      userId: 0,
+      title: "测试通知",
+      content: "测试通知",
+      pipeline: {
+        id: 1,
+        title: "测试流水线",
+      } as any,
+      pipelineId: 1,
+      historyId: 1,
+      url: "http://www.baidu.com",
+    });
+  }
 }

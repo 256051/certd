@@ -56,6 +56,6 @@ export function newAccess(type: string, input: any, ctx?: AccessContext) {
       utils,
     };
   }
-  access.ctx = ctx;
+  access.setCtx(ctx);
   return access;
 }
