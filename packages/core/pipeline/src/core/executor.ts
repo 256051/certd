@@ -3,7 +3,7 @@ import { RunHistory, RunnableCollection } from "./run-history.js";
 import { AbstractTaskPlugin, PluginDefine, pluginRegistry, TaskInstanceContext, UserInfo } from "../plugin/index.js";
 import { ContextFactory, IContext } from "./context.js";
 import { IStorage } from "./storage.js";
-import { createAxiosService, hashUtils, HttpRequestConfig, ILogger, logger, utils } from "@Certd/basic";
+import { createAxiosService, hashUtils, HttpRequestConfig, ILogger, logger, utils } from "@certd/basic";
 import { IAccessService } from "../access/index.js";
 import { RegistryItem } from "../registry/index.js";
 import { Decorator } from "../decorator/index.js";
