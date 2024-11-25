@@ -11,6 +11,7 @@ export class QywxNotification extends BaseNotification {
     component: {
       placeholder: 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxx',
     },
+    helper: '[企微群聊机器人配置说明](https://developer.work.weixin.qq.com/document/path/91770)',
     required: true,
   })
   webhook = '';

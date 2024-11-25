@@ -18,3 +18,4 @@ ALIYUN_CLIENT_READ_TIMEOUT=10000 #读取数据超时，单位毫秒
 * 上传证书到阿里云： `AliyunYundunCertFullAccess`
 * 部署证书到OSS: `AliyunYundunCertFullAccess`、`AliyunOSSFullAccess`
 * 部署证书到CDN: `AliyunYundunCertFullAccess`、`AliyunCDNFullAccess`
+* 部署证书到DCDN： `AliyunYundunCertFullAccess`、`AliyunDCDNFullAccess`

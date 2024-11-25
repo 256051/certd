@@ -62,20 +62,6 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
         show: false
       }
     },
-    name: {
-      title: "通知名称",
-      search: {
-        show: true
-      },
-      type: ["text"],
-      form: {
-        rules: [{ required: true, message: "请填写名称" }],
-        helper: "随便填，当多个相同类型的通知时，便于区分"
-      },
-      column: {
-        width: 200
-      }
-    },
     type: {
       title: "通知类型",
       type: "dict-select",
@@ -110,11 +96,17 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
             if (value == null) {
               return;
             }
+            const lastTitle = currentDefine.value?.title;
             const define = await api.GetProviderDefine(value);
             currentDefine.value = define;
             console.log("define", define);
+
             if (!immediate) {
               form.body = {};
+            }
+
+            if (!form.name || form.name === lastTitle) {
+              form.name = define.title;
             }
             buildDefineFields(define, form, mode);
           }
@@ -128,9 +120,26 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
         })
       }
     } as ColumnCompositionProps,
+    name: {
+      title: "通知名称",
+      search: {
+        show: true
+      },
+      type: ["text"],
+      form: {
+        rules: [{ required: true, message: "请填写名称" }],
+        helper: "随便填，当多个相同类型的通知时，便于区分"
+      },
+      column: {
+        width: 200
+      }
+    },
     test: {
       title: "测试",
       form: {
+        show: compute(({ form }) => {
+          return !!form.type;
+        }),
         component: {
           name: "api-test",
           type: "notification",

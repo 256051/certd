@@ -55,7 +55,7 @@ export const certdResources = [
         path: "/certd/notification",
         component: "/certd/notification/index.vue",
         meta: {
-          icon: "ion:disc-outline",
+          icon: "ion:megaphone-outline",
           auth: true,
           cache: true
         }
