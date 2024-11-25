@@ -1,6 +1,6 @@
 import { Config, Controller, Get, Inject, Provide } from '@midwayjs/core';
 import { BaseController, Constants, SysHeaderMenus, SysInstallInfo, SysPublicSettings, SysSettingsService, SysSiteEnv, SysSiteInfo } from '@certd/lib-server';
-import { AppKey, getPlusInfo } from '@certd/plus-core';
+import { AppKey, getPlusInfo, isComm } from '@certd/plus-core';
 
 /**
  */
@@ -49,7 +49,10 @@ export class BasicSettingsController extends BaseController {
   async getAllSettings() {
     const sysPublic = await this.getSysPublic();
     const installInfo = await this.getInstallInfo();
-    const siteInfo = await this.getSiteInfo();
+    let siteInfo = {};
+    if (!isComm()) {
+      siteInfo = await this.getSiteInfo();
+    }
     const siteEnv = await this.getSiteEnv();
     const plusInfo = await this.plusInfo();
     const headerMenus = await this.getHeaderMenus();
