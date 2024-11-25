@@ -59,4 +59,9 @@ export class SysAccessController extends AccessController {
   async getAccessTypeDict() {
     return await super.getAccessTypeDict();
   }
+
+  @Post('/simpleInfo', { summary: 'sys:settings:view' })
+  async simpleInfo(@Query('id') id: number) {
+    return await super.simpleInfo(id);
+  }
 }

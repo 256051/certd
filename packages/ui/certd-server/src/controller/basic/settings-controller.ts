@@ -50,7 +50,7 @@ export class BasicSettingsController extends BaseController {
     const sysPublic = await this.getSysPublic();
     const installInfo = await this.getInstallInfo();
     let siteInfo = {};
-    if (!isComm()) {
+    if (isComm()) {
       siteInfo = await this.getSiteInfo();
     }
     const siteEnv = await this.getSiteEnv();
