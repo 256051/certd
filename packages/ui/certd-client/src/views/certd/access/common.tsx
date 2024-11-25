@@ -47,6 +47,13 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
       //eval
       useReference(column);
 
+      if (column.required) {
+        if (!column.rules) {
+          column.rules = [];
+        }
+        column.rules.push({ required: true, message: "此项必填" });
+      }
+
       //设置默认值
       if (column.value != null && get(form, key) == null) {
         set(form, key, column.value);

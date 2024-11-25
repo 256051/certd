@@ -57,6 +57,10 @@ export class EmailService implements IEmailService {
   async send(email: EmailSend) {
     logger.info('sendEmail', email);
 
+    if (!email.receivers || email.receivers.length === 0) {
+      throw new Error('收件人不能为空');
+    }
+
     const emailConf = await getEmailSettings(this.sysSettingsService, this.settingsService);
 
     if (!emailConf.host && emailConf.usePlus == null) {

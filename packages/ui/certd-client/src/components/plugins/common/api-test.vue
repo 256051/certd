@@ -12,6 +12,7 @@
 <script setup lang="ts">
 import { ComponentPropsType, doRequest } from "/@/components/plugins/lib";
 import { ref, inject } from "vue";
+import { Form } from "ant-design-vue";
 
 defineOptions({
   name: "ApiTest"
@@ -19,7 +20,7 @@ defineOptions({
 
 const getScope: any = inject("get:scope");
 const getPluginType: any = inject("get:plugin:type");
-
+const formItemContext = Form.useInjectFormItemContext();
 const props = defineProps<{} & ComponentPropsType>();
 
 const emit = defineEmits<{
@@ -34,13 +35,14 @@ const doTest = async () => {
     return;
   }
 
+  formItemContext.onFieldChange();
+
   const { form } = getScope();
   const pluginType = getPluginType();
 
   message.value = "";
   hasError.value = false;
   loading.value = true;
-  debugger;
   try {
     const res = await doRequest(
       {

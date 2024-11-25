@@ -30,8 +30,9 @@ export class QywxNotification extends BaseNotification {
   mentionedList!: string[];
 
   async send(body: NotificationBody) {
-    console.log('send qywx');
-
+    if (!this.webhook) {
+      throw new Error('webhook地址不能为空');
+    }
     /**
      *
      *      "msgtype": "text",

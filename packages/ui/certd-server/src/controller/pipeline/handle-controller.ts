@@ -1,5 +1,5 @@
 import { ALL, Body, Controller, Inject, Post, Provide } from '@midwayjs/core';
-import { Constants } from '@certd/lib-server';
+import { BaseController, Constants } from '@certd/lib-server';
 import {
   AccessRequestHandleReq,
   ITaskPlugin,
@@ -10,7 +10,6 @@ import {
   PluginRequestHandleReq,
   TaskInstanceContext,
 } from '@certd/pipeline';
-import { BaseController } from '@certd/lib-server';
 import { AccessService } from '../../modules/pipeline/service/access-service.js';
 import { EmailService } from '../../modules/basic/service/email-service.js';
 import { AccessGetter } from '../../modules/pipeline/service/access-getter.js';
