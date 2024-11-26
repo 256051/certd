@@ -19,9 +19,9 @@ export class TelegramNotification extends BaseNotification {
   @NotificationInput({
     title: '聊天ID',
     component: {
-      placeholder: '聊天ID，例如 -123456789 或 @channelusername',
+      placeholder: '聊天ID，例如 123456789 或 @channelusername',
     },
-    helper: '聊天的唯一标识符或用户名',
+    helper: '用户ID(纯数字)或频道名称(@xxxx)',
     required: true,
   })
   chatId = '';
