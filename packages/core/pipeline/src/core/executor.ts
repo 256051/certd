@@ -366,17 +366,17 @@ export class Executor {
     let content = "";
     const errorMessage = error?.message;
     if (when === "start") {
-      subject = `【Certd】开始执行，【${this.pipeline.id}】${this.pipeline.title}`;
-      content = `buildId:${this.runtime.id}`;
+      subject = `【Certd】开始执行，${this.pipeline.title}【${this.pipeline.id}】`;
+      content = `流水线ID:${this.pipeline.id}，运行ID:${this.runtime.id}`;
     } else if (when === "success") {
-      subject = `【Certd】执行成功，【${this.pipeline.id}】${this.pipeline.title}`;
-      content = `buildId:${this.runtime.id}`;
+      subject = `【Certd】执行成功，${this.pipeline.title}【${this.pipeline.id}】`;
+      content = `流水线ID:${this.pipeline.id}，运行ID:${this.runtime.id}`;
     } else if (when === "turnToSuccess") {
-      subject = `【Certd】执行成功（失败转成功），【${this.pipeline.id}】${this.pipeline.title}`;
-      content = `buildId:${this.runtime.id}`;
+      subject = `【Certd】执行成功（失败转成功），${this.pipeline.title}【${this.pipeline.id}】`;
+      content = `流水线ID:${this.pipeline.id}，运行ID:${this.runtime.id}`;
     } else if (when === "error") {
-      subject = `【Certd】执行失败，【${this.pipeline.id}】${this.pipeline.title}`;
-      content = `buildId:${this.runtime.id}\nerror:${error.message}`;
+      subject = `【Certd】执行失败，${this.pipeline.title}【${this.pipeline.id}】`;
+      content = `流水线ID:${this.pipeline.id}，运行ID:${this.runtime.id}\n错误详情:${error.message}`;
     } else {
       return;
     }
