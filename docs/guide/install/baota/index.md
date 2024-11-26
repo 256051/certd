@@ -40,7 +40,7 @@ admin/123456
 ## 三、如何升级
 
 ### 1. 应用商店安装，直接更新镜像即可
-
+`docker`->`容器编排`->`左侧选择Certd-xxxx`->`更新镜像`
 ![img.png](./images/upgrade.png)
 
 

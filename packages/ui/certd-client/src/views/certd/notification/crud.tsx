@@ -39,7 +39,11 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
       },
       form: {
         labelCol: {
-          span: 6
+          //固定label宽度
+          span: null,
+          style: {
+            width: "145px"
+          }
         }
       },
       rowHandle: {

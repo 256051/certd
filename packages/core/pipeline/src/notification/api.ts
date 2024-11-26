@@ -97,8 +97,8 @@ export abstract class BaseNotification implements INotification {
   async onTestRequest() {
     await this.send({
       userId: 0,
-      title: "测试通知",
-      content: "测试通知",
+      title: "【Certd】测试通知",
+      content: "测试通知\n\n查看详情：http://www.baidu.com",
       pipeline: {
         id: 1,
         title: "测试流水线",

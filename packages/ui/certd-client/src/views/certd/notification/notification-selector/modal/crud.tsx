@@ -58,6 +58,13 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
       form: {
         wrapper: {
           width: "1050px"
+        },
+        labelCol: {
+          //固定label宽度
+          span: null,
+          style: {
+            width: "145px"
+          }
         }
       },
       rowHandle: {
