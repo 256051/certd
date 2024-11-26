@@ -180,8 +180,10 @@
                       </div>
                       <div class="task">
                         <a-button shape="round" @click="notificationEdit(item, ii as number)">
-                          <fs-icon icon="ion:notifications"></fs-icon>
-                          【通知】 {{ item.title || item.type }}
+                          <div class="flex-o w-100">
+                            <fs-icon icon="ion:notifications"></fs-icon>
+                            <span class="ellipsis flex-1 step-title align-left"> 【通知】 {{ item.title || item.type }} </span>
+                          </div>
                         </a-button>
                       </div>
                     </div>
@@ -198,8 +200,10 @@
                       </div>
                       <div class="task">
                         <a-button shape="round" @click="notificationEdit(item, index)">
-                          <fs-icon icon="ion:notifications"></fs-icon>
-                          【通知】 {{ item.title || item.type }}
+                          <div class="flex-o w-100">
+                            <fs-icon icon="ion:notifications"></fs-icon>
+                            <span class="ellipsis flex-1 step-title align-left"> 【通知】 {{ item.title || item.type }} </span>
+                          </div>
                         </a-button>
                       </div>
                     </div>

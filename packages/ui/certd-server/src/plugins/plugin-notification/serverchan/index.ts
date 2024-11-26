@@ -52,7 +52,7 @@ export class ServerChanNotification extends BaseNotification {
       method: 'POST',
       data: {
         text: body.title,
-        desp: body.content,
+        desp: body.content + '[查看详情](' + body.url + ')',
       },
     });
   }

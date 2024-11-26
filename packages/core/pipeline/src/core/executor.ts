@@ -367,16 +367,16 @@ export class Executor {
     const errorMessage = error?.message;
     if (when === "start") {
       subject = `【Certd】开始执行，【${this.pipeline.id}】${this.pipeline.title}`;
-      content = `buildId:${this.runtime.id}\n查看详情:${url}`;
+      content = `buildId:${this.runtime.id}`;
     } else if (when === "success") {
       subject = `【Certd】执行成功，【${this.pipeline.id}】${this.pipeline.title}`;
-      content = `buildId:${this.runtime.id}\n查看详情:${url}`;
+      content = `buildId:${this.runtime.id}`;
     } else if (when === "turnToSuccess") {
       subject = `【Certd】执行成功（失败转成功），【${this.pipeline.id}】${this.pipeline.title}`;
-      content = `buildId:${this.runtime.id}\n查看详情:${url}`;
+      content = `buildId:${this.runtime.id}`;
     } else if (when === "error") {
       subject = `【Certd】执行失败，【${this.pipeline.id}】${this.pipeline.title}`;
-      content = `buildId:${this.runtime.id}\n查看详情:${url}\nerror:${error.message}`;
+      content = `buildId:${this.runtime.id}\nerror:${error.message}`;
     } else {
       return;
     }

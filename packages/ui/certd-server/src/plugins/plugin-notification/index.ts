@@ -4,3 +4,7 @@ export * from './iyuu/index.js';
 export * from './webhook/index.js';
 export * from './serverchan/index.js';
 export * from './anpush/index.js';
+export * from './telegram/index.js';
+export * from './discord/index.js';
+export * from './slack/index.js';
+export * from './bark/index.js';

@@ -45,10 +45,21 @@ export class WebhookNotification extends BaseNotification {
   contentType = '';
 
   @NotificationInput({
+    title: 'Headers',
+    component: {
+      name: 'a-textarea',
+      rows: 3,
+    },
+    helper: '一行一个，格式为key:value',
+    required: true,
+  })
+  headers = '';
+
+  @NotificationInput({
     title: '消息body模版',
     value: `{
-    title:"{title}",
-    content:"{content}"
+    "text":"{title}",
+    "desp":"{content}\\n[查看详情]({url})"
 }`,
     component: {
       name: 'a-textarea',
@@ -57,7 +68,7 @@ export class WebhookNotification extends BaseNotification {
     col: {
       span: 24,
     },
-    helper: `根据实际的webhook接口，构建一个json对象作为参数，支持{title}和{content}两个变量，变量用{}包裹，字符串需要双引号`,
+    helper: `根据实际的webhook接口，构建一个json对象作为参数，支持变量：{title}、{content}、{url}，变量用{}包裹，字符串需要双引号`,
     required: true,
   })
   template = '';
@@ -67,15 +78,21 @@ export class WebhookNotification extends BaseNotification {
       throw new Error('模版不能为空');
     }
 
-    const bodyStr = this.template.replaceAll('{title}', body.title).replaceAll('{content}', body.content);
+    const bodyStr = this.template.replaceAll('{title}', body.title).replaceAll('{content}', body.content).replaceAll('{url}', body.url);
 
     const data = JSON.parse(bodyStr);
 
+    const headers: any = {};
+    this.headers.split('\n').forEach(item => {
+      const [key, value] = item.trim().split(':');
+      headers[key] = value;
+    });
     await this.http.request({
       url: this.webhook,
       method: this.method,
       headers: {
         'Content-Type': `${this.contentType}; charset=UTF-8`,
+        ...headers,
       },
       data: data,
     });

@@ -23,7 +23,7 @@ export class EmailNotification extends BaseNotification {
     await this.ctx.emailService.send({
       userId: body.userId,
       subject: body.title,
-      content: body.content,
+      content: body.content + '\n[查看详情](' + body.url + ')',
       receivers: this.receivers,
     });
   }

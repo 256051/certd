@@ -199,11 +199,13 @@ function openUpgrade() {
   const vipTypeDefine = {
     free: {
       title: "基础版",
+      desc: "免费使用",
       type: "free",
       privilege: ["证书申请功能无限制", "证书流水线数量10条", "常用的主机、cdn等部署插件"]
     },
     plus: {
       title: "专业版",
+      desc: "功能增强，适用于个人企业内部使用",
       type: "plus",
       privilege: ["可加VIP群，需求优先实现", "证书流水线数量无限制", "免配置发邮件功能", "支持宝塔、易盾、群晖、1Panel、cdnfly等部署插件"],
       trial: {
@@ -215,6 +217,7 @@ function openUpgrade() {
     },
     comm: {
       title: "商业版",
+      desc: "商业授权，可对外运营",
       type: "comm",
       privilege: ["拥有专业版所有特权", "允许商用，可修改logo、标题", "数据统计", "插件管理", "多用户无限制", "支持用户支付（敬请期待）"]
     }
@@ -268,6 +271,7 @@ function openUpgrade() {
                   </span>
                 )}
               </h3>
+              <div>{item.desc}</div>
               <ul>
                 {item.privilege.map((p: string) => (
                   <li>
@@ -333,7 +337,7 @@ function openUpgrade() {
     padding: 10px;
     border: 1px solid #eee;
     border-radius: 5px;
-    height: 170px;
+    height: 195px;
     //background-color: rgba(250, 237, 167, 0.79);
     &.current {
       border-color: green;

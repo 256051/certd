@@ -98,14 +98,14 @@ export abstract class BaseNotification implements INotification {
     await this.send({
       userId: 0,
       title: "【Certd】测试通知",
-      content: "测试通知\n\n查看详情：http://www.baidu.com",
+      content: "测试通知",
       pipeline: {
         id: 1,
         title: "测试流水线",
       } as any,
       pipelineId: 1,
       historyId: 1,
-      url: "http://www.baidu.com",
+      url: "https://certd.docmirror.cn",
     });
   }
 }
