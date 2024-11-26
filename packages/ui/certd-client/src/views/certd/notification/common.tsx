@@ -151,7 +151,10 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
           name: "api-test",
           action: "TestRequest"
         },
-        order: 999
+        order: 999,
+        col: {
+          span: 24
+        }
       },
       column: {
         show: false

@@ -48,10 +48,11 @@ export class WebhookNotification extends BaseNotification {
     title: 'Headers',
     component: {
       name: 'a-textarea',
+      vModel: 'value',
       rows: 3,
     },
     helper: '一行一个，格式为key:value',
-    required: true,
+    required: false,
   })
   headers = '';
 
@@ -83,18 +84,31 @@ export class WebhookNotification extends BaseNotification {
     const data = JSON.parse(bodyStr);
 
     const headers: any = {};
-    this.headers.split('\n').forEach(item => {
-      const [key, value] = item.trim().split(':');
-      headers[key] = value;
-    });
-    await this.http.request({
-      url: this.webhook,
-      method: this.method,
-      headers: {
-        'Content-Type': `${this.contentType}; charset=UTF-8`,
-        ...headers,
-      },
-      data: data,
-    });
+    if (this.headers && this.headers.trim()) {
+      this.headers.split('\n').forEach(item => {
+        item = item.trim();
+        if (item) {
+          const [key, value] = item.split(':');
+          headers[key] = value;
+        }
+      });
+    }
+
+    try {
+      await this.http.request({
+        url: this.webhook,
+        method: this.method,
+        headers: {
+          'Content-Type': `${this.contentType}; charset=UTF-8`,
+          ...headers,
+        },
+        data: data,
+      });
+    } catch (e) {
+      if (e.response?.data) {
+        throw new Error(e.message + ',' + JSON.stringify(e.response.data));
+      }
+      throw e;
+    }
   }
 }
