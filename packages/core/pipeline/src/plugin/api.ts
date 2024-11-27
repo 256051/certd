@@ -2,13 +2,14 @@ import { Registrable } from "../registry/index.js";
 import { FileItem, FormItemProps, Pipeline, Runnable, Step } from "../dt/index.js";
 import { FileStore } from "../core/file-store.js";
 import { IAccessService } from "../access/index.js";
-import { ICnameProxyService, IEmailService } from "../service/index.js";
-import { CancelError, IContext, RunnableCollection } from "../core/index.js";
+import { ICnameProxyService, IEmailService, IUrlService } from "../service/index.js";
+import { CancelError, IContext, RunHistory, RunnableCollection } from "../core/index.js";
 import { HttpRequestConfig, ILogger, logger, utils } from "@certd/basic";
 import { HttpClient } from "@certd/basic";
 import dayjs from "dayjs";
 import { IPluginConfigService } from "../service/config";
 import { upperFirst } from "lodash-es";
+import { INotificationService } from "../notification";
 
 export type PluginRequestHandleReq<T = any> = {
   typeName: string;
@@ -72,6 +73,8 @@ export type TaskResult = {
 export type TaskInstanceContext = {
   //流水线定义
   pipeline: Pipeline;
+  //运行时历史
+  runtime: RunHistory;
   //步骤定义
   step: Step;
   //日志
@@ -86,6 +89,10 @@ export type TaskInstanceContext = {
   cnameProxyService: ICnameProxyService;
   //插件配置服务
   pluginConfigService: IPluginConfigService;
+  //通知服务
+  notificationService: INotificationService;
+  //url构建
+  urlService: IUrlService;
   //流水线上下文
   pipelineContext: IContext;
   //用户上下文

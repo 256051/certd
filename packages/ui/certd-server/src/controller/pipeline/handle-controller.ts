@@ -69,7 +69,7 @@ export class HandleController extends BaseController {
     //   }
     // }
 
-    const notification = newNotification(body.typeName, input, {
+    const notification = await newNotification(body.typeName, input, {
       http,
       logger,
       utils,

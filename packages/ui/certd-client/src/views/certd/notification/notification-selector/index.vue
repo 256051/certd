@@ -7,7 +7,7 @@
     <span v-else class="mlr-5 text-gray">{{ placeholder }}</span>
     <a-button class="ml-5" :disabled="disabled" :size="size" @click="chooseForm.open">选择</a-button>
     <a-form-item-rest v-if="chooseForm.show">
-      <a-modal v-model:open="chooseForm.show" title="选择通知渠道" width="900px" @ok="chooseForm.ok">
+      <a-modal v-model:open="chooseForm.show" title="选择通知渠道" width="905px" @ok="chooseForm.ok">
         <div style="height: 400px; position: relative">
           <cert-notification-modal v-model="selectedId"></cert-notification-modal>
         </div>
@@ -45,6 +45,10 @@ export default defineComponent({
     disabled: {
       type: Boolean,
       default: false
+    },
+    useDefault: {
+      type: Boolean,
+      default: false
     }
   },
   emits: ["update:modelValue", "selectedChange", "change"],
@@ -59,6 +63,15 @@ export default defineComponent({
         target.value = await api.GetSimpleInfo(value);
       }
     }
+
+    async function loadDefault() {
+      const defId = await api.GetDefaultId();
+      if (defId) {
+        await emitValue(defId);
+      }
+    }
+
+    loadDefault();
 
     function clear() {
       if (props.disabled) {

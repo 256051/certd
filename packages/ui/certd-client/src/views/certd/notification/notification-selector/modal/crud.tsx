@@ -56,9 +56,6 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         show: false
       },
       form: {
-        wrapper: {
-          width: "1050px"
-        },
         labelCol: {
           //固定label宽度
           span: null,
@@ -72,7 +69,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
       },
       table: {
         scroll: {
-          x: 800
+          x: 700
         },
         rowSelection: {
           type: "radio",

@@ -43,6 +43,17 @@ export class ServerChanNotification extends BaseNotification {
   })
   noip: boolean;
 
+  @NotificationInput({
+    title: '忽略证书校验',
+    value: false,
+    component: {
+      name: 'a-switch',
+      vModel: 'checked',
+    },
+    required: false,
+  })
+  skipSslVerify: boolean;
+
   async send(body: NotificationBody) {
     if (!this.sendKey) {
       throw new Error('sendKey不能为空');
@@ -54,6 +65,7 @@ export class ServerChanNotification extends BaseNotification {
         text: body.title,
         desp: body.content + '[查看详情](' + body.url + ')',
       },
+      skipSslVerify: this.skipSslVerify,
     });
   }
 }

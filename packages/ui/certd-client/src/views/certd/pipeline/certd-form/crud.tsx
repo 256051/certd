@@ -109,7 +109,8 @@ export default function (certPluginGroup: PluginGroup, formWrapperRef: any): Cre
           form: {
             component: {
               name: NotificationSelector,
-              vModel: "modelValue"
+              vModel: "modelValue",
+              useDefault: true
             },
             order: 101,
             helper: "建议设置，任务执行失败实时提醒"

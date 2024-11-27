@@ -17,6 +17,9 @@ export class NotificationEntity {
   @Column({ name: 'setting', comment: '通知配置', length: 10240 })
   setting: string;
 
+  @Column({ name: 'is_default', comment: '是否默认' })
+  isDefault: boolean;
+
   @Column({
     name: 'create_time',
     comment: '创建时间',

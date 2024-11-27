@@ -236,8 +236,8 @@ export function createAgent(opts: CreateAgentOptions = {}) {
   }
   const httpsProxy = opts.httpsProxy;
   if (httpsProxy) {
-    process.env.HTTPS_PROXY = httpProxy;
-    process.env.https_proxy = httpProxy;
+    process.env.HTTPS_PROXY = httpsProxy;
+    process.env.https_proxy = httpsProxy;
     logger.info('use httpsProxy:', httpsProxy);
     httpsAgent = new HttpsProxyAgent(httpsProxy, opts as any);
     merge(httpsAgent.options, opts);

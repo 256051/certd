@@ -49,6 +49,17 @@ export class VoceChatNotification extends BaseNotification {
   })
   targetId = '';
 
+  @NotificationInput({
+    title: '忽略证书校验',
+    value: false,
+    component: {
+      name: 'a-switch',
+      vModel: 'checked',
+    },
+    required: false,
+  })
+  skipSslVerify: boolean;
+
   async send(body: NotificationBody) {
     if (!this.apiKey) {
       throw new Error('API Key不能为空');
@@ -68,6 +79,7 @@ export class VoceChatNotification extends BaseNotification {
         'Content-Type': 'text/markdown',
       },
       data: `# ${body.title}\n\n${body.content}\n[查看详情](${body.url})`,
+      skipSslVerify: this.skipSslVerify,
     });
   }
 }

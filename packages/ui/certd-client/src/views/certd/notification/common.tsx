@@ -2,6 +2,8 @@ import { ColumnCompositionProps, compute, dict } from "@fast-crud/fast-crud";
 import { computed, provide, ref, toRef } from "vue";
 import { useReference } from "/@/use/use-refrence";
 import { forEach, get, merge, set } from "lodash-es";
+import { Modal } from "ant-design-vue";
+import * as api from "/@/views/sys/cname/provider/api";
 
 export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
   provide("notificationApi", api);
@@ -141,6 +143,47 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
         width: 200
       }
     },
+    isDefault: {
+      title: "是否默认",
+      type: "dict-switch",
+      dict: dict({
+        data: [
+          { label: "是", value: true, color: "success" },
+          { label: "否", value: false, color: "default" }
+        ]
+      }),
+      form: {
+        value: false,
+        rules: [{ required: true, message: "请选择是否默认" }],
+        order: 999
+      },
+      column: {
+        align: "center",
+        width: 100,
+        component: {
+          name: "a-switch",
+          vModel: "checked",
+          disabled: compute(({ value }) => {
+            return value === true;
+          }),
+          on: {
+            change({ row }) {
+              Modal.confirm({
+                title: "提示",
+                content: "确定设置为默认通知？",
+                onOk: async () => {
+                  await api.SetDefault(row.id);
+                  await crudExpose.doRefresh();
+                },
+                onCancel: async () => {
+                  await crudExpose.doRefresh();
+                }
+              });
+            }
+          }
+        }
+      }
+    } as ColumnCompositionProps,
     test: {
       title: "测试",
       form: {
@@ -151,7 +194,7 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
           name: "api-test",
           action: "TestRequest"
         },
-        order: 999,
+        order: 990,
         col: {
           span: 24
         }

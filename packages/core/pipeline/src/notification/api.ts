@@ -6,13 +6,13 @@ import * as _ from "lodash-es";
 import { IEmailService } from "../service/index.js";
 
 export type NotificationBody = {
-  userId: number;
+  userId?: number;
   title: string;
   content: string;
-  pipeline: Pipeline;
-  pipelineId: number;
+  pipeline?: Pipeline;
+  pipelineId?: number;
   result?: HistoryResult;
-  historyId: number;
+  historyId?: number;
   errorMessage?: string;
   url?: string;
 };
@@ -39,6 +39,7 @@ export type NotificationDefine = Registrable & {
 export type NotificationInstanceConfig = {
   id: number;
   type: string;
+  name: string;
   userId: number;
   setting: {
     [key: string]: any;
@@ -47,6 +48,7 @@ export type NotificationInstanceConfig = {
 
 export interface INotificationService {
   getById(id: number): Promise<NotificationInstanceConfig>;
+  getDefault(): Promise<NotificationInstanceConfig>;
 }
 
 export interface INotification {
@@ -97,7 +99,7 @@ export abstract class BaseNotification implements INotification {
   async onTestRequest() {
     await this.send({
       userId: 0,
-      title: "【Certd】测试通知",
+      title: "【Certd】测试通知，标题长度测试、测试、测试",
       content: "测试通知",
       pipeline: {
         id: 1,

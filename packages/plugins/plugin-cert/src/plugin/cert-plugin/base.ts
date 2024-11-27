@@ -1,4 +1,4 @@
-import { AbstractTaskPlugin, IContext, Step, TaskInput, TaskOutput } from "@certd/pipeline";
+import { AbstractTaskPlugin, IContext, NotificationBody, sendNotification, Step, TaskInput, TaskOutput } from "@certd/pipeline";
 import dayjs from "dayjs";
 import type { CertInfo } from "./acme.js";
 import { CertReader } from "./cert-reader.js";
@@ -73,14 +73,14 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
   renewDays!: number;
 
   @TaskInput({
-    title: "成功后邮件通知",
+    title: "证书申请成功通知",
     value: true,
     component: {
       name: "a-switch",
       vModel: "checked",
     },
     order: 100,
-    helper: "申请成功后是否发送邮件通知",
+    helper: "证书申请成功后是否发送通知，优先使用默认通知渠道",
   })
   successNotify = true;
 
@@ -120,7 +120,7 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
       this.clearLastStatus();
 
       if (this.successNotify) {
-        await this.sendSuccessEmail();
+        await this.sendSuccessNotify();
       }
     } else {
       throw new Error("申请证书失败");
@@ -301,19 +301,44 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
       leftDays,
     };
   }
-
-  private async sendSuccessEmail() {
+  async sendSuccessNotify() {
+    this.logger.info("发送证书申请成功通知");
+    const url = await this.ctx.urlService.getPipelineDetailUrl(this.pipeline.id, this.ctx.runtime.id);
+    const body: NotificationBody = {
+      title: `【Certd】证书申请成功【${this.pipeline.title}】`,
+      content: `域名：${this.domains.join(",")}`,
+      url: url,
+    };
     try {
-      this.logger.info("发送成功邮件通知:" + this.email);
-      const subject = `【CertD】证书申请成功【${this.domains[0]}】`;
-      await this.ctx.emailService.send({
-        userId: this.ctx.pipeline.userId,
-        receivers: [this.email],
-        subject: subject,
-        content: `证书申请成功，域名：${this.domains.join(",")}`,
-      });
+      const defNotification = await this.ctx.notificationService.getDefault();
+      if (defNotification) {
+        this.logger.info(`通知渠道：${defNotification.name}`);
+        const notificationCtx = {
+          http: this.ctx.http,
+          logger: this.logger,
+          utils: this.ctx.utils,
+          emailService: this.ctx.emailService,
+        };
+        await sendNotification({
+          config: defNotification,
+          ctx: notificationCtx,
+          body,
+        });
+        return;
+      }
+      this.logger.warn("未配置默认通知，将发送邮件通知");
+      await this.sendSuccessEmail(body);
     } catch (e) {
-      this.logger.error("send email error", e);
+      this.logger.error("证书申请成功通知发送失败", e);
     }
+  }
+  async sendSuccessEmail(body: NotificationBody) {
+    this.logger.info("发送邮件通知:" + this.email);
+    await this.ctx.emailService.send({
+      userId: this.ctx.pipeline.userId,
+      receivers: [this.email],
+      subject: body.title,
+      content: body.content,
+    });
   }
 }

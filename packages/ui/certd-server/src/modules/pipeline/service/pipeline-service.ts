@@ -393,7 +393,7 @@ export class PipelineService extends BaseService<PipelineEntity> {
     };
     const accessGetter = new AccessGetter(userId, this.accessService.getById.bind(this.accessService));
     const cnameProxyService = new CnameProxyService(userId, this.cnameRecordService.getWithAccessByDomain.bind(this.cnameRecordService));
-    const notificationGetter = new NotificationGetter(userId, this.notificationService.getById.bind(this.notificationService));
+    const notificationGetter = new NotificationGetter(userId, this.notificationService);
     const executor = new Executor({
       user,
       pipeline,

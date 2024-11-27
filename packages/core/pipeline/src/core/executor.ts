@@ -303,6 +303,7 @@ export class Executor {
     };
     const taskCtx: TaskInstanceContext = {
       pipeline: this.pipeline,
+      runtime: this.runtime,
       step,
       lastStatus,
       http,
@@ -313,6 +314,8 @@ export class Executor {
       emailService: this.options.emailService,
       cnameProxyService: this.options.cnameProxyService,
       pluginConfigService: this.options.pluginConfigService,
+      notificationService: this.options.notificationService,
+      urlService: this.options.urlService,
       pipelineContext: this.pipelineContext,
       userContext: this.contextFactory.getContext("user", this.options.user.id),
       fileStore: new FileStore({

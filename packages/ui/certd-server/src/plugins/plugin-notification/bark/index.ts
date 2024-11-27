@@ -30,6 +30,18 @@ export class BarkNotification extends BaseNotification {
     helper: '你的bark服务地址+key',
   })
   webhook = '';
+
+  @NotificationInput({
+    title: '忽略证书校验',
+    value: false,
+    component: {
+      name: 'a-switch',
+      vModel: 'checked',
+    },
+    required: false,
+  })
+  skipSslVerify: boolean;
+
   async send(body: NotificationBody) {
     if (!this.webhook) {
       throw new Error('服务器地址不能为空');
@@ -47,6 +59,7 @@ export class BarkNotification extends BaseNotification {
         'Content-Type': 'application/json; charset=utf-8',
       },
       data: payload,
+      skipSslVerify: this.skipSslVerify,
     });
   }
 }

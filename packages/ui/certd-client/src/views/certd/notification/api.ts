@@ -43,6 +43,21 @@ export function createApi() {
       });
     },
 
+    async SetDefault(id: number) {
+      return await request({
+        url: apiPrefix + "/setDefault",
+        method: "post",
+        params: { id }
+      });
+    },
+
+    async GetDefaultId() {
+      return await request({
+        url: apiPrefix + "/getDefaultId",
+        method: "post"
+      });
+    },
+
     async GetSimpleInfo(id: number) {
       return await request({
         url: apiPrefix + "/simpleInfo",

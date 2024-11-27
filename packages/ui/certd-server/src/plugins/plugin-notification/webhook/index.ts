@@ -82,6 +82,17 @@ export class WebhookNotification extends BaseNotification {
   })
   template = '';
 
+  @NotificationInput({
+    title: '忽略证书校验',
+    value: false,
+    component: {
+      name: 'a-switch',
+      vModel: 'checked',
+    },
+    required: false,
+  })
+  skipSslVerify: boolean;
+
   replaceTemplate(target: string, body: any, urlEncode = false) {
     let bodyStr = target;
     const keys = Object.keys(body);
@@ -143,6 +154,7 @@ export class WebhookNotification extends BaseNotification {
           ...headers,
         },
         data: data,
+        skipSslVerify: this.skipSslVerify,
       });
     } catch (e) {
       if (e.response?.data) {

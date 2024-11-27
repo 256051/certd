@@ -1,5 +1,5 @@
 import { ALL, Body, Controller, Inject, Post, Provide, Query } from '@midwayjs/core';
-import { Constants, CrudController } from '@certd/lib-server';
+import { Constants, CrudController, ValidateException } from '@certd/lib-server';
 import { NotificationService } from '../../modules/pipeline/service/notification-service.js';
 import { AuthService } from '../../modules/sys/authority/service/auth-service.js';
 
@@ -84,8 +84,30 @@ export class NotificationController extends CrudController<NotificationService> 
 
   @Post('/simpleInfo', { summary: Constants.per.authOnly })
   async simpleInfo(@Query('id') id: number) {
+    if (id === 0) {
+      //获取默认
+      const res = await this.service.getDefault(this.getUserId());
+      if (!res) {
+        throw new ValidateException('默认通知配置不存在');
+      }
+      const simple = await this.service.getSimpleInfo(res.id);
+      return this.ok(simple);
+    }
     await this.authService.checkEntityUserId(this.ctx, this.service, id);
     const res = await this.service.getSimpleInfo(id);
+    return this.ok(res);
+  }
+
+  @Post('/getDefaultId', { summary: Constants.per.authOnly })
+  async getDefaultId() {
+    const res = await this.service.getDefault(this.getUserId());
+    return this.ok(res?.id);
+  }
+
+  @Post('/setDefault', { summary: Constants.per.authOnly })
+  async setDefault(@Query('id') id: number) {
+    await this.service.checkUserId(id, this.getUserId());
+    const res = await this.service.setDefault(id, this.getUserId());
     return this.ok(res);
   }
 }

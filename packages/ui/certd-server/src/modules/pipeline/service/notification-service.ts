@@ -50,14 +50,60 @@ export class NotificationService extends BaseService<NotificationEntity> {
       },
     });
     if (!res) {
-      throw new ValidateException('通知配置不存在');
+      throw new ValidateException(`通知配置不存在<${id}>`);
     }
+    return this.buildNotificationInstanceConfig(res);
+  }
+
+  private buildNotificationInstanceConfig(res: NotificationEntity) {
     const setting = JSON.parse(res.setting);
     return {
       id: res.id,
       type: res.type,
+      name: res.name,
       userId: res.userId,
       setting,
     };
+  }
+
+  async getDefault(userId: number): Promise<NotificationInstanceConfig> {
+    const res = await this.repository.findOne({
+      where: {
+        userId,
+      },
+      order: {
+        isDefault: 'DESC',
+      },
+    });
+    if (!res) {
+      throw new ValidateException('默认通知配置不存在');
+    }
+    return this.buildNotificationInstanceConfig(res);
+  }
+
+  async setDefault(id: number, userId: number) {
+    if (!id) {
+      throw new ValidateException('id不能为空');
+    }
+    if (!userId) {
+      throw new ValidateException('userId不能为空');
+    }
+    await this.repository.update(
+      {
+        userId,
+      },
+      {
+        isDefault: false,
+      }
+    );
+    await this.repository.update(
+      {
+        id,
+        userId,
+      },
+      {
+        isDefault: true,
+      }
+    );
   }
 }

@@ -1,14 +1,20 @@
 import { INotificationService } from '@certd/pipeline';
+import { NotificationService } from './notification-service.js';
 
 export class NotificationGetter implements INotificationService {
   userId: number;
-  getter: <T>(id: any, userId?: number) => Promise<T>;
-  constructor(userId: number, getter: (id: any, userId: number) => Promise<any>) {
+  notificationService: NotificationService;
+
+  constructor(userId: number, notificationService: NotificationService) {
     this.userId = userId;
-    this.getter = getter;
+    this.notificationService = notificationService;
   }
 
-  async getById<T = any>(id: any) {
-    return await this.getter<T>(id, this.userId);
+  async getDefault() {
+    return await this.notificationService.getDefault(this.userId);
+  }
+
+  async getById(id: any) {
+    return await this.notificationService.getById(id, this.userId);
   }
 }

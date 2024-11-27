@@ -2,7 +2,7 @@
 import { Decorator } from "../decorator/index.js";
 import * as _ from "lodash-es";
 import { notificationRegistry } from "./registry.js";
-import { NotificationContext, NotificationDefine, NotificationInputDefine } from "./api.js";
+import { NotificationBody, NotificationContext, NotificationDefine, NotificationInputDefine, NotificationInstanceConfig } from "./api.js";
 
 // 提供一个唯一 key
 export const NOTIFICATION_CLASS_KEY = "pipeline:notification";
@@ -38,7 +38,7 @@ export function NotificationInput(input?: NotificationInputDefine): PropertyDeco
   };
 }
 
-export function newNotification(type: string, input: any, ctx: NotificationContext) {
+export async function newNotification(type: string, input: any, ctx: NotificationContext) {
   const register = notificationRegistry.get(type);
   if (register == null) {
     throw new Error(`notification ${type} not found`);
@@ -52,5 +52,11 @@ export function newNotification(type: string, input: any, ctx: NotificationConte
     throw new Error("ctx is required");
   }
   plugin.setCtx(ctx);
+  await plugin.onInstance();
   return plugin;
+}
+
+export async function sendNotification(opts: { config: NotificationInstanceConfig; ctx: NotificationContext; body: NotificationBody }) {
+  const notification = await newNotification(opts.config.type, opts.config.setting, opts.ctx);
+  await notification.send(opts.body);
 }
