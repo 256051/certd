@@ -24,6 +24,20 @@ export class LoginController extends BaseController {
     return this.ok(token);
   }
 
+  @Post('/loginBySms', { summary: Constants.per.guest })
+  public async loginBySms(
+    @Body(ALL)
+    body: any
+  ) {
+    const token = await this.loginService.loginBySmsCode(body);
+
+    this.ctx.cookies.set('token', token.token, {
+      maxAge: 1000 * token.expire,
+    });
+
+    return this.ok(token);
+  }
+
   @Post('/logout', { summary: Constants.per.authOnly })
   public logout() {}
 }
