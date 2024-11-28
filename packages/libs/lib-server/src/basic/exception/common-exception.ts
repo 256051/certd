@@ -5,10 +5,6 @@ import { BaseException } from './base-exception.js';
  */
 export class CommonException extends BaseException {
   constructor(message) {
-    super(
-      'CommonException',
-      Constants.res.error.code,
-      message ? message : Constants.res.error.message
-    );
+    super('CommonException', Constants.res.error.code, message ? message : Constants.res.error.message);
   }
 }

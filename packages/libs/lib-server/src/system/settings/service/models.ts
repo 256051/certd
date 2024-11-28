@@ -14,7 +14,14 @@ export class SysPublicSettings extends BaseSettings {
   static __key__ = 'sys.public';
   static __title__ = '系统公共设置';
   static __access__ = 'public';
+
   registerEnabled = false;
+  passwordLoginEnabled = true;
+  usernameRegisterEnabled = false;
+  mobileRegisterEnabled = false;
+  smsLoginEnabled = false;
+  emailRegisterEnabled = false;
+
   limitUserPipelineCount = 0;
   managerOtherUserPipeline = false;
   icpNo?: string;
@@ -34,6 +41,14 @@ export class SysPrivateSettings extends BaseSettings {
   httpProxy? = '';
   dnsResultOrder? = '';
   commonCnameEnabled?: boolean = true;
+
+  sms?: {
+    type?: string;
+    config?: any;
+  } = {
+    type: 'aliyun',
+    config: {},
+  };
 
   removeSecret() {
     const clone = cloneDeep(this);

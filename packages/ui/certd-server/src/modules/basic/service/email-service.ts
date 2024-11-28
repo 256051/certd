@@ -91,7 +91,6 @@ export class EmailService implements IEmailService {
 
   async test(userId: number, receiver: string) {
     await this.send({
-      userId,
       receivers: [receiver],
       subject: '测试邮件,from certd',
       content: '测试邮件,from certd',

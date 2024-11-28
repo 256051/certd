@@ -36,6 +36,14 @@ export const Constants = {
       code: 88,
       message: '需要VIP',
     },
+    loginError: {
+      code: 2,
+      message: '登录失败',
+    },
+    codeError: {
+      code: 3,
+      message: '验证码错误',
+    },
     auth: {
       code: 401,
       message: '您还未登录或token已过期',

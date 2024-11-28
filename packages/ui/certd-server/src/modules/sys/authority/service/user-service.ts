@@ -12,7 +12,9 @@ import bcrypt from 'bcryptjs';
 import { RandomUtil } from '../../../../utils/random.js';
 import dayjs from 'dayjs';
 import { DbAdapter } from '../../../db/index.js';
-import { utils } from '@certd/basic';
+import { simpleNanoId, utils } from '@certd/basic';
+
+export type RegisterType = 'username' | 'mobile' | 'email';
 /**
  * 系统用户
  */
@@ -151,11 +153,36 @@ export class UserService extends BaseService<UserEntity> {
     return await this.roleService.getPermissionByRoleIds(roleIds);
   }
 
-  async register(user: UserEntity) {
+  async register(type: string, user: UserEntity) {
+    if (type !== 'username') {
+      user.username = 'user_' + simpleNanoId();
+      if (!user.password) {
+        user.password = simpleNanoId();
+      }
+    }
+    if (type === 'mobile') {
+      user.nickName = user.mobile.substring(0, 3) + '****' + user.mobile.substring(7);
+    }
+
     const old = await this.findOne({ username: user.username });
     if (old != null) {
-      throw new CommonException('用户名已经存在');
+      throw new CommonException('用户名已被注册');
     }
+
+    if (user.mobile) {
+      const old = await this.findOne({ mobile: user.mobile });
+      if (old != null) {
+        throw new CommonException('手机号已被注册');
+      }
+    }
+
+    if (user.email) {
+      const old = await this.findOne({ email: user.email });
+      if (old != null) {
+        throw new CommonException('邮箱已被注册');
+      }
+    }
+
     let newUser: UserEntity = UserEntity.of({
       username: user.username,
       password: user.password,
@@ -163,7 +190,7 @@ export class UserService extends BaseService<UserEntity> {
       avatar: user.avatar || '',
       email: user.email || '',
       mobile: user.mobile || '',
-      phoneCode: user.phoneCode || '',
+      phoneCode: user.phoneCode || '86',
       status: 1,
       passwordVersion: 2,
     });

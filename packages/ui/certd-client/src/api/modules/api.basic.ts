@@ -25,6 +25,12 @@ export type PlusInfo = {
 };
 export type SysPublicSetting = {
   registerEnabled?: boolean;
+  usernameRegisterEnabled?: boolean;
+  mobileRegisterEnabled?: boolean;
+  emailRegisterEnabled?: boolean;
+  passwordLoginEnabled?: boolean;
+  smsLoginEnabled?: boolean;
+
   limitUserPipelineCount?: number;
   managerOtherUserPipeline?: boolean;
   icpNo?: string;
@@ -35,6 +41,10 @@ export type SysPrivateSetting = {
   httpsProxy?: string;
   dnsResultOrder?: string;
   commonCnameEnabled?: boolean;
+  sms?: {
+    type?: string;
+    config?: any;
+  };
 };
 export type SysInstallInfo = {
   siteId: string;
@@ -69,6 +79,22 @@ export async function loadAllSettings(): Promise<AllSettings> {
 export async function bindUrl(data: any): Promise<any> {
   return await request({
     url: "/sys/plus/bindUrl",
+    method: "post",
+    data
+  });
+}
+
+export async function sendSmsCode(data: any): Promise<any> {
+  return await request({
+    url: "/basic/code/sendSmsCode",
+    method: "post",
+    data
+  });
+}
+
+export async function sendEmailCode(data: any): Promise<any> {
+  return await request({
+    url: "/basic/code/sendEmailCode",
     method: "post",
     data
   });

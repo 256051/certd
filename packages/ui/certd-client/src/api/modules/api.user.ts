@@ -14,6 +14,13 @@ export interface LoginReq {
   password: string;
 }
 
+export interface SmsLoginReq {
+  mobile: string;
+  phoneCode: string;
+  smsCode: string;
+  randomStr: string;
+}
+
 export interface UserInfoRes {
   id: string | number;
   username: string;
@@ -47,6 +54,15 @@ export async function login(data: LoginReq): Promise<LoginRes> {
   //如果开启了登录与权限模块，则真实登录
   return await request({
     url: "/login",
+    method: "post",
+    data
+  });
+}
+
+export async function loginBySms(data: SmsLoginReq): Promise<LoginRes> {
+  //如果开启了登录与权限模块，则真实登录
+  return await request({
+    url: "/loginBySms",
     method: "post",
     data
   });

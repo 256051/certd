@@ -11,16 +11,63 @@
       @finish="handleFinish"
       @finish-failed="handleFinishFailed"
     >
-      <a-tabs :tab-bar-style="{ textAlign: 'center', borderBottom: 'unset' }">
-        <a-tab-pane key="register" tab="用户注册"> </a-tab-pane>
-      </a-tabs>
-      <a-form-item required has-feedback name="username" label="用户名">
-        <a-input v-model:value="formState.username" placeholder="用户名" size="large" autocomplete="off">
-          <template #prefix>
-            <span class="iconify" data-icon="ion:person" data-inline="false"></span>
+      <a-tabs v-model:value="registerType" :tab-bar-style="{ textAlign: 'center', borderBottom: 'unset' }">
+        <a-tab-pane key="username" tab="用户名注册">
+          <template v-if="registerType === 'username'">
+            <a-form-item required has-feedback name="username" label="用户名">
+              <a-input v-model:value="formState.username" placeholder="用户名" size="large" autocomplete="off">
+                <template #prefix>
+                  <span class="iconify" data-icon="ion:person" data-inline="false"></span>
+                </template>
+              </a-input>
+            </a-form-item>
           </template>
-        </a-input>
-      </a-form-item>
+        </a-tab-pane>
+        <a-tab-pane key="email" tab="邮箱注册">
+          <template v-if="registerType === 'email'">
+            <a-form-item required has-feedback name="email" label="邮箱">
+              <a-input v-model:value="formState.email" placeholder="邮箱" size="large" autocomplete="off">
+                <template #prefix>
+                  <span class="iconify" data-icon="ion:person" data-inline="false"></span>
+                </template>
+              </a-input>
+            </a-form-item>
+
+            <a-form-item has-feedback name="imgCode">
+              <a-row :gutter="16">
+                <a-col class="gutter-row" :span="16">
+                  <a-input v-model:value="formState.imgCode" placeholder="请输入图片验证码" size="large" autocomplete="off">
+                    <template #prefix>
+                      <span class="iconify" data-icon="ion:image-outline" data-inline="false"></span>
+                    </template>
+                  </a-input>
+                </a-col>
+                <a-col class="gutter-row" :span="8">
+                  <img class="image-code" :src="imageCodeUrl" @click="resetImageCode" />
+                </a-col>
+              </a-row>
+            </a-form-item>
+
+            <a-form-item name="smsCode">
+              <a-row :gutter="16">
+                <a-col class="gutter-row" :span="16">
+                  <a-input v-model:value="formState.validateCode" size="large" placeholder="邮箱验证码">
+                    <template #prefix>
+                      <span class="iconify" data-icon="ion:mail-outline" data-inline="false"></span>
+                    </template>
+                  </a-input>
+                </a-col>
+                <a-col class="gutter-row" :span="8">
+                  <a-button class="getCaptcha" tabindex="-1" :disabled="smsSendBtnDisabled" @click="sendSmsCode">
+                    {{ smsTime <= 0 ? "发送" : smsTime + " s" }}
+                  </a-button>
+                </a-col>
+              </a-row>
+            </a-form-item>
+          </template>
+        </a-tab-pane>
+      </a-tabs>
+
       <a-form-item has-feedback name="password" label="密码">
         <a-input-password v-model:value="formState.password" placeholder="密码" size="large" autocomplete="off">
           <template #prefix>
@@ -35,7 +82,6 @@
           </template>
         </a-input-password>
       </a-form-item>
-
       <a-form-item>
         <a-button type="primary" size="large" html-type="submit" class="login-button">注册</a-button>
       </a-form-item>
@@ -53,9 +99,13 @@ import { utils } from "@fast-crud/fast-crud";
 export default defineComponent({
   name: "RegisterPage",
   setup() {
+    const registerType = ref("email");
     const userStore = useUserStore();
     const formRef = ref();
     const formState: any = reactive({
+      mobile: "",
+      phoneCode: "",
+      email: "",
       username: "",
       password: "",
       confirmPassword: ""
@@ -67,6 +117,13 @@ export default defineComponent({
           required: true,
           trigger: "change",
           message: "请输入用户名"
+        }
+      ],
+      email: [
+        {
+          required: true,
+          trigger: "change",
+          message: "请输入邮箱"
         }
       ],
       password: [
@@ -110,14 +167,24 @@ export default defineComponent({
       formRef.value.resetFields();
     };
 
+    const imageCodeUrl = ref();
+    function resetImageCode() {
+      let url = "/basic/code";
+      imageCodeUrl.value = url + "?t=" + new Date().getTime();
+    }
+    resetImageCode();
+
     return {
+      resetImageCode,
+      imageCodeUrl,
       formState,
       formRef,
       rules,
       layout,
       handleFinishFailed,
       handleFinish,
-      resetForm
+      resetForm,
+      registerType
     };
   }
 });

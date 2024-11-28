@@ -5,71 +5,68 @@
       class="user-layout-login"
       name="custom-validation"
       :model="formState"
-      :rules="rules"
       v-bind="layout"
       @finish="handleFinish"
       @finish-failed="handleFinishFailed"
     >
       <!--      <div class="login-title">登录</div>-->
-      <a-tabs :active-key="formState.loginType" :tab-bar-style="{ textAlign: 'center', borderBottom: 'unset' }">
-        <a-tab-pane key="password" tab="用户名密码登录">
-          <a-alert v-if="isLoginError" type="error" show-icon style="margin-bottom: 24px" message="用户名或密码错误" />
-
-          <!--      <div class="login-title">登录</div>-->
-          <a-form-item required has-feedback name="username">
-            <a-input v-model:value="formState.username" placeholder="请输入用户名" size="large" autocomplete="off">
-              <template #prefix>
-                <span class="iconify" data-icon="ion:phone-portrait-outline" data-inline="false"></span>
-              </template>
-            </a-input>
-          </a-form-item>
-          <a-form-item has-feedback name="password">
-            <a-input-password v-model:value="formState.password" placeholder="请输入密码" size="large" autocomplete="off">
-              <template #prefix>
-                <span class="iconify" data-icon="ion:lock-closed-outline" data-inline="false"></span>
-              </template>
-            </a-input-password>
-          </a-form-item>
+      <a-tabs v-model:active-key="formState.loginType" :tab-bar-style="{ textAlign: 'center', borderBottom: 'unset' }">
+        <a-tab-pane key="password" tab="密码登录" :disabled="sysPublicSettings.passwordLoginEnabled !== true">
+          <template v-if="formState.loginType === 'password'">
+            <!--      <div class="login-title">登录</div>-->
+            <a-form-item required has-feedback name="username" :rules="rules.username">
+              <a-input v-model:value="formState.username" placeholder="请输入用户名/邮箱/手机号" autocomplete="off">
+                <template #prefix>
+                  <fs-icon icon="ion:phone-portrait-outline"></fs-icon>
+                </template>
+              </a-input>
+            </a-form-item>
+            <a-form-item has-feedback name="password" :rules="rules.password">
+              <a-input-password v-model:value="formState.password" placeholder="请输入密码" autocomplete="off">
+                <template #prefix>
+                  <fs-icon icon="ion:lock-closed-outline"></fs-icon>
+                </template>
+              </a-input-password>
+            </a-form-item>
+          </template>
         </a-tab-pane>
-        <a-tab-pane key="smsCode" tab="短信验证码登录" :disabled="true" title="暂不支持">
-          <a-form-item required has-feedback name="mobile">
-            <a-input v-model:value="formState.mobile" placeholder="请输入手机号" size="large" autocomplete="off">
-              <template #prefix>
-                <span class="iconify" data-icon="ion:phone-portrait-outline" data-inline="false"></span>
-              </template>
-            </a-input>
-          </a-form-item>
-          <a-form-item has-feedback name="imgCode">
-            <a-row :gutter="16">
-              <a-col class="gutter-row" :span="16">
-                <a-input v-model:value="formState.imgCode" placeholder="请输入图片验证码" size="large" autocomplete="off">
+        <a-tab-pane key="sms" tab="短信验证码登录" :disabled="sysPublicSettings.smsLoginEnabled !== true">
+          <template v-if="formState.loginType === 'sms'">
+            <a-form-item has-feedback name="mobile" :rules="rules.mobile">
+              <a-input v-model:value="formState.mobile" placeholder="请输入手机号" autocomplete="off">
+                <template #prefix>
+                  <fs-icon icon="ion:phone-portrait-outline"></fs-icon>
+                </template>
+              </a-input>
+            </a-form-item>
+            <a-form-item has-feedback name="imgCode">
+              <div class="flex">
+                <a-input v-model:value="formState.imgCode" placeholder="请输入图片验证码" autocomplete="off">
                   <template #prefix>
-                    <span class="iconify" data-icon="ion:image-outline" data-inline="false"></span>
+                    <fs-icon icon="ion:image-outline"></fs-icon>
                   </template>
                 </a-input>
-              </a-col>
-              <a-col class="gutter-row" :span="8">
-                <img class="image-code" :src="imageCodeUrl" @click="resetImageCode" />
-              </a-col>
-            </a-row>
-          </a-form-item>
+                <div class="input-right">
+                  <img class="image-code" :src="imageCodeUrl" @click="resetImageCode" />
+                </div>
+              </div>
+            </a-form-item>
 
-          <a-form-item name="smsCode">
-            <a-row :gutter="16">
-              <a-col class="gutter-row" :span="16">
-                <a-input v-model:value="formState.smsCode" size="large" placeholder="短信验证码">
+            <a-form-item name="smsCode" :rules="rules.smsCode">
+              <div class="flex">
+                <a-input v-model:value="formState.smsCode" placeholder="短信验证码">
                   <template #prefix>
-                    <span class="iconify" data-icon="ion:mail-outline" data-inline="false"></span>
+                    <fs-icon icon="ion:mail-outline"></fs-icon>
                   </template>
                 </a-input>
-              </a-col>
-              <a-col class="gutter-row" :span="8">
-                <a-button class="getCaptcha" tabindex="-1" :disabled="smsSendBtnDisabled" @click="sendSmsCode">
-                  {{ smsTime <= 0 ? "发送" : smsTime + " s" }}
-                </a-button>
-              </a-col>
-            </a-row>
-          </a-form-item>
+                <div class="input-right">
+                  <a-button class="getCaptcha" type="primary" tabindex="-1" :disabled="smsSendBtnDisabled" @click="sendSmsCode">
+                    {{ smsTime <= 0 ? "发送" : smsTime + " s" }}
+                  </a-button>
+                </div>
+              </div>
+            </a-form-item>
+          </template>
         </a-tab-pane>
       </a-tabs>
       <a-form-item>
@@ -87,6 +84,9 @@ import { defineComponent, reactive, ref, toRaw, computed } from "vue";
 import { useUserStore } from "/src/store/modules/user";
 import { useSettingStore } from "/@/store/modules/settings";
 import { utils } from "@fast-crud/fast-crud";
+import * as api from "/src/api/modules/api.basic";
+import { nanoid } from "nanoid";
+import { notification } from "ant-design-vue";
 export default defineComponent({
   name: "LoginPage",
   setup() {
@@ -96,39 +96,37 @@ export default defineComponent({
     const formRef = ref();
     const formState = reactive({
       username: "",
+      phoneCode: "86",
       mobile: "",
       password: "",
       loginType: "password", //password
       imgCode: "",
-      smsCode: ""
+      smsCode: "",
+      randomStr: ""
     });
 
     const rules = {
       mobile: [
         {
           required: true,
-          trigger: "change",
-          message: "请输入登录手机号"
+          message: "请输入手机号"
         }
       ],
       username: [
         {
           required: true,
-          trigger: "change",
           message: "请输入用户名"
         }
       ],
       password: [
         {
           required: true,
-          trigger: "change",
           message: "请输入登录密码"
         }
       ],
       smsCode: [
         {
           required: true,
-          trigger: "change",
           message: "请输入短信验证码"
         }
       ]
@@ -146,7 +144,8 @@ export default defineComponent({
       utils.logger.log(values, formState);
       loading.value = true;
       try {
-        const userInfo = await userStore.login(toRaw(formState));
+        const loginType = formState.loginType;
+        await userStore.login(loginType, toRaw(formState));
       } finally {
         loading.value = false;
       }
@@ -164,8 +163,9 @@ export default defineComponent({
 
     const imageCodeUrl = ref();
     function resetImageCode() {
-      let url = "/basic/code";
-      imageCodeUrl.value = url + "?t=" + new Date().getTime();
+      formState.randomStr = nanoid(10);
+      let url = "/api/basic/code/captcha";
+      imageCodeUrl.value = url + "?randomStr=" + formState.randomStr;
     }
     resetImageCode();
 
@@ -176,8 +176,25 @@ export default defineComponent({
       }
       return !!formState.smsCode;
     });
-    function sendSmsCode() {
-      //api.sendSmsCode();
+    async function sendSmsCode() {
+      if (!formState.mobile) {
+        notification.error({ message: "请输入手机号" });
+        return;
+      }
+      if (!formState.imgCode) {
+        notification.error({ message: "请输入图片验证码" });
+        return;
+      }
+      await api.sendSmsCode({
+        phoneCode: formState.phoneCode,
+        mobile: formState.mobile,
+        imgCode: formState.imgCode,
+        randomStr: formState.randomStr
+      });
+      smsTime.value = 60;
+      setInterval(() => {
+        smsTime.value--;
+      }, 1000);
     }
     const sysPublicSettings = settingStore.getSysPublic;
     return {
@@ -207,9 +224,9 @@ export default defineComponent({
   //margin: 20px !important;
   margin-bottom: 100px;
   .user-layout-login {
-    label {
-      font-size: 14px;
-    }
+    //label {
+    //  font-size: 14px;
+    //}
 
     .login-title {
       color: @primary-color;
@@ -220,9 +237,15 @@ export default defineComponent({
     .getCaptcha {
       display: block;
       width: 100%;
-      height: 40px;
     }
 
+    .image-code {
+      height: 34px;
+    }
+    .input-right {
+      width: 160px;
+      margin-left: 10px;
+    }
     .forge-password {
       font-size: 14px;
     }
@@ -230,7 +253,6 @@ export default defineComponent({
     button.login-button {
       padding: 0 15px;
       font-size: 16px;
-      height: 40px;
       width: 100%;
     }
 
@@ -238,7 +260,7 @@ export default defineComponent({
       text-align: left;
       margin-top: 30px;
       margin-bottom: 30px;
-      line-height: 22px;
+      //line-height: 22px;
 
       .item-icon {
         font-size: 24px;
@@ -257,8 +279,17 @@ export default defineComponent({
         float: right;
       }
     }
-    .iconify {
+    .fs-icon {
       color: rgba(0, 0, 0, 0.45);
+      margin-right: 4px;
+    }
+    .ant-input-affix-wrapper {
+      line-height: 1.8 !important;
+      font-size: 14px !important;
+      > * {
+        line-height: 1.8 !important;
+        font-size: 14px !important;
+      }
     }
   }
 }

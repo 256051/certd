@@ -8,6 +8,7 @@ import { SysSettingsService } from '@certd/lib-server';
 import { SysPrivateSettings } from '@certd/lib-server';
 import { cache } from '@certd/basic';
 import { LoginErrorException } from '@certd/lib-server/dist/basic/exception/login-error-exception.js';
+import { CodeService } from '../../basic/service/code-service.js';
 
 /**
  * 系统用户
@@ -18,6 +19,9 @@ export class LoginService {
   userService: UserService;
   @Inject()
   roleService: RoleService;
+
+  @Inject()
+  codeService: CodeService;
   @Config('auth.jwt')
   private jwt: any;
 
@@ -68,16 +72,28 @@ export class LoginService {
     throw new LoginErrorException(errorMessage, leftTimes);
   }
 
-  async loginBySmsCode(req: { mobile: string; phoneCode: string; smsChecked: boolean }) {
-    const { mobile, phoneCode, smsChecked } = req;
+  async loginBySmsCode(req: { mobile: string; phoneCode: string; smsCode: string; randomStr: string }) {
+    const smsChecked = await this.codeService.checkSmsCode({
+      mobile: req.mobile,
+      phoneCode: req.phoneCode,
+      smsCode: req.smsCode,
+      randomStr: req.randomStr,
+      throwError: false,
+    });
+
+    const { mobile, phoneCode } = req;
     if (!smsChecked) {
       this.checkErrorTimes(mobile, '验证码错误');
     }
-    const info = await this.userService.findOne({ phoneCode, mobile: mobile });
+    let info = await this.userService.findOne({ phoneCode, mobile: mobile });
     if (info == null) {
-      throw new CommonException('手机号或验证码错误');
+      //用户不存在，注册
+      info = await this.userService.register('mobile', {
+        phoneCode,
+        mobile,
+        password: '',
+      } as any);
     }
-
     return this.onLoginSuccess(info);
   }
 
@@ -94,21 +110,21 @@ export class LoginService {
     return this.onLoginSuccess(info);
   }
 
-  /**
-   * login
-   */
-  async login(user) {
-    console.assert(user.username != null, '用户名不能为空');
-    const info = await this.userService.findOne({ username: user.username });
-    if (info == null) {
-      throw new CommonException('用户名或密码错误');
-    }
-    const right = await this.userService.checkPassword(user.password, info.password, info.passwordVersion);
-    if (!right) {
-      this.checkErrorTimes(user.username, '用户名或密码错误');
-    }
-    return await this.onLoginSuccess(info);
-  }
+  // /**
+  //  * login
+  //  */
+  // async login(user) {
+  //   console.assert(user.username != null, '用户名不能为空');
+  //   const info = await this.userService.findOne({ username: user.username });
+  //   if (info == null) {
+  //     throw new CommonException('用户名或密码错误');
+  //   }
+  //   const right = await this.userService.checkPassword(user.password, info.password, info.passwordVersion);
+  //   if (!right) {
+  //     this.checkErrorTimes(user.username, '用户名或密码错误');
+  //   }
+  //   return await this.onLoginSuccess(info);
+  // }
 
   private async onLoginSuccess(info: UserEntity) {
     if (info.status === 0) {
