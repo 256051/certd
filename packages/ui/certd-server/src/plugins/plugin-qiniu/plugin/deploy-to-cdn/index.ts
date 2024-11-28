@@ -1,6 +1,7 @@
 import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
-import { QiniuAccess, QiniuClient } from '@certd/plugin-plus';
+import { createCertDomainGetterInputDefine, createRemoteSelectInputDefine, QiniuAccess, QiniuClient } from '@certd/plugin-plus';
 import { CertInfo } from '@certd/plugin-cert';
+import { optionsUtils } from '@certd/basic/dist/utils/util.options.js';
 
 @IsTaskPlugin({
   name: 'QiniuDeployCertToCDN',
@@ -16,21 +17,6 @@ import { CertInfo } from '@certd/plugin-cert';
 })
 export class QiniuDeployCertToCDN extends AbstractTaskPlugin {
   @TaskInput({
-    title: 'CDN加速域名',
-    helper: '你在七牛云上配置的CDN加速域名，比如:certd.handsfree.work',
-    component: {
-      name: 'a-select',
-      vModel: 'value',
-      mode: 'tags',
-      open: false,
-      tokenSeparators: [',', ' ', '，', '、', '|'],
-    },
-    rules: [{ type: 'domains', allowDotStart: true }],
-    required: true,
-  })
-  domainName!: string | string[];
-
-  @TaskInput({
     title: '域名证书',
     helper: '请选择前置任务输出的域名证书，或者上传到七牛云的证书id',
     component: {
@@ -40,6 +26,9 @@ export class QiniuDeployCertToCDN extends AbstractTaskPlugin {
     required: true,
   })
   cert!: CertInfo | string;
+
+  @TaskInput(createCertDomainGetterInputDefine({ props: { required: false } }))
+  certDomains!: string[];
 
   @TaskInput({
     title: 'Access授权',
@@ -51,6 +40,17 @@ export class QiniuDeployCertToCDN extends AbstractTaskPlugin {
     required: true,
   })
   accessId!: string;
+
+  @TaskInput(
+    createRemoteSelectInputDefine({
+      title: 'CDN加速域名',
+      helper: '你在七牛云上配置的CDN加速域名，比如:certd.handsfree.work',
+      rules: [{ type: 'domains', allowDotStart: true }],
+      action: QiniuDeployCertToCDN.prototype.onGetDomainList.name,
+      required: true,
+    })
+  )
+  domainName!: string | string[];
 
   async onInstance() {}
   async execute(): Promise<void> {
@@ -100,6 +100,26 @@ export class QiniuDeployCertToCDN extends AbstractTaskPlugin {
     }
 
     this.logger.info('部署完成');
+  }
+
+  async onGetDomainList() {
+    const access = await this.accessService.getById<QiniuAccess>(this.accessId);
+    const qiniuClient = new QiniuClient({
+      http: this.ctx.http,
+      access,
+    });
+    const url = `https://api.qiniu.com/domain?limit=1000`;
+    const res = await qiniuClient.doRequest(url, 'get');
+
+    const options = res.domains.map((item: any) => {
+      return {
+        value: item.name,
+        label: item.name,
+        domain: item.name,
+      };
+    });
+
+    return optionsUtils.buildGroupOptions(options, this.certDomains);
   }
 }
 new QiniuDeployCertToCDN();
