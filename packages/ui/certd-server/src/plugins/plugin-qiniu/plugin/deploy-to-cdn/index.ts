@@ -72,14 +72,31 @@ export class QiniuDeployCertToCDN extends AbstractTaskPlugin {
 
     const domains: string[] = typeof this.domainName === 'string' ? [this.domainName] : this.domainName;
     for (const domain of domains) {
-      //开始修改证书
-      this.logger.info(`开始修改证书,certId:${certId},domain:${domain}`);
-      const body = {
-        certID: certId,
-      };
-      const url = `https://api.qiniu.com/domain/${domain}/httpsconf`;
-      await qiniuClient.doRequest(url, 'put', body);
-      this.logger.info(`修改证书成功,certId:${certId},domain:${domain}`);
+      //获取域名详情
+      const getUrl = `https://api.qiniu.com/domain/${domain}`;
+      const res = await qiniuClient.doRequest(getUrl, 'get');
+      this.logger.info(`域名https详情:${JSON.stringify(res.https)}`);
+      if (!res.https.certId) {
+        this.logger.info('未开启https，即将开启https，并设置证书');
+        //未开启https
+        const body = {
+          certId: certId,
+        };
+        const url = `https://api.qiniu.com/domain/${domain}/sslize`;
+        await qiniuClient.doRequest(url, 'put', body);
+        this.logger.info(`开启https并设置证书成功,certId:${certId},domain:${domain}`);
+      } else {
+        //开始修改证书
+        this.logger.info(`开始修改证书,certId:${certId},domain:${domain}`);
+        const body = {
+          certID: certId,
+          forceHttps: res.https.forceHttps,
+          http2Enable: res.https.http2Enable,
+        };
+        const url = `https://api.qiniu.com/domain/${domain}/httpsconf`;
+        await qiniuClient.doRequest(url, 'put', body);
+        this.logger.info(`修改证书成功,certId:${certId},domain:${domain}`);
+      }
     }
 
     this.logger.info('部署完成');
