@@ -4,6 +4,7 @@ import { useReference } from "/@/use/use-refrence";
 import { forEach, get, merge, set } from "lodash-es";
 import { Modal } from "ant-design-vue";
 import * as api from "/@/views/sys/cname/provider/api";
+import { mitter } from "/@/utils/util.mitt";
 
 export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
   provide("notificationApi", api);
@@ -96,6 +97,14 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
           filterOption: (input: string, option: any) => {
             input = input?.toLowerCase();
             return option.value.toLowerCase().indexOf(input) >= 0 || option.label.toLowerCase().indexOf(input) >= 0;
+          },
+          renderLabel(item: any) {
+            return (
+              <span class={"flex-o flex-between"}>
+                {item.label}
+                {item.needPlus && <fs-icon icon={"mingcute:vip-1-line"} className={"color-plus"}></fs-icon>}
+              </span>
+            );
           }
         },
         rules: [{ required: true, message: "请选择通知类型" }],
@@ -112,6 +121,8 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
 
             if (!immediate) {
               form.body = {};
+
+              mitter.emit("openVipModal");
             }
 
             if (!form.name || form.name === lastTitle) {

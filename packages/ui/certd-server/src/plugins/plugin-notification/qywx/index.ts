@@ -4,6 +4,7 @@ import { BaseNotification, IsNotification, NotificationBody, NotificationInput }
   name: 'qywx',
   title: '企业微信通知',
   desc: '企业微信群聊机器人通知',
+  needPlus: true,
 })
 export class QywxNotification extends BaseNotification {
   @NotificationInput({

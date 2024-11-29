@@ -129,12 +129,12 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
     title: "证书颁发机构",
     value: "letsencrypt",
     component: {
-      name: "a-select",
+      name: "icon-select",
       vModel: "value",
       options: [
-        { value: "letsencrypt", label: "Let's Encrypt" },
-        { value: "google", label: "Google" },
-        { value: "zerossl", label: "ZeroSSL" },
+        { value: "letsencrypt", label: "Let's Encrypt", icon: "simple-icons:letsencrypt" },
+        { value: "google", label: "Google", icon: "flat-color-icons:google" },
+        { value: "zerossl", label: "ZeroSSL", icon: "emojione:digit-zero" },
       ],
     },
     helper: "Let's Encrypt：申请最简单\nGoogle：大厂光环，兼容性好，需要翻墙获取EAB授权\nZeroSSL：有数量限制，获取EAB授权无需翻墙",

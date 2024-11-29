@@ -10,6 +10,7 @@ import { DnspodAccess } from '../access/index.js';
   desc: '已废弃，请尽快换成腾讯云类型',
   accessType: 'dnspod',
   deprecated: 'dnspod已废弃，请换成腾讯云',
+  icon: 'svg:icon-tencentcloud',
 })
 export class DnspodDnsProvider extends AbstractDnsProvider {
   @Autowire()

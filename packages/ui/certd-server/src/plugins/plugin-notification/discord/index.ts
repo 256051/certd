@@ -4,6 +4,7 @@ import { BaseNotification, IsNotification, NotificationBody, NotificationInput }
   name: 'discord',
   title: 'Discord 通知',
   desc: 'Discord 机器人通知',
+  needPlus: true,
 })
 export class DiscordNotification extends BaseNotification {
   @NotificationInput({

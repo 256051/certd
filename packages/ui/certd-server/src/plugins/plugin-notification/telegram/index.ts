@@ -4,6 +4,7 @@ import { BaseNotification, IsNotification, NotificationBody, NotificationInput }
   name: 'telegram',
   title: 'Telegram通知',
   desc: 'Telegram Bot推送通知',
+  needPlus: true,
 })
 export class TelegramNotification extends BaseNotification {
   @NotificationInput({

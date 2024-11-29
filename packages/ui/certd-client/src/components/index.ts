@@ -7,7 +7,8 @@ import FoldBox from "./fold-box.vue";
 import { CronLight } from "@vue-js-cron/light";
 import "@vue-js-cron/light/dist/light.css";
 import Plugins from "./plugins/index";
-
+import LoadingButton from "./loading-button.vue";
+import IconSelect from "./icon-select.vue";
 export default {
   install(app: any) {
     app.component("PiContainer", PiContainer);
@@ -21,6 +22,9 @@ export default {
     app.component("CheckCircleOutlined", CheckCircleOutlined);
     app.component("InfoCircleOutlined", InfoCircleOutlined);
     app.component("UndoOutlined", UndoOutlined);
+
+    app.component("LoadingButton", LoadingButton);
+    app.component("IconSelect", IconSelect);
 
     app.use(vip);
     app.use(Plugins);

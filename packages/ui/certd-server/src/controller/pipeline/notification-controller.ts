@@ -2,6 +2,8 @@ import { ALL, Body, Controller, Inject, Post, Provide, Query } from '@midwayjs/c
 import { Constants, CrudController, ValidateException } from '@certd/lib-server';
 import { NotificationService } from '../../modules/pipeline/service/notification-service.js';
 import { AuthService } from '../../modules/sys/authority/service/auth-service.js';
+import { NotificationDefine } from '@certd/pipeline';
+import { checkPlus } from '@certd/plus-core';
 
 /**
  * 通知
@@ -43,12 +45,35 @@ export class NotificationController extends CrudController<NotificationService> 
   @Post('/add', { summary: Constants.per.authOnly })
   async add(@Body(ALL) bean) {
     bean.userId = this.getUserId();
+    const type = bean.type;
+    const define: NotificationDefine = this.service.getDefineByType(type);
+    if (!define) {
+      throw new ValidateException('通知类型不存在');
+    }
+    if (define.needPlus) {
+      checkPlus();
+    }
     return super.add(bean);
   }
 
   @Post('/update', { summary: Constants.per.authOnly })
   async update(@Body(ALL) bean) {
     await this.service.checkUserId(bean.id, this.getUserId());
+    const old = await this.service.info(bean.id);
+    if (!old) {
+      throw new ValidateException('通知配置不存在');
+    }
+    if (old.type !== bean.type) {
+      const type = bean.type;
+      const define: NotificationDefine = this.service.getDefineByType(type);
+      if (!define) {
+        throw new ValidateException('通知类型不存在');
+      }
+      if (define.needPlus) {
+        checkPlus();
+      }
+    }
+
     return super.update(bean);
   }
   @Post('/info', { summary: Constants.per.authOnly })
@@ -71,14 +96,19 @@ export class NotificationController extends CrudController<NotificationService> 
 
   @Post('/getTypeDict', { summary: Constants.per.authOnly })
   async getTypeDict() {
-    const list = this.service.getDefineList();
-    const dict = [];
+    const list: any = this.service.getDefineList();
+    let dict = [];
     for (const item of list) {
       dict.push({
         value: item.name,
         label: item.title,
+        needPlus: item.needPlus ?? false,
+        icon: item.icon,
       });
     }
+    dict = dict.sort(a => {
+      return a.needPlus ? 0 : -1;
+    });
     return this.ok(dict);
   }
 

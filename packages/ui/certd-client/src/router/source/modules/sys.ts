@@ -169,7 +169,7 @@ export const sysResources = [
           icon: "ion:person-outline",
           permission: "sys:auth:user:view"
         }
-      },
+      }
 
       // {
       //   title: "商业版设置",

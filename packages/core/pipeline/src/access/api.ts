@@ -18,6 +18,7 @@ export type AccessInputDefine = FormItemProps & {
   encrypt?: boolean;
 };
 export type AccessDefine = Registrable & {
+  icon?: string;
   input?: {
     [key: string]: AccessInputDefine;
   };

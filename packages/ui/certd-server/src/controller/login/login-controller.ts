@@ -2,6 +2,7 @@ import { ALL, Body, Controller, Inject, Post, Provide } from '@midwayjs/core';
 import { LoginService } from '../../modules/login/service/login-service.js';
 import { BaseController, Constants, SysPublicSettings, SysSettingsService } from '@certd/lib-server';
 import { CodeService } from '../../modules/basic/service/code-service.js';
+import { checkComm } from '@certd/plus-core';
 
 /**
  */
@@ -21,11 +22,6 @@ export class LoginController extends BaseController {
     @Body(ALL)
     user: any
   ) {
-    const settings = await this.sysSettingsService.getSetting<SysPublicSettings>(SysPublicSettings);
-    if (settings.passwordLoginEnabled === false) {
-      throw new Error('当前站点已禁止密码登录');
-    }
-
     const token = await this.loginService.loginByPassword(user);
     this.ctx.cookies.set('token', token.token, {
       maxAge: 1000 * token.expire,
@@ -43,6 +39,7 @@ export class LoginController extends BaseController {
     if (settings.smsLoginEnabled !== true) {
       throw new Error('当前站点禁止短信验证码登录');
     }
+    checkComm();
 
     const token = await this.loginService.loginBySmsCode({
       phoneCode: body.phoneCode,

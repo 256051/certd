@@ -4,6 +4,7 @@ import { AccessInput, BaseAccess, IsAccess } from '@certd/pipeline';
   name: 'CacheFly',
   title: 'CacheFly',
   desc: 'CacheFly',
+  icon: 'clarity:plugin-line',
 })
 export class CacheflyAccess extends BaseAccess {
   @AccessInput({

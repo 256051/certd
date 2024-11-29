@@ -1,11 +1,12 @@
 import { ALL, Body, Controller, Inject, Post, Provide, Query } from '@midwayjs/core';
 import { CrudController, SysPrivateSettings, SysPublicSettings, SysSettingsEntity, SysSettingsService } from '@certd/lib-server';
 import * as _ from 'lodash-es';
+import { merge } from 'lodash-es';
 import { PipelineService } from '../../../modules/pipeline/service/pipeline-service.js';
 import { UserSettingsService } from '../../../modules/mine/service/user-settings-service.js';
 import { getEmailSettings } from '../../../modules/sys/settings/fix.js';
-import { http, logger } from '@certd/basic';
-import { merge } from 'lodash-es';
+import { http, logger, simpleNanoId } from '@certd/basic';
+import { CodeService } from '../../../modules/basic/service/code-service.js';
 
 /**
  */
@@ -18,6 +19,8 @@ export class SysSettingsController extends CrudController<SysSettingsService> {
   userSettingsService: UserSettingsService;
   @Inject()
   pipelineService: PipelineService;
+  @Inject()
+  codeService: CodeService;
 
   getService() {
     return this.service;
@@ -111,7 +114,7 @@ export class SysSettingsController extends CrudController<SysSettingsService> {
     return this.ok({});
   }
 
-  @Post('/testProxy', { summary: 'sys:settings:view' })
+  @Post('/testProxy', { summary: 'sys:settings:edit' })
   async testProxy(@Body(ALL) body) {
     const google = 'https://www.google.com/';
     const baidu = 'https://www.baidu.com/';
@@ -147,5 +150,11 @@ export class SysSettingsController extends CrudController<SysSettingsService> {
       google: googleRes,
       baidu: baiduRes,
     });
+  }
+
+  @Post('/testSms', { summary: 'sys:settings:edit' })
+  async testSms(@Body(ALL) body) {
+    await this.codeService.sendSmsCode(body.phoneCode, body.mobile, simpleNanoId());
+    return this.ok({});
   }
 }

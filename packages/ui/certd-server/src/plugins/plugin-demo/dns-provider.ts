@@ -14,6 +14,7 @@ type DemoRecord = {
   name: 'demo',
   title: 'Dns提供商Demo',
   desc: 'dns provider示例',
+  icon: 'clarity:plugin-line',
   // 这里是对应的云平台的access类型名称
   accessType: 'demo',
 })

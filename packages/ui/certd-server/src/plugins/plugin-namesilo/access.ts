@@ -8,6 +8,7 @@ import { IsAccess, AccessInput, BaseAccess } from '@certd/pipeline';
   name: 'namesilo',
   title: 'namesilo授权',
   desc: '',
+  icon: 'simple-icons:namesilo',
 })
 export class NamesiloAccess extends BaseAccess {
   /**

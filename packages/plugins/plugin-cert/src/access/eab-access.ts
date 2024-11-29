@@ -4,6 +4,7 @@ import { IsAccess, AccessInput, BaseAccess } from "@certd/pipeline";
   name: "eab",
   title: "EAB授权",
   desc: "ZeroSSL证书申请需要EAB授权",
+  icon: "ic:outline-lock",
 })
 export class EabAccess extends BaseAccess {
   @AccessInput({

@@ -142,7 +142,7 @@ export default defineComponent({
         },
         {
           validator: async (rule: any, value: any) => {
-            if (value !== formState.password) {
+            if (value && value !== formState.password) {
               throw new Error("两次输入密码不一致");
             }
             return true;

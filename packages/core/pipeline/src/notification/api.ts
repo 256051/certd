@@ -31,6 +31,7 @@ export type NotificationInputDefine = FormItemProps & {
   encrypt?: boolean;
 };
 export type NotificationDefine = Registrable & {
+  needPlus?: boolean;
   input?: {
     [key: string]: NotificationInputDefine;
   };

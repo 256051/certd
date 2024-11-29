@@ -8,6 +8,7 @@ import { TencentAccess } from '@certd/plugin-plus';
   title: '腾讯云',
   desc: '腾讯云域名DNS解析提供者',
   accessType: 'tencent',
+  icon: 'svg:icon-tencentcloud',
 })
 export class TencentDnsProvider extends AbstractDnsProvider {
   @Autowire()

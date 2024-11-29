@@ -3,6 +3,7 @@ import { IAccess, Registrable } from "@certd/pipeline";
 
 export type DnsProviderDefine = Registrable & {
   accessType: string;
+  icon?: string;
   autowire?: {
     [key: string]: any;
   };

@@ -12,18 +12,19 @@
   </div>
 </template>
 <script lang="tsx" setup>
-import { computed, reactive } from "vue";
+import { computed, onMounted, reactive } from "vue";
 import dayjs from "dayjs";
 import { message, Modal } from "ant-design-vue";
 import * as api from "./api";
 import { useSettingStore } from "/@/store/modules/settings";
 import { useRouter } from "vue-router";
 import { useUserStore } from "/@/store/modules/user";
+import { mitter } from "/@/utils/util.mitt";
 
 const settingStore = useSettingStore();
 const props = withDefaults(
   defineProps<{
-    mode?: "button" | "nav" | "icon";
+    mode?: "comm" | "button" | "nav" | "icon";
   }>(),
   {
     mode: "button"
@@ -36,7 +37,29 @@ type Text = {
 const text = computed<Text>(() => {
   const vipLabel = settingStore.vipLabel;
   const map = {
+    isComm: {
+      comm: {
+        name: `${vipLabel}已开通`,
+        title: "到期时间：" + expireTime.value
+      },
+      button: {
+        name: `${vipLabel}已开通`,
+        title: "到期时间：" + expireTime.value
+      },
+      icon: {
+        name: "",
+        title: `${vipLabel}已开通`
+      },
+      nav: {
+        name: `${vipLabel}`,
+        title: "到期时间：" + expireTime.value
+      }
+    },
     isPlus: {
+      comm: {
+        name: "商业版功能",
+        title: "升级商业版，获取商业授权"
+      },
       button: {
         name: `${vipLabel}已开通`,
         title: "到期时间：" + expireTime.value
@@ -51,13 +74,17 @@ const text = computed<Text>(() => {
       }
     },
     free: {
+      comm: {
+        name: "商业版功能",
+        title: "升级商业版，获取商业授权"
+      },
       button: {
-        name: "此为专业版功能",
+        name: "专业版功能",
         title: "升级专业版，享受更多VIP特权"
       },
       icon: {
         name: "",
-        title: "此为专业版功能"
+        title: "专业版功能"
       },
       nav: {
         name: "基础版",
@@ -65,7 +92,9 @@ const text = computed<Text>(() => {
       }
     }
   };
-  if (settingStore.isPlus) {
+  if (settingStore.isComm) {
+    return map.isComm[props.mode];
+  } else if (settingStore.isPlus) {
     return map.isPlus[props.mode];
   } else {
     return map.free[props.mode];
@@ -313,6 +342,13 @@ function openUpgrade() {
     }
   });
 }
+onMounted(() => {
+  mitter.on("openVipModal", () => {
+    if (props.mode === "nav" && !settingStore.isPlus) {
+      openUpgrade();
+    }
+  });
+});
 </script>
 
 <style lang="less">

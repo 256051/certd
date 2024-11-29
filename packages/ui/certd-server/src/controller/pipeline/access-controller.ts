@@ -2,6 +2,7 @@ import { ALL, Body, Controller, Inject, Post, Provide, Query } from '@midwayjs/c
 import { Constants, CrudController } from '@certd/lib-server';
 import { AccessService } from '../../modules/pipeline/service/access-service.js';
 import { AuthService } from '../../modules/sys/authority/service/auth-service.js';
+import { AccessDefine } from '@certd/pipeline';
 
 /**
  * 授权
@@ -77,12 +78,13 @@ export class AccessController extends CrudController<AccessService> {
 
   @Post('/accessTypeDict', { summary: Constants.per.authOnly })
   async getAccessTypeDict() {
-    const list = this.service.getDefineList();
+    const list: AccessDefine[] = this.service.getDefineList();
     const dict = [];
     for (const item of list) {
       dict.push({
         value: item.name,
         label: item.title,
+        icon: item.icon,
       });
     }
     return this.ok(dict);

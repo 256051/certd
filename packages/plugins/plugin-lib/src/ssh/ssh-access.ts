@@ -5,6 +5,7 @@ import { ConnectConfig } from "ssh2";
   name: "ssh",
   title: "主机登录授权",
   desc: "",
+  icon: "clarity:host-line",
   input: {},
 })
 export class SshAccess extends BaseAccess implements ConnectConfig {

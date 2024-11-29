@@ -87,6 +87,14 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
           filterOption: (input: string, option: any) => {
             input = input?.toLowerCase();
             return option.value.toLowerCase().indexOf(input) >= 0 || option.label.toLowerCase().indexOf(input) >= 0;
+          },
+          renderLabel(item: any) {
+            return (
+              <span class={"flex-o"}>
+                <fs-icon icon={item.icon} class={"mr-5 fs-16 color-blue"} />
+                {item.label}
+              </span>
+            );
           }
         },
         rules: [{ required: true, message: "请选择类型" }],

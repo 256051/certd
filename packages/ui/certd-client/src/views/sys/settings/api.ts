@@ -77,3 +77,11 @@ export async function TestProxy() {
     method: "post"
   });
 }
+
+export async function TestSms(data: any) {
+  return await request({
+    url: apiPrefix + "/testSms",
+    method: "post",
+    data
+  });
+}

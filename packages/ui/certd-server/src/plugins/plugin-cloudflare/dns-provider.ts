@@ -20,6 +20,7 @@ export type CloudflareRecord = {
   name: 'cloudflare',
   title: 'cloudflare',
   desc: 'cloudflare dns provider',
+  icon: 'simple-icons:cloudflare',
   // 这里是对应的 cloudflare的access类型名称
   accessType: 'cloudflare',
 })

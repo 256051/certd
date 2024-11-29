@@ -56,7 +56,7 @@ export class CodeService {
   }
   /**
    */
-  async sendSmsCode(phoneCode, mobile, randomStr) {
+  async sendSmsCode(phoneCode = '86', mobile: string, randomStr: string) {
     console.assert(phoneCode != null && mobile != null, '手机号不能为空');
     console.assert(randomStr != null, 'randomStr不能为空');
 
@@ -83,6 +83,7 @@ export class CodeService {
     cache.set(key, smsCode, {
       ttl: 5 * 60 * 1000, //5分钟
     });
+    return smsCode;
   }
 
   /**
@@ -102,6 +103,7 @@ export class CodeService {
     cache.set(key, code, {
       ttl: 5 * 60 * 1000, //5分钟
     });
+    return code;
   }
 
   /**

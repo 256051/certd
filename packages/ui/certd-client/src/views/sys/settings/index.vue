@@ -4,12 +4,12 @@
     <!--      <div class="title">系统设置</div>-->
     <!--    </template>-->
     <div class="sys-settings-body">
-      <a-tabs type="card" class="sys-settings-tabs">
-        <a-tab-pane key="site" tab="基本设置">
-          <SettingBase />
+      <a-tabs :active-key="activeKey" type="card" class="sys-settings-tabs" @update:active-key="onChange">
+        <a-tab-pane key="" tab="基本设置">
+          <SettingBase v-if="activeKey === ''" />
         </a-tab-pane>
         <a-tab-pane key="register" tab="注册设置">
-          <SettingRegister />
+          <SettingRegister v-if="activeKey === 'register'" />
         </a-tab-pane>
       </a-tabs>
     </div>
@@ -17,13 +17,31 @@
 </template>
 
 <script setup lang="tsx">
-import { SysSettings } from "./api";
 import SettingBase from "/@/views/sys/settings/tabs/base.vue";
 import SettingRegister from "/@/views/sys/settings/tabs/register.vue";
-
+import { useRoute, useRouter } from "vue-router";
+import { ref } from "vue";
 defineOptions({
   name: "SysSettings"
 });
+
+const activeKey = ref("");
+const route = useRoute();
+const router = useRouter();
+if (route.query.tab) {
+  activeKey.value = (route.query.tab as string) || "";
+}
+
+function onChange(value: string) {
+  // activeKey.value = value;
+  // 创建一个新的查询参数对象
+  const query: any = {};
+  if (value !== "") {
+    query.tab = value;
+  }
+  // 使用`push`方法更新路由，保留其他查询参数不变
+  router.push({ path: route.path, query });
+}
 </script>
 
 <style lang="less">

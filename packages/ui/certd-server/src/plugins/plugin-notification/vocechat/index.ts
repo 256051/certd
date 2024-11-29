@@ -4,6 +4,7 @@ import { BaseNotification, IsNotification, NotificationBody, NotificationInput }
   name: 'vocechat',
   title: 'VoceChat通知',
   desc: 'https://voce.chat',
+  needPlus: true,
 })
 export class VoceChatNotification extends BaseNotification {
   @NotificationInput({

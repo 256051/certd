@@ -12,6 +12,7 @@ export type NamesiloRecord = {
   name: 'namesilo',
   title: 'namesilo',
   desc: 'namesilo dns provider',
+  icon: 'simple-icons:namesilo',
   // 这里是对应的 cloudflare的access类型名称
   accessType: 'namesilo',
 })
