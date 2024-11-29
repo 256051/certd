@@ -391,7 +391,6 @@ export class Executor {
       if (notification.type === "email") {
         try {
           await this.options.emailService?.send({
-            userId: this.pipeline.userId,
             subject,
             content,
             receivers: notification.options.receivers,

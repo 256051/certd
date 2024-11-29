@@ -1,6 +1,6 @@
 import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
 import dayjs from 'dayjs';
-import { AliyunAccess, AliyunClient, createCertDomainGetterInputDefine } from '@certd/plugin-plus';
+import { AliyunAccess, AliyunClient, createCertDomainGetterInputDefine } from '@certd/plugin-lib';
 import { CertInfo } from '@certd/plugin-cert';
 
 @IsTaskPlugin({

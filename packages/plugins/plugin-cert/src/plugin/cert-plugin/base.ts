@@ -335,7 +335,6 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
   async sendSuccessEmail(body: NotificationBody) {
     this.logger.info("发送邮件通知:" + this.email);
     await this.ctx.emailService.send({
-      userId: this.ctx.pipeline.userId,
       receivers: [this.email],
       subject: body.title,
       content: body.content,

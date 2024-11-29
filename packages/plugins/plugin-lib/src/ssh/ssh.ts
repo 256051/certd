@@ -1,12 +1,12 @@
 // @ts-ignore
-import ssh2, { ConnectConfig, ExecOptions } from 'ssh2';
-import path from 'path';
-import * as _ from 'lodash-es';
-import { ILogger } from '@certd/basic';
-import { SshAccess } from '../access/index.js';
-import stripAnsi from 'strip-ansi';
-import { SocksClient } from 'socks';
-import { SocksProxy, SocksProxyType } from 'socks/typings/common/constants.js';
+import ssh2, { ConnectConfig, ExecOptions } from "ssh2";
+import path from "path";
+import * as _ from "lodash-es";
+import { ILogger } from "@certd/basic";
+import { SshAccess } from "./ssh-access.js";
+import stripAnsi from "strip-ansi";
+import { SocksClient } from "socks";
+import { SocksProxy, SocksProxyType } from "socks/typings/common/constants.js";
 
 export class AsyncSsh2Client {
   conn: ssh2.Client;
@@ -32,31 +32,31 @@ export class AsyncSsh2Client {
     this.logger.info(`开始连接，${this.connConf.host}:${this.connConf.port}`);
     if (this.connConf.socksProxy) {
       this.logger.info(`使用代理${this.connConf.socksProxy}`);
-      if (typeof this.connConf.port === 'string') {
+      if (typeof this.connConf.port === "string") {
         this.connConf.port = parseInt(this.connConf.port);
       }
       const proxyOption: SocksProxy = this.parseSocksProxyFromUri(this.connConf.socksProxy);
       const info = await SocksClient.createConnection({
         proxy: proxyOption,
-        command: 'connect',
+        command: "connect",
         destination: {
           host: this.connConf.host,
           port: this.connConf.port,
         },
       });
-      this.logger.info('代理连接成功');
+      this.logger.info("代理连接成功");
       this.connConf.sock = info.socket;
     }
     return new Promise((resolve, reject) => {
       try {
         const conn = new ssh2.Client();
         conn
-          .on('error', (err: any) => {
-            this.logger.error('连接失败', err);
+          .on("error", (err: any) => {
+            this.logger.error("连接失败", err);
             reject(err);
           })
-          .on('ready', () => {
-            this.logger.info('连接成功');
+          .on("ready", () => {
+            this.logger.info("连接成功");
             this.conn = conn;
             resolve(this.conn);
           })
@@ -68,7 +68,7 @@ export class AsyncSsh2Client {
   }
   async getSftp() {
     return new Promise((resolve, reject) => {
-      this.logger.info('获取sftp');
+      this.logger.info("获取sftp");
       this.conn.sftp((err: any, sftp: any) => {
         if (err) {
           reject(err);
@@ -86,7 +86,7 @@ export class AsyncSsh2Client {
       sftp.fastPut(localPath, remotePath, (err: Error) => {
         if (err) {
           reject(err);
-          this.logger.error('请确认路径是否包含文件名，路径本身不能是目录，路径不能有*?之类的特殊符号，要有写入权限');
+          this.logger.error("请确认路径是否包含文件名，路径本身不能是目录，路径不能有*?之类的特殊符号，要有写入权限");
           return;
         }
         this.logger.info(`上传文件成功：${localPath} => ${remotePath}`);
@@ -97,11 +97,15 @@ export class AsyncSsh2Client {
 
   async exec(script: string) {
     if (!script) {
-      this.logger.info('script 为空，取消执行');
+      this.logger.info("script 为空，取消执行");
       return;
     }
-    let iconv: any = await import('iconv-lite');
+    let iconv: any = await import("iconv-lite");
     iconv = iconv.default;
+    // if (this.connConf.windows) {
+    //   script += "\r\nexit\r\n";
+    //   //保证windows下正常退出
+    // }
     return new Promise((resolve, reject) => {
       this.logger.info(`执行命令：[${this.connConf.host}][exec]: \n` + script);
       this.conn.exec(script, (err: Error, stream: any) => {
@@ -109,9 +113,9 @@ export class AsyncSsh2Client {
           reject(err);
           return;
         }
-        let data = '';
+        let data = "";
         stream
-          .on('close', (code: any, signal: any) => {
+          .on("close", (code: any, signal: any) => {
             this.logger.info(`[${this.connConf.host}][close]:code:${code}`);
             if (code === 0) {
               resolve(data);
@@ -119,16 +123,16 @@ export class AsyncSsh2Client {
               reject(new Error(data));
             }
           })
-          .on('data', (ret: Buffer) => {
+          .on("data", (ret: Buffer) => {
             const out = this.convert(iconv, ret);
             data += out;
             this.logger.info(`[${this.connConf.host}][info]: ` + out.trimEnd());
           })
-          .on('error', (err: any) => {
+          .on("error", (err: any) => {
             reject(err);
             this.logger.error(err);
           })
-          .stderr.on('data', (ret: Buffer) => {
+          .stderr.on("data", (ret: Buffer) => {
             const err = this.convert(iconv, ret);
             data += err;
             this.logger.info(`[${this.connConf.host}][error]: ` + err.trimEnd());
@@ -147,31 +151,31 @@ export class AsyncSsh2Client {
         }
         const output: string[] = [];
         function ansiHandle(data: string) {
-          data = data.replace(/\[[0-9]+;1H/g, '\n');
+          data = data.replace(/\[[0-9]+;1H/g, "\n");
           data = stripAnsi(data);
           return data;
         }
         stream
-          .on('close', () => {
-            this.logger.info('Stream :: close');
+          .on("close", (code: any) => {
+            this.logger.info("Stream :: close,code: " + code);
             resolve(output);
           })
-          .on('data', (ret: Buffer) => {
+          .on("data", (ret: Buffer) => {
             const data = ansiHandle(ret.toString());
             this.logger.info(data);
             output.push(data);
           })
-          .on('error', (err: any) => {
+          .on("error", (err: any) => {
             reject(err);
             this.logger.error(err);
           })
-          .stderr.on('data', (ret: Buffer) => {
+          .stderr.on("data", (ret: Buffer) => {
             const data = ansiHandle(ret.toString());
             output.push(data);
             this.logger.info(`[${this.connConf.host}][error]: ` + data);
           });
         //保证windows下正常退出
-        const exit = '\r\nexit\r\n';
+        const exit = "\r\nexit\r\n";
         stream.end(script + exit);
       });
     });
@@ -187,7 +191,7 @@ export class AsyncSsh2Client {
   private parseSocksProxyFromUri(socksProxyUri: string): SocksProxy {
     const url = new URL(socksProxyUri);
     let type: SocksProxyType = 5;
-    if (url.protocol.startsWith('socks4')) {
+    if (url.protocol.startsWith("socks4")) {
       type = 4;
     }
     const proxy: SocksProxy = {
@@ -227,16 +231,16 @@ export class SshClient {
       connectConf,
       callable: async (conn: AsyncSsh2Client) => {
         const sftp = await conn.getSftp();
-        this.logger.info('开始上传');
+        this.logger.info("开始上传");
         for (const transport of transports) {
           if (mkdirs !== false) {
             const filePath = path.dirname(transport.remotePath);
             let mkdirCmd = `mkdir -p ${filePath} `;
             if (conn.windows) {
-              if (filePath.indexOf('/') > -1) {
-                this.logger.info('--------------------------');
-                this.logger.info('请注意：windows下，文件目录分隔应该写成\\而不是/');
-                this.logger.info('--------------------------');
+              if (filePath.indexOf("/") > -1) {
+                this.logger.info("--------------------------");
+                this.logger.info("请注意：windows下，文件目录分隔应该写成\\而不是/");
+                this.logger.info("--------------------------");
               }
               const isCmd = await this.isCmd(conn);
               if (!isCmd) {
@@ -249,18 +253,28 @@ export class SshClient {
           }
           await conn.fastPut({ sftp, ...transport });
         }
-        this.logger.info('文件全部上传成功');
+        this.logger.info("文件全部上传成功");
       },
     });
   }
 
   async isCmd(conn: AsyncSsh2Client) {
-    const spec = await conn.exec('echo %COMSPEC%');
-    if (spec.toString().trim() === '%COMSPEC%') {
+    const spec = await conn.exec("echo %COMSPEC% ");
+    if (spec.toString().trim() === "%COMSPEC%") {
       return false;
     } else {
       return true;
     }
+  }
+
+  async getIsCmd(options: { connectConf: SshAccess }) {
+    const { connectConf } = options;
+    return await this._call({
+      connectConf,
+      callable: async (conn: AsyncSsh2Client) => {
+        return await this.isCmd(conn);
+      },
+    });
   }
 
   /**
@@ -302,40 +316,41 @@ export class SshClient {
 
         if (isWinCmd) {
           //组合成&&的形式
-          if (typeof script === 'string') {
-            script = script.split('\n');
+          if (typeof script === "string") {
+            script = script.split("\n");
           }
           script = envScripts.concat(script);
           script = script as Array<string>;
-          script = script.join(' && ');
+          script = script.join(" && ");
         } else {
+          const newLine = isLinux ? "\n" : "\r\n";
           if (_.isArray(script)) {
             script = script as Array<string>;
-            script = script.join('\n');
+            script = script.join(newLine);
           }
           if (envScripts.length > 0) {
-            script = envScripts.join('\n') + '\n' + script;
+            script = envScripts.join(newLine) + newLine + script;
           }
         }
-        await conn.exec(script);
+        return await conn.exec(script as string);
       },
     });
   }
 
-  //废弃
   async shell(options: { connectConf: SshAccess; script: string | Array<string> }): Promise<string[]> {
     let { script } = options;
     const { connectConf } = options;
     if (_.isArray(script)) {
       script = script as Array<string>;
       if (connectConf.windows) {
-        script = script.join('\r\n');
+        script = script.join("\r\n");
       } else {
-        script = script.join('\n');
+        script = script.join("\n");
       }
     } else {
       if (connectConf.windows) {
-        script = script.replaceAll('\n', '\r\n');
+        //@ts-ignore
+        script = script.replaceAll("\n", "\r\n");
       }
     }
     return await this._call({
@@ -352,9 +367,9 @@ export class SshClient {
     try {
       await conn.connect();
     } catch (e: any) {
-      if (e.message?.indexOf('All configured authentication methods failed') > -1) {
+      if (e.message?.indexOf("All configured authentication methods failed") > -1) {
         this.logger.error(e);
-        throw new Error('登录失败，请检查用户名/密码/密钥是否正确');
+        throw new Error("登录失败，请检查用户名/密码/密钥是否正确");
       }
       throw e;
     }

@@ -1,5 +1,5 @@
 import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
-import { AliyunAccess } from '@certd/plugin-plus';
+import { AliyunAccess } from '@certd/plugin-lib';
 import { CertInfo } from '@certd/plugin-cert';
 @IsTaskPlugin({
   name: 'DeployCertToAliyunOSS',

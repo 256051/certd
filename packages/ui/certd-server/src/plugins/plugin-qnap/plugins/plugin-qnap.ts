@@ -1,9 +1,9 @@
 import { IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
 import { CertInfo } from '@certd/plugin-cert';
 import { AbstractPlusTaskPlugin } from '@certd/plugin-plus';
-import { SshAccess, SshClient } from '../../plugin-host/index.js';
 import { tmpdir } from 'node:os';
 import fs from 'fs';
+import { SshAccess, SshClient } from '@certd/plugin-lib';
 
 @IsTaskPlugin({
   name: 'QnapDeploy',

@@ -1,7 +1,7 @@
 import { AbstractDnsProvider, CreateRecordOptions, IsDnsProvider, RemoveRecordOptions } from '@certd/plugin-cert';
 import { Autowire } from '@certd/pipeline';
 
-import { AliyunAccess, AliyunClient } from '@certd/plugin-plus';
+import { AliyunAccess, AliyunClient } from '@certd/plugin-lib';
 
 @IsDnsProvider({
   name: 'aliyun',

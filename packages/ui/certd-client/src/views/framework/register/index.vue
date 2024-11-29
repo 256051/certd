@@ -7,19 +7,36 @@
       :model="formState"
       :rules="rules"
       v-bind="layout"
-      :label-col="{ span: 5 }"
+      :label-col="{ span: 6 }"
       @finish="handleFinish"
       @finish-failed="handleFinishFailed"
     >
-      <a-tabs v-model:value="registerType" :tab-bar-style="{ textAlign: 'center', borderBottom: 'unset' }">
+      <a-tabs v-model:active-key="registerType">
         <a-tab-pane key="username" tab="用户名注册">
           <template v-if="registerType === 'username'">
-            <a-form-item required has-feedback name="username" label="用户名">
+            <a-form-item required has-feedback name="username" label="用户名" :rules="rules.username">
               <a-input v-model:value="formState.username" placeholder="用户名" size="large" autocomplete="off">
                 <template #prefix>
-                  <span class="iconify" data-icon="ion:person" data-inline="false"></span>
+                  <fs-icon icon="ion:person-outline"></fs-icon>
                 </template>
               </a-input>
+            </a-form-item>
+            <a-form-item has-feedback name="password" label="密码" :rules="rules.password">
+              <a-input-password v-model:value="formState.password" placeholder="密码" size="large" autocomplete="off">
+                <template #prefix>
+                  <fs-icon icon="ion:lock-closed-outline"></fs-icon>
+                </template>
+              </a-input-password>
+            </a-form-item>
+            <a-form-item has-feedback name="confirmPassword" label="确认密码">
+              <a-input-password v-model:value="formState.confirmPassword" placeholder="确认密码" size="large" autocomplete="off" :rules="rules.confirmPassword">
+                <template #prefix>
+                  <fs-icon icon="ion:lock-closed-outline"></fs-icon>
+                </template>
+              </a-input-password>
+            </a-form-item>
+            <a-form-item has-feedback name="imgCode" label="图片验证码" :rules="rules.imgCode">
+              <image-code v-model:value="formState.imgCode" v-model:random-str="formState.randomStr"></image-code>
             </a-form-item>
           </template>
         </a-tab-pane>
@@ -28,60 +45,36 @@
             <a-form-item required has-feedback name="email" label="邮箱">
               <a-input v-model:value="formState.email" placeholder="邮箱" size="large" autocomplete="off">
                 <template #prefix>
-                  <span class="iconify" data-icon="ion:person" data-inline="false"></span>
+                  <fs-icon icon="ion:mail-outline"></fs-icon>
                 </template>
               </a-input>
             </a-form-item>
-
-            <a-form-item has-feedback name="imgCode">
-              <a-row :gutter="16">
-                <a-col class="gutter-row" :span="16">
-                  <a-input v-model:value="formState.imgCode" placeholder="请输入图片验证码" size="large" autocomplete="off">
-                    <template #prefix>
-                      <span class="iconify" data-icon="ion:image-outline" data-inline="false"></span>
-                    </template>
-                  </a-input>
-                </a-col>
-                <a-col class="gutter-row" :span="8">
-                  <img class="image-code" :src="imageCodeUrl" @click="resetImageCode" />
-                </a-col>
-              </a-row>
+            <a-form-item has-feedback name="password" label="密码">
+              <a-input-password v-model:value="formState.password" placeholder="密码" size="large" autocomplete="off">
+                <template #prefix>
+                  <fs-icon icon="ion:lock-closed-outline"></fs-icon>
+                </template>
+              </a-input-password>
+            </a-form-item>
+            <a-form-item has-feedback name="confirmPassword" label="确认密码">
+              <a-input-password v-model:value="formState.confirmPassword" placeholder="确认密码" size="large" autocomplete="off">
+                <template #prefix>
+                  <fs-icon icon="ion:lock-closed-outline"></fs-icon>
+                </template>
+              </a-input-password>
             </a-form-item>
 
-            <a-form-item name="smsCode">
-              <a-row :gutter="16">
-                <a-col class="gutter-row" :span="16">
-                  <a-input v-model:value="formState.validateCode" size="large" placeholder="邮箱验证码">
-                    <template #prefix>
-                      <span class="iconify" data-icon="ion:mail-outline" data-inline="false"></span>
-                    </template>
-                  </a-input>
-                </a-col>
-                <a-col class="gutter-row" :span="8">
-                  <a-button class="getCaptcha" tabindex="-1" :disabled="smsSendBtnDisabled" @click="sendSmsCode">
-                    {{ smsTime <= 0 ? "发送" : smsTime + " s" }}
-                  </a-button>
-                </a-col>
-              </a-row>
+            <a-form-item has-feedback name="imgCode" label="图片验证码" :rules="rules.imgCode">
+              <image-code v-model:value="formState.imgCode" v-model:random-str="formState.randomStr"></image-code>
+            </a-form-item>
+
+            <a-form-item has-feedback name="validateCode" :rules="rules.validateCode" label="邮件验证码">
+              <email-code v-model:value="formState.validateCode" :img-code="formState.imgCode" :email="formState.email" :random-str="formState.randomStr" />
             </a-form-item>
           </template>
         </a-tab-pane>
       </a-tabs>
 
-      <a-form-item has-feedback name="password" label="密码">
-        <a-input-password v-model:value="formState.password" placeholder="密码" size="large" autocomplete="off">
-          <template #prefix>
-            <span class="iconify" data-icon="ion:lock-closed" data-inline="false"></span>
-          </template>
-        </a-input-password>
-      </a-form-item>
-      <a-form-item has-feedback name="confirmPassword" label="确认密码">
-        <a-input-password v-model:value="formState.confirmPassword" placeholder="确认密码" size="large" autocomplete="off">
-          <template #prefix>
-            <span class="iconify" data-icon="ion:lock-closed" data-inline="false"></span>
-          </template>
-        </a-input-password>
-      </a-form-item>
       <a-form-item>
         <a-button type="primary" size="large" html-type="submit" class="login-button">注册</a-button>
       </a-form-item>
@@ -96,10 +89,13 @@
 import { defineComponent, reactive, ref, toRaw } from "vue";
 import { useUserStore } from "/src/store/modules/user";
 import { utils } from "@fast-crud/fast-crud";
+import ImageCode from "/@/views/framework/login/image-code.vue";
+import EmailCode from "./email-code.vue";
 export default defineComponent({
   name: "RegisterPage",
+  components: { EmailCode, ImageCode },
   setup() {
-    const registerType = ref("email");
+    const registerType = ref("username");
     const userStore = useUserStore();
     const formRef = ref();
     const formState: any = reactive({
@@ -108,7 +104,8 @@ export default defineComponent({
       email: "",
       username: "",
       password: "",
-      confirmPassword: ""
+      confirmPassword: "",
+      randomStr: ""
     });
 
     const rules = {
@@ -124,6 +121,10 @@ export default defineComponent({
           required: true,
           trigger: "change",
           message: "请输入邮箱"
+        },
+        {
+          type: "email",
+          message: "请输入正确的邮箱"
         }
       ],
       password: [
@@ -138,6 +139,33 @@ export default defineComponent({
           required: true,
           trigger: "change",
           message: "请确认密码"
+        },
+        {
+          validator: async (rule: any, value: any) => {
+            if (value !== formState.password) {
+              throw new Error("两次输入密码不一致");
+            }
+            return true;
+          }
+        }
+      ],
+
+      imgCode: [
+        {
+          required: true,
+          message: "请输入图片验证码"
+        }
+      ],
+      smsCode: [
+        {
+          required: true,
+          message: "请输入短信验证码"
+        }
+      ],
+      validateCode: [
+        {
+          required: true,
+          message: "请输入邮件验证码"
         }
       ]
     };
@@ -153,8 +181,13 @@ export default defineComponent({
     const handleFinish = async (values: any) => {
       await userStore.register(
         toRaw({
+          type: registerType.value,
           password: formState.password,
-          username: formState.username
+          username: formState.username,
+          imgCode: formState.imgCode,
+          randomStr: formState.randomStr,
+          email: formState.email,
+          validateCode: formState.validateCode
         }) as any
       );
     };
@@ -197,17 +230,34 @@ export default defineComponent({
     font-size: 14px;
   }
 
+  .ant-input-affix-wrapper {
+    line-height: 1.8 !important;
+    font-size: 14px !important;
+    > * {
+      line-height: 1.8 !important;
+      font-size: 14px !important;
+    }
+  }
+
+  .getCaptcha {
+    display: block;
+    width: 100%;
+  }
+
+  .image-code {
+    height: 34px;
+  }
+  .input-right {
+    width: 160px;
+    margin-left: 10px;
+  }
+
   .login-title {
     // color: @primary-color;
     font-size: 18px;
     text-align: center;
     margin: 30px;
     margin-top: 50px;
-  }
-  .getCaptcha {
-    display: block;
-    width: 100%;
-    height: 40px;
   }
 
   .forge-password {

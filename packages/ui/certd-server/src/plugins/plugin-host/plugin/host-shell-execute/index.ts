@@ -1,5 +1,5 @@
 import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
-import { SshClient } from '../../lib/ssh.js';
+import { SshClient } from '@certd/plugin-lib';
 
 @IsTaskPlugin({
   name: 'hostShellExecute',

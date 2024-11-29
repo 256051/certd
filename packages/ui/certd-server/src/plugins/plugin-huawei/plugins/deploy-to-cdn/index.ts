@@ -1,7 +1,7 @@
 import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
 import { HuaweiAccess } from '../../access/index.js';
 import { CertInfo } from '@certd/plugin-cert';
-import { createCertDomainGetterInputDefine, createRemoteSelectInputDefine } from '@certd/plugin-plus';
+import { createCertDomainGetterInputDefine, createRemoteSelectInputDefine } from '@certd/plugin-lib';
 import { resetLogConfigure } from '@certd/basic';
 
 @IsTaskPlugin({

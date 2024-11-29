@@ -154,30 +154,30 @@ export class UserService extends BaseService<UserEntity> {
   }
 
   async register(type: string, user: UserEntity) {
-    if (type !== 'username') {
+    if (!user.password) {
+      user.password = simpleNanoId();
+    }
+    if (!user.username) {
       user.username = 'user_' + simpleNanoId();
-      if (!user.password) {
-        user.password = simpleNanoId();
+    }
+
+    if (type === 'username') {
+      const username = user.username;
+      const old = await this.findOne([{ username: username }, { mobile: username }, { email: username }]);
+      if (old != null) {
+        throw new CommonException('用户名已被注册');
       }
-    }
-    if (type === 'mobile') {
-      user.nickName = user.mobile.substring(0, 3) + '****' + user.mobile.substring(7);
-    }
+    } else if (type === 'mobile') {
+      const mobile = user.mobile;
 
-    const old = await this.findOne({ username: user.username });
-    if (old != null) {
-      throw new CommonException('用户名已被注册');
-    }
-
-    if (user.mobile) {
-      const old = await this.findOne({ mobile: user.mobile });
+      user.nickName = mobile.substring(0, 3) + '****' + mobile.substring(7);
+      const old = await this.findOne([{ username: mobile }, { mobile: mobile }, { email: mobile }]);
       if (old != null) {
         throw new CommonException('手机号已被注册');
       }
-    }
-
-    if (user.email) {
-      const old = await this.findOne({ email: user.email });
+    } else if (type === 'email') {
+      const email = user.email;
+      const old = await this.findOne([{ username: email }, { mobile: email }, { email: email }]);
       if (old != null) {
         throw new CommonException('邮箱已被注册');
       }
@@ -186,10 +186,10 @@ export class UserService extends BaseService<UserEntity> {
     let newUser: UserEntity = UserEntity.of({
       username: user.username,
       password: user.password,
-      nickName: user.nickName || user.username,
-      avatar: user.avatar || '',
       email: user.email || '',
       mobile: user.mobile || '',
+      nickName: user.nickName || user.username,
+      avatar: user.avatar || '',
       phoneCode: user.phoneCode || '86',
       status: 1,
       passwordVersion: 2,

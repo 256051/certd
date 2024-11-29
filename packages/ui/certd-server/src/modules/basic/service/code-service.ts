@@ -88,7 +88,7 @@ export class CodeService {
   /**
    */
   async sendEmailCode(email: string, randomStr: string) {
-    console.assert(!email, '手机号不能为空');
+    console.assert(!email, 'Email不能为空');
     console.assert(!randomStr, 'randomStr不能为空');
 
     const code = randomNumber(4);
@@ -98,7 +98,7 @@ export class CodeService {
       receivers: [email],
     });
 
-    const key = this.buildEmailCodeKey(email, code);
+    const key = this.buildEmailCodeKey(email, randomStr);
     cache.set(key, code, {
       ttl: 5 * 60 * 1000, //5分钟
     });

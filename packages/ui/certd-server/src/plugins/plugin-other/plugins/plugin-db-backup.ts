@@ -2,10 +2,10 @@ import { IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipel
 import fs from 'fs';
 import path from 'path';
 import dayjs from 'dayjs';
-import { SshAccess, SshClient } from '../../plugin-host/index.js';
 import { AbstractPlusTaskPlugin } from '@certd/plugin-plus';
 import JSZip from 'jszip';
 import * as os from 'node:os';
+import { SshAccess, SshClient } from '@certd/plugin-lib';
 
 const defaultBackupDir = 'certd_backup';
 const defaultFilePrefix = 'db-backup';

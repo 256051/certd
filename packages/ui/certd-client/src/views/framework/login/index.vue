@@ -40,31 +40,17 @@
               </a-input>
             </a-form-item>
             <a-form-item has-feedback name="imgCode">
-              <div class="flex">
-                <a-input v-model:value="formState.imgCode" placeholder="请输入图片验证码" autocomplete="off">
-                  <template #prefix>
-                    <fs-icon icon="ion:image-outline"></fs-icon>
-                  </template>
-                </a-input>
-                <div class="input-right">
-                  <img class="image-code" :src="imageCodeUrl" @click="resetImageCode" />
-                </div>
-              </div>
+              <image-code v-model:value="formState.imgCode" v-model:random-str="formState.randomStr"></image-code>
             </a-form-item>
 
             <a-form-item name="smsCode" :rules="rules.smsCode">
-              <div class="flex">
-                <a-input v-model:value="formState.smsCode" placeholder="短信验证码">
-                  <template #prefix>
-                    <fs-icon icon="ion:mail-outline"></fs-icon>
-                  </template>
-                </a-input>
-                <div class="input-right">
-                  <a-button class="getCaptcha" type="primary" tabindex="-1" :disabled="smsSendBtnDisabled" @click="sendSmsCode">
-                    {{ smsTime <= 0 ? "发送" : smsTime + " s" }}
-                  </a-button>
-                </div>
-              </div>
+              <sms-code
+                v-model:value="formState.smsCode"
+                :img-code="formState.imgCode"
+                :mobile="formState.mobile"
+                :phone-code="formState.phoneCode"
+                :random-str="formState.randomStr"
+              />
             </a-form-item>
           </template>
         </a-tab-pane>
@@ -80,15 +66,16 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, ref, toRaw, computed } from "vue";
+import { defineComponent, reactive, ref, toRaw } from "vue";
 import { useUserStore } from "/src/store/modules/user";
 import { useSettingStore } from "/@/store/modules/settings";
 import { utils } from "@fast-crud/fast-crud";
-import * as api from "/src/api/modules/api.basic";
-import { nanoid } from "nanoid";
-import { notification } from "ant-design-vue";
+import ImageCode from "/@/views/framework/login/image-code.vue";
+import SmsCode from "/@/views/framework/login/sms-code.vue";
+
 export default defineComponent({
   name: "LoginPage",
+  components: { SmsCode, ImageCode },
   setup() {
     const loading = ref(false);
     const userStore = useUserStore();
@@ -161,41 +148,6 @@ export default defineComponent({
 
     const isLoginError = ref();
 
-    const imageCodeUrl = ref();
-    function resetImageCode() {
-      formState.randomStr = nanoid(10);
-      let url = "/api/basic/code/captcha";
-      imageCodeUrl.value = url + "?randomStr=" + formState.randomStr;
-    }
-    resetImageCode();
-
-    const smsTime = ref(0);
-    const smsSendBtnDisabled = computed(() => {
-      if (smsTime.value === 0) {
-        return false;
-      }
-      return !!formState.smsCode;
-    });
-    async function sendSmsCode() {
-      if (!formState.mobile) {
-        notification.error({ message: "请输入手机号" });
-        return;
-      }
-      if (!formState.imgCode) {
-        notification.error({ message: "请输入图片验证码" });
-        return;
-      }
-      await api.sendSmsCode({
-        phoneCode: formState.phoneCode,
-        mobile: formState.mobile,
-        imgCode: formState.imgCode,
-        randomStr: formState.randomStr
-      });
-      smsTime.value = 60;
-      setInterval(() => {
-        smsTime.value--;
-      }, 1000);
-    }
     const sysPublicSettings = settingStore.getSysPublic;
     return {
       loading,
@@ -207,11 +159,6 @@ export default defineComponent({
       handleFinish,
       resetForm,
       isLoginError,
-      imageCodeUrl,
-      resetImageCode,
-      smsTime,
-      smsSendBtnDisabled,
-      sendSmsCode,
       sysPublicSettings
     };
   }

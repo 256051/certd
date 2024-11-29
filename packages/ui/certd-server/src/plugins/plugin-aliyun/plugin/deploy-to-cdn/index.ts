@@ -1,5 +1,5 @@
 import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
-import { AliyunAccess, AliyunClient, AliyunSslClient, createCertDomainGetterInputDefine, createRemoteSelectInputDefine } from '@certd/plugin-plus';
+import { AliyunAccess, AliyunClient, AliyunSslClient, createCertDomainGetterInputDefine, createRemoteSelectInputDefine } from '@certd/plugin-lib';
 import { optionsUtils } from '@certd/basic/dist/utils/util.options.js';
 
 @IsTaskPlugin({

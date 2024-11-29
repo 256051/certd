@@ -1,13 +1,7 @@
 import { IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
 import { CertInfo } from '@certd/plugin-cert';
-import {
-  AbstractPlusTaskPlugin,
-  AliyunAccess,
-  AliyunClient,
-  AliyunSslClient,
-  createCertDomainGetterInputDefine,
-  createRemoteSelectInputDefine,
-} from '@certd/plugin-plus';
+import { AliyunAccess, AliyunClient, AliyunSslClient, createCertDomainGetterInputDefine, createRemoteSelectInputDefine } from '@certd/plugin-lib';
+import { AbstractPlusTaskPlugin } from '@certd/plugin-plus';
 
 @IsTaskPlugin({
   name: 'AliyunDeployCertToWaf',

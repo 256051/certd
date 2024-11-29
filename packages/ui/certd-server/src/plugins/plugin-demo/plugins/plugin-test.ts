@@ -1,6 +1,6 @@
 import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
 import { CertInfo, CertReader } from '@certd/plugin-cert';
-import { createCertDomainGetterInputDefine, createRemoteSelectInputDefine } from '@certd/plugin-plus';
+import { createCertDomainGetterInputDefine, createRemoteSelectInputDefine } from '@certd/plugin-lib';
 import { optionsUtils } from '@certd/basic/dist/utils/util.options.js';
 
 @IsTaskPlugin({
