@@ -67,8 +67,8 @@ export class WebhookNotification extends BaseNotification {
   @NotificationInput({
     title: '消息body模版',
     value: `{
-    "text":"{title}",
-    "desp":"{content}\\n[查看详情]({url})"
+    "title":"{title}",
+    "content":"{content}\\n[查看详情]({url})"
 }`,
     component: {
       name: 'a-textarea',
