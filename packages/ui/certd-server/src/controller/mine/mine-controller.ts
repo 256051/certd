@@ -16,6 +16,11 @@ export class MineController extends BaseController {
   public async info() {
     const userId = this.getUserId();
     const user = await this.userService.info(userId);
+    const isWeak = await this.userService.checkPassword('123456', user.password, user.passwordVersion);
+    if (isWeak) {
+      //@ts-ignore
+      user.isWeak = true;
+    }
     user.roleIds = await this.roleService.getRoleIdsByUserId(userId);
     delete user.password;
     return this.ok(user);

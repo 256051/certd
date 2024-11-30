@@ -2,7 +2,8 @@
 import { Decorator } from "../decorator/index.js";
 import * as _ from "lodash-es";
 import { notificationRegistry } from "./registry.js";
-import { NotificationBody, NotificationContext, NotificationDefine, NotificationInputDefine, NotificationInstanceConfig } from "./api.js";
+import { BaseNotification, NotificationBody, NotificationContext, NotificationDefine, NotificationInputDefine, NotificationInstanceConfig } from "./api.js";
+import { isPlus } from "@certd/plus-core";
 
 // 提供一个唯一 key
 export const NOTIFICATION_CLASS_KEY = "pipeline:notification";
@@ -43,6 +44,7 @@ export async function newNotification(type: string, input: any, ctx: Notificatio
   if (register == null) {
     throw new Error(`notification ${type} not found`);
   }
+
   // @ts-ignore
   const plugin = new register.target();
   for (const key in input) {
@@ -51,12 +53,16 @@ export async function newNotification(type: string, input: any, ctx: Notificatio
   if (!ctx) {
     throw new Error("ctx is required");
   }
+  plugin.setDefine(register.define);
   plugin.setCtx(ctx);
   await plugin.onInstance();
   return plugin;
 }
 
 export async function sendNotification(opts: { config: NotificationInstanceConfig; ctx: NotificationContext; body: NotificationBody }) {
-  const notification = await newNotification(opts.config.type, opts.config.setting, opts.ctx);
-  await notification.send(opts.body);
+  const notification: BaseNotification = await newNotification(opts.config.type, opts.config.setting, opts.ctx);
+  if (notification.define.needPlus && !isPlus()) {
+    opts.body.content = `${opts.body.content}\n\n注意：此通知渠道已调整为专业版功能，后续版本将不再支持发送，请尽快修改或升级为专业版`;
+  }
+  await notification.doSend(opts.body);
 }

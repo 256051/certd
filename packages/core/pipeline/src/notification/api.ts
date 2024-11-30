@@ -4,6 +4,7 @@ import { FormItemProps, HistoryResult, Pipeline } from "../dt/index.js";
 import { HttpClient, ILogger, utils } from "@certd/basic";
 import * as _ from "lodash-es";
 import { IEmailService } from "../service/index.js";
+import { isPlus } from "@certd/plus-core";
 
 export type NotificationBody = {
   userId?: number;
@@ -65,9 +66,17 @@ export type NotificationContext = {
 };
 
 export abstract class BaseNotification implements INotification {
+  define!: NotificationDefine;
   ctx!: NotificationContext;
   http!: HttpClient;
   logger!: ILogger;
+
+  async doSend(body: NotificationBody) {
+    if (this.define.needPlus && !isPlus()) {
+      body.content = `${body.content}\n\n注意：此通知渠道已调整为专业版功能，后续版本将不再支持发送，请尽快修改或升级为专业版`;
+    }
+    return await this.send(body);
+  }
   abstract send(body: NotificationBody): Promise<void>;
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -77,6 +86,9 @@ export abstract class BaseNotification implements INotification {
     this.http = ctx.http;
     this.logger = ctx.logger;
   }
+  setDefine = (define: NotificationDefine) => {
+    this.define = define;
+  };
 
   async onRequest(req: NotificationRequestHandleReq) {
     if (!req.action) {
@@ -98,7 +110,7 @@ export abstract class BaseNotification implements INotification {
   }
 
   async onTestRequest() {
-    await this.send({
+    await this.doSend({
       userId: 0,
       title: "【Certd】测试通知，标题长度测试、测试、测试",
       content: "测试通知",

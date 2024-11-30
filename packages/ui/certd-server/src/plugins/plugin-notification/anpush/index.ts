@@ -44,6 +44,9 @@ export class AnPushNotification extends BaseNotification {
         channel: this.channel,
       },
     };
-    await this.http.request(config);
+    const res = await this.http.request(config);
+    if (res.code != 200) {
+      throw new Error('发送失败:' + res.msg);
+    }
   }
 }

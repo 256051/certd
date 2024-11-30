@@ -27,6 +27,7 @@ export interface UserInfoRes {
   nickName: string;
   avatar: string;
   roleIds: number[];
+  isWeak?: boolean;
 }
 
 export interface LoginRes {
