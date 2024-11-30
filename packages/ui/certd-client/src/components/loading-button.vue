@@ -11,11 +11,11 @@ const props = defineProps<{
 }>();
 
 const loading = ref(false);
-function onClick() {
+async function onClick() {
   loading.value = true;
   try {
     if (props.click) {
-      props.click();
+      await props.click();
     }
   } finally {
     loading.value = false;

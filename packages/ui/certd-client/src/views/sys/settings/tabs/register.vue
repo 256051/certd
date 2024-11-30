@@ -79,15 +79,18 @@ defineOptions({
 });
 
 const testMobile = ref("");
-function testSendSms() {
+async function testSendSms() {
   if (!testMobile.value) {
     notification.error({
       message: "请输入测试手机号"
     });
     return;
   }
-  api.TestSms({
+  await api.TestSms({
     mobile: testMobile.value
+  });
+  notification.success({
+    message: "发送成功"
   });
 }
 const formState = reactive<Partial<SysSettings>>({

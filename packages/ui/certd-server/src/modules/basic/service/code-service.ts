@@ -56,7 +56,7 @@ export class CodeService {
   /**
    */
   async sendSmsCode(phoneCode = '86', mobile: string, randomStr: string) {
-    if (mobile != null) {
+    if (!mobile) {
       throw new Error('手机号不能为空');
     }
     if (!randomStr) {
