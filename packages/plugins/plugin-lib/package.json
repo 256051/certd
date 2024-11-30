@@ -1,7 +1,7 @@
 {
   "name": "@certd/plugin-lib",
   "private": false,
-  "version": "1.27.9",
+  "version": "1.28.0",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -15,19 +15,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@certd/basic": "^1.27.9",
-    "@certd/plugin-cert": "^1.27.9",
-    "@certd/pipeline": "^1.27.9",
+    "@alicloud/pop-core": "^1.7.10",
+    "@certd/basic": "^1.28.0",
+    "@certd/pipeline": "^1.28.0",
+    "@certd/plugin-cert": "^1.28.0",
+    "@kubernetes/client-node": "0.21.0",
     "dayjs": "^1.11.7",
+    "iconv-lite": "^0.6.3",
     "lodash-es": "^4.17.21",
     "rimraf": "^5.0.5",
-    "@alicloud/pop-core": "^1.7.10",
-    "ssh2": "^1.15.0",
     "socks": "^2.8.3",
     "socks-proxy-agent": "^8.0.4",
-    "strip-ansi": "^7.1.0",
-    "iconv-lite": "^0.6.3",
-    "@kubernetes/client-node": "0.21.0"
+    "ssh2": "^1.15.0",
+    "strip-ansi": "^7.1.0"
   },
   "devDependencies": {
     "@types/chai": "^4.3.3",
