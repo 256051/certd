@@ -7,8 +7,8 @@
       <div v-if="selectedRowKeys.length > 0" class="batch-actions">
         <div class="batch-actions-inner">
           <span> 已选择 {{ selectedRowKeys.length }} 项 </span>
-          <fs-button icon="ion:trash-outline" class="color-plus" type="link" text="批量删除" @click="batchDelete"></fs-button>
-          <change-group class="color-plus" :selected-row-keys="selectedRowKeys" @change="groupChanged"></change-group>
+          <fs-button icon="ion:trash-outline" class="color-green" type="link" text="批量删除" @click="batchDelete"></fs-button>
+          <change-group class="color-green" :selected-row-keys="selectedRowKeys" @change="groupChanged"></change-group>
         </div>
       </div>
       <template #actionbar-right> </template>
