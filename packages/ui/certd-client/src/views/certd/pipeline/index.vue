@@ -28,8 +28,7 @@ import PiCertdForm from "./certd-form/index.vue";
 import ChangeGroup from "./components/change-group.vue";
 import { Modal, notification } from "ant-design-vue";
 import * as api from "./api";
-import { useSettingStore } from "/@/store/modules/settings";
-import { mitter } from "/@/utils/util.mitt";
+
 defineOptions({
   name: "PipelineManager"
 });
@@ -60,6 +59,7 @@ onActivated(async () => {
 
 function groupChanged() {
   crudExpose.doRefresh();
+  selectedRowKeys.value = [];
 }
 function batchDelete() {
   Modal.confirm({

@@ -76,7 +76,7 @@ export class NotificationService extends BaseService<NotificationEntity> {
       },
     });
     if (!res) {
-      throw new ValidateException('默认通知配置不存在');
+      return null;
     }
     return this.buildNotificationInstanceConfig(res);
   }

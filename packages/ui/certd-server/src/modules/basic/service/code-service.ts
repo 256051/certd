@@ -24,7 +24,6 @@ export class CodeService {
   /**
    */
   async generateCaptcha(randomStr) {
-    console.assert(randomStr < 10, 'randomStr 过长');
     const svgCaptcha = await import('svg-captcha');
     const c = svgCaptcha.create();
     //{data: '<svg.../svg>', text: 'abcd'}
@@ -57,8 +56,12 @@ export class CodeService {
   /**
    */
   async sendSmsCode(phoneCode = '86', mobile: string, randomStr: string) {
-    console.assert(phoneCode != null && mobile != null, '手机号不能为空');
-    console.assert(randomStr != null, 'randomStr不能为空');
+    if (mobile != null) {
+      throw new Error('手机号不能为空');
+    }
+    if (!randomStr) {
+      throw new Error('randomStr不能为空');
+    }
 
     const sysSettings = await this.sysSettingsService.getPrivateSettings();
     if (!sysSettings.sms?.config?.accessId) {
@@ -89,8 +92,12 @@ export class CodeService {
   /**
    */
   async sendEmailCode(email: string, randomStr: string) {
-    console.assert(!email, 'Email不能为空');
-    console.assert(!randomStr, 'randomStr不能为空');
+    if (!email) {
+      throw new Error('Email不能为空');
+    }
+    if (!randomStr) {
+      throw new Error('randomStr不能为空');
+    }
 
     const code = randomNumber(4);
     await this.emailService.send({

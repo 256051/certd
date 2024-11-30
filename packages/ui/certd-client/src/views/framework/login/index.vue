@@ -60,7 +60,7 @@
       </a-form-item>
 
       <a-form-item class="user-login-other">
-        <router-link v-if="sysPublicSettings.registerEnabled" class="register" :to="{ name: 'register' }"> 注册 </router-link>
+        <router-link v-if="hasRegisterTypeEnabled()" class="register" :to="{ name: 'register' }"> 注册 </router-link>
       </a-form-item>
     </a-form>
   </div>
@@ -149,6 +149,10 @@ export default defineComponent({
     const isLoginError = ref();
 
     const sysPublicSettings = settingStore.getSysPublic;
+
+    function hasRegisterTypeEnabled() {
+      return sysPublicSettings.registerEnabled && (sysPublicSettings.usernameRegisterEnabled || sysPublicSettings.emailRegisterEnabled);
+    }
     return {
       loading,
       formState,
@@ -159,7 +163,8 @@ export default defineComponent({
       handleFinish,
       resetForm,
       isLoginError,
-      sysPublicSettings
+      sysPublicSettings,
+      hasRegisterTypeEnabled
     };
   }
 });

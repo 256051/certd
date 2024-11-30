@@ -17,7 +17,7 @@ export class SysPublicSettings extends BaseSettings {
 
   registerEnabled = false;
   passwordLoginEnabled = true;
-  usernameRegisterEnabled = false;
+  usernameRegisterEnabled = true;
   mobileRegisterEnabled = false;
   smsLoginEnabled = false;
   emailRegisterEnabled = false;
@@ -25,9 +25,6 @@ export class SysPublicSettings extends BaseSettings {
   limitUserPipelineCount = 0;
   managerOtherUserPipeline = false;
   icpNo?: string;
-  defaultCron?: string;
-  defaultNotification?: number;
-  // triggerOnStartup = false;
 }
 
 export class SysPrivateSettings extends BaseSettings {
