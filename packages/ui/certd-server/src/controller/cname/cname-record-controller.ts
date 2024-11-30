@@ -53,6 +53,7 @@ export class CnameRecordController extends CrudController<CnameRecordService> {
   @Post('/update', { summary: Constants.per.authOnly })
   async update(@Body(ALL) bean: any) {
     await this.service.checkUserId(bean.id, this.getUserId());
+    delete bean.userId;
     return super.update(bean);
   }
 

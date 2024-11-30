@@ -70,6 +70,16 @@ export const certdResources = [
           auth: true
         }
       },
+      {
+        title: "分组管理",
+        name: "PipelineGroupManager",
+        path: "/certd/pipeline/group",
+        component: "/certd/pipeline/group/index.vue",
+        meta: {
+          icon: "mdi:format-list-group",
+          auth: true
+        }
+      },
       // {
       //   title: "邮箱设置",
       //   name: "EmailSetting",

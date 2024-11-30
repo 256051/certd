@@ -15,7 +15,7 @@ import { useModal } from "/@/use/use-modal";
 import CertView from "./cert-view.vue";
 import { eachStages } from "./utils";
 import { createApi as createNotificationApi } from "../notification/api";
-export default function ({ crudExpose, context: { certdFormRef } }: CreateCrudOptionsProps): CreateCrudOptionsRet {
+export default function ({ crudExpose, context: { certdFormRef, groupDictRef, selectedRowKeys } }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const router = useRouter();
   const { t } = useI18n();
   const lastResRef = ref();
@@ -198,6 +198,7 @@ export default function ({ crudExpose, context: { certdFormRef } }: CreateCrudOp
   };
   const userStore = useUserStore();
   const settingStore = useSettingStore();
+
   return {
     crudOptions: {
       request: {
@@ -205,6 +206,26 @@ export default function ({ crudExpose, context: { certdFormRef } }: CreateCrudOp
         addRequest,
         editRequest,
         delRequest
+      },
+      settings: {
+        plugins: {
+          //行选择插件，内置插件
+          rowSelection: {
+            //是否启用本插件
+            enabled: true,
+            order: -2,
+            //合并在用户配置crudOptions之前还是之后
+            before: true,
+            props: {
+              multiple: true,
+              crossPage: false,
+              selectedRowKeys,
+              onSelectedChanged(selected) {
+                console.log("已选择变化：", selected);
+              }
+            }
+          }
+        }
       },
       actionbar: {
         buttons: {
@@ -232,9 +253,16 @@ export default function ({ crudExpose, context: { certdFormRef } }: CreateCrudOp
       table: {
         scroll: { x: 1500 }
       },
+      tabs: {
+        name: "groupId",
+        show: true
+      },
       rowHandle: {
-        width: 300,
+        width: 200,
         fixed: "right",
+        dropdown: {
+          show: true
+        },
         buttons: {
           play: {
             order: -999,
@@ -275,8 +303,9 @@ export default function ({ crudExpose, context: { certdFormRef } }: CreateCrudOp
           },
           config: {
             order: 1,
-            title: "修改流水线内容",
+            title: "编辑流水线",
             type: "link",
+            dropdown: true,
             icon: "ant-design:edit-outlined",
             click({ row }) {
               router.push({ path: "/certd/pipeline/detail", query: { id: row.id, editMode: "true" } });
@@ -284,8 +313,9 @@ export default function ({ crudExpose, context: { certdFormRef } }: CreateCrudOp
           },
           edit: {
             order: 2,
-            title: "修改流水线运行配置",
-            icon: "ant-design:setting-outlined"
+            title: "修改配置/分组",
+            icon: "ant-design:setting-outlined",
+            dropdown: true
           },
           viewCert: {
             order: 3,
@@ -293,7 +323,7 @@ export default function ({ crudExpose, context: { certdFormRef } }: CreateCrudOp
             type: "link",
             icon: "ph:certificate",
             async click({ row }) {
-              viewCert(row);
+              await viewCert(row);
             }
           },
           download: {
@@ -302,11 +332,12 @@ export default function ({ crudExpose, context: { certdFormRef } }: CreateCrudOp
             title: "下载证书",
             icon: "ant-design:download-outlined",
             async click({ row }) {
-              downloadCert(row);
+              await downloadCert(row);
             }
           },
           remove: {
-            order: 5
+            order: 5,
+            dropdown: true
           }
         }
       },
@@ -495,17 +526,19 @@ export default function ({ crudExpose, context: { certdFormRef } }: CreateCrudOp
             }
           }
         },
-
-        keepHistoryCount: {
-          title: "历史记录保持数",
-          type: "number",
-          form: {
-            value: 20,
-            helper: "历史记录保持条数，多余的会被删除"
+        groupId: {
+          title: "分组",
+          type: "dict-select",
+          search: {
+            show: true
           },
+          dict: groupDictRef,
           column: {
             width: 130,
-            show: false
+            align: "center",
+            component: {
+              color: "auto"
+            }
           }
         },
         order: {
@@ -518,6 +551,18 @@ export default function ({ crudExpose, context: { certdFormRef } }: CreateCrudOp
           },
           form: {
             value: 0
+          }
+        },
+        keepHistoryCount: {
+          title: "历史记录保持数",
+          type: "number",
+          form: {
+            value: 20,
+            helper: "历史记录保持条数，多余的会被删除"
+          },
+          column: {
+            width: 130,
+            show: false
           }
         },
         createTime: {

@@ -73,7 +73,7 @@ export class NotificationController extends CrudController<NotificationService> 
         checkPlus();
       }
     }
-
+    delete bean.userId;
     return super.update(bean);
   }
   @Post('/info', { summary: Constants.per.authOnly })

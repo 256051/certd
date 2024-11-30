@@ -554,4 +554,21 @@ export class PipelineService extends BaseService<PipelineEntity> {
 
     return result;
   }
+
+  async batchDelete(ids: number[], userId: number) {
+    for (const id of ids) {
+      await this.checkUserId(id, userId);
+      await this.delete(id);
+    }
+  }
+
+  async batchUpdateGroup(ids: number[], groupId: number, userId: any) {
+    await this.repository.update(
+      {
+        id: In(ids),
+        userId,
+      },
+      { groupId }
+    );
+  }
 }

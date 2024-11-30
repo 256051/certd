@@ -104,6 +104,7 @@ export class HistoryController extends CrudController<HistoryService> {
   @Post('/update', { summary: Constants.per.authOnly })
   async update(@Body(ALL) bean) {
     await this.authService.checkEntityUserId(this.ctx, this.getService(), bean.id);
+    delete bean.userId;
     return super.update(bean);
   }
 

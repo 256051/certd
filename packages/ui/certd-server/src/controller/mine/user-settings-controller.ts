@@ -38,6 +38,7 @@ export class UserSettingsController extends CrudController<UserSettingsService> 
   @Post('/update', { summary: Constants.per.authOnly })
   async update(@Body(ALL) bean) {
     await this.service.checkUserId(bean.id, this.getUserId());
+    delete bean.userId;
     return super.update(bean);
   }
   @Post('/info', { summary: Constants.per.authOnly })

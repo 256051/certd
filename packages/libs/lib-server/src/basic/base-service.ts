@@ -1,6 +1,4 @@
-import { ValidateException } from './exception/index.js';
-import * as _ from 'lodash-es';
-import { PermissionException } from './exception/index.js';
+import { PermissionException, ValidateException } from './exception/index.js';
 import { In, Repository, SelectQueryBuilder } from 'typeorm';
 import { Inject } from '@midwayjs/core';
 import { TypeORMDataSourceManager } from '@midwayjs/typeorm';
@@ -164,28 +162,27 @@ export abstract class BaseService<T> {
   private buildListQuery(listReq: ListReq<T>) {
     const { query, sort, buildQuery } = listReq;
     const qb = this.getRepository().createQueryBuilder('main');
-    if (sort && sort.prop) {
-      qb.addOrderBy('main.' + sort.prop, sort.asc ? 'ASC' : 'DESC');
-    }
-    qb.addOrderBy('id', 'DESC');
-    //根据bean query
     if (query) {
-      let whereSql = '';
-      let index = 0;
-      _.forEach(query, (value, key) => {
-        if (!value) {
-          return;
+      const keys = Object.keys(query);
+      for (const key of keys) {
+        const value = query[key];
+        if (value == null) {
+          delete query[key];
         }
-        if (index !== 0) {
-          whereSql += ' and ';
+      }
+      qb.where(query);
+    }
+    if (sort && sort.prop) {
+      const found = this.getRepository().metadata.columns.find(column => {
+        if (column.propertyName === sort.prop) {
+          return true;
         }
-        whereSql += ` main.${key} = :${key} `;
-        index++;
       });
-      if (index > 0) {
-        qb.andWhere(whereSql, query);
+      if (found) {
+        qb.addOrderBy('main.' + sort.prop, sort.asc ? 'ASC' : 'DESC');
       }
     }
+    qb.addOrderBy('id', 'DESC');
     //自定义query
     if (buildQuery) {
       buildQuery(qb);

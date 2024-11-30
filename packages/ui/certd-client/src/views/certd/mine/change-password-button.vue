@@ -7,6 +7,7 @@ import { ref } from "vue";
 import { CrudOptions, useColumns, useFormWrapper } from "@fast-crud/fast-crud";
 import * as api from "/@/views/certd/mine/api";
 import { notification } from "ant-design-vue";
+import { useUserStore } from "/@/store/modules/user";
 
 defineProps<{
   showButton: boolean;
@@ -33,6 +34,7 @@ const validatePass2 = async (rule: any, value: any) => {
     throw new Error("两次输入密码不一致!");
   }
 };
+const userStore = useUserStore();
 const { openDialog } = useFormWrapper();
 const { buildFormOptions } = useColumns();
 const passwordFormOptions: CrudOptions = {
@@ -46,6 +48,8 @@ const passwordFormOptions: CrudOptions = {
     },
     async doSubmit({ form }) {
       await api.changePassword(form);
+      //重新加载用户信息
+      await userStore.loadUserInfo();
     },
     async afterSubmit() {
       notification.success({ message: "修改成功" });

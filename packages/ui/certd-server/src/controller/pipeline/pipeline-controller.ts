@@ -62,6 +62,7 @@ export class PipelineController extends CrudController<PipelineService> {
   @Post('/update', { summary: Constants.per.authOnly })
   async update(@Body(ALL) bean) {
     await this.authService.checkEntityUserId(this.ctx, this.getService(), bean.id);
+    delete bean.userId;
     return super.update(bean);
   }
 
@@ -108,5 +109,17 @@ export class PipelineController extends CrudController<PipelineService> {
   async count() {
     const count = await this.service.count({ userId: this.getUserId() });
     return this.ok({ count });
+  }
+
+  @Post('/batchDelete', { summary: Constants.per.authOnly })
+  async batchDelete(@Body('ids') ids: number[]) {
+    await this.service.batchDelete(ids, this.getUserId());
+    return this.ok({});
+  }
+
+  @Post('/batchUpdateGroup', { summary: Constants.per.authOnly })
+  async batchUpdateGroup(@Body('ids') ids: number[], @Body('groupId') groupId: number) {
+    await this.service.batchUpdateGroup(ids, groupId, this.getUserId());
+    return this.ok({});
   }
 }

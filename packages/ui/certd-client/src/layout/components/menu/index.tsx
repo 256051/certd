@@ -91,7 +91,7 @@ export default defineComponent({
         const title: any = () => {
           const icon = sub.icon || sub?.meta?.icon;
           if (icon) {
-            // @ts-ignore
+            // @ts-ignore , anticon必须要有，不然不能折叠
             return (
               <div class={"menu-item-title"}>
                 <fsIcon class={"anticon"} icon={icon} />
