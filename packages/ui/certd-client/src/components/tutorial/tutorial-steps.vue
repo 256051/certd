@@ -79,7 +79,7 @@ const steps = ref<Step[]>([
       {
         image: "/static/doc/images/5-1-add-host.png",
         title: "添加证书部署任务",
-        descriptions: ["这里演示自动部署证书到nginx", "Certd提供茫茫多的部署插件，满足您的各种部署需求"]
+        descriptions: ["这里演示自动部署证书到nginx", "本系统提供海量部署插件，满足您的各种部署需求"]
       },
       {
         image: "/static/doc/images/5-2-add-host.png",
