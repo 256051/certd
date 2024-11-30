@@ -25,7 +25,7 @@ export class AsyncSsh2Client {
     if (this.encoding) {
       return iconv.decode(buffer, this.encoding);
     }
-    return buffer.toString();
+    return buffer.toString().replaceAll("\r\n", "\n");
   }
 
   async connect() {
@@ -95,7 +95,12 @@ export class AsyncSsh2Client {
     });
   }
 
-  async exec(script: string) {
+  async exec(
+    script: string,
+    opts: {
+      throwOnStdErr?: boolean;
+    } = {}
+  ): Promise<string> {
     if (!script) {
       this.logger.info("script 为空，取消执行");
       return;
@@ -114,9 +119,17 @@ export class AsyncSsh2Client {
           return;
         }
         let data = "";
+        let hasErrorLog = false;
         stream
           .on("close", (code: any, signal: any) => {
             this.logger.info(`[${this.connConf.host}][close]:code:${code}`);
+            if (opts.throwOnStdErr == null && this.windows) {
+              opts.throwOnStdErr = true;
+            }
+            if (opts.throwOnStdErr && hasErrorLog) {
+              reject(new Error(data));
+            }
+
             if (code === 0) {
               resolve(data);
             } else {
@@ -135,13 +148,14 @@ export class AsyncSsh2Client {
           .stderr.on("data", (ret: Buffer) => {
             const err = this.convert(iconv, ret);
             data += err;
-            this.logger.info(`[${this.connConf.host}][error]: ` + err.trimEnd());
+            hasErrorLog = true;
+            this.logger.error(`[${this.connConf.host}][error]: ` + err.trimEnd());
           });
       });
     });
   }
 
-  async shell(script: string | string[]): Promise<string[]> {
+  async shell(script: string | string[]): Promise<string> {
     return new Promise<any>((resolve, reject) => {
       this.logger.info(`执行shell脚本：[${this.connConf.host}][shell]: ` + script);
       this.conn.shell((err: Error, stream: any) => {
@@ -149,11 +163,11 @@ export class AsyncSsh2Client {
           reject(err);
           return;
         }
-        const output: string[] = [];
+        let output = "";
         function ansiHandle(data: string) {
-          data = data.replace(/\[[0-9]+;1H/g, "\n");
+          data = data.replace(/\[[0-9]+;1H/g, "");
           data = stripAnsi(data);
-          return data;
+          return data.replaceAll("\r\n", "\n");
         }
         stream
           .on("close", (code: any) => {
@@ -163,7 +177,7 @@ export class AsyncSsh2Client {
           .on("data", (ret: Buffer) => {
             const data = ansiHandle(ret.toString());
             this.logger.info(data);
-            output.push(data);
+            output += data;
           })
           .on("error", (err: any) => {
             reject(err);
@@ -171,8 +185,8 @@ export class AsyncSsh2Client {
           })
           .stderr.on("data", (ret: Buffer) => {
             const data = ansiHandle(ret.toString());
-            output.push(data);
-            this.logger.info(`[${this.connConf.host}][error]: ` + data);
+            output += data;
+            this.logger.error(`[${this.connConf.host}][error]: ` + data);
           });
         //保证windows下正常退出
         const exit = "\r\nexit\r\n";
@@ -269,7 +283,7 @@ export class SshClient {
 
   async getIsCmd(options: { connectConf: SshAccess }) {
     const { connectConf } = options;
-    return await this._call({
+    return await this._call<boolean>({
       connectConf,
       callable: async (conn: AsyncSsh2Client) => {
         return await this.isCmd(conn);
@@ -285,7 +299,7 @@ export class SshClient {
    * Set-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Windows\System32\cmd.exe"
    * @param options
    */
-  async exec(options: { connectConf: SshAccess; script: string | Array<string>; env?: any }): Promise<string[]> {
+  async exec(options: { connectConf: SshAccess; script: string | Array<string>; env?: any }): Promise<string> {
     let { script } = options;
     const { connectConf } = options;
 
@@ -337,7 +351,7 @@ export class SshClient {
     });
   }
 
-  async shell(options: { connectConf: SshAccess; script: string | Array<string> }): Promise<string[]> {
+  async shell(options: { connectConf: SshAccess; script: string | Array<string> }): Promise<string> {
     let { script } = options;
     const { connectConf } = options;
     if (_.isArray(script)) {
@@ -361,7 +375,7 @@ export class SshClient {
     });
   }
 
-  async _call(options: { connectConf: SshAccess; callable: any }): Promise<string[]> {
+  async _call<T = any>(options: { connectConf: SshAccess; callable: (conn: AsyncSsh2Client) => Promise<T> }): Promise<T> {
     const { connectConf, callable } = options;
     const conn = new AsyncSsh2Client(connectConf, this.logger);
     try {

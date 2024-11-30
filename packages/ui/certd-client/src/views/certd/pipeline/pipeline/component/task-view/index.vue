@@ -8,7 +8,7 @@
             <pi-status-show :status="item.node.status?.result" type="icon"></pi-status-show>
           </div>
         </template>
-        <div class="pi-task-view-logs" :class="item.node.id" style="overflow: auto">
+        <div class="pi-task-view-logs" :class="'id-' + item.node.id" style="overflow: auto">
           <template v-for="(logItem, index) of item.logs" :key="index">
             <span :class="logItem.color"> {{ logItem.time }}</span> <span>{{ logItem.content }}</span>
           </template>
@@ -84,11 +84,14 @@ export default {
               return node.logs.value.length;
             },
             async () => {
-              let el = document.querySelector(`.pi-task-view-logs.${node.node.id}`);
+              let el = document.querySelector(`.pi-task-view-logs.id-${node.node.id}`);
+              if (!el) {
+                return;
+              }
               //判断当前是否在底部
               const isBottom = el ? el.scrollHeight - el.scrollTop === el.clientHeight : true;
               await nextTick();
-              el = document.querySelector(`.pi-task-view-logs.${node.node.id}`);
+              el = document.querySelector(`.pi-task-view-logs.id-${node.node.id}`);
               //如果在底部则滚动到底部
               if (isBottom && el) {
                 el?.scrollTo({

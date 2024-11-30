@@ -4,7 +4,6 @@ import type { CertInfo } from "./acme.js";
 import { CertReader } from "./cert-reader.js";
 import JSZip from "jszip";
 import { CertConverter } from "./convert.js";
-import fs from "fs";
 import { pick } from "lodash-es";
 
 export { CertReader };
@@ -58,6 +57,19 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
     helper: "PFX、jks格式证书是否加密；jks必须设置密码，不传则默认123456",
   })
   pfxPassword!: string;
+
+  @TaskInput({
+    title: "PFX证书转换参数",
+    value: "-macalg SHA1 -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES",
+    component: {
+      name: "a-input",
+      vModel: "value",
+    },
+    required: false,
+    order: 100,
+    helper: "兼容Server 2016，如果导入证书失败，请删除此参数",
+  })
+  pfxArgs = "-macalg SHA1 -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES";
 
   @TaskInput({
     title: "更新天数",
@@ -143,23 +155,18 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
         const res = await converter.convert({
           cert,
           pfxPassword: this.pfxPassword,
+          pfxArgs: this.pfxArgs,
         });
-        if (cert.pfx == null && res.pfxPath) {
-          const pfxBuffer = fs.readFileSync(res.pfxPath);
-          cert.pfx = pfxBuffer.toString("base64");
-          fs.unlinkSync(res.pfxPath);
+        if (cert.pfx == null && res.pfx) {
+          cert.pfx = res.pfx;
         }
 
-        if (cert.der == null && res.derPath) {
-          const derBuffer = fs.readFileSync(res.derPath);
-          cert.der = derBuffer.toString("base64");
-          fs.unlinkSync(res.derPath);
+        if (cert.der == null && res.der) {
+          cert.der = res.der;
         }
 
-        if (cert.jks == null && res.jksPath) {
-          const jksBuffer = fs.readFileSync(res.jksPath);
-          cert.jks = jksBuffer.toString("base64");
-          fs.unlinkSync(res.jksPath);
+        if (cert.jks == null && res.jks) {
+          cert.jks = res.jks;
         }
 
         this.logger.info("转换证书格式成功");
