@@ -41,7 +41,7 @@ docker compose up -d
 
 > 如果提示 没有docker compose命令,请安装docker-compose   
 > https://docs.docker.com/compose/install/linux/   
-> 然后使用 `docker-compose up -d` 启动
+
 
 ### 3. 访问测试
 
