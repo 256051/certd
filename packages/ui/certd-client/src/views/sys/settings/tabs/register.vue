@@ -32,23 +32,15 @@
         </a-form-item>
         <template v-if="formState.public.smsLoginEnabled">
           <a-form-item label="短信提供商" :name="['private', 'sms', 'type']">
-            <a-select v-model:value="formState.private.sms.type">
-              <a-select-option value="aliyun">阿里云</a-select-option>
+            <a-select v-model:value="formState.private.sms.type" @change="loadTypeDefine">
+              <a-select-option value="aliyun">阿里云短信</a-select-option>
+              <a-select-option value="yfysms">易发云短信</a-select-option>
             </a-select>
           </a-form-item>
+          <template v-for="item of smsTypeDefineInputs" :key="item.simpleKey">
+            <fs-form-item v-model="formState.private.sms.config[item.simpleKey]" :path="'private.sms.config' + item.key" :item="item" />
+          </template>
 
-          <a-form-item label="阿里云授权" :name="['private', 'sms', 'config', 'accessId']" :rules="rules.required">
-            <access-selector v-model="formState.private.sms.config.accessId" />
-          </a-form-item>
-
-          <a-form-item label="短信签名" :name="['private', 'sms', 'config', 'signName']" :rules="rules.required">
-            <a-input v-model:value="formState.private.sms.config.signName" />
-          </a-form-item>
-
-          <a-form-item label="验证码模版ID" :name="['private', 'sms', 'config', 'codeTemplateId']" :rules="rules.required">
-            <a-input v-model:value="formState.private.sms.config.codeTemplateId" />
-            <div class="helper">需要配置一个变量为{code}的验证码模版</div>
-          </a-form-item>
           <a-form-item label="短信测试">
             <div class="flex">
               <a-input v-model:value="testMobile" placeholder="输入测试手机号" />
@@ -67,8 +59,8 @@
 </template>
 
 <script setup lang="tsx">
-import { reactive, ref } from "vue";
-import { SysSettings } from "/@/views/sys/settings/api";
+import { reactive, ref, Ref } from "vue";
+import { GetSmsTypeDefine, SysSettings } from "/@/views/sys/settings/api";
 import * as api from "/@/views/sys/settings/api";
 import { merge } from "lodash-es";
 import { useSettingStore } from "/@/store/modules/settings";
@@ -120,6 +112,36 @@ const rules = {
     message: "此项必填"
   }
 };
+
+const smsTypeDefineInputs: Ref = ref({});
+async function loadTypeDefine(type: string) {
+  const define: any = await api.GetSmsTypeDefine(type);
+  const keys = Object.keys(define.input);
+  const inputs: any = {};
+  keys.forEach((key) => {
+    const value = define.input[key];
+    value.simpleKey = key;
+    value.key = "private.sms.config." + key;
+    if (!value.component) {
+      value.component = {
+        name: "a-input"
+      };
+    }
+    if (!value.component.name) {
+      value.component.vModel = "value";
+    }
+    if (!value.rules) {
+      value.rules = [];
+    }
+    if (value.required) {
+      value.rules.push(rules.required);
+    }
+
+    inputs[key] = define.input[key];
+  });
+  smsTypeDefineInputs.value = inputs;
+}
+loadTypeDefine("aliyun");
 
 async function loadSysSettings() {
   const data: any = await api.SysSettingsGet();

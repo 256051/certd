@@ -85,3 +85,13 @@ export async function TestSms(data: any) {
     data
   });
 }
+
+export async function GetSmsTypeDefine(type: string) {
+  return await request({
+    url: apiPrefix + "/getSmsTypeDefine",
+    method: "post",
+    data: {
+      type
+    }
+  });
+}

@@ -1,9 +1,9 @@
 import { logger } from '@certd/basic';
 import { ISmsService, PluginInputs, SmsPluginCtx } from './api.js';
 import { AliyunAccess, AliyunClient } from '@certd/plugin-lib';
+
 export type AliyunSmsConfig = {
   accessId: string;
-  regionId: string;
   signName: string;
   codeTemplateId: string;
 };
@@ -11,27 +11,31 @@ export type AliyunSmsConfig = {
 export class AliyunSmsService implements ISmsService {
   static getDefine() {
     return {
-      name: 'aliyun-sms',
+      name: 'aliyun',
       desc: '阿里云短信服务',
       input: {
         accessId: {
           title: '阿里云授权',
           component: {
             name: 'access-selector',
-            from: 'aliyun',
+            type: 'aliyun',
           },
-          required: true,
-        },
-        regionId: {
-          title: '接入点',
           required: true,
         },
         signName: {
           title: '签名',
+          component: {
+            name: 'a-input',
+            vModel: 'value',
+          },
           required: true,
         },
         codeTemplateId: {
           title: '验证码模板Id',
+          component: {
+            name: 'a-input',
+            vModel: 'value',
+          },
           required: true,
         },
       } as PluginInputs<AliyunSmsConfig>,

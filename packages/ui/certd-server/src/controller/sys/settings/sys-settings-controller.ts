@@ -7,6 +7,7 @@ import { UserSettingsService } from '../../../modules/mine/service/user-settings
 import { getEmailSettings } from '../../../modules/sys/settings/fix.js';
 import { http, logger, simpleNanoId } from '@certd/basic';
 import { CodeService } from '../../../modules/basic/service/code-service.js';
+import { SmsServiceFactory } from '../../../modules/basic/sms/factory.js';
 
 /**
  */
@@ -156,5 +157,10 @@ export class SysSettingsController extends CrudController<SysSettingsService> {
   async testSms(@Body(ALL) body) {
     await this.codeService.sendSmsCode(body.phoneCode, body.mobile, simpleNanoId());
     return this.ok({});
+  }
+
+  @Post('/getSmsTypeDefine', { summary: 'sys:settings:view' })
+  async getSmsTypeDefine(@Body('type') type: string) {
+    return this.ok(SmsServiceFactory.getDefine(type));
   }
 }
