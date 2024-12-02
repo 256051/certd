@@ -103,12 +103,11 @@ export default function ({ crudExpose, context: { certdFormRef, groupDictRef, se
       }
       const notifications = [];
       if (form.notification) {
-        const notify = await createNotificationApi().GetSimpleInfo(form.notification);
         notifications.push({
           type: "custom",
           when: ["error", "turnToSuccess"],
-          notificationId: form.notification,
-          title: notify.name
+          notificationId: 0,
+          title: "使用默认通知"
         });
       }
       let pipeline = {

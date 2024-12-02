@@ -6,7 +6,7 @@ import { CertInfo } from '@certd/plugin-cert';
   name: 'QiniuCertUpload',
   title: '上传到七牛云',
   icon: 'svg:icon-qiniuyun',
-  group: pluginGroups.cdn.key,
+  group: pluginGroups.qiniu.key,
   desc: '上传到七牛云',
   default: {
     strategy: {

@@ -107,11 +107,10 @@ export default function (certPluginGroup: PluginGroup, formWrapperRef: any): Cre
           title: "失败通知",
           type: "text",
           form: {
-            value: 0,
+            value: true,
             component: {
-              name: NotificationSelector,
-              vModel: "modelValue",
-              useDefault: true
+              name: "a-switch",
+              vModel: "checked"
             },
             order: 101,
             helper: "建议设置，任务执行失败实时提醒"

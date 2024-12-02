@@ -8,7 +8,7 @@ import { QiniuAccess, QiniuClient } from '@certd/plugin-plus';
   name: 'QiniuDeployCertToCDN',
   title: '部署证书至七牛CDN',
   icon: 'svg:icon-qiniuyun',
-  group: pluginGroups.cdn.key,
+  group: pluginGroups.qiniu.key,
   desc: '自动部署域名证书至七牛云CDN',
   default: {
     strategy: {
