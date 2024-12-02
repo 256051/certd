@@ -55,6 +55,7 @@ export class QiniuCertUpload extends AbstractTaskPlugin {
     const qiniuClient = new QiniuClient({
       http: this.ctx.http,
       access,
+      logger: this.logger,
     });
     this.qiniuCertId = await qiniuClient.uploadCert(this.cert, this.appendTimeSuffix(this.certName));
     this.logger.info('上传完成,id:', this.qiniuCertId);

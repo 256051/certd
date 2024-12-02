@@ -6,7 +6,7 @@ import { QiniuAccess, QiniuClient } from '@certd/plugin-plus';
 
 @IsTaskPlugin({
   name: 'QiniuDeployCertToCDN',
-  title: '部署证书至七牛CDN',
+  title: '部署证书至七牛云CDN',
   icon: 'svg:icon-qiniuyun',
   group: pluginGroups.qiniu.key,
   desc: '自动部署域名证书至七牛云CDN',
@@ -60,6 +60,7 @@ export class QiniuDeployCertToCDN extends AbstractTaskPlugin {
     const qiniuClient = new QiniuClient({
       http: this.ctx.http,
       access,
+      logger: this.logger,
     });
 
     let certId = null;
@@ -108,6 +109,7 @@ export class QiniuDeployCertToCDN extends AbstractTaskPlugin {
     const qiniuClient = new QiniuClient({
       http: this.ctx.http,
       access,
+      logger: this.logger,
     });
     const url = `https://api.qiniu.com/domain?limit=1000`;
     const res = await qiniuClient.doRequest(url, 'get');
