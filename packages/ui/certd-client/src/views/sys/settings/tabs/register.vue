@@ -32,7 +32,7 @@
         </a-form-item>
         <template v-if="formState.public.smsLoginEnabled">
           <a-form-item label="短信提供商" :name="['private', 'sms', 'type']">
-            <a-select v-model:value="formState.private.sms.type" @change="loadTypeDefine">
+            <a-select v-model:value="formState.private.sms.type" @change="smsTypeChange">
               <a-select-option value="aliyun">阿里云短信</a-select-option>
               <a-select-option value="yfysms">易发云短信</a-select-option>
             </a-select>
@@ -113,6 +113,13 @@ const rules = {
   }
 };
 
+async function smsTypeChange(value: string) {
+  if (formState.private?.sms?.config) {
+    formState.private.sms.config = {};
+  }
+
+  await loadTypeDefine(value);
+}
 const smsTypeDefineInputs: Ref = ref({});
 async function loadTypeDefine(type: string) {
   const define: any = await api.GetSmsTypeDefine(type);
@@ -141,11 +148,13 @@ async function loadTypeDefine(type: string) {
   });
   smsTypeDefineInputs.value = inputs;
 }
-loadTypeDefine("aliyun");
 
 async function loadSysSettings() {
   const data: any = await api.SysSettingsGet();
   merge(formState, data);
+  if (data?.private.sms?.type) {
+    await loadTypeDefine(data.private.sms.type);
+  }
 }
 
 const saveLoading = ref(false);
