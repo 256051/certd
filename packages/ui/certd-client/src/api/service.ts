@@ -76,7 +76,7 @@ function createService() {
           error.message = "拒绝访问";
           break;
         case 404:
-          error.message = `请求地址出错: ${error.response.config.url}`;
+          error.message = `请求地址出错`;
           break;
         case 408:
           error.message = "请求超时";
@@ -102,6 +102,7 @@ function createService() {
         default:
           break;
       }
+      error.message += `: ${error.response?.config?.url}`;
       errorLog(error, error?.response?.config?.showErrorNotify);
       if (status === 401) {
         const userStore = useUserStore();
