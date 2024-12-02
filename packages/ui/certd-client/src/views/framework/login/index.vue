@@ -128,7 +128,6 @@ export default defineComponent({
     };
 
     const handleFinish = async (values: any) => {
-      utils.logger.log(values, formState);
       loading.value = true;
       try {
         const loginType = formState.loginType;
