@@ -144,6 +144,9 @@ export function createAxiosService({ logger }: { logger: Logger }) {
       } else {
         logger.info('http response status:', response?.status);
       }
+      if (response?.config?.returnResponse) {
+        return response;
+      }
       return response.data;
     },
     (error: any) => {
