@@ -30,6 +30,27 @@ export class DiscordNotification extends BaseNotification {
   })
   mentionedList!: string[];
 
+  @NotificationInput({
+    title: '代理',
+    component: {
+      placeholder: 'http://xxxxx:xx',
+    },
+    helper: '使用https_proxy',
+    required: false,
+  })
+  httpsProxy = '';
+
+  @NotificationInput({
+    title: '忽略证书校验',
+    value: false,
+    component: {
+      name: 'a-switch',
+      vModel: 'checked',
+    },
+    required: false,
+  })
+  skipSslVerify: boolean;
+
   async send(body: NotificationBody) {
     if (!this.webhook) {
       throw new Error('Webhook URL 不能为空');
@@ -49,6 +70,8 @@ export class DiscordNotification extends BaseNotification {
       url: this.webhook,
       method: 'POST',
       data: json,
+      httpProxy: this.httpsProxy,
+      skipSslVerify: this.skipSslVerify,
     });
   }
 }

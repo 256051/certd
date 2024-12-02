@@ -8,6 +8,16 @@ import { BaseNotification, IsNotification, NotificationBody, NotificationInput }
 })
 export class TelegramNotification extends BaseNotification {
   @NotificationInput({
+    title: 'URL',
+    value: 'https://api.telegram.org',
+    component: {
+      placeholder: 'https://api.telegram.org',
+    },
+    required: true,
+  })
+  endpoint = 'https://api.telegram.org';
+
+  @NotificationInput({
     title: 'Bot Token',
     component: {
       placeholder: '123456789:ABCdefGhijklmnopqrstUVWXyz',
@@ -26,6 +36,27 @@ export class TelegramNotification extends BaseNotification {
     required: true,
   })
   chatId = '';
+
+  @NotificationInput({
+    title: '代理',
+    component: {
+      placeholder: 'http://xxxxx:xx',
+    },
+    helper: '使用https_proxy',
+    required: false,
+  })
+  httpsProxy = '';
+
+  @NotificationInput({
+    title: '忽略证书校验',
+    value: false,
+    component: {
+      name: 'a-switch',
+      vModel: 'checked',
+    },
+    required: false,
+  })
+  skipSslVerify: boolean;
 
   async send(body: NotificationBody) {
     if (!this.botToken || !this.chatId) {
@@ -47,6 +78,8 @@ export class TelegramNotification extends BaseNotification {
         text: messageContent,
         parse_mode: 'MarkdownV2', // 或使用 'HTML' 取决于需要的格式
       },
+      httpProxy: this.httpsProxy,
+      skipSslVerify: this.skipSslVerify,
     });
   }
 }

@@ -1,162 +1,156 @@
 <template>
   <div class="notification-selector">
-    <span v-if="target?.name" class="mr-5 cd-flex-inline">
-      <a-tag class="mr-5" color="green">{{ target.name }}</a-tag>
-      <fs-icon class="cd-icon-button" icon="ion:close-circle-outline" @click="clear"></fs-icon>
-    </span>
-    <span v-else class="mlr-5 text-gray">{{ placeholder }}</span>
-    <a-button class="ml-5" :disabled="disabled" :size="size" @click="chooseForm.open">选择</a-button>
-    <a-form-item-rest v-if="chooseForm.show">
-      <a-modal v-model:open="chooseForm.show" title="选择通知渠道" width="905px" @ok="chooseForm.ok">
-        <div style="height: 400px; position: relative">
-          <cert-notification-modal v-model="selectedId"></cert-notification-modal>
-        </div>
-      </a-modal>
-    </a-form-item-rest>
+    <div class="flex-o w-100">
+      <fs-dict-select
+        class="flex-1"
+        :value="modelValue"
+        :dict="optionsDictRef"
+        :disabled="disabled"
+        :render-label="renderLabel"
+        :slots="selectSlots"
+        :allow-clear="true"
+        @update:value="onChange"
+      />
+      <fs-table-select
+        ref="tableSelectRef"
+        class="flex-0"
+        :model-value="modelValue"
+        :dict="optionsDictRef"
+        :create-crud-options="createCrudOptions"
+        :crud-options-override="{
+          search: { show: false },
+          table: {
+            scroll: {
+              x: 540
+            }
+          }
+        }"
+        :show-current="false"
+        :show-select="false"
+        :dialog="{ width: 960 }"
+        :destroy-on-close="false"
+        @update:model-value="onChange"
+      >
+        <template #default="scope">
+          <fs-button class="ml-5" :disabled="disabled" :size="size" type="primary" icon="ant-design:edit-outlined" @click="scope.open"></fs-button>
+        </template>
+      </fs-table-select>
+    </div>
   </div>
 </template>
 
-<script>
-import { defineComponent, reactive, ref, watch, inject } from "vue";
-import CertNotificationModal from "./modal/index.vue";
+<script lang="tsx" setup>
+import { inject, ref, Ref, watch } from "vue";
 import { createApi } from "../api";
 import { message } from "ant-design-vue";
+import { dict } from "@fast-crud/fast-crud";
+import createCrudOptions from "../crud";
 
-export default defineComponent({
-  name: "NotificationSelector",
-  components: { CertNotificationModal },
-  props: {
-    modelValue: {
-      type: [Number, String],
-      default: null
-    },
-    type: {
-      type: String,
-      default: ""
-    },
-    placeholder: {
-      type: String,
-      default: "请选择"
-    },
-    size: {
-      type: String,
-      default: "middle"
-    },
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    useDefault: {
-      type: Boolean,
-      default: false
-    }
-  },
-  emits: ["update:modelValue", "selectedChange", "change"],
-  setup(props, ctx) {
-    const api = createApi();
+defineOptions({
+  name: "NotificationSelector"
+});
 
-    const target = ref({});
-    const selectedId = ref();
-    async function refreshTarget(value) {
-      selectedId.value = value;
-      if (value > 0) {
-        target.value = await api.GetSimpleInfo(value);
-      }
-    }
+const props = defineProps<{
+  modelValue?: number | string;
+  type?: string;
+  placeholder?: string;
+  size?: string;
+  disabled?: boolean;
+}>();
 
-    async function loadDefault() {
-      const defId = await api.GetDefaultId();
-      if (defId) {
-        await emitValue(defId);
-      }
-    }
+const onChange = async (value: number) => {
+  await emitValue(value);
+};
 
-    loadDefault();
+const emit = defineEmits(["update:modelValue", "selectedChange", "change"]);
 
-    function clear() {
-      if (props.disabled) {
-        return;
-      }
-      emitValue(null);
-    }
+const api = createApi();
 
-    async function emitValue(value) {
-      if (pipeline?.value && target?.value && pipeline.value.userId !== target.value.userId) {
-        message.error("对不起，您不能修改他人流水线的通知");
-        return;
-      }
-      if (value == null) {
-        selectedId.value = "";
-        target.value = null;
-      } else {
-        selectedId.value = value;
-        await refreshTarget(selectedId.value);
-      }
-      ctx.emit("change", selectedId.value);
-      ctx.emit("update:modelValue", selectedId.value);
-      ctx.emit("selectedChange", target.value);
-    }
-
-    watch(
-      () => {
-        return props.modelValue;
-      },
-      async (value) => {
-        selectedId.value = null;
-        target.value = null;
-        if (value == null) {
-          return;
-        }
-        await refreshTarget(value);
-      },
+// const types = ref({});
+// async function loadNotificationTypes() {
+//   const types = await api.GetDefineTypes();
+//   const map: any = {};
+//   for (const item of types) {
+//     map[item.type] = item;
+//   }
+//   types.value = map;
+// }
+// loadNotificationTypes();
+const tableSelectRef = ref();
+const optionsDictRef = dict({
+  url: "/pi/notification/options",
+  value: "id",
+  label: "name",
+  onReady: ({ dict }) => {
+    const data = [
       {
-        immediate: true
-      }
-    );
-
-    const providerDefine = ref({});
-
-    async function refreshProviderDefine(type) {
-      providerDefine.value = await api.GetProviderDefine(type);
-    }
-    // watch(
-    //   () => {
-    //     return props.type;
-    //   },
-    //   async (value) => {
-    //     await refreshProviderDefine(value);
-    //   },
-    //   {
-    //     immediate: true
-    //   }
-    // );
-
-    //当不在pipeline中编辑时，可能为空
-    const pipeline = inject("pipeline", null);
-
-    const chooseForm = reactive({
-      show: false,
-      open() {
-        chooseForm.show = true;
+        id: 0,
+        name: "使用默认通知",
+        icon: "ion:notifications"
       },
-      ok: () => {
-        console.log("choose ok:", selectedId.value);
-        emitValue(selectedId.value);
-        chooseForm.show = false;
-      }
-    });
-
-    return {
-      clear,
-      target,
-      selectedId,
-      providerDefine,
-      chooseForm
-    };
+      ...dict.data
+    ];
+    dict.setData(data);
   }
 });
+const renderLabel = (option: any) => {
+  return <span>{option.name}</span>;
+};
+
+async function openTableSelectDialog(e: any) {
+  e.preventDefault();
+  await tableSelectRef.value.open();
+  await tableSelectRef.value.crudExpose.openAdd({});
+}
+const selectSlots = ref({
+  dropdownRender({ menuNode }: any) {
+    const res = [];
+    res.push(menuNode);
+    res.push(<a-divider style="margin: 4px 0" />);
+    res.push(<a-space style="padding: 4px 8px" />);
+    res.push(<fs-button class="w-100" type="text" icon="plus-outlined" text="新建通知渠道" onClick={openTableSelectDialog}></fs-button>);
+    return res;
+  }
+});
+
+const target: Ref<any> = ref({});
+
+function clear() {
+  if (props.disabled) {
+    return;
+  }
+  emitValue(null);
+}
+
+async function emitValue(value: any) {
+  const target = optionsDictRef.dataMap[value];
+  if (value !== 0 && pipeline?.value && target && pipeline.value.userId !== target.userId) {
+    message.error("对不起，您不能修改他人流水线的通知");
+    return;
+  }
+  emit("change", value);
+  emit("update:modelValue", value);
+  emit("selectedChange", target);
+}
+
+watch(
+  () => {
+    return props.modelValue;
+  },
+  async (value) => {
+    await optionsDictRef.loadDict();
+    target.value = optionsDictRef.dataMap[value];
+  },
+  {
+    immediate: true
+  }
+);
+
+//当不在pipeline中编辑时，可能为空
+const pipeline = inject("pipeline", null);
 </script>
 <style lang="less">
 .notification-selector {
+  width: 100%;
 }
 </style>

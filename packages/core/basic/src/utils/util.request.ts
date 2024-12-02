@@ -98,10 +98,22 @@ export function createAxiosService({ logger }: { logger: Logger }) {
         config.timeout = 15000;
       }
       let agents = defaultAgents;
-      if (config.skipSslVerify) {
-        logger.info('跳过SSL验证');
-        agents = createAgent({ rejectUnauthorized: false } as any);
+      if (config.skipSslVerify || config.httpProxy) {
+        let rejectUnauthorized = true;
+        if (config.skipSslVerify) {
+          logger.info('跳过SSL验证');
+          rejectUnauthorized = false;
+        }
+        const proxy: any = {};
+        if (config.httpProxy) {
+          logger.info('使用自定义http代理:', config.httpProxy);
+          proxy.httpProxy = config.httpProxy;
+          proxy.httpsProxy = config.httpProxy;
+        }
+
+        agents = createAgent({ rejectUnauthorized, ...proxy } as any);
       }
+
       delete config.skipSslVerify;
       config.httpsAgent = agents.httpsAgent;
       config.httpAgent = agents.httpAgent;
@@ -200,6 +212,7 @@ export type HttpRequestConfig<D = any> = {
   skipCheckRes?: boolean;
   logParams?: boolean;
   logRes?: boolean;
+  httpProxy?: string;
 } & AxiosRequestConfig<D>;
 export type HttpClient = {
   request<D = any, R = any>(config: HttpRequestConfig<D>): Promise<HttpClientResponse<R>>;

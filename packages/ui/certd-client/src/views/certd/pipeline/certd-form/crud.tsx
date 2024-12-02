@@ -107,6 +107,7 @@ export default function (certPluginGroup: PluginGroup, formWrapperRef: any): Cre
           title: "失败通知",
           type: "text",
           form: {
+            value: 0,
             component: {
               name: NotificationSelector,
               vModel: "modelValue",

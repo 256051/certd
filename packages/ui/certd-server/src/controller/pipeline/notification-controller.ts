@@ -140,4 +140,17 @@ export class NotificationController extends CrudController<NotificationService> 
     const res = await this.service.setDefault(id, this.getUserId());
     return this.ok(res);
   }
+
+  @Post('/options', { summary: Constants.per.authOnly })
+  async options() {
+    const res = await this.service.list({
+      query: {
+        userId: this.getUserId(),
+      },
+    });
+    for (const item of res) {
+      delete item.setting;
+    }
+    return this.ok(res);
+  }
 }

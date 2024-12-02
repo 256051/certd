@@ -388,6 +388,7 @@ export class Executor {
       if (!notification.when.includes(when)) {
         continue;
       }
+
       if (notification.type === "email") {
         try {
           await this.options.emailService?.send({
@@ -401,7 +402,16 @@ export class Executor {
       } else {
         try {
           //构建notification插件，发送通知
-          const notifyConfig = await this.options.notificationService.getById(notification.notificationId);
+          let notifyConfig: any;
+          if (notification.notificationId === 0) {
+            notifyConfig = await this.options.notificationService.getDefault();
+          } else {
+            notifyConfig = await this.options.notificationService.getById(notification.notificationId);
+          }
+          if (notifyConfig == null) {
+            throw new Error(`通知配置<id:${notification.notificationId}>不存在`);
+          }
+
           const notificationPlugin = notificationRegistry.get(notifyConfig.type);
           const notificationCls: any = notificationPlugin.target;
           const notificationSender = new notificationCls();

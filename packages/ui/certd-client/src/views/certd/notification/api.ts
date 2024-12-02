@@ -43,6 +43,13 @@ export function createApi() {
       });
     },
 
+    async GetOptions(id: number) {
+      return await request({
+        url: apiPrefix + "/options",
+        method: "post"
+      });
+    },
+
     async SetDefault(id: number) {
       return await request({
         url: apiPrefix + "/setDefault",
@@ -63,6 +70,13 @@ export function createApi() {
         url: apiPrefix + "/simpleInfo",
         method: "post",
         params: { id }
+      });
+    },
+
+    async GetDefineTypes() {
+      return await request({
+        url: apiPrefix + "/getTypeDict",
+        method: "post"
       });
     },
 
