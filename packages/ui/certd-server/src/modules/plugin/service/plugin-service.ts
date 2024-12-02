@@ -34,6 +34,13 @@ export class PluginService extends BaseService<PluginEntity> {
 
   async getEnabledBuildInGroup() {
     const groups = this.builtInPluginService.getGroups();
+    for (const key in groups) {
+      const group = groups[key];
+      group.plugins.forEach(item => {
+        delete item.input;
+      });
+    }
+
     if (!isComm()) {
       return groups;
     }

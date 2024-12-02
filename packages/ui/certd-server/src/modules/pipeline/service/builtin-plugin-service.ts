@@ -1,5 +1,6 @@
 import { Provide, Scope, ScopeEnum } from '@midwayjs/core';
 import { pluginGroups, pluginRegistry } from '@certd/pipeline';
+import { cloneDeep } from 'lodash-es';
 
 @Provide()
 @Scope(ScopeEnum.Singleton)
@@ -18,6 +19,6 @@ export class BuiltInPluginService {
   }
 
   getGroups() {
-    return pluginGroups;
+    return cloneDeep(pluginGroups);
   }
 }
