@@ -127,4 +127,8 @@ export class PluginService extends BaseService<PluginEntity> {
     }
     throw new Error('参数错误: id 和 name 必须有一个');
   }
+
+  async getDefineByType(type: string) {
+    return this.builtInPluginService.getByType(type);
+  }
 }

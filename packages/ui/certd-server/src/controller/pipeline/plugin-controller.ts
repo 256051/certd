@@ -29,6 +29,12 @@ export class PluginController extends BaseController {
     return this.ok(group);
   }
 
+  @Post('/getDefineByType', { summary: Constants.per.authOnly })
+  async getDefineByType(@Body('type') type: string) {
+    const define = await this.service.getDefineByType(type);
+    return this.ok(define);
+  }
+
   @Post('/config', { summary: Constants.per.authOnly })
   async config(@Body(ALL) body: { id?: number; name?: string; type: string }) {
     const config = await this.pluginConfigService.getPluginConfig(body);

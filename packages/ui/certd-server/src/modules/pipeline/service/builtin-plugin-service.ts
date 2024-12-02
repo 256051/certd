@@ -21,4 +21,8 @@ export class BuiltInPluginService {
   getGroups() {
     return cloneDeep(pluginGroups);
   }
+
+  getByType(type: string) {
+    return pluginRegistry.getDefine(type);
+  }
 }

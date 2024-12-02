@@ -239,13 +239,13 @@ export default {
         const stepType = step.type;
         step.type = stepType;
         step._isAdd = false;
-
-        let pluginDefine = pluginGroups.get(stepType);
+        const pluginDefine = await pluginApi.GetPluginDefine(stepType);
+        // let pluginDefine = pluginGroups.get(stepType);
         if (pluginDefine == null) {
           console.log("插件未找到", stepType);
           return;
         }
-        pluginDefine = _.cloneDeep(pluginDefine);
+        // pluginDefine = _.cloneDeep(pluginDefine);
         const columns = pluginDefine.input;
         for (let key in columns) {
           const column = columns[key];
