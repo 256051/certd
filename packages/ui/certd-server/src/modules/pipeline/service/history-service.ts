@@ -41,6 +41,7 @@ export class HistoryService extends BaseService<HistoryEntity> {
     const res = await super.page(pageReq);
     for (const item of res.records) {
       item.fillPipelineTitle();
+      delete item.pipeline;
     }
     return res;
   }

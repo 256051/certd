@@ -72,6 +72,9 @@ export class HistoryController extends CrudController<HistoryService> {
       sort: body.sort,
       buildQuery,
     });
+
+
+
     return this.ok(res);
   }
 
