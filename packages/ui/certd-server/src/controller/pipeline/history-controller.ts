@@ -73,8 +73,6 @@ export class HistoryController extends CrudController<HistoryService> {
       buildQuery,
     });
 
-
-
     return this.ok(res);
   }
 
@@ -95,6 +93,14 @@ export class HistoryController extends CrudController<HistoryService> {
       sort: { prop: 'id', asc: false },
       buildQuery,
     });
+    for (const item of listRet) {
+      if (!item.pipeline) {
+        continue;
+      }
+      const json = JSON.parse(item.pipeline);
+      delete json.stages;
+      item.pipeline = json;
+    }
     return this.ok(listRet);
   }
 

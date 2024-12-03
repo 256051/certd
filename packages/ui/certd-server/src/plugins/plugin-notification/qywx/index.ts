@@ -49,7 +49,7 @@ export class QywxNotification extends BaseNotification {
       data: {
         msgtype: 'markdown',
         markdown: {
-          content: `# ${body.title}\n\n${body.content}\n[查看详情](${body.url})`,
+          content: `# ${body.title}\n\n${body.content}\n\n[查看详情](${body.url})`,
           mentioned_list: this.mentionedList,
         },
       },

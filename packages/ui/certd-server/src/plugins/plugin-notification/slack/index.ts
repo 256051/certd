@@ -47,7 +47,7 @@ export class SlackNotification extends BaseNotification {
       url: this.webhook,
       method: 'POST',
       data: {
-        text: `${body.title}\n${body.content}\n[查看详情](${body.url})`,
+        text: `${body.title}\n${body.content}\n\n[查看详情](${body.url})`,
       },
       httpProxy: this.httpsProxy,
       skipSslVerify: this.skipSslVerify,

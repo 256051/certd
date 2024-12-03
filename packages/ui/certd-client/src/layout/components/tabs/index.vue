@@ -77,9 +77,7 @@ export default {
       closeAll: pageStore.closeAll,
       openedSort: pageStore.openedSort
     };
-    console.log("opened", pageStore.getOpened);
     const computeOpened = computed(() => {
-      console.log("opened", pageStore.getOpened);
       return pageStore.getOpened;
     });
 

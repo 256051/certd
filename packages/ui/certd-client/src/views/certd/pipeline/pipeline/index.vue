@@ -321,7 +321,6 @@ export default defineComponent({
       currentHistory.value = history;
       pipeline.value = history.pipeline;
       await loadCurrentHistoryDetail();
-      console.log("currentHistory:", currentHistory);
     };
 
     async function loadHistoryList(reload = false) {

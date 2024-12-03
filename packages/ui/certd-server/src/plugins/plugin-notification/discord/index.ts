@@ -57,7 +57,7 @@ export class DiscordNotification extends BaseNotification {
     }
 
     // 创建 Discord 消息体
-    let content = `${body.title}\n${body.content}\n[查看详情](${body.url})`;
+    let content = `${body.title}\n${body.content}\n\n[查看详情](${body.url})`;
     if (this.mentionedList && this.mentionedList.length > 0) {
       content += `\n${this.mentionedList.map(item => `<@${item}>  `).join('')}`;
     }

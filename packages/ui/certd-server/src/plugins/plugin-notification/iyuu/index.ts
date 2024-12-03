@@ -26,7 +26,7 @@ export class IyuuNotification extends BaseNotification {
       method: 'POST',
       data: {
         text: body.title,
-        desp: body.content + '[查看详情](' + body.url + ')',
+        desp: body.content + '\n\n[查看详情](' + body.url + ')',
       },
     });
 

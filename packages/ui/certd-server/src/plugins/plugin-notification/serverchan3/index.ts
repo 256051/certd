@@ -1,48 +1,39 @@
 import { BaseNotification, IsNotification, NotificationBody, NotificationInput } from '@certd/pipeline';
 
 @IsNotification({
-  name: 'serverchan',
-  title: 'Server酱ᵀ',
-  desc: 'https://sct.ftqq.com/',
+  name: 'serverchan3',
+  title: 'Server酱³',
+  desc: 'https://doc.sc3.ft07.com/serverchan3',
   needPlus: true,
 })
-export class ServerChanNotification extends BaseNotification {
+export class ServerChan3Notification extends BaseNotification {
   @NotificationInput({
-    title: '服务地址',
-    value: 'https://sctapi.ftqq.com',
+    title: 'ApiURL',
+    component: {
+      placeholder: 'https://uid.push.ft07.com/send/sendKey.send',
+    },
     required: true,
   })
-  endpoint = 'https://sctapi.ftqq.com';
+  apiURL = '';
 
   @NotificationInput({
-    title: 'SendKey',
+    title: '标签Tags',
     component: {
-      placeholder: 'https://sctapi.ftqq.com/<SENDKEY>.send',
+      name: 'a-select',
+      vModel: 'value',
+      mode: 'tags',
+      open: false,
     },
-    helper: 'https://sct.ftqq.com/ 微信扫码获取',
-    required: true,
-  })
-  sendKey = '';
-
-  @NotificationInput({
-    title: '消息通道号',
-    component: {
-      placeholder: '9|66',
-    },
-    helper: '可以不填，最多两个通道，[通道配置说明](https://sct.ftqq.com/sendkey)',
+    helper: '支持多个，回车后填写下一个',
     required: false,
   })
-  channel: string;
+  tags: string[];
 
   @NotificationInput({
-    title: '是否隐藏IP',
-    component: {
-      name: 'a-switch',
-      vModel: 'checked',
-    },
+    title: 'short',
     required: false,
   })
-  noip: boolean;
+  short: string;
 
   @NotificationInput({
     title: '忽略证书校验',
@@ -56,15 +47,17 @@ export class ServerChanNotification extends BaseNotification {
   skipSslVerify: boolean;
 
   async send(body: NotificationBody) {
-    if (!this.sendKey) {
+    if (!this.apiURL) {
       throw new Error('sendKey不能为空');
     }
     await this.http.request({
-      url: `${this.endpoint}/${this.sendKey}.send`,
+      url: `${this.apiURL}`,
       method: 'POST',
       data: {
         text: body.title,
         desp: body.content + '\n\n[查看详情](' + body.url + ')',
+        tags: this.tags.join('|'),
+        short: this.short,
       },
       skipSslVerify: this.skipSslVerify,
     });

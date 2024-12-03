@@ -49,7 +49,7 @@ export class BarkNotification extends BaseNotification {
     }
 
     const payload = {
-      body: body.content, // 使用传入的内容或默认内容
+      body: `${body.content}\n\n[查看详情](${body.url})`, // 使用传入的内容或默认内容
       title: body.title, // 使用传入的标题或默认标题
     };
 

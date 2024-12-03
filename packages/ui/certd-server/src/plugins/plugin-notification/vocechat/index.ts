@@ -79,7 +79,7 @@ export class VoceChatNotification extends BaseNotification {
         'x-api-key': this.apiKey,
         'Content-Type': 'text/markdown',
       },
-      data: `# ${body.title}\n\n${body.content}\n[查看详情](${body.url})`,
+      data: `# ${body.title}\n\n${body.content}\n\n[查看详情](${body.url})`,
       skipSslVerify: this.skipSslVerify,
     });
   }

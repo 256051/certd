@@ -64,7 +64,7 @@ export class TelegramNotification extends BaseNotification {
     }
 
     // 构建消息内容
-    const messageContent = `*${body.title}*\n\n${body.content}\n[查看详情](${body.url})`;
+    const messageContent = `*${body.title}*\n\n${body.content}\n\n[查看详情](${body.url})`;
 
     // Telegram API URL
     const url = `https://api.telegram.org/bot${this.botToken}/sendMessage`;

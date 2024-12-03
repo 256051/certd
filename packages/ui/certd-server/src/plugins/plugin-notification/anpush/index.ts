@@ -40,7 +40,7 @@ export class AnPushNotification extends BaseNotification {
       },
       data: {
         title: body.title,
-        content: body.content + '[查看详情](' + body.url + ')',
+        content: body.content + '\n\n[查看详情](' + body.url + ')',
         channel: this.channel,
       },
     };

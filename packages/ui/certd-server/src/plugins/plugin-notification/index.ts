@@ -3,6 +3,7 @@ export * from './email/index.js';
 export * from './iyuu/index.js';
 export * from './webhook/index.js';
 export * from './serverchan/index.js';
+export * from './serverchan3/index.js';
 export * from './anpush/index.js';
 export * from './telegram/index.js';
 export * from './discord/index.js';
