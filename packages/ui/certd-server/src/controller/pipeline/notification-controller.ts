@@ -141,6 +141,12 @@ export class NotificationController extends CrudController<NotificationService> 
     return this.ok(res);
   }
 
+  @Post('/getOrCreateDefault', { summary: Constants.per.authOnly })
+  async getOrCreateDefault(@Body('email') email: string) {
+    const res = await this.service.getOrCreateDefault(email, this.getUserId());
+    return this.ok(res);
+  }
+
   @Post('/options', { summary: Constants.per.authOnly })
   async options() {
     const res = await this.service.list({

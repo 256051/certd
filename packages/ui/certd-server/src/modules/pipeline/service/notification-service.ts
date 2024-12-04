@@ -106,4 +106,22 @@ export class NotificationService extends BaseService<NotificationEntity> {
       }
     );
   }
+
+  async getOrCreateDefault(email: string, userId: any) {
+    const defaultConfig = await this.getDefault(userId);
+    if (defaultConfig) {
+      return defaultConfig;
+    }
+    const setting = {
+      receivers: [email],
+    };
+    const res = await this.repository.save({
+      userId,
+      type: 'email',
+      name: '邮件通知',
+      setting: JSON.stringify(setting),
+      isDefault: true,
+    });
+    return this.buildNotificationInstanceConfig(res);
+  }
 }

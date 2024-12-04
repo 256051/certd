@@ -41,7 +41,7 @@
 
 <script lang="tsx" setup>
 import { inject, ref, Ref, watch } from "vue";
-import { createApi } from "../api";
+import { createNotificationApi } from "../api";
 import { message } from "ant-design-vue";
 import { dict } from "@fast-crud/fast-crud";
 import createCrudOptions from "../crud";
@@ -64,7 +64,7 @@ const onChange = async (value: number) => {
 
 const emit = defineEmits(["update:modelValue", "selectedChange", "change"]);
 
-const api = createApi();
+const api = createNotificationApi();
 
 // const types = ref({});
 // async function loadNotificationTypes() {

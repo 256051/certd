@@ -8,7 +8,7 @@
 import { defineComponent, onMounted, watch } from "vue";
 import { useFs } from "@fast-crud/fast-crud";
 import createCrudOptions from "./crud";
-import { createApi } from "../../api";
+import { createNotificationApi } from "../../api";
 
 export default defineComponent({
   name: "CertNotificationModal",
@@ -17,7 +17,7 @@ export default defineComponent({
   },
   emits: ["update:modelValue"],
   setup(props, ctx) {
-    const api = createApi();
+    const api = createNotificationApi();
     const context: any = { props, ctx, api };
     const { crudBinding, crudRef, crudExpose } = useFs({ createCrudOptions, context });
     onMounted(() => {

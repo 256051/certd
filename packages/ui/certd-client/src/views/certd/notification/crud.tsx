@@ -1,8 +1,8 @@
 import { ref } from "vue";
 import { getCommonColumnDefine } from "./common";
 import { AddReq, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
-import { createApi } from "/@/views/certd/notification/api";
-const api = createApi();
+import { createNotificationApi } from "/@/views/certd/notification/api";
+const api = createNotificationApi();
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const pageRequest = async (query: UserPageQuery): Promise<UserPageRes> => {
     return await api.GetList(query);

@@ -1,10 +1,10 @@
 import { Config, Inject, Provide, Scope, ScopeEnum, sleep } from '@midwayjs/core';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { In, MoreThan, Repository } from 'typeorm';
-import { BaseService, NeedVIPException, PageReq, SysPublicSettings, SysSettingsService } from '@certd/lib-server';
+import { BaseService, NeedVIPException, PageReq, SysPublicSettings, SysSettingsService, SysSiteInfo } from '@certd/lib-server';
 import { PipelineEntity } from '../entity/pipeline.js';
 import { PipelineDetail } from '../entity/vo/pipeline-detail.js';
-import { Executor, Pipeline, ResultType, RunHistory, UserInfo } from '@certd/pipeline';
+import { Executor, Pipeline, ResultType, RunHistory, SysInfo, UserInfo } from '@certd/pipeline';
 import { AccessService } from './access-service.js';
 import { DbStorage } from './db-storage.js';
 import { StorageService } from './storage-service.js';
@@ -21,7 +21,7 @@ import { CnameProxyService } from './cname-proxy-service.js';
 import { PluginConfigGetter } from '../../plugin/service/plugin-config-getter.js';
 import dayjs from 'dayjs';
 import { DbAdapter } from '../../db/index.js';
-import { isPlus } from '@certd/plus-core';
+import { isComm, isPlus } from '@certd/plus-core';
 import { logger } from '@certd/basic';
 import { UrlService } from './url-service.js';
 import { NotificationService } from './notification-service.js';
@@ -391,9 +391,15 @@ export class PipelineService extends BaseService<PipelineEntity> {
       id: userId,
       role: userIsAdmin ? 'admin' : 'user',
     };
+
     const accessGetter = new AccessGetter(userId, this.accessService.getById.bind(this.accessService));
     const cnameProxyService = new CnameProxyService(userId, this.cnameRecordService.getWithAccessByDomain.bind(this.cnameRecordService));
     const notificationGetter = new NotificationGetter(userId, this.notificationService);
+    const sysInfo: SysInfo = {};
+    if (isComm()) {
+      const siteInfo = await this.sysSettingsService.getSetting<SysSiteInfo>(SysSiteInfo);
+      sysInfo.title = siteInfo.title;
+    }
     const executor = new Executor({
       user,
       pipeline,
@@ -406,6 +412,7 @@ export class PipelineService extends BaseService<PipelineEntity> {
       urlService: this.urlService,
       notificationService: notificationGetter,
       fileRootDir: this.certdConfig.fileRootDir,
+      sysInfo,
     });
     try {
       runningTasks.set(historyId, executor);

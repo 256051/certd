@@ -1,16 +1,15 @@
 import { compute, CreateCrudOptionsRet, dict } from "@fast-crud/fast-crud";
-import { PluginGroup } from "@certd/pipeline";
 import { useReference } from "/@/use/use-refrence";
 import _, { merge } from "lodash-es";
 import { useUserStore } from "/@/store/modules/user";
 import { useSettingStore } from "/@/store/modules/settings";
 import * as api from "../api.plugin";
-import NotificationSelector from "/@/views/certd/notification/notification-selector/index.vue";
-export default function (certPluginGroup: PluginGroup, formWrapperRef: any): CreateCrudOptionsRet {
+
+export default function (certPlugins: any[], formWrapperRef: any): CreateCrudOptionsRet {
   const inputs: any = {};
   const userStore = useUserStore();
   const settingStore = useSettingStore();
-  for (const plugin of certPluginGroup.plugins) {
+  for (const plugin of certPlugins) {
     for (const inputKey in plugin.input) {
       if (inputs[inputKey]) {
         inputs[inputKey].form.show = true;

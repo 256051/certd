@@ -14,12 +14,12 @@
 import { defineComponent, onActivated, onMounted } from "vue";
 import { useFs } from "@fast-crud/fast-crud";
 import createCrudOptions from "./crud";
-import { createApi } from "./api";
+import { createNotificationApi } from "./api";
 
 export default defineComponent({
   name: "NotificationManager",
   setup() {
-    const api = createApi();
+    const api = createNotificationApi();
     const { crudBinding, crudRef, crudExpose } = useFs({ createCrudOptions, context: { api } });
 
     // 页面打开后获取列表数据

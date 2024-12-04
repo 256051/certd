@@ -11,6 +11,10 @@ import { ICnameProxyService, IEmailService, IPluginConfigService, IUrlService } 
 import { FileStore } from "./file-store.js";
 import { cloneDeep, forEach, merge } from "lodash-es";
 import { INotificationService, NotificationBody, NotificationContext, notificationRegistry } from "../notification/index.js";
+export type SysInfo = {
+  //系统标题
+  title?: string;
+};
 
 export type ExecutorOptions = {
   pipeline: Pipeline;
@@ -25,6 +29,7 @@ export type ExecutorOptions = {
   fileRootDir?: string;
   user: UserInfo;
   baseURL?: string;
+  sysInfo?: SysInfo;
 };
 
 export class Executor {
@@ -368,17 +373,18 @@ export class Executor {
     let subject = "";
     let content = "";
     const errorMessage = error?.message;
+    const sysTitle = this.options.sysInfo?.title || "Certd";
     if (when === "start") {
-      subject = `【Certd】开始执行，${this.pipeline.title}【${this.pipeline.id}】`;
+      subject = `【${sysTitle}】开始执行，${this.pipeline.title}【${this.pipeline.id}】`;
       content = `流水线ID:${this.pipeline.id}，运行ID:${this.runtime.id}`;
     } else if (when === "success") {
-      subject = `【Certd】执行成功，${this.pipeline.title}【${this.pipeline.id}】`;
+      subject = `【${sysTitle}】执行成功，${this.pipeline.title}【${this.pipeline.id}】`;
       content = `流水线ID:${this.pipeline.id}，运行ID:${this.runtime.id}`;
     } else if (when === "turnToSuccess") {
-      subject = `【Certd】执行成功（失败转成功），${this.pipeline.title}【${this.pipeline.id}】`;
+      subject = `【${sysTitle}】执行成功（失败转成功），${this.pipeline.title}【${this.pipeline.id}】`;
       content = `流水线ID:${this.pipeline.id}，运行ID:${this.runtime.id}`;
     } else if (when === "error") {
-      subject = `【Certd】执行失败，${this.pipeline.title}【${this.pipeline.id}】`;
+      subject = `【${sysTitle}】执行失败，${this.pipeline.title}【${this.pipeline.id}】`;
       content = `流水线ID:${this.pipeline.id}，运行ID:${this.runtime.id}\n错误详情:${error.message}`;
     } else {
       return;

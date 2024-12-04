@@ -14,7 +14,7 @@ import * as _ from "lodash-es";
 import { useModal } from "/@/use/use-modal";
 import CertView from "./cert-view.vue";
 import { eachStages } from "./utils";
-import { createApi as createNotificationApi } from "../notification/api";
+import { createNotificationApi as createNotificationApi } from "../notification/api";
 export default function ({ crudExpose, context: { certdFormRef, groupDictRef, selectedRowKeys } }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const router = useRouter();
   const { t } = useI18n();
@@ -173,9 +173,9 @@ export default function ({ crudExpose, context: { certdFormRef, groupDictRef, se
   const downloadCert = async (row: any) => {
     const files = await api.GetFiles(row.id);
     model.success({
-      title: "文件下载",
+      title: "点击链接下载",
       maskClosable: true,
-      okText: "↑↑↑ 点击上面链接下载",
+      okText: "关闭",
       content: () => {
         const children = [];
         for (const file of files) {
@@ -191,7 +191,16 @@ export default function ({ crudExpose, context: { certdFormRef, groupDictRef, se
           );
         }
 
-        return <div class={"mt-3"}>{children}</div>;
+        if (children.length === 0) {
+          return <div>暂无文件下载</div>;
+        }
+
+        return (
+          <div class={"mt-3"}>
+            <h3>点击链接下载</h3>
+            <div> {children}</div>
+          </div>
+        );
       }
     });
   };

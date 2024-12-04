@@ -1,6 +1,6 @@
 import { request } from "/src/api/service";
 
-export function createApi() {
+export function createNotificationApi() {
   const apiPrefix = "/pi/notification";
   return {
     async GetList(query: any) {
@@ -93,6 +93,13 @@ export function createApi() {
         url: apiPrefix + "/defineByType",
         method: "post",
         params: { type }
+      });
+    },
+    async GetOrCreateDefault(param: { email: any }) {
+      return await request({
+        url: apiPrefix + "/getOrCreateDefault",
+        method: "post",
+        data: param
       });
     }
   };
