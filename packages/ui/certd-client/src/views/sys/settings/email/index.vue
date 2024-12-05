@@ -65,6 +65,7 @@
       <a-form :model="testFormState" name="basic" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }" autocomplete="off" @finish="onTestSend">
         <a-form-item label="测试收件邮箱" name="receiver" :rules="[{ required: true, message: '请输入测试收件邮箱' }]">
           <a-input v-model:value="testFormState.receiver" />
+          <div class="helper">保存后再点击测试</div>
           <div class="helper">发送失败？？？<a href="https://certd.docmirror.cn/guide/use/email/" target="_blank">邮件配置帮助文档</a></div>
           <div class="helper">您还可以试试使用官方邮件服务器↗↗↗↗↗↗↗↗</div>
         </a-form-item>

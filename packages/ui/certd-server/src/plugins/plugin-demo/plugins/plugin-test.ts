@@ -4,18 +4,21 @@ import { createCertDomainGetterInputDefine, createRemoteSelectInputDefine } from
 import { optionsUtils } from '@certd/basic/dist/utils/util.options.js';
 
 @IsTaskPlugin({
-  name: 'demoTest',
+  //命名规范，插件名称+功能（就是目录plugin-demo中的demo），大写字母开头，驼峰命名
+  name: 'DemoTest',
   title: 'Demo测试插件',
   icon: 'clarity:plugin-line',
   //插件分组
   group: pluginGroups.other.key,
   default: {
+    //默认值配置照抄即可
     strategy: {
       runStrategy: RunStrategy.SkipWhenSucceed,
     },
   },
 })
-export class DemoTestPlugin extends AbstractTaskPlugin {
+//类名规范，跟上面插件名称（name）一致
+export class DemoTest extends AbstractTaskPlugin {
   //测试参数
   @TaskInput({
     title: '属性示例',
@@ -41,6 +44,23 @@ export class DemoTestPlugin extends AbstractTaskPlugin {
     },
   })
   select!: string;
+
+  //测试参数
+  @TaskInput({
+    title: '多选框',
+    component: {
+      //前端组件配置，具体配置见组件文档 https://www.antdv.com/components/select-cn
+      name: 'a-select',
+      vModel: 'value',
+      mode: 'tags',
+      multiple: true,
+      options: [
+        { value: '1', label: '选项1' },
+        { value: '2', label: '选项2' },
+      ],
+    },
+  })
+  multiSelect!: string;
 
   //测试参数
   @TaskInput({
@@ -85,8 +105,7 @@ export class DemoTestPlugin extends AbstractTaskPlugin {
     createRemoteSelectInputDefine({
       title: '从后端获取选项',
       helper: '选择时可以从后端获取选项',
-      typeName: 'demoTest',
-      action: DemoTestPlugin.prototype.onGetSiteList.name,
+      action: DemoTest.prototype.onGetSiteList.name,
       //当以下参数变化时，触发获取选项
       watches: ['certDomains', 'accessId'],
       required: true,
@@ -121,15 +140,15 @@ export class DemoTestPlugin extends AbstractTaskPlugin {
     this.logger.info('switch:', this.switch);
     this.logger.info('授权id:', accessId);
 
-    const res = await this.http.request({
-      url: 'https://api.demo.com',
-      method: 'GET',
-    });
-    if (res.code !== 0) {
-      //检查res是否报错,你需要抛异常，来结束插件执行，否则会判定为执行成功，下次执行时会跳过本任务
-      throw new Error(res.message);
-    }
-    this.logger.info('部署成功:', res);
+    // const res = await this.http.request({
+    //   url: 'https://api.demo.com',
+    //   method: 'GET',
+    // });
+    // if (res.code !== 0) {
+    //   //检查res是否报错,你需要抛异常，来结束插件执行，否则会判定为执行成功，下次执行时会跳过本任务
+    //   throw new Error(res.message);
+    // }
+    // this.logger.info('部署成功:', res);
   }
 
   //此方法演示，如何让前端在添加插件时可以从后端获取选项，这里是后端返回选项的方法
@@ -167,4 +186,4 @@ export class DemoTestPlugin extends AbstractTaskPlugin {
   }
 }
 //实例化一下，注册插件
-new DemoTestPlugin();
+new DemoTest();

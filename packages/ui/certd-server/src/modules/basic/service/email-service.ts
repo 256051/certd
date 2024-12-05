@@ -3,12 +3,12 @@ import type { EmailSend } from '@certd/pipeline';
 import { IEmailService } from '@certd/pipeline';
 
 import { logger } from '@certd/basic';
-import { isPlus } from '@certd/plus-core';
+import { isComm, isPlus } from '@certd/plus-core';
 
 import nodemailer from 'nodemailer';
 import type SMTPConnection from 'nodemailer/lib/smtp-connection';
 import { UserSettingsService } from '../../mine/service/user-settings-service.js';
-import { PlusService, SysSettingsService } from '@certd/lib-server';
+import { PlusService, SysSettingsService, SysSiteInfo } from '@certd/lib-server';
 import { getEmailSettings } from '../../sys/settings/fix.js';
 
 export type EmailConfig = {
@@ -80,8 +80,16 @@ export class EmailService implements IEmailService {
 
   private async sendByCustom(emailConfig: EmailConfig, email: EmailSend) {
     const transporter = nodemailer.createTransport(emailConfig);
+
+    let sysTitle = 'Certd';
+    if (isComm()) {
+      const siteInfo = await this.sysSettingsService.getSetting<SysSiteInfo>(SysSiteInfo);
+      if (siteInfo) {
+        sysTitle = siteInfo.title || sysTitle;
+      }
+    }
     const mailOptions = {
-      from: emailConfig.sender,
+      from: `${sysTitle} <${emailConfig.sender}>`,
       to: email.receivers.join(', '), // list of receivers
       subject: email.subject,
       text: email.content,
