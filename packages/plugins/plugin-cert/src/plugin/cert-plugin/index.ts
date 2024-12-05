@@ -137,7 +137,7 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
         { value: "zerossl", label: "ZeroSSL", icon: "emojione:digit-zero" },
       ],
     },
-    helper: "Let's Encrypt：申请最简单\nGoogle：大厂光环，兼容性好，需要翻墙获取EAB授权\nZeroSSL：有数量限制，获取EAB授权无需翻墙",
+    helper: "Let's Encrypt：申请最简单\nGoogle：大厂光环，兼容性好，需要翻墙获取EAB授权\nZeroSSL：需要EAB授权，无需翻墙",
     required: true,
   })
   sslProvider!: SSLProvider;
