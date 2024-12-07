@@ -16,18 +16,11 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import psl from "psl";
 const props = defineProps<{
   record: any;
 }>();
-const mainDomain = computed(() => {
-  if (props?.record?.domain) {
-    return psl.parse(props.record.domain).domain;
-  }
-  return "";
-});
 
 const nslookupCmd = computed(() => {
-  return `nslookup -qa=txt ${props.record.hostRecord}.${mainDomain.value}`;
+  return `nslookup -qa=txt _acme-challenge.${props.record.domain}`;
 });
 </script>
