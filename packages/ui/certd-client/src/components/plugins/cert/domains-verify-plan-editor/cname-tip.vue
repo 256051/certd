@@ -7,7 +7,7 @@
         <div>2. 要添加的是CNAME类型的记录，不是TXT</div>
         <div>3. 核对记录值是否是:{{ record.recordValue }}</div>
         <div>
-          4. 运行命令 <a-tag>nslookup -qa=txt {{ record.hostRecord }}{{ record.domain }}</a-tag> 查看解析配置是否正确
+          4. 运行命令 <a-tag color="green">nslookup -qa=txt {{ record.hostRecord }}.{{ mainDomain }}</a-tag> 查看解析是否正确
         </div>
       </div>
     </template>
@@ -16,7 +16,15 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from "vue";
+import psl from "psl";
 const props = defineProps<{
   record: any;
 }>();
+const mainDomain = computed(() => {
+  if (props.record.domain) {
+    return psl.parse(props.record.domain).domain;
+  }
+  return "";
+});
 </script>
