@@ -31,4 +31,4 @@ Certd 是一款开源、免费、全自动申请和部署更新SSL证书的工�
 ## 三、证书颁发机构对比
 * Let's Encrypt：申请最简单。
 * Google: 大厂光环，兼容性好，需要翻墙获取EAB。
-* ZeroSSL： 有数量限制，获取EAB无需翻墙。
+* ZeroSSL： 需要EAB，获取EAB无需翻墙。
