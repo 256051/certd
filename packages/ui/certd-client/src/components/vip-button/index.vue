@@ -118,7 +118,8 @@ const expiredDays = computed(() => {
 });
 
 const formState = reactive({
-  code: ""
+  code: "",
+  inviteCode: ""
 });
 
 const router = useRouter();
@@ -268,7 +269,7 @@ function openUpgrade() {
           activationCodeGetWay = (
             <span>
               <a href="https://afdian.com/a/greper" target="_blank">
-                爱发电赞助“VIP会员”后获取专业版
+                爱发电赞助“VIP会员（¥29.9）”后获取一年期专业版激活码
               </a>
               <span> 商业版请直接联系作者</span>
             </span>
@@ -327,6 +328,8 @@ function openUpgrade() {
                 <fs-copyable class="flex-1" v-model={computedSiteId.value}></fs-copyable>
               </div>
               <a-input class="mt-10" v-model:value={formState.code} placeholder={placeholder} />
+
+              <a-input class="mt-10" v-model:value={formState.inviteCode} placeholder={"邀请码【选填】，可额外获得专业版30天/商业版15天时长"} />
             </div>
 
             <div class="mt-10">

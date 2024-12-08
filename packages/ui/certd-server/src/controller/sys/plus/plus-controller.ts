@@ -14,9 +14,9 @@ export class SysPlusController extends BaseController {
 
   @Post('/active', { summary: 'sys:settings:edit' })
   async active(@Body(ALL) body) {
-    const { code } = body;
+    const { code, inviteCode } = body;
 
-    await this.plusService.active(code);
+    await this.plusService.active(code, inviteCode);
 
     return this.ok(true);
   }

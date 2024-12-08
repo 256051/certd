@@ -38,9 +38,9 @@ export class PlusService {
     return installInfo.siteId;
   }
 
-  async active(code: string) {
+  async active(code: string, inviteCode?: string) {
     const plusRequestService = await this.getPlusRequestService();
-    return await plusRequestService.active(code);
+    return await plusRequestService.active(code, inviteCode);
   }
 
   async updateLicense(license: string) {

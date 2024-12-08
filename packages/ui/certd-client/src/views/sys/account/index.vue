@@ -1,11 +1,11 @@
 <template>
   <fs-page class="cd-page-account">
-    <template #header>
-      <div class="title">
-        站点绑定
-        <span class="sub">管理你安装过的Certd站点，可以通过转移功能避免丢失VIP，强烈建议绑定</span>
-      </div>
-    </template>
+    <!--    <template #header>-->
+    <!--      <div class="title">-->
+    <!--        站点绑定-->
+    <!--        <span class="sub">管理你安装过的Certd站点，可以通过转移功能避免丢失VIP，强烈建议绑定</span>-->
+    <!--      </div>-->
+    <!--    </template>-->
 
     <iframe ref="iframeRef" class="account-iframe" :src="iframeSrcRef"> </iframe>
   </fs-page>
