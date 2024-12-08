@@ -29,7 +29,9 @@
         :show-select="false"
         :dialog="{ width: 960 }"
         :destroy-on-close="false"
+        height="400px"
         @update:model-value="onChange"
+        @dialog-closed="doRefresh"
       >
         <template #default="scope">
           <fs-button class="ml-5" :disabled="disabled" :size="size" type="primary" icon="ant-design:edit-outlined" @click="scope.open"></fs-button>
@@ -45,6 +47,7 @@ import { createNotificationApi } from "../api";
 import { message } from "ant-design-vue";
 import { dict } from "@fast-crud/fast-crud";
 import createCrudOptions from "../crud";
+import { notificationProvide } from "/@/views/certd/notification/common";
 
 defineOptions({
   name: "NotificationSelector"
@@ -65,7 +68,7 @@ const onChange = async (value: number) => {
 const emit = defineEmits(["update:modelValue", "selectedChange", "change"]);
 
 const api = createNotificationApi();
-
+notificationProvide(api);
 // const types = ref({});
 // async function loadNotificationTypes() {
 //   const types = await api.GetDefineTypes();
@@ -148,6 +151,10 @@ watch(
 
 //当不在pipeline中编辑时，可能为空
 const pipeline = inject("pipeline", null);
+
+async function doRefresh() {
+  await optionsDictRef.reloadDict();
+}
 </script>
 <style lang="less">
 .notification-selector {

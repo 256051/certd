@@ -6,11 +6,14 @@ import { Modal } from "ant-design-vue";
 import * as api from "/@/views/sys/cname/provider/api";
 import { mitter } from "/@/utils/util.mitt";
 
-export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
+export function notificationProvide(api: any) {
   provide("notificationApi", api);
   provide("get:plugin:type", () => {
     return "notification";
   });
+}
+
+export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
   const notificationTypeDictRef = dict({
     url: "/pi/notification/getTypeDict"
   });
