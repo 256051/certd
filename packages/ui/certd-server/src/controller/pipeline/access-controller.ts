@@ -37,7 +37,8 @@ export class AccessController extends CrudController<AccessService> {
 
   @Post('/list', { summary: Constants.per.authOnly })
   async list(@Body(ALL) body) {
-    body.userId = this.getUserId();
+    body.query = body.query ?? {};
+    body.query.userId = this.getUserId();
     return super.list(body);
   }
 
