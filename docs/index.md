@@ -32,5 +32,5 @@ features:
   - title: 支持私有化部署
     details: 保障数据安全
   - title: 多数据库支持
-    details: 支持sqlite，postgresql数据库
+    details: 支持SQLite、Postgresql、MySQL数据库
 ---
