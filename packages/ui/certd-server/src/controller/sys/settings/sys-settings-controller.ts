@@ -29,20 +29,16 @@ export class SysSettingsController extends CrudController<SysSettingsService> {
 
   @Post('/page', { summary: 'sys:settings:view' })
   async page(@Body(ALL) body) {
-    body.query = body.query ?? {};
-    body.query.userId = this.getUserId();
     return super.page(body);
   }
 
   @Post('/list', { summary: 'sys:settings:view' })
   async list(@Body(ALL) body) {
-    body.userId = this.getUserId();
     return super.list(body);
   }
 
   @Post('/add', { summary: 'sys:settings:edit' })
   async add(@Body(ALL) bean) {
-    bean.userId = this.getUserId();
     return super.add(bean);
   }
 

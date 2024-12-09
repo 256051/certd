@@ -36,7 +36,8 @@ export class PipelineGroupController extends CrudController<PipelineGroupService
 
   @Post('/list', { summary: Constants.per.authOnly })
   async list(@Body(ALL) body: any) {
-    body.userId = this.getUserId();
+    body.query = body.query ?? {};
+    body.query.userId = this.getUserId();
     return await super.list(body);
   }
 
@@ -67,7 +68,9 @@ export class PipelineGroupController extends CrudController<PipelineGroupService
   @Post('/all', { summary: Constants.per.authOnly })
   async all() {
     const list: any = await this.service.find({
-      userId: this.getUserId(),
+      where: {
+        userId: this.getUserId(),
+      },
     });
     return this.ok(list);
   }

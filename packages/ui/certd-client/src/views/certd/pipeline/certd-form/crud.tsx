@@ -4,6 +4,7 @@ import _, { merge } from "lodash-es";
 import { useUserStore } from "/@/store/modules/user";
 import { useSettingStore } from "/@/store/modules/settings";
 import * as api from "../api.plugin";
+import NotificationSelector from "/@/views/certd/notification/notification-selector/index.vue";
 
 export default function (certPlugins: any[], formWrapperRef: any): CreateCrudOptionsRet {
   const inputs: any = {};
@@ -106,13 +107,13 @@ export default function (certPlugins: any[], formWrapperRef: any): CreateCrudOpt
           title: "失败通知",
           type: "text",
           form: {
-            value: true,
+            value: 0,
             component: {
-              name: "a-switch",
-              vModel: "checked"
+              name: NotificationSelector,
+              vModel: "modelValue"
             },
             order: 101,
-            helper: "建议设置，任务执行失败实时提醒"
+            helper: "任务执行失败实时提醒"
           }
         }
       }

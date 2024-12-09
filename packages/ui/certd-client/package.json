@@ -1,6 +1,6 @@
 {
   "name": "@certd/ui-client",
-  "version": "1.28.0",
+  "version": "1.28.1",
   "private": true,
   "scripts": {
     "dev": "vite --open",
@@ -26,10 +26,10 @@
   "dependencies": {
     "@ant-design/colors": "^7.0.2",
     "@ant-design/icons-vue": "^6.1.0",
-    "@fast-crud/fast-crud": "^1.23.1",
-    "@fast-crud/fast-extends": "^1.23.1",
-    "@fast-crud/ui-antdv4": "^1.23.1",
-    "@fast-crud/ui-interface": "^1.23.1",
+    "@fast-crud/fast-crud": "^1.23.4",
+    "@fast-crud/fast-extends": "^1.23.4",
+    "@fast-crud/ui-antdv4": "^1.23.4",
+    "@fast-crud/ui-interface": "^1.23.4",
     "@iconify/vue": "^4.1.1",
     "@soerenmartius/vue3-clipboard": "^0.1.2",
     "@vue-js-cron/light": "^4.0.5",
@@ -65,8 +65,8 @@
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
-    "@certd/lib-iframe": "^1.28.0",
-    "@certd/pipeline": "^1.28.0",
+    "@certd/lib-iframe": "^1.28.1",
+    "@certd/pipeline": "^1.28.1",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@types/chai": "^4.3.12",
