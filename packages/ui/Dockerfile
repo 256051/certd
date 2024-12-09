@@ -9,6 +9,7 @@ RUN npm install -g pnpm@8.15.7
 RUN cp /workspace/certd-client/dist/* /workspace/certd-server/public/ -rf
 RUN cd /workspace/certd-server && pnpm install && npm run build-on-docker
 
+
 FROM node:20-alpine
 EXPOSE 7001
 EXPOSE 7002

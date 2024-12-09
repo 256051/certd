@@ -24,9 +24,10 @@
     "dev-build": "echo 1",
     "build-on-docker": "node ./before-build.js && npm run build",
     "up-mw-deps": "npx midway-version -u -w",
-    "heap": "cross-env NODE_ENV=pgpl clinic heapprofiler    --  node ./bootstrap.js",
+    "heap": "cross-env NODE_ENV=local clinic heapprofiler    --  node ./bootstrap.js",
     "flame": "clinic flame   -- node ./bootstrap.js",
-    "tsc": "tsc --skipLibCheck"
+    "tsc": "tsc --skipLibCheck",
+    "slimming": "node ./slimming.js"
   },
   "dependencies": {
     "@alicloud/pop-core": "^1.7.10",
