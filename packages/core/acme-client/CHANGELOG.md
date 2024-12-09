@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.28.2](https://github.com/publishlab/node-acme-client/compare/v1.28.1...v1.28.2) (2024-12-09)
+
+### Performance Improvements
+
+* 支持mysql ([7cde1fd](https://github.com/publishlab/node-acme-client/commit/7cde1fdc4a9ed851900d231a5460c8dbfbcd148e))
+
 ## [1.28.1](https://github.com/publishlab/node-acme-client/compare/v1.28.0...v1.28.1) (2024-12-08)
 
 **Note:** Version bump only for package @certd/acme-client

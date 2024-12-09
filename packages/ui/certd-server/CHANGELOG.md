@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.28.2](https://github.com/certd/certd/compare/v1.28.1...v1.28.2) (2024-12-09)
+
+### Bug Fixes
+
+* 修复创建流水线通知设置无效的bug ([498cf34](https://github.com/certd/certd/commit/498cf34999fddfa24ce088e2e678469fa669abb8))
+* 修复流水线分组可以被所有人看见的bug ([a0e838d](https://github.com/certd/certd/commit/a0e838d1eec918e5dc92fe95dc72ac14facb930e))
+
+### Performance Improvements
+
+* 优化数据表索引 ([228fdf0](https://github.com/certd/certd/commit/228fdf0a0d28013f5dd156a97bbde80537e8e97e))
+* 支持mysql ([7cde1fd](https://github.com/certd/certd/commit/7cde1fdc4a9ed851900d231a5460c8dbfbcd148e))
+
 ## [1.28.1](https://github.com/certd/certd/compare/v1.28.0...v1.28.1) (2024-12-08)
 
 ### Performance Improvements

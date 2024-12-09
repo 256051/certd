@@ -1,7 +1,7 @@
 {
   "name": "@certd/plugin-lib",
   "private": false,
-  "version": "1.28.1",
+  "version": "1.28.2",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -16,9 +16,9 @@
   },
   "dependencies": {
     "@alicloud/pop-core": "^1.7.10",
-    "@certd/basic": "^1.28.1",
-    "@certd/pipeline": "^1.28.1",
-    "@certd/plugin-cert": "^1.28.1",
+    "@certd/basic": "^1.28.2",
+    "@certd/pipeline": "^1.28.2",
+    "@certd/plugin-cert": "^1.28.2",
     "@kubernetes/client-node": "0.21.0",
     "dayjs": "^1.11.7",
     "iconv-lite": "^0.6.3",
