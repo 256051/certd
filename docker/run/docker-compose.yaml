@@ -33,7 +33,7 @@ services:
 #     配置规则： certd_ + 配置项, 点号用_代替
 #                                    #↓↓↓↓ ----------------------------- 如果忘记管理员密码，可以设置为true，重启之后，管理员密码将改成123456，然后请及时修改回false
       - certd_system_resetAdminPasswd=false
-#                                    #↓↓↓↓ ----------------------------- 使用postgresql数据库
+#                                    #↓↓↓↓ ----------------------------- 使用postgresql数据库，需要提前创建数据库
 #      - certd_flyway_scriptDir=./db/migration-pg                        # 升级脚本目录
 #      - certd_typeorm_dataSource_default_type=postgres                  # 数据库类型
 #      - certd_typeorm_dataSource_default_host=localhost                 # 数据库地址
@@ -41,6 +41,19 @@ services:
 #      - certd_typeorm_dataSource_default_username=postgres              # 用户名
 #      - certd_typeorm_dataSource_default_password=yourpasswd            # 密码
 #      - certd_typeorm_dataSource_default_database=certd                 # 数据库名
+
+#                                    #↓↓↓↓ ----------------------------- 使用mysql数据库，需要提前创建数据库 charset=utf8mb4, collation=utf8mb4_bin
+#      - certd_flyway_scriptDir=./db/migration-mysql                     # 升级脚本目录
+#      - certd_typeorm_dataSource_default_type=mysql                     # 数据库类型， 或者 mariadb
+#      - certd_typeorm_dataSource_default_host=localhost                 # 数据库地址
+#      - certd_typeorm_dataSource_default_port=3306                      # 数据库端口
+#      - certd_typeorm_dataSource_default_username=root                  # 用户名
+#      - certd_typeorm_dataSource_default_password=yourpasswd            # 密码
+#      - certd_typeorm_dataSource_default_database=certd                 # 数据库名
+
+
+
+
 
 #    #↓↓↓↓ ------------------------------------------------------------- 启用ipv6网络
 #    networks:
