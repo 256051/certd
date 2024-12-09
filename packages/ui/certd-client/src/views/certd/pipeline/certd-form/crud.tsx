@@ -107,10 +107,15 @@ export default function (certPlugins: any[], formWrapperRef: any): CreateCrudOpt
           title: "失败通知",
           type: "text",
           form: {
-            value: true,
+            value: 0,
             component: {
-              name: "a-switch",
-              vModel: "checked"
+              name: NotificationSelector,
+              vModel: "modelValue",
+              on: {
+                selectedChange({ $event, form }) {
+                  form.notificationTarget = $event;
+                }
+              }
             },
             order: 101,
             helper: "任务执行失败实时提醒"

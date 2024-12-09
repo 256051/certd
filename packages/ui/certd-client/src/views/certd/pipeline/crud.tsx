@@ -102,12 +102,12 @@ export default function ({ crudExpose, context: { certdFormRef, groupDictRef, se
         triggers.push({ title: "定时触发", type: "timer", props: { cron: form.triggerCron } });
       }
       const notifications = [];
-      if (form.notification) {
+      if (form.notification != null) {
         notifications.push({
           type: "custom",
           when: ["error", "turnToSuccess"],
-          notificationId: 0,
-          title: "使用默认通知"
+          notificationId: form.notification,
+          title: form.notificationTarget?.name || "自定义通知"
         });
       }
       let pipeline = {

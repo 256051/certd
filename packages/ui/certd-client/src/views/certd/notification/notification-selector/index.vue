@@ -126,14 +126,12 @@ function clear() {
 }
 
 async function emitValue(value: any) {
-  const target = optionsDictRef.dataMap[value];
-  if (value !== 0 && pipeline?.value && target && pipeline.value.userId !== target.userId) {
+  if (value !== 0 && pipeline?.value && target && pipeline.value.userId !== target.value.userId) {
     message.error("对不起，您不能修改他人流水线的通知");
     return;
   }
   emit("change", value);
   emit("update:modelValue", value);
-  emit("selectedChange", target);
 }
 
 watch(
@@ -143,6 +141,7 @@ watch(
   async (value) => {
     await optionsDictRef.loadDict();
     target.value = optionsDictRef.dataMap[value];
+    emit("selectedChange", target.value);
   },
   {
     immediate: true
