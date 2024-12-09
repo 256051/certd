@@ -40,6 +40,7 @@ export default {
               await doSubmitRef.value({ form });
 
               if (form.email) {
+                //创建一个默认的邮件通知
                 const notificationApi = createNotificationApi();
                 await notificationApi.GetOrCreateDefault({ email: form.email });
               }
