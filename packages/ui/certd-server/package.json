@@ -31,6 +31,9 @@
   },
   "dependencies": {
     "@alicloud/pop-core": "^1.7.10",
+    "@aws-sdk/client-acm": "^3.699.0",
+    "@aws-sdk/client-cloudfront": "^3.699.0",
+    "@aws-sdk/client-s3": "^3.705.0",
     "@certd/acme-client": "^1.28.2",
     "@certd/basic": "^1.28.2",
     "@certd/commercial-core": "^1.28.2",

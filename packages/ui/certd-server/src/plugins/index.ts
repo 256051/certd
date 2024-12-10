@@ -13,3 +13,4 @@ export * from './plugin-woai/index.js';
 export * from './plugin-cachefly/index.js';
 export * from './plugin-gcore/index.js';
 export * from './plugin-qnap/index.js';
+export * from './plugin-aws/index.js';
