@@ -35,7 +35,7 @@ export class TencentStartInstancesPlugin extends AbstractTaskPlugin {
       name: 'a-auto-complete',
       vModel: 'value',
       options: [
-        { value: '', label: '--------中国大陆地区-------', disabled: true },
+        { value: '1', label: '--------中国大陆地区-------', disabled: true },
         { value: 'ap-beijing-1', label: '北京1区' },
         { value: 'ap-beijing', label: '北京' },
         { value: 'ap-nanjing', label: '南京' },
@@ -46,7 +46,7 @@ export class TencentStartInstancesPlugin extends AbstractTaskPlugin {
         { value: 'ap-shenzhen-fsi', label: '深圳金融' },
         { value: 'ap-shanghai-fsi', label: '上海金融' },
         { value: 'ap-beijing-fsi', label: '北京金融' },
-        { value: '', label: '--------中国香港及境外-------', disabled: true },
+        { value: '2', label: '--------中国香港及境外-------', disabled: true },
         { value: 'ap-hongkong', label: '中国香港' },
         { value: 'ap-singapore', label: '新加坡' },
         { value: 'ap-mumbai', label: '孟买' },
@@ -68,19 +68,18 @@ export class TencentStartInstancesPlugin extends AbstractTaskPlugin {
     createRemoteSelectInputDefine({
       title: '实列ID',
       helper: '请选择实列',
-      typeName: 'TencentStartInstancesPlugin',
       action: TencentStartInstancesPlugin.prototype.onGetInstanceList.name,
-      watches: ['region'],
+      watches: ['region', 'accessId'],
     })
   )
-  instanceId!: string | string[];
+  instanceId!: string[];
 
   async onInstance() {}
 
   async execute(): Promise<void> {
     const cvmClient = await this.getCvmClient();
     const res = await cvmClient.StartInstances({
-      InstanceIds: Array.isArray(this.instanceId) ? this.instanceId : [this.instanceId],
+      InstanceIds: this.instanceId,
     });
     this.checkRet(res);
   }
