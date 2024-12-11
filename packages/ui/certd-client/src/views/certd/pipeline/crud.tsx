@@ -182,7 +182,8 @@ export default function ({ crudExpose, context: { certdFormRef, groupDictRef, se
           const downloadUrl = `${env.API}/pi/history/download?pipelineId=${row.id}&fileId=${file.id}`;
           children.push(
             <div>
-              <div>
+              <div class={"flex-o m-5"}>
+                <fs-icon icon={"ant-design:cloud-download-outlined"} class={"mr-5 fs-16"}></fs-icon>
                 <a href={downloadUrl} target={"_blank"}>
                   {file.filename}
                 </a>
@@ -197,7 +198,6 @@ export default function ({ crudExpose, context: { certdFormRef, groupDictRef, se
 
         return (
           <div class={"mt-3"}>
-            <h3>点击链接下载</h3>
             <div> {children}</div>
           </div>
         );
