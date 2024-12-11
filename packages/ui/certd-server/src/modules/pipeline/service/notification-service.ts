@@ -156,12 +156,16 @@ export class NotificationService extends BaseService<NotificationEntity> {
       //发送通知
       logger.info('发送通知, 使用通知渠道：' + notifyConfig.name);
 
-      let siteTitle = 'Certd';
-      if (isComm()) {
-        const siteInfo = await this.sysSettingsService.getSetting<SysSiteInfo>(SysSiteInfo);
-        siteTitle = siteInfo?.title || siteTitle;
+      if (notifyConfig.type != 'email') {
+        //非邮件通知，需要加上站点名称
+        let siteTitle = 'Certd';
+        if (isComm()) {
+          const siteInfo = await this.sysSettingsService.getSetting<SysSiteInfo>(SysSiteInfo);
+          siteTitle = siteInfo?.title || siteTitle;
+        }
+        req.body.title = `【${siteTitle}】${req.body.title}`;
       }
-      req.body.title = `【${siteTitle}】${req.body.title}`;
+
       await sendNotification({
         config: notifyConfig,
         ctx: {
