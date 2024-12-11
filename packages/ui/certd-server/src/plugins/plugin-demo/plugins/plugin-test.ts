@@ -26,7 +26,10 @@ export class DemoTest extends AbstractTaskPlugin {
     component: {
       //前端组件配置，具体配置见组件文档 https://www.antdv.com/components/input-cn
       name: 'a-input',
+      vModel: 'value', //双向绑定组件的props名称
     },
+    helper: '帮助说明,[链接](https://certd.docmirror.cn)',
+    required: false, //是否必填
   })
   text!: string;
 
@@ -38,12 +41,28 @@ export class DemoTest extends AbstractTaskPlugin {
       name: 'a-auto-complete',
       vModel: 'value',
       options: [
-        { value: '1', label: '选项1' },
-        { value: '2', label: '选项2' },
+        //选项列表
+        { value: 'show', label: '动态显' },
+        { value: 'hide', label: '动态隐' },
       ],
     },
   })
   select!: string;
+
+  @TaskInput({
+    title: '动态显隐',
+    helper: '我会根据选择框的值进行显隐',
+    show: true, //动态计算的值会覆盖它
+    //动态计算脚本， mergeScript返回的对象会合并当前配置，此处演示 show的值会被动态计算结果覆盖，show的值根据用户选择的select的值决定
+    mergeScript: `
+    return {
+      show: ctx.compute(({form})=>{
+        return form.select === 'show';
+      })
+    }
+    `,
+  })
+  showText!: string;
 
   //测试参数
   @TaskInput({
