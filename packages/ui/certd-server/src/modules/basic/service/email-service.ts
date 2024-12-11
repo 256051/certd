@@ -89,7 +89,7 @@ export class EmailService implements IEmailService {
       }
     }
     let subject = email.subject;
-    if (!subject.startsWith(`【${sysTitle}】`)) {
+    if (!subject.includes(`【${sysTitle}】`)) {
       subject = `【${sysTitle}】${subject}`;
     }
     const mailOptions = {
