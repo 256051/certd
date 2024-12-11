@@ -15,7 +15,7 @@
           <div>
             <a-tag color="green" class="flex-inline pointer"> <fs-icon icon="ion:time-outline" class="mr-5"></fs-icon> {{ now }}</a-tag>
             <a-badge v-if="userStore.isAdmin" :dot="hasNewVersion">
-              <a-tag color="blue" class="flex-inline pointer" :title="'最新版本:' + latestVersion">
+              <a-tag color="blue" class="flex-inline pointer" :title="'最新版本:' + latestVersion" @click="openUpgradeUrl()">
                 <fs-icon icon="ion:rocket-outline" class="mr-5"></fs-icon>
                 v{{ version }}
               </a-tag>
@@ -210,6 +210,10 @@ onMounted(async () => {
   await loadCount();
   await loadPluginGroups();
 });
+
+function openUpgradeUrl() {
+  window.open("https://certd.docmirror.cn/guide/install/upgrade.html");
+}
 </script>
 
 <style lang="less">

@@ -76,8 +76,8 @@ export default defineConfig({
                 { text: "源码部署", link: "/guide/install/source/" }
               ]
             },
-            { text: "演示教程", link: "/guide/tutorial.md" }
-
+            { text: "演示教程", link: "/guide/tutorial.md" },
+            { text: "版本升级", link: "/guide/install/upgrade.md" }
           ]
         },
         {
