@@ -412,6 +412,7 @@ export class Executor {
             id: notification.notificationId,
             useDefault: true,
             useEmail: false,
+            logger: this.logger,
             body: {
               title: subject,
               content,
