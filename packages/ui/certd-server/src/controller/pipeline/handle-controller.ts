@@ -56,18 +56,6 @@ export class HandleController extends BaseController {
   @Post('/notification', { summary: Constants.per.authOnly })
   async notificationRequest(@Body(ALL) body: NotificationRequestHandleReq) {
     const input = body.input.body;
-    // if (body.input.id > 0) {
-    //   const oldEntity = await this.notificationService.info(body.input.id);
-    //   if (oldEntity) {
-    //     if (oldEntity.userId !== this.getUserId()) {
-    //       throw new Error('notification not found');
-    //     }
-    //     const param: any = {
-    //       type: body.typeName,
-    //       setting: JSON.stringify(body.input.access),
-    //     };
-    //   }
-    // }
 
     const notification = await newNotification(body.typeName, input, {
       http,

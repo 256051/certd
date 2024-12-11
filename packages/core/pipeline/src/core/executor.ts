@@ -10,7 +10,8 @@ import { Decorator } from "../decorator/index.js";
 import { ICnameProxyService, IEmailService, IPluginConfigService, IUrlService } from "../service/index.js";
 import { FileStore } from "./file-store.js";
 import { cloneDeep, forEach, merge } from "lodash-es";
-import { INotificationService, NotificationBody, NotificationContext, notificationRegistry } from "../notification/index.js";
+import { INotificationService } from "../notification/index.js";
+
 export type SysInfo = {
   //系统标题
   title?: string;
@@ -373,18 +374,17 @@ export class Executor {
     let subject = "";
     let content = "";
     const errorMessage = error?.message;
-    const sysTitle = this.options.sysInfo?.title || "Certd";
     if (when === "start") {
-      subject = `【${sysTitle}】开始执行，${this.pipeline.title}【${this.pipeline.id}】`;
+      subject = `开始执行，${this.pipeline.title}【${this.pipeline.id}】`;
       content = `流水线ID:${this.pipeline.id}，运行ID:${this.runtime.id}`;
     } else if (when === "success") {
-      subject = `【${sysTitle}】执行成功，${this.pipeline.title}【${this.pipeline.id}】`;
+      subject = `执行成功，${this.pipeline.title}【${this.pipeline.id}】`;
       content = `流水线ID:${this.pipeline.id}，运行ID:${this.runtime.id}`;
     } else if (when === "turnToSuccess") {
-      subject = `【${sysTitle}】执行成功（失败转成功），${this.pipeline.title}【${this.pipeline.id}】`;
+      subject = `执行成功（失败转成功），${this.pipeline.title}【${this.pipeline.id}】`;
       content = `流水线ID:${this.pipeline.id}，运行ID:${this.runtime.id}`;
     } else if (when === "error") {
-      subject = `【${sysTitle}】执行失败，${this.pipeline.title}【${this.pipeline.id}】`;
+      subject = `执行失败，${this.pipeline.title}【${this.pipeline.id}】`;
       content = `流水线ID:${this.pipeline.id}，运行ID:${this.runtime.id}\n错误详情:${error.message}`;
     } else {
       return;
@@ -407,43 +407,23 @@ export class Executor {
         }
       } else {
         try {
-          //构建notification插件，发送通知
-          let notifyConfig: any;
-          if (notification.notificationId === 0) {
-            notifyConfig = await this.options.notificationService.getDefault();
-          } else {
-            notifyConfig = await this.options.notificationService.getById(notification.notificationId);
-          }
-          if (notifyConfig == null) {
-            throw new Error(`通知配置<id:${notification.notificationId}>不存在`);
-          }
-
-          const notificationPlugin = notificationRegistry.get(notifyConfig.type);
-          const notificationCls: any = notificationPlugin.target;
-          const notificationSender = new notificationCls();
-          const notificationCtx: NotificationContext = {
-            http: utils.http,
-            logger,
-            utils,
-            emailService: this.options.emailService,
-          };
-          //设置参数
-          merge(notificationSender, notifyConfig.setting);
-          notificationSender.setCtx(notificationCtx);
-          await notificationSender.onInstance();
-          const body: NotificationBody = {
-            title: subject,
-            content,
-            userId: this.pipeline.userId,
-            pipeline: this.pipeline,
-            result: this.lastRuntime.pipeline.status,
-            pipelineId: this.pipeline.id,
-            historyId: this.runtime.id,
-            errorMessage,
-            url,
-          };
           //发送通知
-          await notificationSender.send(body);
+          await this.options.notificationService.send({
+            id: notification.notificationId,
+            useDefault: true,
+            useEmail: false,
+            body: {
+              title: subject,
+              content,
+              userId: this.pipeline.userId,
+              pipeline: this.pipeline,
+              result: this.lastRuntime.pipeline.status,
+              pipelineId: this.pipeline.id,
+              historyId: this.runtime.id,
+              errorMessage,
+              url,
+            },
+          });
         } catch (e) {
           logger.error("send notification error", e);
         }

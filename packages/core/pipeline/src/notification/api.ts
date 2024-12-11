@@ -48,9 +48,18 @@ export type NotificationInstanceConfig = {
   };
 };
 
+export type NotificationSendReq = {
+  id?: number;
+  useDefault?: boolean;
+  useEmail?: boolean;
+  emailAddress?: string;
+  logger?: ILogger;
+  body: NotificationBody;
+};
 export interface INotificationService {
   getById(id: number): Promise<NotificationInstanceConfig>;
   getDefault(): Promise<NotificationInstanceConfig>;
+  send(req: NotificationSendReq): Promise<void>;
 }
 
 export interface INotification {

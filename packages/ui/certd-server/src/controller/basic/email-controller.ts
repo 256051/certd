@@ -12,10 +12,7 @@ export class EmailController extends BaseController {
   emailService: EmailService;
 
   @Post('/test', { summary: Constants.per.authOnly })
-  public async test(
-    @Body('receiver')
-    receiver
-  ) {
+  public async test(@Body('receiver') receiver) {
     const userId = super.getUserId();
     await this.emailService.test(userId, receiver);
     return this.ok({});

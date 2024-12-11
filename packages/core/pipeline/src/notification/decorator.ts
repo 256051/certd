@@ -1,9 +1,9 @@
 // src/decorator/memoryCache.decorator.ts
 import { Decorator } from "../decorator/index.js";
 import * as _ from "lodash-es";
+import { merge } from "lodash-es";
 import { notificationRegistry } from "./registry.js";
 import { BaseNotification, NotificationBody, NotificationContext, NotificationDefine, NotificationInputDefine, NotificationInstanceConfig } from "./api.js";
-import { isPlus } from "@certd/plus-core";
 
 // 提供一个唯一 key
 export const NOTIFICATION_CLASS_KEY = "pipeline:notification";
@@ -47,9 +47,7 @@ export async function newNotification(type: string, input: any, ctx: Notificatio
 
   // @ts-ignore
   const plugin = new register.target();
-  for (const key in input) {
-    plugin[key] = input[key];
-  }
+  merge(plugin, input);
   if (!ctx) {
     throw new Error("ctx is required");
   }
@@ -61,8 +59,5 @@ export async function newNotification(type: string, input: any, ctx: Notificatio
 
 export async function sendNotification(opts: { config: NotificationInstanceConfig; ctx: NotificationContext; body: NotificationBody }) {
   const notification: BaseNotification = await newNotification(opts.config.type, opts.config.setting, opts.ctx);
-  if (notification.define.needPlus && !isPlus()) {
-    opts.body.content = `${opts.body.content}\n\n注意：此通知渠道已调整为专业版功能，后续版本将不再支持发送，请尽快修改或升级为专业版`;
-  }
   await notification.doSend(opts.body);
 }

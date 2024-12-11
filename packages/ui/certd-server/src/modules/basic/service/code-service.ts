@@ -1,12 +1,13 @@
 import { Inject, Provide } from '@midwayjs/core';
 import { cache, isDev, randomNumber } from '@certd/basic';
-import { SysSettingsService } from '@certd/lib-server';
+import { SysSettingsService, SysSiteInfo } from '@certd/lib-server';
 import { SmsServiceFactory } from '../sms/factory.js';
 import { ISmsService } from '../sms/api.js';
 import { CodeErrorException } from '@certd/lib-server/dist/basic/exception/code-error-exception.js';
 import { EmailService } from './email-service.js';
 import { AccessService } from '../../pipeline/service/access-service.js';
 import { AccessSysGetter } from '../../pipeline/service/access-sys-getter.js';
+import { isComm } from '@certd/plus-core';
 
 // {data: '<svg.../svg>', text: 'abcd'}
 /**
@@ -99,9 +100,17 @@ export class CodeService {
       throw new Error('randomStr不能为空');
     }
 
+    let siteTitle = 'Certd';
+    if (isComm()) {
+      const siteInfo = await this.sysSettingsService.getSetting<SysSiteInfo>(SysSiteInfo);
+      if (siteInfo) {
+        siteTitle = siteInfo.title || siteTitle;
+      }
+    }
+
     const code = randomNumber(4);
     await this.emailService.send({
-      subject: '【Certd】验证码',
+      subject: `【${siteTitle}】验证码`,
       content: `您的验证码是${code}，请勿泄露`,
       receivers: [email],
     });

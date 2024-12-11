@@ -126,6 +126,7 @@ function clear() {
 }
 
 async function emitValue(value: any) {
+  target.value = optionsDictRef.dataMap[value];
   if (value !== 0 && pipeline?.value && target && pipeline.value.userId !== target.value.userId) {
     message.error("对不起，您不能修改他人流水线的通知");
     return;

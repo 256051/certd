@@ -1,15 +1,24 @@
-import { Provide, Scope, ScopeEnum } from '@midwayjs/core';
-import { BaseService, ValidateException } from '@certd/lib-server';
+import { Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
+import { BaseService, SysSettingsService, SysSiteInfo, ValidateException } from '@certd/lib-server';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
 import { NotificationEntity } from '../entity/notification.js';
-import { NotificationInstanceConfig, notificationRegistry } from '@certd/pipeline';
+import { NotificationInstanceConfig, notificationRegistry, NotificationSendReq, sendNotification } from '@certd/pipeline';
+import { http, utils } from '@certd/basic';
+import { EmailService } from '../../basic/service/email-service.js';
+import { isComm } from '@certd/plus-core';
 
 @Provide()
 @Scope(ScopeEnum.Singleton)
 export class NotificationService extends BaseService<NotificationEntity> {
   @InjectEntityModel(NotificationEntity)
   repository: Repository<NotificationEntity>;
+
+  @Inject()
+  emailService: EmailService;
+
+  @Inject()
+  sysSettingsService: SysSettingsService;
 
   //@ts-ignore
   getRepository() {
@@ -123,5 +132,55 @@ export class NotificationService extends BaseService<NotificationEntity> {
       isDefault: true,
     });
     return this.buildNotificationInstanceConfig(res);
+  }
+
+  async send(req: NotificationSendReq, userId?: number) {
+    const logger = req.logger;
+    let notifyConfig: NotificationInstanceConfig = null;
+    if (req.id && req.id > 0) {
+      notifyConfig = await this.getById(req.id, userId);
+      if (!notifyConfig) {
+        logger.warn(`未找到通知配置<${req.id}>`);
+      }
+    }
+    if (!notifyConfig) {
+      if (req.id === 0 || req.useDefault) {
+        notifyConfig = await this.getDefault(userId);
+        if (!notifyConfig) {
+          logger.warn(`未找到默认通知配置`);
+        }
+      }
+    }
+
+    if (notifyConfig) {
+      //发送通知
+      logger.info('发送通知, 使用通知渠道：' + notifyConfig.name);
+
+      let siteTitle = 'Certd';
+      if (isComm()) {
+        const siteInfo = await this.sysSettingsService.getSetting<SysSiteInfo>(SysSiteInfo);
+        siteTitle = siteInfo?.title || siteTitle;
+      }
+      req.body.title = `【${siteTitle}】${req.body.title}`;
+      await sendNotification({
+        config: notifyConfig,
+        ctx: {
+          http: http,
+          logger: logger,
+          utils: utils,
+          emailService: this.emailService,
+        },
+        body: req.body,
+      });
+    } else {
+      if (req.useEmail && req.emailAddress) {
+        logger.info('使用邮件通知');
+        await this.emailService.send({
+          receivers: [req.emailAddress],
+          subject: req.body.title,
+          content: req.body.content,
+        });
+      }
+    }
   }
 }

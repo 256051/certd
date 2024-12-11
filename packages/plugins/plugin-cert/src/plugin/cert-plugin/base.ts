@@ -1,4 +1,4 @@
-import { AbstractTaskPlugin, IContext, NotificationBody, sendNotification, Step, TaskInput, TaskOutput } from "@certd/pipeline";
+import { AbstractTaskPlugin, IContext, NotificationBody, Step, TaskInput, TaskOutput } from "@certd/pipeline";
 import dayjs from "dayjs";
 import type { CertInfo } from "./acme.js";
 import { CertReader } from "./cert-reader.js";
@@ -295,7 +295,6 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
    * 检查是否过期，默认提前35天
    * @param expires
    * @param maxDays
-   * @returns {boolean}
    */
   isWillExpire(expires: number, maxDays = 20) {
     if (expires == null) {
@@ -312,39 +311,19 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
     this.logger.info("发送证书申请成功通知");
     const url = await this.ctx.urlService.getPipelineDetailUrl(this.pipeline.id, this.ctx.runtime.id);
     const body: NotificationBody = {
-      title: `【Certd】证书申请成功【${this.pipeline.title}】`,
+      title: `证书申请成功【${this.pipeline.title}】`,
       content: `域名：${this.domains.join(",")}`,
       url: url,
     };
     try {
-      const defNotification = await this.ctx.notificationService.getDefault();
-      if (defNotification) {
-        this.logger.info(`通知渠道：${defNotification.name}`);
-        const notificationCtx = {
-          http: this.ctx.http,
-          logger: this.logger,
-          utils: this.ctx.utils,
-          emailService: this.ctx.emailService,
-        };
-        await sendNotification({
-          config: defNotification,
-          ctx: notificationCtx,
-          body,
-        });
-        return;
-      }
-      this.logger.warn("未配置默认通知，将发送邮件通知");
-      await this.sendSuccessEmail(body);
+      await this.ctx.notificationService.send({
+        useDefault: true,
+        useEmail: true,
+        emailAddress: this.email,
+        body,
+      });
     } catch (e) {
       this.logger.error("证书申请成功通知发送失败", e);
     }
-  }
-  async sendSuccessEmail(body: NotificationBody) {
-    this.logger.info("发送邮件通知:" + this.email);
-    await this.ctx.emailService.send({
-      receivers: [this.email],
-      subject: body.title,
-      content: body.content,
-    });
   }
 }

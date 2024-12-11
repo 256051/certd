@@ -91,7 +91,7 @@ export class EmailService implements IEmailService {
     const mailOptions = {
       from: `${sysTitle} <${emailConfig.sender}>`,
       to: email.receivers.join(', '), // list of receivers
-      subject: email.subject,
+      subject: `【${sysTitle}】${email.subject}`,
       text: email.content,
     };
     await transporter.sendMail(mailOptions);
