@@ -88,10 +88,14 @@ export class EmailService implements IEmailService {
         sysTitle = siteInfo.title || sysTitle;
       }
     }
+    let subject = email.subject;
+    if (!subject.startsWith(`【${sysTitle}】`)) {
+      subject = `【${sysTitle}】${subject}`;
+    }
     const mailOptions = {
       from: `${sysTitle} <${emailConfig.sender}>`,
       to: email.receivers.join(', '), // list of receivers
-      subject: `【${sysTitle}】${email.subject}`,
+      subject: subject,
       text: email.content,
     };
     await transporter.sendMail(mailOptions);
