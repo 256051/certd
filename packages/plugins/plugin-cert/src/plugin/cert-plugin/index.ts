@@ -271,8 +271,7 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
         this.logger.info("当前正在使用 google公共EAB授权");
         eab = await this.ctx.accessService.getCommonById(this.googleCommonEabAccessId);
       } else {
-        this.logger.error("google需要配置EAB授权或服务账号授权");
-        return;
+        throw new Error("google需要配置EAB授权或服务账号授权");
       }
     } else if (this.sslProvider === "zerossl") {
       if (this.eabAccessId) {
@@ -282,8 +281,7 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
         this.logger.info("当前正在使用 zerossl 公共EAB授权");
         eab = await this.ctx.accessService.getCommonById(this.zerosslCommonEabAccessId);
       } else {
-        this.logger.error("zerossl需要配置EAB授权");
-        return;
+        throw new Error("zerossl需要配置EAB授权");
       }
     }
     this.eab = eab;
