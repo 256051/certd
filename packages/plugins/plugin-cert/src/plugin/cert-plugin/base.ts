@@ -334,6 +334,7 @@ cert.jks：jks格式证书文件，java服务器使用
         useDefault: true,
         useEmail: true,
         emailAddress: this.email,
+        logger: this.logger,
         body,
       });
     } catch (e) {
