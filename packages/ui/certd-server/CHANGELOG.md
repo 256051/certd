@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.28.3](https://github.com/certd/certd/compare/v1.28.2...v1.28.3) (2024-12-12)
+
+### Bug Fixes
+
+* mysql下access.setting字段改成text ([b7f5740](https://github.com/certd/certd/commit/b7f5740c57743914f754f3b4fdd94b59a2e8338c))
+
+### Performance Improvements
+
+* 通知标题优化 ([ff083ce](https://github.com/certd/certd/commit/ff083ce6848a8bee3c8248e4b881086ae1517c28))
+* 支持腾讯虚拟机开关机([@wujingke](https://github.com/wujingke)) ([8039e8b](https://github.com/certd/certd/commit/8039e8baf83c82d03f1a6198cf61c372026b962b))
+* 支持aws cloudfront ([0ae39f1](https://github.com/certd/certd/commit/0ae39f160a7c6b6696b3bf513d68aa28905810ad))
+
 ## [1.28.2](https://github.com/certd/certd/compare/v1.28.1...v1.28.2) (2024-12-09)
 
 ### Bug Fixes

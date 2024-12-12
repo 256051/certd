@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.28.3](https://github.com/certd/certd/compare/v1.28.2...v1.28.3) (2024-12-12)
+
+### Bug Fixes
+
+* 修复授权被删除后，无法清空的bug ([b45977c](https://github.com/certd/certd/commit/b45977c29a29084c11e496bec3415eaaebafdd74))
+
+### Performance Improvements
+
+* 点击版本红点按钮，跳转到升级帮助页面 ([454fbda](https://github.com/certd/certd/commit/454fbda581bbe22abca5b91e5086ea9d9d58a020))
+* 通知标题优化 ([ff083ce](https://github.com/certd/certd/commit/ff083ce6848a8bee3c8248e4b881086ae1517c28))
+
 ## [1.28.2](https://github.com/certd/certd/compare/v1.28.1...v1.28.2) (2024-12-09)
 
 ### Bug Fixes
