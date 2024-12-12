@@ -1,9 +1,11 @@
 # 群晖部署和证书更新
 
+支持群晖`6.x`、`7.x`
 
 ## 一、群晖部署Certd
 
-以下是群晖`7.x`的部署`certd`步骤
+以下是群晖`7.x`的部署`certd`步骤。   
+群晖`6.x`请参考[docker部署](./../../install/docker/)
 
 ### 1. 打开Container Manager
 
