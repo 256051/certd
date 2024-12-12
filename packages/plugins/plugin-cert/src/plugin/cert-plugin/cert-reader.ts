@@ -10,6 +10,7 @@ export type CertReaderHandleContext = {
   reader: CertReader;
   tmpCrtPath: string;
   tmpKeyPath: string;
+  tmpOcPath?: string;
   tmpPfxPath?: string;
   tmpDerPath?: string;
   tmpIcPath?: string;
@@ -19,6 +20,7 @@ export type CertReaderHandle = (ctx: CertReaderHandleContext) => Promise<void>;
 export type HandleOpts = { logger: ILogger; handle: CertReaderHandle };
 export class CertReader {
   cert: CertInfo;
+  oc: string; //仅证书，非fullchain证书
   crt: string;
   key: string;
   csr: string;
@@ -36,6 +38,12 @@ export class CertReader {
     if (!this.ic) {
       this.ic = this.getIc();
       this.cert.ic = this.ic;
+    }
+
+    this.oc = certInfo.oc;
+    if (!this.oc) {
+      this.oc = this.getOc();
+      this.cert.oc = this.oc;
     }
 
     const { detail, expires } = this.getCrtDetail(this.cert.crt);
@@ -56,6 +64,13 @@ export class CertReader {
     return ic.trim();
   }
 
+  getOc() {
+    //原始证书 就是crt的第一个 -----END CERTIFICATE----- 之前的内容
+    const endStr = "-----END CERTIFICATE-----";
+    const arr = this.crt.split(endStr);
+    return arr[0] + endStr;
+  }
+
   toCertInfo(): CertInfo {
     return this.cert;
   }
@@ -73,7 +88,7 @@ export class CertReader {
     return domains;
   }
 
-  saveToFile(type: "crt" | "key" | "pfx" | "der" | "ic" | "jks", filepath?: string) {
+  saveToFile(type: "crt" | "key" | "pfx" | "der" | "oc" | "ic" | "jks", filepath?: string) {
     if (!this.cert[type]) {
       return;
     }
@@ -87,7 +102,7 @@ export class CertReader {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
-    if (type === "crt" || type === "key" || type === "ic") {
+    if (type === "crt" || type === "key" || type === "ic" || type === "oc") {
       fs.writeFileSync(filepath, this.cert[type]);
     } else {
       fs.writeFileSync(filepath, Buffer.from(this.cert[type], "base64"));
@@ -102,9 +117,10 @@ export class CertReader {
     const tmpKeyPath = this.saveToFile("key");
     const tmpPfxPath = this.saveToFile("pfx");
     const tmpIcPath = this.saveToFile("ic");
-    logger.info("本地文件写入成功");
+    const tmpOcPath = this.saveToFile("oc");
     const tmpDerPath = this.saveToFile("der");
     const tmpJksPath = this.saveToFile("jks");
+    logger.info("本地文件写入成功");
     try {
       return await opts.handle({
         reader: this,
@@ -114,6 +130,7 @@ export class CertReader {
         tmpDerPath: tmpDerPath,
         tmpIcPath: tmpIcPath,
         tmpJksPath: tmpJksPath,
+        tmpOcPath: tmpOcPath,
       });
     } catch (err) {
       throw err;
@@ -128,6 +145,7 @@ export class CertReader {
       removeFile(tmpCrtPath);
       removeFile(tmpKeyPath);
       removeFile(tmpPfxPath);
+      removeFile(tmpOcPath);
       removeFile(tmpDerPath);
       removeFile(tmpIcPath);
       removeFile(tmpJksPath);

@@ -191,7 +191,7 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
     zip.file("cert.crt", cert.crt);
     zip.file("cert.key", cert.key);
     zip.file("intermediate.crt", cert.ic);
-
+    zip.file("origin.crt", cert.oc);
     if (cert.pfx) {
       zip.file("cert.pfx", Buffer.from(cert.pfx, "base64"));
     }
@@ -201,6 +201,20 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
     if (cert.jks) {
       zip.file("cert.jks", Buffer.from(cert.jks, "base64"));
     }
+
+    zip.file(
+      "说明.txt",
+      `证书文件说明
+cert.crt：证书文件，包含证书链，pem格式
+cert.key：私钥文件，pem格式
+intermediate.crt：中间证书文件，pem格式
+origin.crt：原始证书文件，不含证书链，pem格式
+cert.pfx：pfx格式证书文件，iis服务器使用
+cert.der：der格式证书文件
+cert.jks：jks格式证书文件，java服务器使用
+    `
+    );
+
     const content = await zip.generateAsync({ type: "nodebuffer" });
     this.saveFile(filename, content);
     this.logger.info(`已保存文件:${filename}`);

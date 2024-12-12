@@ -24,10 +24,11 @@ export type DomainsVerifyPlan = {
 };
 
 export type CertInfo = {
-  crt: string;
-  key: string;
-  csr: string;
-  ic?: string;
+  crt: string; //fullchain证书
+  key: string; //私钥
+  csr: string; //csr
+  oc?: string; //仅证书，非fullchain证书
+  ic?: string; //中间证书
   pfx?: string;
   der?: string;
   jks?: string;
