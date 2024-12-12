@@ -2,6 +2,7 @@ import { IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipel
 import { utils } from '@certd/basic';
 
 import dayjs from 'dayjs';
+import { AbstractPlusTaskPlugin } from '@certd/plugin-plus';
 
 @IsTaskPlugin({
   name: 'DeployCertToTencentTKEIngress',
