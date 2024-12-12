@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.28.4](https://github.com/certd/certd/compare/v1.28.3...v1.28.4) (2024-12-12)
+
+### Bug Fixes
+
+* 修复证书成功通知发送失败的bug ([0f5c690](https://github.com/certd/certd/commit/0f5c69040ba77340c909813220a26bc7ddada3ea))
+
+### Performance Improvements
+
+* 群晖支持6.x ([79f7ec4](https://github.com/certd/certd/commit/79f7ec4672f4fd5744cc45e4a6f104da943f4026))
+
 ## [1.28.3](https://github.com/certd/certd/compare/v1.28.2...v1.28.3) (2024-12-12)
 
 ### Bug Fixes
