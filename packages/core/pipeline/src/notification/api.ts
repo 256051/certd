@@ -53,7 +53,7 @@ export type NotificationSendReq = {
   useDefault?: boolean;
   useEmail?: boolean;
   emailAddress?: string;
-  logger?: ILogger;
+  logger: ILogger;
   body: NotificationBody;
 };
 export interface INotificationService {
