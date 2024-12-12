@@ -4,19 +4,19 @@ import { TencentAccess } from '@certd/plugin-plus';
 import { createRemoteSelectInputDefine } from '@certd/plugin-lib';
 
 @IsTaskPlugin({
-  name: 'TencentStartInstancesPlugin',
-  title: '腾讯云实例开机',
+  name: 'TencentActionInstancesPlugin',
+  title: '腾讯云实例开关机',
   icon: 'svg:icon-tencentcloud',
   group: pluginGroups.tencent.key,
-  desc: '腾讯云实例开机',
+  desc: '腾讯云实例开关机',
   default: {
     strategy: {
-      runStrategy: RunStrategy.SkipWhenSucceed,
+      runStrategy: RunStrategy.AlwaysRun,
     },
   },
   needPlus: false,
 })
-export class TencentStartInstancesPlugin extends AbstractTaskPlugin {
+export class TencentActionInstancesPlugin extends AbstractTaskPlugin {
   @TaskInput({
     title: 'Access提供者',
     helper: 'access 授权',
@@ -35,7 +35,7 @@ export class TencentStartInstancesPlugin extends AbstractTaskPlugin {
       name: 'a-auto-complete',
       vModel: 'value',
       options: [
-        { value: '1', label: '--------中国大陆地区-------', disabled: true },
+        { value: '', label: '--------中国大陆地区-------', disabled: true },
         { value: 'ap-beijing-1', label: '北京1区' },
         { value: 'ap-beijing', label: '北京' },
         { value: 'ap-nanjing', label: '南京' },
@@ -46,7 +46,7 @@ export class TencentStartInstancesPlugin extends AbstractTaskPlugin {
         { value: 'ap-shenzhen-fsi', label: '深圳金融' },
         { value: 'ap-shanghai-fsi', label: '上海金融' },
         { value: 'ap-beijing-fsi', label: '北京金融' },
-        { value: '2', label: '--------中国香港及境外-------', disabled: true },
+        { value: '', label: '--------中国香港及境外-------', disabled: true },
         { value: 'ap-hongkong', label: '中国香港' },
         { value: 'ap-singapore', label: '新加坡' },
         { value: 'ap-mumbai', label: '孟买' },
@@ -68,19 +68,65 @@ export class TencentStartInstancesPlugin extends AbstractTaskPlugin {
     createRemoteSelectInputDefine({
       title: '实列ID',
       helper: '请选择实列',
-      action: TencentStartInstancesPlugin.prototype.onGetInstanceList.name,
-      watches: ['region', 'accessId'],
+      typeName: 'TencentStartInstancesPlugin',
+      action: TencentActionInstancesPlugin.prototype.onGetInstanceList.name,
+      watches: ['region'],
     })
   )
   instanceId!: string[];
+
+  @TaskInput({
+    title: '操作',
+    component: {
+      name: 'a-radio-group',
+      vModel: 'value',
+      options: [
+        { value: 'start', label: '开机' },
+        { value: 'stop', label: '关机' },
+      ],
+    },
+    required: true,
+  })
+  action!: string;
+
+  @TaskInput({
+    title: '实例关机不收费',
+    value: true,
+    component: {
+      name: 'a-switch',
+      vModel: 'checked',
+      placeholder: `按量计费实例关机不收费`,
+    },
+    required: false,
+    mergeScript: `
+      return {
+        show: ctx.compute(({form})=>{
+          return form.action === 'stop';
+        })
+      }
+  `,
+  })
+  charging = true;
 
   async onInstance() {}
 
   async execute(): Promise<void> {
     const cvmClient = await this.getCvmClient();
-    const res = await cvmClient.StartInstances({
+    const params = {
       InstanceIds: this.instanceId,
-    });
+    };
+    let res: any;
+    if (this.action === 'start') {
+      res = await cvmClient.StartInstances(params);
+    } else {
+      res = await cvmClient.StopInstances(
+        Object.assign(params, {
+          StopType: 'SOFT_FIRST',
+          StoppedMode: this.charging ? 'STOP_CHARGING' : 'KEEP_CHARGING',
+        })
+      );
+    }
+
     this.checkRet(res);
   }
 
@@ -132,4 +178,4 @@ export class TencentStartInstancesPlugin extends AbstractTaskPlugin {
   }
 }
 
-new TencentStartInstancesPlugin();
+new TencentActionInstancesPlugin();
