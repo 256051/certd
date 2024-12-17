@@ -208,31 +208,37 @@ export class CopyCertToLocalPlugin extends AbstractTaskPlugin {
     const handle = async ({ reader, tmpCrtPath, tmpKeyPath, tmpDerPath, tmpPfxPath, tmpIcPath, tmpJksPath }) => {
       this.logger.info('复制到目标路径');
       if (crtPath) {
+        crtPath = crtPath.trim();
         crtPath = crtPath.startsWith('/') ? crtPath : path.join(Constants.dataDir, crtPath);
         this.copyFile(tmpCrtPath, crtPath);
         this.hostCrtPath = crtPath;
       }
       if (keyPath) {
+        keyPath = keyPath.trim();
         keyPath = keyPath.startsWith('/') ? keyPath : path.join(Constants.dataDir, keyPath);
         this.copyFile(tmpKeyPath, keyPath);
         this.hostKeyPath = keyPath;
       }
       if (icPath) {
+        icPath = icPath.trim();
         icPath = icPath.startsWith('/') ? icPath : path.join(Constants.dataDir, icPath);
         this.copyFile(tmpIcPath, icPath);
         this.hostIcPath = icPath;
       }
       if (pfxPath) {
+        pfxPath = icPath.trim();
         pfxPath = pfxPath.startsWith('/') ? pfxPath : path.join(Constants.dataDir, pfxPath);
         this.copyFile(tmpPfxPath, pfxPath);
         this.hostPfxPath = pfxPath;
       }
       if (derPath) {
+        derPath = derPath.trim();
         derPath = derPath.startsWith('/') ? derPath : path.join(Constants.dataDir, derPath);
         this.copyFile(tmpDerPath, derPath);
         this.hostDerPath = derPath;
       }
       if (jksPath) {
+        jksPath = jksPath.trim();
         jksPath = jksPath.startsWith('/') ? jksPath : path.join(Constants.dataDir, jksPath);
         this.copyFile(tmpJksPath, jksPath);
         this.hostJksPath = jksPath;

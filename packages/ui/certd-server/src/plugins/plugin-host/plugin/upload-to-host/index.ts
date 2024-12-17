@@ -239,7 +239,8 @@ export class UploadCertToHostPlugin extends AbstractTaskPlugin {
     this.logger.info(`复制文件：${srcFile} => ${destFile}`);
   }
   async execute(): Promise<void> {
-    const { crtPath, keyPath, cert, accessId } = this;
+    const { cert, accessId } = this;
+    let { crtPath, keyPath, icPath, pfxPath, derPath, jksPath } = this;
     const certReader = new CertReader(cert);
 
     const handle = async (opts: CertReaderHandleContext) => {
@@ -269,6 +270,7 @@ export class UploadCertToHostPlugin extends AbstractTaskPlugin {
 
       const transports: any = [];
       if (crtPath) {
+        crtPath = crtPath.trim();
         transports.push({
           localPath: tmpCrtPath,
           remotePath: crtPath,
@@ -276,39 +278,44 @@ export class UploadCertToHostPlugin extends AbstractTaskPlugin {
         this.logger.info(`上传证书到主机：${crtPath}`);
       }
       if (keyPath) {
+        keyPath = keyPath.trim();
         transports.push({
           localPath: tmpKeyPath,
           remotePath: keyPath,
         });
         this.logger.info(`上传私钥到主机：${keyPath}`);
       }
-      if (this.icPath) {
+      if (icPath) {
+        icPath = icPath.trim();
         transports.push({
           localPath: tmpIcPath,
-          remotePath: this.icPath,
+          remotePath: icPath,
         });
-        this.logger.info(`上传中间证书到主机：${this.icPath}`);
+        this.logger.info(`上传中间证书到主机：${icPath}`);
       }
-      if (this.pfxPath) {
+      if (pfxPath) {
+        pfxPath = pfxPath.trim();
         transports.push({
           localPath: tmpPfxPath,
-          remotePath: this.pfxPath,
+          remotePath: pfxPath,
         });
-        this.logger.info(`上传PFX证书到主机：${this.pfxPath}`);
+        this.logger.info(`上传PFX证书到主机：${pfxPath}`);
       }
-      if (this.derPath) {
+      if (derPath) {
+        derPath = derPath.trim();
         transports.push({
           localPath: tmpDerPath,
-          remotePath: this.derPath,
+          remotePath: derPath,
         });
-        this.logger.info(`上传DER证书到主机：${this.derPath}`);
+        this.logger.info(`上传DER证书到主机：${derPath}`);
       }
       if (this.jksPath) {
+        jksPath = jksPath.trim();
         transports.push({
           localPath: tmpJksPath,
-          remotePath: this.jksPath,
+          remotePath: jksPath,
         });
-        this.logger.info(`上传jks证书到主机：${this.jksPath}`);
+        this.logger.info(`上传jks证书到主机：${jksPath}`);
       }
       this.logger.info('开始上传文件到服务器');
       await sshClient.uploadFiles({
@@ -320,10 +327,10 @@ export class UploadCertToHostPlugin extends AbstractTaskPlugin {
       //输出
       this.hostCrtPath = crtPath;
       this.hostKeyPath = keyPath;
-      this.hostIcPath = this.icPath;
-      this.hostPfxPath = this.pfxPath;
-      this.hostDerPath = this.derPath;
-      this.hostJksPath = this.jksPath;
+      this.hostIcPath = icPath;
+      this.hostPfxPath = pfxPath;
+      this.hostDerPath = derPath;
+      this.hostJksPath = jksPath;
     };
 
     await certReader.readCertFile({
