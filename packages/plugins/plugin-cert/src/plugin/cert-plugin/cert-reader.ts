@@ -25,6 +25,7 @@ export class CertReader {
   key: string;
   csr: string;
   ic: string; //中间证书
+  one: string; //crt + key 合成一个pem文件
 
   detail: any;
   expires: number;
@@ -44,6 +45,12 @@ export class CertReader {
     if (!this.oc) {
       this.oc = this.getOc();
       this.cert.oc = this.oc;
+    }
+
+    this.one = certInfo.one;
+    if (!this.one) {
+      this.one = this.crt + "\n" + this.key;
+      this.cert.one = this.one;
     }
 
     const { detail, expires } = this.getCrtDetail(this.cert.crt);

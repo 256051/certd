@@ -192,6 +192,7 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
     zip.file("cert.key", cert.key);
     zip.file("intermediate.crt", cert.ic);
     zip.file("origin.crt", cert.oc);
+    zip.file("one.pem", cert.one);
     if (cert.pfx) {
       zip.file("cert.pfx", Buffer.from(cert.pfx, "base64"));
     }
@@ -209,6 +210,7 @@ cert.crt：证书文件，包含证书链，pem格式
 cert.key：私钥文件，pem格式
 intermediate.crt：中间证书文件，pem格式
 origin.crt：原始证书文件，不含证书链，pem格式
+one.pem： 证书和私钥简单合并成一个文件，pem格式，crt正文+key正文
 cert.pfx：pfx格式证书文件，iis服务器使用
 cert.der：der格式证书文件
 cert.jks：jks格式证书文件，java服务器使用
