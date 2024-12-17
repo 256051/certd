@@ -15,6 +15,7 @@ export type CertReaderHandleContext = {
   tmpDerPath?: string;
   tmpIcPath?: string;
   tmpJksPath?: string;
+  tmpOnePath?: string;
 };
 export type CertReaderHandle = (ctx: CertReaderHandleContext) => Promise<void>;
 export type HandleOpts = { logger: ILogger; handle: CertReaderHandle };
@@ -95,7 +96,7 @@ export class CertReader {
     return domains;
   }
 
-  saveToFile(type: "crt" | "key" | "pfx" | "der" | "oc" | "ic" | "jks", filepath?: string) {
+  saveToFile(type: "crt" | "key" | "pfx" | "der" | "oc" | "one" | "ic" | "jks", filepath?: string) {
     if (!this.cert[type]) {
       return;
     }
@@ -109,7 +110,7 @@ export class CertReader {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
-    if (type === "crt" || type === "key" || type === "ic" || type === "oc") {
+    if (type === "crt" || type === "key" || type === "ic" || type === "oc" || type === "one") {
       fs.writeFileSync(filepath, this.cert[type]);
     } else {
       fs.writeFileSync(filepath, Buffer.from(this.cert[type], "base64"));
@@ -127,6 +128,7 @@ export class CertReader {
     const tmpOcPath = this.saveToFile("oc");
     const tmpDerPath = this.saveToFile("der");
     const tmpJksPath = this.saveToFile("jks");
+    const tmpOnePath = this.saveToFile("one");
     logger.info("本地文件写入成功");
     try {
       return await opts.handle({
@@ -138,6 +140,7 @@ export class CertReader {
         tmpIcPath: tmpIcPath,
         tmpJksPath: tmpJksPath,
         tmpOcPath: tmpOcPath,
+        tmpOnePath,
       });
     } catch (err) {
       throw err;
@@ -156,6 +159,7 @@ export class CertReader {
       removeFile(tmpDerPath);
       removeFile(tmpIcPath);
       removeFile(tmpJksPath);
+      removeFile(tmpOnePath);
     }
   }
 

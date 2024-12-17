@@ -38,6 +38,7 @@ export class UploadCertToHostPlugin extends AbstractTaskPlugin {
         { value: 'pfx', label: 'pfx，一般用于IIS' },
         { value: 'der', label: 'der，一般用于Apache' },
         { value: 'jks', label: 'jks，一般用于JAVA应用' },
+        { value: 'one', label: '证书私钥一体，crt+key简单合并为一个pem文件' },
       ],
     },
     required: true,
@@ -149,6 +150,24 @@ export class UploadCertToHostPlugin extends AbstractTaskPlugin {
     rules: [{ type: 'filepath' }],
   })
   jksPath!: string;
+
+  @TaskInput({
+    title: '一体证书保存路径',
+    helper: '填写应用原本的证书保存路径，路径要包含证书文件名，例如：/tmp/crt_key.pem',
+    component: {
+      placeholder: '/root/deploy/app/crt_key.pem',
+    },
+    mergeScript: `
+      return {
+        show: ctx.compute(({form})=>{
+          return form.certType === 'one';
+        })
+      }
+    `,
+    required: true,
+    rules: [{ type: 'filepath' }],
+  })
+  onePath!: string;
 
   @TaskInput({
     title: '主机登录配置',
