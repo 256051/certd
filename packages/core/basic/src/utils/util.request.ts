@@ -156,13 +156,13 @@ export function createAxiosService({ logger }: { logger: Logger }) {
           error.message = '请求错误';
           break;
         case 401:
-          error.message = '未授权，请登录';
+          error.message = '认证/登录失败';
           break;
         case 403:
           error.message = '拒绝访问';
           break;
         case 404:
-          error.message = `请求地址出错: ${error.response.config.url}`;
+          error.message = `请求地址出错`;
           break;
         case 408:
           error.message = '请求超时';
@@ -216,6 +216,7 @@ export type HttpRequestConfig<D = any> = {
   logParams?: boolean;
   logRes?: boolean;
   httpProxy?: string;
+  returnResponse?: boolean;
 } & AxiosRequestConfig<D>;
 export type HttpClient = {
   request<D = any, R = any>(config: HttpRequestConfig<D>): Promise<HttpClientResponse<R>>;

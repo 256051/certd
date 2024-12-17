@@ -134,6 +134,7 @@ export class RunHistory {
 export class RunnableCollection {
   private collection: RunnableMap = {};
   private pipeline!: Pipeline;
+  currentStep!: Step;
   constructor(pipeline?: Pipeline) {
     if (!pipeline) {
       return;
@@ -193,5 +194,8 @@ export class RunnableCollection {
 
   add(runnable: Runnable) {
     this.collection[runnable.id] = runnable;
+    if (runnable.runnableType === "step") {
+      this.currentStep = runnable as Step;
+    }
   }
 }
