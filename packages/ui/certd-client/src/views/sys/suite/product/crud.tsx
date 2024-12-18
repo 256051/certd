@@ -1,11 +1,12 @@
 import * as api from "./api";
 import { useI18n } from "vue-i18n";
-import { computed, Ref, ref } from "vue";
+import { Ref, ref } from "vue";
 import { useRouter } from "vue-router";
-import { AddReq, compute, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, UserPageQuery, UserPageRes, utils } from "@fast-crud/fast-crud";
+import { AddReq, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
 import { useUserStore } from "/@/store/modules/user";
 import { useSettingStore } from "/@/store/modules/settings";
-import { Modal } from "ant-design-vue";
+import SuiteValue from "./suite-value.vue";
+import SuiteValueEdit from "./suite-value-edit.vue";
 
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const router = useRouter();
@@ -63,6 +64,20 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         minWidth: 200,
         fixed: "right"
       },
+      form: {
+        group: {
+          groups: {
+            base: {
+              header: "基础信息",
+              columns: ["title", "type", "price", "originPrice", "duration", "isBootstrap", "intro"]
+            },
+            content: {
+              header: "套餐内容",
+              columns: ["maxDomainCount", "maxPipelineCount", "maxDeployCount", "siteMonitor"]
+            }
+          }
+        }
+      },
       columns: {
         id: {
           title: "ID",
@@ -78,11 +93,6 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         title: {
           title: "套餐名称",
           type: "text",
-          editForm: {
-            component: {
-              disabled: true
-            }
-          },
           search: {
             show: true
           },
@@ -93,77 +103,134 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         type: {
           title: "类型",
           type: "dict-select",
+          editForm: {
+            component: {
+              disabled: true
+            }
+          },
           dict: dict({
             data: [
               { label: "套餐", value: "suite" },
               { label: "加量包", value: "addon" }
             ]
-          })
+          }),
+          column: {
+            width: 100
+          }
         },
         maxDomainCount: {
           title: "域名数量",
-          type: "number"
+          type: "number",
+          form: {
+            component: {
+              name: SuiteValueEdit,
+              vModel: "modelValue",
+              unit: "个"
+            }
+          },
+          column: {
+            width: 100,
+            component: {
+              name: SuiteValue
+            }
+          }
         },
         maxPipelineCount: {
           title: "流水线数量",
-          type: "number"
+          type: "number",
+          form: {
+            component: {
+              name: SuiteValueEdit,
+              vModel: "modelValue",
+              unit: "条"
+            }
+          },
+          column: {
+            width: 100,
+            component: {
+              name: SuiteValue
+            }
+          }
         },
         maxDeployCount: {
           title: "部署次数",
-          type: "number"
+          type: "number",
+          form: {
+            component: {
+              name: SuiteValueEdit,
+              vModel: "modelValue",
+              unit: "次"
+            }
+          },
+          column: {
+            width: 100,
+            component: {
+              name: SuiteValue
+            }
+          }
+        },
+        siteMonitor: {
+          title: "支持证书监控",
+          type: "dict-switch",
+          dict: dict({
+            data: [
+              { label: "是", value: true, color: "success" },
+              { label: "否", value: false, color: "error" }
+            ]
+          }),
+          column: {
+            width: 120
+          }
+        },
+        isBootstrap: {
+          title: "是否初始套餐",
+          type: "dict-switch",
+          dict: dict({
+            data: [
+              { label: "是", value: true, color: "success" },
+              { label: "否", value: false, color: "error" }
+            ]
+          }),
+          column: {
+            width: 120
+          }
         },
         price: {
           title: "单价",
-          type: "number"
+          type: "number",
+          column: {
+            width: 100
+          }
         },
         originPrice: {
           title: "原价",
-          type: "number"
+          type: "number",
+          column: {
+            width: 100
+          }
         },
         duration: {
           title: "有效时长",
-          type: "number"
+          type: "dict-select",
+          column: {
+            width: 100
+          }
         },
         intro: {
           title: "说明",
-          type: "textarea"
+          type: "textarea",
+          column: {
+            width: 200
+          }
         },
         order: {
           title: "排序",
           type: "number",
           form: {
             show: false
-          }
-        },
-        disabled: {
-          title: "禁用/启用",
-          type: "dict-switch",
-          dict: dict({
-            data: [
-              { label: "启用", value: false, color: "success" },
-              { label: "禁用", value: true, color: "error" }
-            ]
-          }),
-          form: {
-            value: false
           },
           column: {
-            width: 100,
-            component: {
-              title: "点击可禁用/启用",
-              on: {
-                async click({ value, row }) {
-                  Modal.confirm({
-                    title: "提示",
-                    content: `确定要${!value ? "禁用" : "启用"}吗？`,
-                    onOk: async () => {
-                      await api.SetDisabled(row.id, !value);
-                      await crudExpose.doRefresh();
-                    }
-                  });
-                }
-              }
-            }
+            width: 100
           }
         },
         createTime: {

@@ -18,6 +18,7 @@ export class AppController extends BaseController {
     const res = await http.request({
       url: 'https://registry.npmmirror.com/@certd/pipeline',
       method: 'get',
+      logRes: false,
     });
     try {
       const latest = res['dist-tags'].latest;
