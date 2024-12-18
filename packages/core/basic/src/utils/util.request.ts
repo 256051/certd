@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosHeaders, AxiosRequestConfig } from 'axios';
 import { ILogger, logger } from './util.log.js';
 import { Logger } from 'log4js';
 import { HttpProxyAgent } from 'http-proxy-agent';
@@ -13,7 +13,7 @@ export class HttpError extends Error {
   statusText?: string;
   code?: string;
   request?: { baseURL: string; url: string; method: string; params?: any; data?: any };
-  response?: { data: any };
+  response?: { data: any; headers: AxiosHeaders };
   cause?: any;
   constructor(error: any) {
     if (!error) {
@@ -55,6 +55,7 @@ export class HttpError extends Error {
 
     this.response = {
       data: error.response?.data,
+      headers: error.response?.headers,
     };
 
     const { stack, cause } = error;
