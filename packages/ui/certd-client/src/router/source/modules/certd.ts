@@ -80,6 +80,16 @@ export const certdResources = [
           auth: true
         }
       },
+      {
+        title: "套餐购买",
+        name: "SuiteProductBuy",
+        path: "/certd/suite/buy",
+        component: "/certd/suite/buy.vue",
+        meta: {
+          icon: "mdi:format-list-group",
+          auth: true
+        }
+      },
       // {
       //   title: "邮箱设置",
       //   name: "EmailSetting",

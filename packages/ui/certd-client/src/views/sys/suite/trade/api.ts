@@ -1,6 +1,6 @@
 import { request } from "/src/api/service";
 
-const apiPrefix = "/sys/suite/order";
+const apiPrefix = "/sys/suite/trade";
 
 export async function GetList(query: any) {
   return await request({

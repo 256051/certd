@@ -1,6 +1,9 @@
 import { request } from "/src/api/service";
-
 const apiPrefix = "/sys/suite/product";
+export type PriceItem = {
+  duration: number;
+  price: number;
+};
 
 export async function GetList(query: any) {
   return await request({
