@@ -37,6 +37,8 @@ function buildGroupOptions(options: any[], inDomains: string[]) {
 }
 
 export const optionsUtils = {
+  //获取分组
   groupByDomain,
+  //构建分组后的选项列表，常用
   buildGroupOptions,
 };

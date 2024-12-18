@@ -385,7 +385,7 @@ export class Executor {
       content = `流水线ID:${this.pipeline.id}，运行ID:${this.runtime.id}`;
     } else if (when === "error") {
       subject = `执行失败，${this.pipeline.title}【${this.pipeline.id}】`;
-      content = `流水线ID:${this.pipeline.id}，运行ID:${this.runtime.id}\n错误详情:${error.message}`;
+      content = `流水线ID:${this.pipeline.id}，运行ID:${this.runtime.id}\n\n${this.currentStatusMap?.currentStep?.title} 执行失败\n\n错误详情:${error.message}`;
     } else {
       return;
     }
