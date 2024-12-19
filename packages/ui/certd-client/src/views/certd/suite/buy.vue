@@ -5,52 +5,8 @@
     </template>
     <div class="suite-buy-content">
       <a-row :gutter="12">
-        <a-col v-for="item of suites" :key="item.id" class="mb-10" :xs="12" :sm="12" :md="8" :lg="6" :xl="6" :xxl="4">
-          <a-card :title="item.title">
-            <template #extra>
-              <a-tag>{{ item.type }}</a-tag>
-            </template>
-
-            <div>{{ item.intro }}</div>
-            <div class="hr">
-              <div class="flex-between mt-5">流水线条数：<suite-value :model-value="item.content.maxPipelineCount" /></div>
-              <div class="flex-between mt-5">域名数量： <suite-value :model-value="item.content.maxDomainCount" /></div>
-              <div class="flex-between mt-5">部署次数： <suite-value :model-value="item.content.maxDeployCount" /></div>
-              <div class="flex-between mt-5">
-                证书监控：
-                <span v-if="item.content.siteMonitor">支持</span>
-                <span v-else>不支持</span>
-              </div>
-            </div>
-
-            <div class="duration flex-between mt-5 hr">
-              <div class="flex-o">时长</div>
-              <div class="duration-list">
-                <div
-                  v-for="dp of item.durationPrices"
-                  :key="dp.duration"
-                  class="duration-item"
-                  :class="{ active: item._selected.duration === dp.duration }"
-                  @click="item._selected = dp"
-                >
-                  {{ durationDict.dataMap[dp.duration]?.label }}
-                </div>
-              </div>
-            </div>
-
-            <div class="price flex-between mt-5 hr">
-              <div class="flex-o">价格</div>
-              <div class="flex-o price-text">
-                <price-input style="font-size: 18px; color: red" :model-value="item._selected?.price" :edit="false" />
-                <span class="ml-5" style="font-size: 12px"> / {{ durationDict.dataMap[item._selected.duration]?.label }}</span>
-              </div>
-            </div>
-
-            <template #actions>
-              <setting-outlined key="setting" />
-              <a-button type="primary">立即购买</a-button>
-            </template>
-          </a-card>
+        <a-col v-for="item of products" :key="item.id" class="mb-10" :xs="12" :sm="12" :md="8" :lg="6" :xl="6" :xxl="4">
+          <product-info product="item"></product-info>
         </a-col>
       </a-row>
     </div>
@@ -60,22 +16,12 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import * as api from "./api";
-import { durationDict } from "./api";
-import PriceInput from "/@/views/sys/suite/product/price-input.vue";
-import SuiteValue from "/@/views/sys/suite/product/suite-value.vue";
-import { dict } from "@fast-crud/fast-crud";
-const suites = ref([]);
+import ProductInfo from "/@/views/certd/suite/product-info.vue";
 
-const optionsDict = dict({
-  data: []
-});
+const products = ref([]);
 
 async function loadSuites() {
-  suites.value = await api.ProductList();
-
-  for (const item of suites.value) {
-    item._selected = item.durationPrices[0];
-  }
+  products.value = await api.ProductList();
 }
 
 loadSuites();

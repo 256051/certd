@@ -16,9 +16,37 @@ export const durationDict = dict({
   ]
 });
 
+export type OrderModalOpenReq = {
+  productId: number;
+  duration: number;
+  num?: number;
+};
+
 export async function ProductList() {
   return await request({
     url: "/suite/product/list",
     method: "POST"
+  });
+}
+
+export async function ProductInfo(productId: number) {
+  return await request({
+    url: "/suite/product/info",
+    method: "POST",
+    data: { id: productId }
+  });
+}
+
+export type TradeCreateReq = {
+  productId: number;
+  duration: number;
+  num: number;
+};
+
+export async function TradeCreate(form: TradeCreateReq) {
+  return await request({
+    url: "/suite/trade/create",
+    method: "POST",
+    data: form
   });
 }
