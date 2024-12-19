@@ -6,10 +6,12 @@
     <div class="suite-buy-content">
       <a-row :gutter="12">
         <a-col v-for="item of products" :key="item.id" class="mb-10" :xs="12" :sm="12" :md="8" :lg="6" :xl="6" :xxl="4">
-          <product-info product="item"></product-info>
+          <product-info :product="item" @order="doOrder" />
         </a-col>
       </a-row>
     </div>
+
+    <order-modal ref="orderModalRef" />
   </fs-page>
 </template>
 
@@ -17,14 +19,21 @@
 import { ref } from "vue";
 import * as api from "./api";
 import ProductInfo from "/@/views/certd/suite/product-info.vue";
+import OrderModal from "/@/views/certd/suite/order-modal.vue";
 
 const products = ref([]);
 
-async function loadSuites() {
+async function loadProducts() {
   products.value = await api.ProductList();
 }
 
-loadSuites();
+loadProducts();
+const orderModalRef = ref<any>(null);
+async function doOrder(req: any) {
+  await orderModalRef.value.open({
+    ...req
+  });
+}
 </script>
 
 <style lang="less">
@@ -35,26 +44,6 @@ loadSuites();
   background: #f0f2f5;
   .suite-buy-content {
     padding: 20px;
-
-    .duration-list {
-      display: flex;
-      .duration-item {
-        width: 50px;
-        border: 1px solid #cdcdcd;
-        text-align: center;
-        padding: 2px;
-        margin: 2px;
-        cursor: pointer;
-
-        &:hover {
-          border-color: #1890ff;
-        }
-        &.active {
-          border-color: #a6fba3;
-          background-color: #c1eafb;
-        }
-      }
-    }
 
     .hr {
       border-top: 1px solid #cdcdcd;

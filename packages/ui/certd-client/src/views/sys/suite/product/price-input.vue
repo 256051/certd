@@ -1,7 +1,7 @@
 <template>
-  <div class="flex-o">
+  <div class="flex-o price-input">
     <a-input-number v-if="edit" prefix="¥" :value="priceValue" :precision="2" class="ml-5" @update:value="onPriceChange"> </a-input-number>
-    <span v-else>{{ priceLabel }}</span>
+    <span v-else class="price-text">{{ priceLabel }}</span>
   </div>
 </template>
 
@@ -33,3 +33,12 @@ const onPriceChange = (price: number) => {
   emit("update:modelValue", price * 100);
 };
 </script>
+
+<style lang="less">
+.price-input {
+  .price-text {
+    font-size: 18px;
+    color: red;
+  }
+}
+</style>

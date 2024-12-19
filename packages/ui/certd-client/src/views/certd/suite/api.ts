@@ -17,7 +17,7 @@ export const durationDict = dict({
 });
 
 export type OrderModalOpenReq = {
-  productId: number;
+  product: any;
   duration: number;
   num?: number;
 };
@@ -41,6 +41,7 @@ export type TradeCreateReq = {
   productId: number;
   duration: number;
   num: number;
+  payType: string;
 };
 
 export async function TradeCreate(form: TradeCreateReq) {

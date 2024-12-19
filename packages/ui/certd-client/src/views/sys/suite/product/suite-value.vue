@@ -1,6 +1,6 @@
 <template>
   <div v-if="target" class="cd-suite-value">
-    <a-tag :color="target.color">{{ target.label }}</a-tag>
+    <a-tag :color="target.color" class="m-0">{{ target.label }}</a-tag>
   </div>
 </template>
 
@@ -9,10 +9,11 @@ import { computed } from "vue";
 
 const props = defineProps<{
   modelValue: number;
+  unit?: string;
 }>();
 
 const target = computed(() => {
-  if (!props.modelValue) {
+  if (props.modelValue == null) {
     return {};
   }
   if (props.modelValue === -1) {
@@ -24,13 +25,13 @@ const target = computed(() => {
   } else if (props.modelValue === 0) {
     return {
       value: 0,
-      label: "-",
+      label: "0" + (props.unit || ""),
       color: "red"
     };
   } else {
     return {
       value: props.modelValue,
-      label: props.modelValue,
+      label: props.modelValue + (props.unit || ""),
       color: "blue"
     };
   }

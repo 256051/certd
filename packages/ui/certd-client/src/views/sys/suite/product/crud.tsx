@@ -134,7 +134,6 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             }
           },
           valueResolve: ({ form }) => {
-            debugger;
             if (form.content) {
               form.content = JSON.stringify(form.content);
             }
@@ -145,7 +144,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         },
         "content.maxDomainCount": {
           title: "域名数量",
-          type: "number",
+          type: "text",
           form: {
             key: ["content", "maxDomainCount"],
             component: {
@@ -158,13 +157,15 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           column: {
             width: 100,
             component: {
-              name: SuiteValue
+              name: SuiteValue,
+              vModel: "modelValue",
+              unit: "个"
             }
           }
         },
         "content.maxPipelineCount": {
           title: "流水线数量",
-          type: "number",
+          type: "text",
           form: {
             key: ["content", "maxPipelineCount"],
             component: {
@@ -177,13 +178,15 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           column: {
             width: 100,
             component: {
-              name: SuiteValue
+              name: SuiteValue,
+              vModel: "modelValue",
+              unit: "条"
             }
           }
         },
         "content.maxDeployCount": {
           title: "部署次数",
-          type: "number",
+          type: "text",
           form: {
             key: ["content", "maxDeployCount"],
             component: {
@@ -196,7 +199,9 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           column: {
             width: 100,
             component: {
-              name: SuiteValue
+              name: SuiteValue,
+              vModel: "modelValue",
+              unit: "次"
             }
           }
         },
@@ -211,6 +216,22 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           }),
           form: {
             key: ["content", "siteMonitor"],
+            value: false
+          },
+          column: {
+            width: 120
+          }
+        },
+        isBootstrap: {
+          title: "是否初始套餐",
+          type: "dict-switch",
+          dict: dict({
+            data: [
+              { label: "是", value: true, color: "success" },
+              { label: "否", value: false, color: "gray" }
+            ]
+          }),
+          form: {
             value: false
           },
           column: {
@@ -243,29 +264,13 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             }
           }
         },
-        isBootstrap: {
-          title: "是否初始套餐",
-          type: "dict-switch",
-          dict: dict({
-            data: [
-              { label: "是", value: true, color: "success" },
-              { label: "否", value: false, color: "error" }
-            ]
-          }),
-          form: {
-            value: false
-          },
-          column: {
-            width: 120
-          }
-        },
         disabled: {
           title: "上下架",
           type: "dict-radio",
           dict: dict({
             data: [
-              { value: false, label: "上架" },
-              { value: true, label: "下架" }
+              { value: false, label: "上架", color: "green" },
+              { value: true, label: "下架", color: "gray" }
             ]
           }),
           form: {
