@@ -5,6 +5,7 @@ import commons from "./util.common";
 import * as mitt from "./util.mitt";
 import { routerUtils } from "./util.router";
 import { treeUtils } from "./util.tree";
+import { hashUtils } from "./util.hash";
 export const util = {
   ...envs,
   ...sites,
@@ -12,5 +13,6 @@ export const util = {
   ...commons,
   ...mitt,
   router: routerUtils,
-  tree: treeUtils
+  tree: treeUtils,
+  hash: hashUtils
 };

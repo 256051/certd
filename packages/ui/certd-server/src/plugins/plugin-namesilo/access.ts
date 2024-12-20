@@ -19,7 +19,8 @@ export class NamesiloAccess extends BaseAccess {
     component: {
       placeholder: 'api key',
     },
-    helper: '前往 [获取API Key](https://www.namesilo.com/account/api-manager)',
+    helper:
+      '前往 [获取API Key](https://www.namesilo.com/account/api-manager)\n不要勾选第一项（Generate key for read-only access）\n勾选第二项（Submitting this form...）\n然后点击Generate按钮',
     required: true,
     encrypt: true,
   })

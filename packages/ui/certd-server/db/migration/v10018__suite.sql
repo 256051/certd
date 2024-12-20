@@ -34,22 +34,28 @@ CREATE TABLE "cd_payment"
 CREATE TABLE "cd_trade"
 (
   "id"          integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+  "trade_no"    varchar(100),
   "user_id"     integer,
   "product_id"  integer,
-  "title"       varchar(100),
-  "count"       integer,
+  "title"       varchar(1024),
+  "desc"        varchar(2048),
+  "num"         integer,
+  "duration"    integer,
   "price"       integer,
   "amount"      integer,
-  "remark"      varchar(100),
+  "remark"      varchar(2048),
   "status"      varchar(100),
-  "pay_id"      integer,
+  "pay_type"    varchar(50),
   "pay_time"    integer,
-  "pay_type"    varchar(100),
   "pay_no"      varchar(100),
+  "end_time"    integer,
   "create_time" datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP),
   "update_time" datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP)
 );
 
+CREATE INDEX "index_trade_user_id" ON "cd_trade" ("user_id");
+CREATE UNIQUE INDEX "index_trade_trade_no" ON "cd_trade" ("trade_no");
+CREATE INDEX "index_trade_pay_no" ON "cd_trade" ("pay_type","pay_no");
 
 
 CREATE TABLE "cd_user_suite"
@@ -69,5 +75,12 @@ CREATE TABLE "cd_user_suite"
   "update_time"       datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP)
 );
 
+CREATE INDEX "index_user_suite_user_id" ON "cd_user_suite" ("user_id");
 
+
+DROP TABLE IF EXISTS "cd_cert";
+DROP TABLE IF EXISTS "cd_cert_apply_history";
+DROP TABLE IF EXISTS "cd_cert_issuer";
+DROP TABLE IF EXISTS "cd_task";
+DROP TABLE IF EXISTS "cd_task_history";
 

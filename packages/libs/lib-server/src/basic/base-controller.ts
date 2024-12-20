@@ -25,7 +25,7 @@ export abstract class BaseController {
    * @param msg
    * @param code
    */
-  fail(msg: string, code: any) {
+  fail(msg: string, code?: any) {
     return {
       code: code ? code : Constants.res.error.code,
       msg: msg ? msg : Constants.res.error.code,
