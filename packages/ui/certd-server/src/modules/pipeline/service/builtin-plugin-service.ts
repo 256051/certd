@@ -3,7 +3,7 @@ import { pluginGroups, pluginRegistry } from '@certd/pipeline';
 import { cloneDeep } from 'lodash-es';
 
 @Provide()
-@Scope(ScopeEnum.Singleton)
+@Scope(ScopeEnum.Request, { allowDowngrade: true })
 export class BuiltInPluginService {
   getList() {
     const collection = pluginRegistry.storage;

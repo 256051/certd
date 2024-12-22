@@ -5,7 +5,7 @@ import { SysInstallInfo, SysLicenseInfo, SysSettingsService } from '../../settin
 import { merge } from 'lodash-es';
 
 @Provide()
-@Scope(ScopeEnum.Singleton)
+@Scope(ScopeEnum.Request, { allowDowngrade: true })
 export class PlusService {
   @Inject()
   sysSettingsService: SysSettingsService;

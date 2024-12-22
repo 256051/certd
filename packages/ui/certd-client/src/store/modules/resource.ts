@@ -28,6 +28,7 @@ interface ResourceState {
 
 export const useResourceStore = defineStore({
   id: "app.resource",
+  //@ts-ignore
   state: (): ResourceState => ({
     // user info
     topMenus: [],

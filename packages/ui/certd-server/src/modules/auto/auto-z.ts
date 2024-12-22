@@ -9,7 +9,7 @@ import { Application } from '@midwayjs/koa';
 import { httpsServer, HttpsServerOptions } from './https/server.js';
 
 @Autoload()
-@Scope(ScopeEnum.Singleton)
+@Scope(ScopeEnum.Request, { allowDowngrade: true })
 export class AutoZPrint {
   @Inject()
   sysSettingsService: SysSettingsService;

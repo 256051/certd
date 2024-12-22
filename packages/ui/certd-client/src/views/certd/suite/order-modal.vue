@@ -25,14 +25,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { GetPaymentTypes, OrderModalOpenReq, TradeCreate } from "/@/views/certd/suite/api";
-import SuiteValue from "/@/views/sys/suite/product/suite-value.vue";
-import PriceInput from "/@/views/sys/suite/product/price-input.vue";
-import modal from "/@/views/certd/notification/notification-selector/modal/index.vue";
-import { dict } from "@fast-crud/fast-crud";
-import { notification } from "ant-design-vue";
-import DurationValue from "/@/views/sys/suite/product/duration-value.vue";
+import { ref } from 'vue';
+import { GetPaymentTypes, OrderModalOpenReq, TradeCreate } from '/@/views/certd/suite/api';
+import SuiteValue from '/@/views/sys/suite/product/suite-value.vue';
+import PriceInput from '/@/views/sys/suite/product/price-input.vue';
+import { dict } from '@fast-crud/fast-crud';
+import { Modal, notification } from 'ant-design-vue';
+import DurationValue from '/@/views/sys/suite/product/duration-value.vue';
+import { useRouter } from 'vue-router';
 
 const openRef = ref(false);
 
@@ -60,6 +60,8 @@ const paymentsDictRef = dict({
   }
 });
 
+const router = useRouter();
+
 async function orderCreate() {
   console.log("orderCreate", formRef.value);
   if (!formRef.value.payType) {
@@ -80,20 +82,39 @@ async function orderCreate() {
   //易支付表单提交
   if (formRef.value.payType === "yizhifu") {
     doYizhifu(paymentReq);
+  } else if (formRef.value.payType === "alipay") {
+    //支付宝、
+    doAlipay(paymentReq);
+  } else if (formRef.value.payType === "wxpay") {
+    //微信支付
+    doWxpay(paymentReq);
   } else {
-    //支付宝、微信支付
-    window.open(paymentReq);
+    notification.error({
+      message: "暂不支持该支付方式"
+    });
+    return;
   }
 
-  modal.open({
-    title: "支付",
-    content: "请在新页面完成支付",
-    onOk: () => {
+  Modal.confirm({
+    title: "请在新页面完成支付",
+    content: "是否确认已完成支付",
+    onOk: async () => {
       openRef.value = false;
+      router.push({
+        path: "/"
+      });
     },
     cancelText: "取消支付",
-    onText: "已完成支付"
+    okText: "已完成支付"
   });
+}
+
+function doAlipay(paymentReq: any) {
+  window.open(paymentReq.api);
+}
+
+function doWxpay(paymentReq: any) {
+  window.open(paymentReq.api);
 }
 
 function doYizhifu(paymentReq: any) {

@@ -2,8 +2,8 @@
   <fs-page>
     <template #header>
       <div class="title">
-        证书仓库
-        <span class="sub">管理证书，后续将支持手动上传证书并部署</span>
+        我的套餐
+        <span class="sub">我的所有套餐</span>
       </div>
     </template>
     <fs-crud ref="crudRef" v-bind="crudBinding"> </fs-crud>
@@ -16,7 +16,7 @@ import { useFs } from "@fast-crud/fast-crud";
 import createCrudOptions from "./crud";
 import { createApi } from "./api";
 defineOptions({
-  name: "CertStore"
+  name: "MySuites"
 });
 const { crudBinding, crudRef, crudExpose } = useFs({ createCrudOptions, context: {} });
 

@@ -1,20 +1,19 @@
 import { ALL, Body, Controller, Inject, Post, Provide, Query } from '@midwayjs/core';
 import { Constants, CrudController } from '@certd/lib-server';
 import { AuthService } from '../../modules/sys/authority/service/auth-service.js';
-import { CertInfoService } from '../../modules/monitor/service/cert-info-service.js';
+import { SiteInfoService } from '../../modules/monitor/index.js';
 
 /**
- * 通知
  */
 @Provide()
-@Controller('/api/monitor/cert')
-export class CertInfoController extends CrudController<CertInfoService> {
+@Controller('/api/monitor/site')
+export class SiteInfoController extends CrudController<SiteInfoService> {
   @Inject()
-  service: CertInfoService;
+  service: SiteInfoService;
   @Inject()
   authService: AuthService;
 
-  getService(): CertInfoService {
+  getService(): SiteInfoService {
     return this.service;
   }
 
@@ -22,7 +21,6 @@ export class CertInfoController extends CrudController<CertInfoService> {
   async page(@Body(ALL) body: any) {
     body.query = body.query ?? {};
     body.query.userId = this.getUserId();
-
     const res = await this.service.page({
       query: body.query,
       page: body.page,

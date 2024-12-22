@@ -39,4 +39,12 @@ export abstract class BaseController {
     }
     return userId;
   }
+
+  getLoginUser() {
+    const user = this.ctx.user;
+    if (user == null) {
+      throw new Error('Token已过期');
+    }
+    return user;
+  }
 }

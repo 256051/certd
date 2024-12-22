@@ -3,7 +3,7 @@ import { Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
 import { SysInstallInfo, SysSettingsService } from '@certd/lib-server';
 
 @Provide()
-@Scope(ScopeEnum.Singleton)
+@Scope(ScopeEnum.Request, { allowDowngrade: true })
 export class UrlService implements IUrlService {
   @Inject()
   sysSettingsService: SysSettingsService;

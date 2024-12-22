@@ -1,17 +1,34 @@
 <template>
   <div class="flex-o price-input">
     <a-input-number v-if="edit" prefix="¥" :value="priceValue" :precision="2" class="ml-5" @update:value="onPriceChange"> </a-input-number>
-    <span v-else class="price-text">{{ priceLabel }}</span>
+    <span v-else class="price-text" :style="style">{{ priceLabel }}</span>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { computed } from "vue";
 
-const props = defineProps<{
-  modelValue?: number;
-  edit?: boolean;
-}>();
+const props = withDefaults(
+  defineProps<{
+    modelValue?: number;
+    edit?: boolean;
+    fontSize?: number;
+  }>(),
+  {
+    modelValue: 0,
+    edit: false,
+    fontSize: 14
+  }
+);
+
+const style = computed(() => {
+  if (props.fontSize == null) {
+    return {};
+  }
+  return {
+    fontSize: props.fontSize + "px"
+  };
+});
 
 const priceValue = computed(() => {
   if (props.modelValue == null) {
@@ -37,7 +54,6 @@ const onPriceChange = (price: number) => {
 <style lang="less">
 .price-input {
   .price-text {
-    font-size: 18px;
     color: red;
   }
 }

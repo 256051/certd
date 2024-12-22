@@ -1,83 +1,107 @@
-import * as api from "./api";
 import { AddReq, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
-import SuiteValue from "./suite-value.vue";
-import SuiteValueEdit from "./suite-value-edit.vue";
-import PriceEdit from "./price-edit.vue";
-import DurationPriceValue from "/@/views/sys/suite/product/duration-price-value.vue";
+import { pipelineGroupApi } from "./api";
+import { useRouter } from "vue-router";
+import SuiteValueEdit from "/@/views/sys/suite/product/suite-value-edit.vue";
+import SuiteValue from "/@/views/sys/suite/product/suite-value.vue";
+import DurationValue from "/@/views/sys/suite/product/duration-value.vue";
+import dayjs from "dayjs";
 
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
-  const emit = context.emit;
+  const api = pipelineGroupApi;
   const pageRequest = async (query: UserPageQuery): Promise<UserPageRes> => {
     return await api.GetList(query);
   };
-  const editRequest = async ({ form, row }: EditReq) => {
+  const editRequest = async (req: EditReq) => {
+    const { form, row } = req;
     form.id = row.id;
     const res = await api.UpdateObj(form);
     return res;
   };
-  const delRequest = async ({ row }: DelReq) => {
+  const delRequest = async (req: DelReq) => {
+    const { row } = req;
     return await api.DelObj(row.id);
   };
 
-  const addRequest = async ({ form }: AddReq) => {
+  const addRequest = async (req: AddReq) => {
+    const { form } = req;
     const res = await api.AddObj(form);
     return res;
   };
 
+  const router = useRouter();
+
   return {
     crudOptions: {
-      table: {
-        onRefreshed: () => {
-          emit("refreshed");
-        }
-      },
-      search: {
-        show: false
-      },
       request: {
         pageRequest,
         addRequest,
         editRequest,
         delRequest
       },
-      pagination: {
-        show: false,
-        pageSize: 999999
-      },
-      rowHandle: {
-        minWidth: 200,
-        fixed: "right"
-      },
       form: {
-        group: {
-          groups: {
-            base: {
-              header: "基础信息",
-              columns: ["title", "type", "disabled", "order", "supportBuy", "intro"]
-            },
-            content: {
-              header: "套餐内容",
-              columns: ["content.maxDomainCount", "content.maxPipelineCount", "content.maxDeployCount", "content.maxMonitorCount"]
-            },
-            price: {
-              header: "价格",
-              columns: ["durationPrices"]
+        labelCol: {
+          //固定label宽度
+          span: null,
+          style: {
+            width: "100px"
+          }
+        },
+        col: {
+          span: 22
+        },
+        wrapper: {
+          width: 600
+        }
+      },
+      actionbar: {
+        buttons: {
+          add: { show: false },
+          buy: {
+            text: "购买",
+            type: "primary",
+            click() {
+              router.push({
+                path: "/certd/suite/buy"
+              });
             }
           }
         }
       },
+      rowHandle: {
+        width: 200,
+        fixed: "right",
+        buttons: {
+          view: { show: false },
+          copy: { show: false },
+          edit: { show: false },
+          remove: { show: false }
+          // continue:{
+          //   text:"续期",
+          //   type:"link",
+          //   click(){
+          //     console.log("续期");
+          //   }
+          // }
+        }
+      },
       columns: {
-        // id: {
-        //   title: "ID",
-        //   key: "id",
-        //   type: "number",
-        //   column: {
-        //     width: 100
-        //   },
-        //   form: {
-        //     show: false
-        //   }
-        // },
+        id: {
+          title: "ID",
+          key: "id",
+          type: "number",
+          search: {
+            show: false
+          },
+          column: {
+            width: 100,
+            editable: {
+              disabled: true
+            }
+          },
+          form: {
+            show: false
+          }
+        },
         title: {
           title: "套餐名称",
           type: "text",
@@ -91,7 +115,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             width: 200
           }
         },
-        type: {
+        productType: {
           title: "类型",
           type: "dict-select",
           editForm: {
@@ -101,8 +125,8 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           },
           dict: dict({
             data: [
-              { label: "套餐", value: "suite" },
-              { label: "加量包", value: "addon" }
+              { label: "套餐", value: "suite", color: "green" },
+              { label: "加量包", value: "addon", color: "blue" }
             ]
           }),
           form: {
@@ -116,16 +140,10 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             if (row.content) {
               row.content = JSON.parse(row.content);
             }
-            if (row.durationPrices) {
-              row.durationPrices = JSON.parse(row.durationPrices);
-            }
           },
           valueResolve: ({ form }) => {
             if (form.content) {
               form.content = JSON.stringify(form.content);
-            }
-            if (form.durationPrices) {
-              form.durationPrices = JSON.stringify(form.durationPrices);
             }
           }
         },
@@ -147,7 +165,8 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
               name: SuiteValue,
               vModel: "modelValue",
               unit: "个"
-            }
+            },
+            align: "center"
           }
         },
         "content.maxPipelineCount": {
@@ -168,7 +187,8 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
               name: SuiteValue,
               vModel: "modelValue",
               unit: "条"
-            }
+            },
+            align: "center"
           }
         },
         "content.maxDeployCount": {
@@ -189,7 +209,8 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
               name: SuiteValue,
               vModel: "modelValue",
               unit: "次"
-            }
+            },
+            align: "center"
           }
         },
         "content.maxMonitorCount": {
@@ -210,106 +231,90 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
               name: SuiteValue,
               vModel: "modelValue",
               unit: "个"
+            },
+            align: "center"
+          }
+        },
+        duration: {
+          title: "时长",
+          type: "text",
+          form: {},
+          column: {
+            component: {
+              name: DurationValue,
+              vModel: "modelValue"
+            },
+            width: 100,
+            align: "center"
+          }
+        },
+        status: {
+          title: "状态",
+          type: "text",
+          form: { show: false },
+          column: {
+            width: 100,
+            align: "center",
+            conditionalRender: {
+              match() {
+                return false;
+              }
+            },
+            cellRender({ row }) {
+              if (row.activeTime == null) {
+                return <a-tag color="blue">未使用</a-tag>;
+              }
+              const now = dayjs().valueOf();
+              //已过期
+              const isExpired = row.expiresTime != -1 && now > row.expiresTime;
+              if (isExpired) {
+                return <a-tag color="error">已过期</a-tag>;
+              }
+              //如果在激活时间之前
+              if (now < row.activeTime) {
+                return <a-tag color="blue">待生效</a-tag>;
+              }
+              // 是否在激活时间和过期时间之间
+              if (now > row.activeTime && (row.expiresTime == -1 || now < row.expiresTime)) {
+                return <a-tag color="success">生效中</a-tag>;
+              }
             }
           }
         },
-        durationPrices: {
-          title: "时长及价格",
-          type: "text",
-          form: {
-            title: "选择时长",
-            component: {
-              name: PriceEdit,
-              vModel: "modelValue",
-              edit: true,
-              style: {
-                minHeight: "120px"
-              }
-            },
-            col: {
-              span: 24
-            },
-            rules: [{ required: true, message: "此项必填" }]
-          },
+        activeTime: {
+          title: "激活时间",
+          type: "date",
           column: {
-            component: {
-              name: DurationPriceValue,
-              vModel: "modelValue"
-            },
-            width: 350
+            width: 150
           }
         },
-        supportBuy: {
-          title: "支持购买",
+        expiresTime: {
+          title: "过期时间",
+          type: "date",
+          column: {
+            width: 150,
+            component: {
+              name: "expires-time-text",
+              vModel: "value",
+              mode: "tag"
+            }
+          }
+        },
+        isPresent: {
+          title: "是否赠送",
           type: "dict-switch",
           dict: dict({
             data: [
-              { label: "支持购买", value: true, color: "success" },
-              { label: "不能购买", value: false, color: "gray" }
+              { label: "是", value: true, color: "success" },
+              { label: "否", value: false, color: "blue" }
             ]
           }),
           form: {
             value: true
           },
           column: {
-            width: 120
-          }
-        },
-        disabled: {
-          title: "上下架",
-          type: "dict-radio",
-          dict: dict({
-            data: [
-              { value: false, label: "上架", color: "green" },
-              { value: true, label: "下架", color: "gray" }
-            ]
-          }),
-          form: {
-            value: false
-          },
-          column: {
-            width: 100
-          }
-        },
-        order: {
-          title: "排序",
-          type: "number",
-          form: {
-            helper: "越小越靠前",
-            value: 0
-          },
-          column: {
-            width: 100
-          }
-        },
-        intro: {
-          title: "说明",
-          type: "textarea",
-          column: {
-            width: 200
-          }
-        },
-        createTime: {
-          title: "创建时间",
-          type: "datetime",
-          form: {
-            show: false
-          },
-          column: {
-            sorter: true,
-            width: 160,
+            width: 100,
             align: "center"
-          }
-        },
-        updateTime: {
-          title: "更新时间",
-          type: "datetime",
-          form: {
-            show: false
-          },
-          column: {
-            show: true,
-            width: 160
           }
         }
       }

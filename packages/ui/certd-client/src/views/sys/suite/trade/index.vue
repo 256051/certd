@@ -2,11 +2,8 @@
   <fs-page class="page-cert">
     <template #header>
       <div class="title">
-        CNAME服务配置
-        <span class="sub">
-          此处配置的域名作为其他域名校验的代理，当别的域名需要申请证书时，通过CNAME映射到此域名上来验证所有权。好处是任何域名都可以通过此方式申请证书，也无需填写AccessSecret。
-          <a href="https://certd.docmirror.cn/guide/feature/cname/" target="_blank">CNAME功能原理及使用说明</a>
-        </span>
+        订单管理
+        <span class="sub"> </span>
       </div>
     </template>
     <fs-crud ref="crudRef" v-bind="crudBinding">
@@ -27,7 +24,7 @@ import { message, Modal } from "ant-design-vue";
 import { DeleteBatch } from "./api";
 
 defineOptions({
-  name: "CnameProvider"
+  name: "TradeManager"
 });
 const { crudBinding, crudRef, crudExpose, context } = useFs({ createCrudOptions });
 

@@ -148,6 +148,7 @@ export abstract class BaseService<T> {
       page.limit = 20;
     }
     const qb = this.buildListQuery(pageReq);
+
     qb.offset(page.offset).limit(page.limit);
     const list = await qb.getMany();
     const total = await qb.getCount();

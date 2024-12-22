@@ -72,6 +72,34 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           }
         },
 
+        domain: {
+          title: "网站域名",
+          search: {
+            show: true
+          },
+          type: "text",
+          form: {
+            rules: [{ required: true, message: "请输入域名" }]
+          },
+          column: {
+            width: 200,
+            sorter: true
+          }
+        },
+        port: {
+          title: "HTTPS端口",
+          search: {
+            show: false
+          },
+          type: "number",
+          form: {
+            value: 443,
+            rules: [{ required: true, message: "请输入端口" }]
+          },
+          column: {
+            width: 100
+          }
+        },
         name: {
           title: "站点名称",
           search: {
@@ -82,35 +110,22 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             rules: [{ required: true, message: "请输入站点名称" }]
           },
           column: {
-            width: 100
-          }
-        },
-        domain: {
-          title: "主域名",
-          search: {
-            show: true
-          },
-          type: "text",
-          form: {
-            rules: [{ required: true, message: "请输入域名" }]
-          },
-          column: {
-            width: 100,
-            sorter: true
+            width: 200
           }
         },
         domains: {
           title: "其他域名",
           search: {
-            show: true
+            show: false
           },
           type: "text",
           form: {
-            rules: [{ required: true, message: "请输入其他域名" }]
+            show: false
           },
           column: {
             width: 300,
-            sorter: true
+            sorter: true,
+            show: false
           }
         },
         certInfo: {
@@ -123,7 +138,8 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             show: false
           },
           column: {
-            width: 100
+            width: 100,
+            show: false
           }
         },
         certStatus: {
@@ -185,6 +201,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           search: {
             show: false
           },
+          form: { show: false },
           type: "number",
           column: {
             width: 200,
@@ -197,7 +214,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             show: false
           },
           type: "number",
-          form: {},
+          form: { show: false },
           column: {
             width: 100,
             sorter: true,
@@ -212,11 +229,13 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           type: "dict-switch",
           dict: dict({
             data: [
-              { label: "禁用", value: true, color: "red" },
-              { label: "启用", value: false, color: "green" }
+              { label: "启用", value: false, color: "green" },
+              { label: "禁用", value: true, color: "red" }
             ]
           }),
-          form: {},
+          form: {
+            value: true
+          },
           column: {
             width: 100,
             sorter: true

@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { PipelineEntity } from '../../pipeline/entity/pipeline.js';
 
 @Entity('cd_cert_info')
 export class CertInfoEntity {
@@ -51,4 +52,6 @@ export class CertInfoEntity {
     default: () => 'CURRENT_TIMESTAMP',
   })
   updateTime: Date;
+
+  pipeline?: PipelineEntity;
 }

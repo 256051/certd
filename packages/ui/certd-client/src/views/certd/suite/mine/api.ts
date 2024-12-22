@@ -1,7 +1,7 @@
 import { request } from "/src/api/service";
 
 export function createApi() {
-  const apiPrefix = "/monitor/site";
+  const apiPrefix = "/mine/suite";
   return {
     async GetList(query: any) {
       return await request({

@@ -49,8 +49,16 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           width: 600
         }
       },
+      actionbar: { show: false },
       rowHandle: {
-        width: 200
+        width: 200,
+        fixed: "right",
+        buttons: {
+          view: { show: false },
+          copy: { show: false },
+          edit: { show: false },
+          remove: { show: false }
+        }
       },
       columns: {
         id: {
@@ -80,8 +88,11 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             show: false
           },
           column: {
-            width: 100,
-            sorter: true
+            width: 180,
+            sorter: true,
+            component: {
+              name: "fs-values-format"
+            }
           }
         },
         domains: {
@@ -94,8 +105,11 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             rules: [{ required: true, message: "请输入域名" }]
           },
           column: {
-            width: 300,
-            sorter: true
+            width: 350,
+            sorter: true,
+            component: {
+              name: "fs-values-format"
+            }
           }
         },
         domainCount: {
@@ -106,19 +120,21 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           },
           column: {
             width: 120,
-            sorter: true
+            sorter: true,
+            show: false
           }
         },
-        pipelineId: {
+        "pipeline.title": {
           title: "已关联流水线",
           search: { show: false },
-          type: "text",
+          type: "link",
           form: {
             show: false
           },
           column: {
-            width: 200,
-            sorter: true
+            width: 250,
+            sorter: true,
+            component: {}
           }
         },
         applyTime: {

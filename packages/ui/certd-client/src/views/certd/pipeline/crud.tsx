@@ -112,16 +112,20 @@ export default function ({ crudExpose, context: { certdFormRef, groupDictRef, se
       }
       let pipeline = {
         title: form.domains[0] + "证书自动化",
+        runnableType: "pipeline",
         stages: [
           {
             title: "证书申请阶段",
             maxTaskCount: 1,
+            runnableType: "stage",
             tasks: [
               {
                 title: "证书申请任务",
+                runnableType: "task",
                 steps: [
                   {
                     title: "申请证书",
+                    runnableType: "step",
                     input: {
                       renewDays: 35,
                       ...form
@@ -141,10 +145,18 @@ export default function ({ crudExpose, context: { certdFormRef, groupDictRef, se
       };
       pipeline = setRunnableIds(pipeline);
 
+      /**
+       *  // cert: 证书; backup: 备份; custom:自定义;
+       *   type: string;
+       *   // custom: 自定义; monitor: 监控;
+       *   from: string;
+       */
       const id = await api.Save({
         title: pipeline.title,
         content: JSON.stringify(pipeline),
-        keepHistoryCount: 30
+        keepHistoryCount: 30,
+        type: "cert",
+        from: "custom"
       });
       message.success("创建成功,请添加证书部署任务");
       router.push({ path: "/certd/pipeline/detail", query: { id, editMode: "true" } });

@@ -6,6 +6,8 @@ import { AddReq, compute, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, 
 import { useUserStore } from "/@/store/modules/user";
 import { useSettingStore } from "/@/store/modules/settings";
 import { Modal } from "ant-design-vue";
+import DurationValue from "/@/views/sys/suite/product/duration-value.vue";
+import PriceInput from "/@/views/sys/suite/product/price-input.vue";
 
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const router = useRouter();
@@ -56,9 +58,63 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         editRequest,
         delRequest
       },
+      actionbar: {
+        buttons: {
+          add: {
+            show: false
+          }
+        }
+      },
+      toolbar: { show: false },
       rowHandle: {
-        minWidth: 200,
-        fixed: "right"
+        width: 320,
+        fixed: "right",
+        buttons: {
+          copy: {
+            show: false
+          },
+          edit: {
+            show: false
+          },
+          syncStatus: {
+            show: compute(({ row }) => {
+              return row.status === "wait_pay";
+            }),
+            text: "同步订单状态",
+            type: "link",
+            click: async ({ row }) => {
+              Modal.confirm({
+                title: "确认",
+                content: "确认同步订单状态？",
+                onOk: async () => {
+                  await api.SyncStatus(row.id);
+                  await crudExpose.doRefresh();
+                }
+              });
+            }
+          },
+          updatePaid: {
+            show: compute(({ row }) => {
+              return row.status === "wait_pay";
+            }),
+            text: "确认已支付",
+            type: "link",
+            click({ row }) {
+              Modal.confirm({
+                title: "确认",
+                content: "确认修改订单状态为已支付？",
+                onOk: async () => {
+                  await api.UpdatePaid(row.id);
+                  await crudExpose.doRefresh();
+                }
+              });
+            }
+          }
+        }
+      },
+      tabs: {
+        name: "status",
+        show: true
       },
       columns: {
         id: {
@@ -72,154 +128,86 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             show: false
           }
         },
-        domain: {
-          title: "CNAME域名",
+        tradeNo: {
+          title: "订单号",
           type: "text",
-          editForm: {
-            component: {
-              disabled: true
-            }
-          },
-          search: {
-            show: true
-          },
-          form: {
-            component: {
-              placeholder: "cname.handsfree.work"
-            },
-            helper: "需要一个右边DNS提供商注册的域名（也可以将其他域名的dns服务器转移到这几家来）。\nCNAME域名一旦确定不可修改，建议使用一级子域名",
-            rules: [{ required: true, message: "此项必填" }]
-          },
-          column: {
-            width: 200
-          }
-        },
-        dnsProviderType: {
-          title: "DNS提供商",
-          type: "dict-select",
-          search: {
-            show: true
-          },
-          dict: dict({
-            url: "pi/dnsProvider/list",
-            value: "key",
-            label: "title"
-          }),
-          form: {
-            rules: [{ required: true, message: "此项必填" }]
-          },
-          column: {
-            width: 150,
-            component: {
-              color: "auto"
-            }
-          }
-        },
-        accessId: {
-          title: "DNS提供商授权",
-          type: "dict-select",
-          dict: dict({
-            url: "/pi/access/list",
-            value: "id",
-            label: "name"
-          }),
-          form: {
-            component: {
-              name: "access-selector",
-              vModel: "modelValue",
-              type: compute(({ form }) => {
-                return form.dnsProviderType;
-              })
-            },
-            rules: [{ required: true, message: "此项必填" }]
-          },
-          column: {
-            width: 150,
-            component: {
-              color: "auto"
-            }
-          }
-        },
-        isDefault: {
-          title: "是否默认",
-          type: "dict-switch",
-          dict: dict({
-            data: [
-              { label: "是", value: true, color: "success" },
-              { label: "否", value: false, color: "default" }
-            ]
-          }),
-          form: {
-            value: false,
-            rules: [{ required: true, message: "请选择是否默认" }]
-          },
-          column: {
-            align: "center",
-            width: 100
-          }
-        },
-        setDefault: {
-          title: "设置默认",
-          type: "text",
+          search: { show: true },
           form: {
             show: false
           },
           column: {
-            width: 100,
-            align: "center",
-            conditionalRenderDisabled: true,
-            cellRender: ({ row }) => {
-              if (row.isDefault) {
-                return;
-              }
-              const onClick = async () => {
-                Modal.confirm({
-                  title: "提示",
-                  content: `确定要设置为默认吗？`,
-                  onOk: async () => {
-                    await api.SetDefault(row.id);
-                    await crudExpose.doRefresh();
-                  }
-                });
-              };
-
-              return (
-                <a-button type={"link"} size={"small"} onClick={onClick}>
-                  设为默认
-                </a-button>
-              );
-            }
+            width: 250
           }
         },
-        disabled: {
-          title: "禁用/启用",
-          type: "dict-switch",
-          dict: dict({
-            data: [
-              { label: "启用", value: false, color: "success" },
-              { label: "禁用", value: true, color: "error" }
-            ]
-          }),
-          form: {
-            value: false
-          },
+        title: {
+          title: "商品名称",
+          type: "text",
+          search: { show: true },
+          column: {
+            width: 150
+          }
+        },
+        duration: {
+          title: "时长",
+          type: "number",
           column: {
             width: 100,
             component: {
-              title: "点击可禁用/启用",
-              on: {
-                async click({ value, row }) {
-                  Modal.confirm({
-                    title: "提示",
-                    content: `确定要${!value ? "禁用" : "启用"}吗？`,
-                    onOk: async () => {
-                      await api.SetDisabled(row.id, !value);
-                      await crudExpose.doRefresh();
-                    }
-                  });
-                }
-              }
+              name: DurationValue,
+              vModel: "modelValue"
             }
+          }
+        },
+        amount: {
+          title: "金额",
+          type: "number",
+          column: {
+            width: 100,
+            component: {
+              name: PriceInput,
+              vModel: "modelValue",
+              edit: false
+            }
+          }
+        },
+        status: {
+          title: "状态",
+          search: { show: true },
+          type: "dict-select",
+          dict: dict({
+            data: [
+              { label: "待支付", value: "wait_pay", color: "warning" },
+              { label: "已支付", value: "paid", color: "success" },
+              { label: "已取消", value: "canceled", color: "error" }
+            ]
+          }),
+          column: {
+            width: 100
+          }
+        },
+        payType: {
+          title: "支付方式",
+          search: { show: true },
+          type: "dict-select",
+          dict: dict({
+            data: [
+              { label: "聚合支付", value: "yizhifu" },
+              { label: "支付宝", value: "alipay" },
+              { label: "微信", value: "wxpay" }
+            ]
+          }),
+          column: {
+            width: 100,
+            component: {
+              color: "auto"
+            }
+          }
+        },
+        payTime: {
+          title: "支付时间",
+          type: "datetime",
+          column: {
+            width: 160
           }
         },
         createTime: {

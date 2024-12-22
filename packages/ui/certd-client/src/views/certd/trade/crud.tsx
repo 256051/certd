@@ -60,13 +60,38 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         delRequest
       },
       rowHandle: {
-        width: 100,
+        width: 240,
         fixed: "right",
         buttons: {
           edit: { show: false },
-          copy: { show: false }
+          copy: { show: false },
+          syncStatus: {
+            show: compute(({ row }) => {
+              return row.status === "wait_pay";
+            }),
+            text: "同步订单状态",
+            type: "link",
+            click: async ({ row }) => {
+              Modal.confirm({
+                title: "确认",
+                content: "确认同步订单状态？",
+                onOk: async () => {
+                  await api.SyncStatus(row.id);
+                  await crudExpose.doRefresh();
+                }
+              });
+            }
+          }
         }
       },
+      actionbar: {
+        buttons: {
+          add: {
+            show: false
+          }
+        }
+      },
+      toolbar: { show: false },
       tabs: {
         name: "status",
         show: true

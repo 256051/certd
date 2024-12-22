@@ -176,7 +176,7 @@ export const sysResources = [
         path: "/sys/suite/setting",
         component: "/sys/suite/setting/index.vue",
         meta: {
-          icon: "ion:person-outline",
+          icon: "ion:cart",
           permission: "sys:settings:edit"
         }
       },
@@ -186,7 +186,7 @@ export const sysResources = [
         path: "/sys/suite/trade",
         component: "/sys/suite/trade/index.vue",
         meta: {
-          icon: "ion:person-outline",
+          icon: "ion:bag-check",
           permission: "sys:settings:edit"
         }
       }

@@ -14,7 +14,7 @@ export const uploadTmpFileCacheKey = 'tmpfile_key_';
 /**
  */
 @Provide()
-@Scope(ScopeEnum.Singleton)
+@Scope(ScopeEnum.Request, { allowDowngrade: true })
 export class FileService {
   async saveFile(userId: number, tmpCacheKey: any, permission: 'public' | 'private') {
     if (tmpCacheKey.startsWith(`/${permission}`)) {

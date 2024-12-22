@@ -27,7 +27,7 @@ export type EmailConfig = {
   usePlus?: boolean;
 } & SMTPConnection.Options;
 @Provide()
-@Scope(ScopeEnum.Singleton)
+@Scope(ScopeEnum.Request, { allowDowngrade: true })
 export class EmailService implements IEmailService {
   @Inject()
   settingsService: UserSettingsService;

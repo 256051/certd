@@ -160,14 +160,17 @@ export class PipelineService extends BaseService<PipelineEntity> {
       old = await this.info(bean.id);
     }
     const pipeline = JSON.parse(bean.content || '{}');
+    RunnableCollection.initPipelineRunnableType(pipeline);
     const isUpdate = bean.id > 0 && old != null;
 
     let domains = [];
-    RunnableCollection.each(pipeline.stages, (runnable: any) => {
-      if (runnable.runnableType === 'step' && runnable.type.startsWith('CertApply')) {
-        domains = runnable.input.domains || [];
-      }
-    });
+    if (pipeline.stages) {
+      RunnableCollection.each(pipeline.stages, (runnable: any) => {
+        if (runnable.runnableType === 'step' && runnable.type.startsWith('CertApply')) {
+          domains = runnable.input.domains || [];
+        }
+      });
+    }
 
     if (!isUpdate) {
       //如果是添加，校验数量
@@ -188,7 +191,7 @@ export class PipelineService extends BaseService<PipelineEntity> {
     await this.registerTriggerById(bean.id);
 
     //保存域名信息到certInfo表
-    await this.certInfoService.updateDomains(pipeline.id, domains);
+    await this.certInfoService.updateDomains(pipeline.id, pipeline.userId || bean.userId, domains);
     return bean;
   }
 
@@ -621,5 +624,18 @@ export class PipelineService extends BaseService<PipelineEntity> {
 
   async getUserPipelineCount(userId) {
     return await this.repository.count({ where: { userId } });
+  }
+
+  async getSimplePipelines(pipelineIds: number[], userId?: number) {
+    return await this.repository.find({
+      select: {
+        id: true,
+        title: true,
+      },
+      where: {
+        id: In(pipelineIds),
+        userId,
+      },
+    });
   }
 }

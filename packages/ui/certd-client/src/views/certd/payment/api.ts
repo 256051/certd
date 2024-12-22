@@ -1,11 +1,11 @@
 import { request } from "/src/api/service";
 
-const apiPrefix = "/pay";
+const apiPrefix = "/payment";
 export async function Notify(type: string, query: any) {
   return await request({
     url: apiPrefix + `/notify/${type}`,
     method: "post",
     data: query,
-    returnResponse: true
+    unpack: false
   });
 }

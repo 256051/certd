@@ -4,7 +4,7 @@ import { logger } from '@certd/basic';
 import { SysSettingsService } from '@certd/lib-server';
 
 @Autoload()
-@Scope(ScopeEnum.Singleton)
+@Scope(ScopeEnum.Request, { allowDowngrade: true })
 export class AutoRegisterCron {
   @Inject()
   pipelineService: PipelineService;

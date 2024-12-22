@@ -4,13 +4,17 @@
       <div class="title">套餐购买</div>
     </template>
     <div class="suite-buy-content">
-      <div class="mb-10">
-        <a-card>
-          <div>套餐说明：多个套餐内的数量可以叠加</div>
-          <div v-if="suiteIntro" v-html="suiteIntro"></div>
-        </a-card>
-      </div>
-      <a-row :gutter="8">
+      <a-row class="w-100" :gutter="8">
+        <a-col :span="24">
+          <a-card>
+            <div class="suite-intro-box">
+              <div>套餐说明：多个套餐内的数量可以叠加</div>
+              <div v-if="suiteIntro" v-html="suiteIntro"></div>
+            </div>
+          </a-card>
+        </a-col>
+      </a-row>
+      <a-row :gutter="8" class="mt-10">
         <a-col v-for="item of products" :key="item.id" class="mb-10 suite-card-col">
           <product-info :product="item" @order="doOrder" />
         </a-col>
@@ -57,11 +61,23 @@ loadSuiteIntro();
   background: #f0f2f5;
   .suite-buy-content {
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
 
-    .hr {
-      border-top: 1px solid #cdcdcd;
-      margin-top: 5px;
-      padding-top: 5px;
+    .suite-intro-box {
+      //height: 60px;
+      //overflow: hidden;
+      //text-overflow: ellipsis;
+    }
+
+    .suite-list {
+      display: flex;
+      align-items: baseline;
+    }
+    .my-suites {
+      width: 360px;
+      margin-left: 10px;
     }
 
     .price-text {

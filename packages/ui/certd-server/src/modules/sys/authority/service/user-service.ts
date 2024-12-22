@@ -19,7 +19,7 @@ export type RegisterType = 'username' | 'mobile' | 'email';
  * 系统用户
  */
 @Provide()
-@Scope(ScopeEnum.Singleton)
+@Scope(ScopeEnum.Request, { allowDowngrade: true })
 export class UserService extends BaseService<UserEntity> {
   @InjectEntityModel(UserEntity)
   repository: Repository<UserEntity>;

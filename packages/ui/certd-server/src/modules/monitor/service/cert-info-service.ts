@@ -1,5 +1,5 @@
 import { Provide } from '@midwayjs/core';
-import { BaseService } from '@certd/lib-server';
+import { BaseService, PageReq } from '@certd/lib-server';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
 import { CertInfoEntity } from '../entity/cert-info.js';
@@ -14,6 +14,10 @@ export class CertInfoService extends BaseService<CertInfoEntity> {
     return this.repository;
   }
 
+  async page(pageReq: PageReq<CertInfoEntity>) {
+    return await super.page(pageReq);
+  }
+
   async getUserDomainCount(userId: number) {
     if (!userId) {
       throw new Error('userId is required');
@@ -23,10 +27,11 @@ export class CertInfoService extends BaseService<CertInfoEntity> {
     });
   }
 
-  async updateDomains(pipelineId: number, domains: string[]) {
+  async updateDomains(pipelineId: number, userId: number, domains: string[]) {
     const found = await this.repository.findOne({
       where: {
         pipelineId,
+        userId,
       },
     });
     const bean = new CertInfoEntity();
@@ -36,11 +41,21 @@ export class CertInfoService extends BaseService<CertInfoEntity> {
     } else {
       //create
       bean.pipelineId = pipelineId;
+      bean.userId = userId;
+      if (!domains || domains.length === 0) {
+        return;
+      }
     }
 
-    bean.domain = domains[0];
-    bean.domains = domains.join(',');
-    bean.domainCount = domains.length;
+    if (!domains || domains.length === 0) {
+      bean.domain = '';
+      bean.domains = '';
+      bean.domainCount = 0;
+    } else {
+      bean.domain = domains[0];
+      bean.domains = domains.join(',');
+      bean.domainCount = domains.length;
+    }
 
     await this.addOrUpdate(bean);
   }

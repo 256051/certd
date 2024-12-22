@@ -6,7 +6,7 @@ import { nanoid } from 'nanoid';
 import crypto from 'crypto';
 
 @Autoload()
-@Scope(ScopeEnum.Singleton)
+@Scope(ScopeEnum.Request, { allowDowngrade: true })
 export class AutoInitSite {
   @Inject()
   userService: UserService;

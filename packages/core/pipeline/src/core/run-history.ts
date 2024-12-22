@@ -144,6 +144,19 @@ export class RunnableCollection {
     this.collection = map;
   }
 
+  static initPipelineRunnableType(pipeline: Pipeline) {
+    pipeline.runnableType = "pipeline";
+    pipeline.stages.forEach((stage) => {
+      stage.runnableType = "stage";
+      stage.tasks.forEach((task) => {
+        task.runnableType = "task";
+        task.steps.forEach((step) => {
+          step.runnableType = "step";
+        });
+      });
+    });
+  }
+
   static each<T extends Runnable>(list: T[], exec: (item: Runnable) => void) {
     list.forEach((item) => {
       exec(item);

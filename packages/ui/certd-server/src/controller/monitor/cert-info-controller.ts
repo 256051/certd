@@ -1,20 +1,22 @@
 import { ALL, Body, Controller, Inject, Post, Provide, Query } from '@midwayjs/core';
 import { Constants, CrudController } from '@certd/lib-server';
 import { AuthService } from '../../modules/sys/authority/service/auth-service.js';
-import { SiteInfoService } from '../../modules/monitor/service/site-info-service.js';
+import { CertInfoService } from '../../modules/monitor/index.js';
+import { PipelineService } from '../../modules/pipeline/service/pipeline-service.js';
 
 /**
- * 通知
  */
 @Provide()
-@Controller('/api/monitor/site')
-export class SiteInfoController extends CrudController<SiteInfoService> {
+@Controller('/api/monitor/cert')
+export class CertInfoController extends CrudController<CertInfoService> {
   @Inject()
-  service: SiteInfoService;
+  service: CertInfoService;
   @Inject()
   authService: AuthService;
+  @Inject()
+  pipelineService: PipelineService;
 
-  getService(): SiteInfoService {
+  getService(): CertInfoService {
     return this.service;
   }
 
@@ -22,11 +24,23 @@ export class SiteInfoController extends CrudController<SiteInfoService> {
   async page(@Body(ALL) body: any) {
     body.query = body.query ?? {};
     body.query.userId = this.getUserId();
+
     const res = await this.service.page({
       query: body.query,
       page: body.page,
       sort: body.sort,
     });
+
+    const records = res.records;
+    const pipelineIds = records.map(r => r.pipelineId);
+    const pipelines = await this.pipelineService.getSimplePipelines(pipelineIds);
+    const pMap = new Map();
+    for (const p of pipelines) {
+      pMap.set(p.id, p);
+    }
+    for (const record of records) {
+      record.pipeline = pMap.get(record.pipelineId);
+    }
     return this.ok(res);
   }
 

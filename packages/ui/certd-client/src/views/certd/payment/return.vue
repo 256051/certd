@@ -1,16 +1,18 @@
 <template>
-  <div class="cd-payment-return">
-    <a-card title="支付结果" class="mt-10">
-      <div class="flex-o">
-        <div class="flex-1">
-          <a-tag v-if="payResult" color="green" class="m-0">支付成功</a-tag>
-          <a-tag v-else color="red" class="m-0">支付失败</a-tag>
-        </div>
-        <div class="m-10">
-          <a-button type="primary" @click="goHome">回首页</a-button>
-        </div>
-      </div>
-    </a-card>
+  <div class="cd-payment-return w-100">
+    <div v-if="payResult == null" class="flex-o m-20 w-100">
+      <a-spin />
+    </div>
+    <a-result v-else-if="payResult" status="success" title="支付成功">
+      <template #extra>
+        <a-button key="console" type="primary" @click="goHome">回首页</a-button>
+      </template>
+    </a-result>
+    <a-result v-else status="error" title="支付失败">
+      <template #extra>
+        <a-button key="console" type="primary" @click="goHome">回首页</a-button>
+      </template>
+    </a-result>
   </div>
 </template>
 
@@ -40,6 +42,7 @@ async function check() {
     payResult.value = true;
   }
 }
+check();
 
 const router = useRouter();
 function goHome() {

@@ -25,6 +25,10 @@ function createService() {
       if (response.config.responseType === "blob") {
         return response;
       }
+      //@ts-ignore
+      if (response.config.returnResponse) {
+        return response;
+      }
       // dataAxios 是 axios 返回数据中的 data
       const dataAxios = response.data;
 

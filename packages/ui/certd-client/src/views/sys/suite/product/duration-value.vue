@@ -5,6 +5,9 @@
 <script lang="ts" setup>
 import { durationDict } from "/@/views/certd/suite/api";
 
+defineOptions({
+  name: "DurationValue"
+});
 const props = defineProps<{
   modelValue: number;
 }>();

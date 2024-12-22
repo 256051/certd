@@ -1,7 +1,7 @@
 import { request } from "/src/api/service";
 
 export function createApi() {
-  const apiPrefix = "/pi/pipeline/group";
+  const apiPrefix = "/monitor/cert";
   return {
     async GetList(query: any) {
       return await request({

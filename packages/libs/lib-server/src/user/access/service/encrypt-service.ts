@@ -6,7 +6,7 @@ import { SysPrivateSettings, SysSettingsService } from '../../../system/index.js
  * 授权
  */
 @Provide()
-@Scope(ScopeEnum.Singleton)
+@Scope(ScopeEnum.Request, { allowDowngrade: true })
 export class EncryptService {
   secretKey: Buffer;
 

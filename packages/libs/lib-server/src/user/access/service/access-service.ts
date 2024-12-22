@@ -10,7 +10,7 @@ import { EncryptService } from './encrypt-service.js';
  * 授权
  */
 @Provide()
-@Scope(ScopeEnum.Singleton)
+@Scope(ScopeEnum.Request, { allowDowngrade: true })
 export class AccessService extends BaseService<AccessEntity> {
   @InjectEntityModel(AccessEntity)
   repository: Repository<AccessEntity>;

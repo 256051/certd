@@ -1,6 +1,6 @@
 <template>
   <a-layout class="fs-framework">
-    <a-layout-sider v-model:collapsed="asideCollapsed" :trigger="null" collapsible>
+    <a-layout-sider v-model:collapsed="asideCollapsed" :trigger="null" collapsible :width="210">
       <div class="header-logo">
         <img :src="siteInfo.logo" />
         <span v-if="!asideCollapsed" class="title">{{ siteInfo.title }}</span>

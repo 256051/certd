@@ -58,18 +58,18 @@ export async function DeleteBatch(ids: any[]) {
   });
 }
 
-export async function SetDefault(id: any) {
+export async function UpdatePaid(id: any) {
   return await request({
-    url: apiPrefix + "/setDefault",
+    url: apiPrefix + "/updatePaid",
     method: "post",
     data: { id }
   });
 }
 
-export async function SetDisabled(id: any, disabled: boolean) {
+export async function SyncStatus(id: any) {
   return await request({
-    url: apiPrefix + "/setDisabled",
+    url: apiPrefix + "/syncStatus",
     method: "post",
-    data: { id, disabled }
+    data: { id }
   });
 }

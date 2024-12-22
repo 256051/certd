@@ -8,7 +8,7 @@ import { BuiltInPluginService } from '../../pipeline/service/builtin-plugin-serv
 import { merge } from 'lodash-es';
 
 @Provide()
-@Scope(ScopeEnum.Singleton)
+@Scope(ScopeEnum.Request, { allowDowngrade: true })
 export class PluginService extends BaseService<PluginEntity> {
   @InjectEntityModel(PluginEntity)
   repository: Repository<PluginEntity>;

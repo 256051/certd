@@ -12,7 +12,7 @@ import * as dns from 'node:dns';
  * 设置
  */
 @Provide()
-@Scope(ScopeEnum.Singleton)
+@Scope(ScopeEnum.Request, { allowDowngrade: true })
 export class SysSettingsService extends BaseService<SysSettingsEntity> {
   @InjectEntityModel(SysSettingsEntity)
   repository: Repository<SysSettingsEntity>;

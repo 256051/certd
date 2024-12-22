@@ -153,7 +153,7 @@ export default defineComponent({
             if (item.value instanceof Array) {
               return;
             }
-            keys.push(item.value.index);
+            keys.push(item.value.path);
           });
         }
       });
