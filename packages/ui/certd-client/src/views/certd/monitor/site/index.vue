@@ -3,7 +3,7 @@
     <template #header>
       <div class="title">
         站点证书监控
-        <span class="sub">监控网站证书的过期时间，并发出提醒</span>
+        <span class="sub">监控网站证书的过期时间，并发出提醒【未完成，开发中】</span>
       </div>
     </template>
     <fs-crud ref="crudRef" v-bind="crudBinding"> </fs-crud>

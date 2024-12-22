@@ -59,7 +59,7 @@ export type PluginDefine = Registrable & {
 
 export type ITaskPlugin = {
   onInstance(): Promise<void>;
-  execute(): Promise<void>;
+  execute(): Promise<void | string>;
   onRequest(req: PluginRequestHandleReq<any>): Promise<any>;
   [key: string]: any;
 };

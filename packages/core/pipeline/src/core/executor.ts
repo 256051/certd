@@ -92,13 +92,16 @@ export class Executor {
         await this.onChanged(this.runtime);
       }, 5000);
 
-      await this.runWithHistory(this.pipeline, "pipeline", async () => {
+      const result = await this.runWithHistory(this.pipeline, "pipeline", async () => {
         return await this.runStages(this.pipeline);
       });
-      if (this.lastRuntime && this.lastRuntime.pipeline.status?.status === ResultType.error) {
-        await this.notification("turnToSuccess");
+      if (result === ResultType.success) {
+        if (this.lastRuntime && this.lastRuntime.pipeline.status?.status === ResultType.error) {
+          await this.notification("turnToSuccess");
+        } else {
+          await this.notification("success");
+        }
       }
-      await this.notification("success");
     } catch (e: any) {
       await this.notification("error", e);
       this.logger.error("pipeline 执行失败", e);
@@ -336,7 +339,7 @@ export class Executor {
     instance.setCtx(taskCtx);
 
     await instance.onInstance();
-    await instance.execute();
+    const result = await instance.execute();
     //执行结果处理
     if (instance._result.clearLastStatus) {
       //是否需要清除所有状态
@@ -364,6 +367,8 @@ export class Executor {
       merge(vars, instance._result.pipelinePrivateVars);
       await this.pipelineContext.setObj("privateVars", vars);
     }
+
+    return result;
   }
 
   async notification(when: NotificationWhen, error?: any) {

@@ -176,6 +176,10 @@ export const sysResources = [
         path: "/sys/suite/setting",
         component: "/sys/suite/setting/index.vue",
         meta: {
+          show: () => {
+            const settingStore = useSettingStore();
+            return settingStore.isComm;
+          },
           icon: "ion:cart",
           permission: "sys:settings:edit"
         }
@@ -186,38 +190,14 @@ export const sysResources = [
         path: "/sys/suite/trade",
         component: "/sys/suite/trade/index.vue",
         meta: {
+          show: () => {
+            const settingStore = useSettingStore();
+            return settingStore.isComm;
+          },
           icon: "ion:bag-check",
           permission: "sys:settings:edit"
         }
       }
-
-      // {
-      //   title: "商业版设置",
-      //   name: "SysCommercial",
-      //   meta: {
-      //     icon: "ion:document-text-outline",
-      //     permission: "sys:settings:view",
-      //     show: () => {
-      //       const settingStore = useSettingStore();
-      //       return settingStore.isComm;
-      //     }
-      //   },
-      //   children: [
-      //     {
-      //       title: "套餐设置",
-      //       name: "suite",
-      //       path: "/sys/commercial/suite",
-      //       meta: {
-      //         icon: "ion:document-text-outline",
-      //         permission: "sys:settings:view",
-      //         show: () => {
-      //           const settingStore = useSettingStore();
-      //           return settingStore.isComm;
-      //         }
-      //       }
-      //     }
-      //   ]
-      // }
     ]
   }
 ];

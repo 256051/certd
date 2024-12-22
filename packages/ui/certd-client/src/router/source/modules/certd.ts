@@ -1,3 +1,5 @@
+import { useSettingStore } from "/@/store/modules/settings";
+
 export const certdResources = [
   {
     title: "证书自动化",
@@ -44,6 +46,10 @@ export const certdResources = [
         path: "/certd/monitor/site",
         component: "/certd/monitor/site/index.vue",
         meta: {
+          show: () => {
+            const settingStore = useSettingStore();
+            return settingStore.isPlus;
+          },
           icon: "ion:videocam-outline",
           auth: true
         }
@@ -84,6 +90,10 @@ export const certdResources = [
             path: "/certd/monitor/cert",
             component: "/certd/monitor/cert/index.vue",
             meta: {
+              show: () => {
+                const settingStore = useSettingStore();
+                return settingStore.isPlus;
+              },
               icon: "ion:shield-checkmark-outline",
               auth: true,
               isMenu: false
@@ -130,6 +140,10 @@ export const certdResources = [
         name: "SuiteProduct",
         path: "/certd/suite",
         meta: {
+          show: () => {
+            const settingStore = useSettingStore();
+            return settingStore.isComm;
+          },
           icon: "ion:cart-outline",
           auth: true
         },
@@ -140,6 +154,10 @@ export const certdResources = [
             path: "/certd/suite/mine",
             component: "/certd/suite/mine/index.vue",
             meta: {
+              show: () => {
+                const settingStore = useSettingStore();
+                return settingStore.isComm;
+              },
               icon: "ion:gift-outline",
               auth: true
             }
@@ -150,6 +168,10 @@ export const certdResources = [
             path: "/certd/suite/buy",
             component: "/certd/suite/buy.vue",
             meta: {
+              show: () => {
+                const settingStore = useSettingStore();
+                return settingStore.isComm;
+              },
               icon: "ion:cart-outline",
               auth: true
             }
@@ -160,11 +182,14 @@ export const certdResources = [
             path: "/certd/trade",
             component: "/certd/trade/index.vue",
             meta: {
+              show: () => {
+                const settingStore = useSettingStore();
+                return settingStore.isComm;
+              },
               icon: "ion:bag-check-outline",
               auth: true
             }
           },
-
           {
             title: "支付返回",
             name: "PaymentReturn",

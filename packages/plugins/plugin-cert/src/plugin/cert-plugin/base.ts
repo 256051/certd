@@ -120,10 +120,11 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
 
   abstract doCertApply(): Promise<any>;
 
-  async execute(): Promise<void> {
+  async execute(): Promise<string | void> {
     const oldCert = await this.condition();
     if (oldCert != null) {
-      return await this.output(oldCert, false);
+      await this.output(oldCert, false);
+      return "skip";
     }
     const cert = await this.doCertApply();
     if (cert != null) {
@@ -258,6 +259,8 @@ cert.jks：jks格式证书文件，java服务器使用
       inputChanged = oldInput !== thisInput;
 
       if (inputChanged) {
+        this.logger.info(`旧参数：${oldInput}`);
+        this.logger.info(`新参数：${thisInput}`);
         this.logger.info("输入参数变更，准备申请新证书");
         return null;
       }
