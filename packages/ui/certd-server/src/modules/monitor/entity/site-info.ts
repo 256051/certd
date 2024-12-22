@@ -1,8 +1,8 @@
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 /**
  */
-// @Entity('cd_site_info')
+@Entity('cd_site_info')
 export class SiteInfoEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -12,16 +12,33 @@ export class SiteInfoEntity {
   name: string;
   @Column({ comment: '域名', length: 100 })
   domain: string;
-  @Column({ name: 'cert_info', comment: '证书详情', length: 1000 })
+  @Column({ comment: '其他域名', length: 4096 })
+  domains: string;
+
+  @Column({ name: 'cert_info', comment: '证书详情', length: 4096 })
   certInfo: string;
   @Column({ name: 'cert_status', comment: '证书状态', length: 100 })
   certStatus: string;
-  @Column({ name: 'cert_valid_to', comment: '证书到期时间', length: 100 })
-  certValidTo: Date;
-  @Column({ name: 'last_time', comment: '上次检查时间' })
-  lastTime: Date;
+
+  @Column({ name: 'cert_provider', comment: '证书颁发机构', length: 100 })
+  certProvider: string;
+
+  @Column({ name: 'cert_expires_time', comment: '证书到期时间' })
+  certExpiresTime: number;
+  @Column({ name: 'last_check_time', comment: '上次检查时间' })
+  lastCheckTime: number;
+  @Column({ name: 'check_status', comment: '检查状态' })
+  checkStatus: string;
+
   @Column({ name: 'pipeline_id', comment: '关联流水线id' })
   pipelineId: number;
+
+  @Column({ name: 'cert_info_id', comment: '证书id' })
+  certInfoId: number;
+
+  @Column({ name: 'disabled', comment: '禁用启用' })
+  disabled: boolean;
+
   @Column({ name: 'create_time', comment: '创建时间', default: () => 'CURRENT_TIMESTAMP' })
   createTime: Date;
   @Column({ name: 'update_time', comment: '修改时间', default: () => 'CURRENT_TIMESTAMP' })
