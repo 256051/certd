@@ -1,5 +1,5 @@
 import { ALL, Body, Controller, Inject, Post, Provide, Query } from '@midwayjs/core';
-import { AccessService } from '../../../modules/pipeline/service/access-service.js';
+import { AccessService } from '@certd/lib-server';
 import { AccessController } from '../../pipeline/access-controller.js';
 import { checkComm } from '@certd/plus-core';
 

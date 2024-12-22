@@ -9,6 +9,7 @@ import "@vue-js-cron/light/dist/light.css";
 import Plugins from "./plugins/index";
 import LoadingButton from "./loading-button.vue";
 import IconSelect from "./icon-select.vue";
+import ExpiresTimeText from "./expires-time-text.vue";
 export default {
   install(app: any) {
     app.component("PiContainer", PiContainer);
@@ -25,7 +26,7 @@ export default {
 
     app.component("LoadingButton", LoadingButton);
     app.component("IconSelect", IconSelect);
-
+    app.component("ExpiresTimeText", ExpiresTimeText);
     app.use(vip);
     app.use(Plugins);
   }

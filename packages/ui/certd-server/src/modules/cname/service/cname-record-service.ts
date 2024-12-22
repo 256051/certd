@@ -7,7 +7,7 @@ import { createDnsProvider, IDnsProvider, parseDomain } from '@certd/plugin-cert
 import { CnameProvider, CnameRecord } from '@certd/pipeline';
 import { cache, http, logger, utils } from '@certd/basic';
 
-import { AccessService } from '../../pipeline/service/access-service.js';
+import { AccessService } from '@certd/lib-server';
 import { isDev } from '@certd/basic';
 import { walkTxtRecord } from '@certd/acme-client';
 import { CnameProviderService } from './cname-provider-service.js';

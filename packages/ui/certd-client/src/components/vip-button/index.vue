@@ -231,13 +231,13 @@ function openUpgrade() {
       title: "基础版",
       desc: "免费使用",
       type: "free",
-      privilege: ["证书申请功能无限制", "证书流水线数量10条", "常用的主机、cdn等部署插件"]
+      privilege: ["证书申请功能无限制", "证书流水线数量无限制", "常用的主机、云平台、cdn等部署插件"]
     },
     plus: {
       title: "专业版",
       desc: "功能增强，适用于个人企业内部使用",
       type: "plus",
-      privilege: ["可加VIP群，需求优先实现", "证书流水线数量无限制", "免配置发邮件功能", "支持宝塔、易盾、群晖、1Panel、cdnfly等部署插件"],
+      privilege: ["可加VIP群，需求优先实现", "宝塔、群晖、1Panel、易盾等部署插件", "站点证书监控", "更多通知种类"],
       trial: {
         title: "7天试用",
         click: () => {

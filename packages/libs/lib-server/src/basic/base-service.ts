@@ -99,7 +99,7 @@ export abstract class BaseService<T> {
    * 新增|修改
    * @param param 数据
    */
-  async addOrUpdate(param) {
+  async addOrUpdate(param: any) {
     await this.getRepository().save(param);
   }
 
@@ -107,7 +107,7 @@ export abstract class BaseService<T> {
    * 新增
    * @param param 数据
    */
-  async add(param) {
+  async add(param: any) {
     const now = new Date();
     param.createTime = now;
     param.updateTime = now;
@@ -122,7 +122,7 @@ export abstract class BaseService<T> {
    * 修改
    * @param param 数据
    */
-  async update(param) {
+  async update(param: any) {
     if (!param.id) throw new ValidateException('id 不能为空');
     param.updateTime = new Date();
     await this.addOrUpdate(param);

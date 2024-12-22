@@ -12,14 +12,19 @@
           <div>
             <span>您好，{{ userInfo.nickName || userInfo.username }}， 欢迎使用 【{{ siteInfo.title }}】</span>
           </div>
-          <div>
-            <a-tag color="green" class="flex-inline pointer"> <fs-icon icon="ion:time-outline" class="mr-5"></fs-icon> {{ now }}</a-tag>
-            <a-badge v-if="userStore.isAdmin" :dot="hasNewVersion">
-              <a-tag color="blue" class="flex-inline pointer" :title="'最新版本:' + latestVersion" @click="openUpgradeUrl()">
-                <fs-icon icon="ion:rocket-outline" class="mr-5"></fs-icon>
-                v{{ version }}
-              </a-tag>
-            </a-badge>
+          <div class="flex-o">
+            <a-tag color="green" class="flex-inline pointer m-0"> <fs-icon icon="ion:time-outline"></fs-icon> {{ now }}</a-tag>
+            <template v-if="userStore.isAdmin">
+              <a-divider type="vertical" />
+              <a-badge :dot="hasNewVersion">
+                <a-tag color="blue" class="flex-inline pointer m-0" :title="'最新版本:' + latestVersion" @click="openUpgradeUrl()">
+                  <fs-icon icon="ion:rocket-outline" class="mr-5"></fs-icon>
+                  v{{ version }}
+                </a-tag>
+              </a-badge>
+            </template>
+            <a-divider type="vertical" />
+            <suite-card class="m-0"></suite-card>
           </div>
         </div>
       </div>
@@ -82,7 +87,7 @@
     <div v-if="pluginGroups" class="plugin-list">
       <a-card>
         <template #title>
-          支持的部署任务列表 <a-tag color="green">{{ pluginGroups.groups.all.plugins.length }}</a-tag>
+          已支持的部署任务总览 <a-tag color="green">{{ pluginGroups.groups.all.plugins.length }}</a-tag>
         </template>
         <a-row :gutter="10">
           <a-col v-for="item of pluginGroups.groups.all.plugins" :key="item.name" class="plugin-item-col" :span="4">
@@ -118,7 +123,7 @@ import TutorialButton from "/@/components/tutorial/index.vue";
 import DayCount from "./charts/day-count.vue";
 import PieCount from "./charts/pie-count.vue";
 import ExpiringList from "./charts/expiring-list.vue";
-
+import SuiteCard from "./suite-card.vue";
 import { useSettingStore } from "/@/store/modules/settings";
 import { SiteInfo } from "/@/api/modules/api.basic";
 import { UserInfoRes } from "/@/api/modules/api.user";

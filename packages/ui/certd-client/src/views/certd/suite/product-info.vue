@@ -1,11 +1,12 @@
 <template>
   <a-card :title="product.title" class="product-card">
     <template #extra>
-      <a-tag>{{ product.type }}</a-tag>
+      <fs-values-format v-model="product.type" :dict="productTypeDictRef"></fs-values-format>
     </template>
 
-    <div>{{ product.intro }}</div>
-    <div class="hr">
+    <div class="product-intro">{{ product.intro || "暂无介绍" }}</div>
+    <a-divider />
+    <div>
       <div class="flex-between mt-5">
         <div class="flex-o"><fs-icon icon="ant-design:check-outlined" class="color-green mr-5" /> 流水线条数：</div>
         <suite-value :model-value="product.content.maxPipelineCount" unit="条" />
@@ -20,13 +21,12 @@
       </div>
       <div class="flex-between mt-5">
         <div class="flex-o"><fs-icon icon="ant-design:check-outlined" class="color-green mr-5" /> 证书监控：</div>
-        <a-tag v-if="product.content.sproductonitor" color="green" class="m-0">支持</a-tag>
-        <a-tag v-else color="gray" class="m-0">不支持</a-tag>
+        <suite-value :model-value="product.content.maxMonitorCount" unit="个" />
       </div>
     </div>
-
-    <div class="duration flex-between mt-5 hr">
-      <div class="flex-o">时长</div>
+    <a-divider />
+    <div class="duration flex-between mt-5">
+      <div class="flex-o duration-label">时长</div>
       <div class="duration-list">
         <div
           v-for="dp of product.durationPrices"
@@ -39,8 +39,8 @@
         </div>
       </div>
     </div>
-
-    <div class="price flex-between mt-5 hr">
+    <a-divider />
+    <div class="price flex-between mt-5">
       <div class="flex-o">价格</div>
       <div class="flex-o price-text">
         <price-input style="font-size: 18px; color: red" :model-value="selected?.price" :edit="false" />
@@ -58,11 +58,19 @@ import { durationDict } from "/@/views/certd/suite/api";
 import SuiteValue from "/@/views/sys/suite/product/suite-value.vue";
 import PriceInput from "/@/views/sys/suite/product/price-input.vue";
 import { ref } from "vue";
+import { dict } from "@fast-crud/fast-crud";
 
 const props = defineProps<{
   product: any;
 }>();
 const selected = ref(props.product.durationPrices[0]);
+
+const productTypeDictRef = dict({
+  data: [
+    { value: "suite", label: "套餐", color: "green" },
+    { value: "addon", label: "加量包", color: "blue" }
+  ]
+});
 
 const emit = defineEmits(["order"]);
 async function doOrder() {
@@ -72,8 +80,30 @@ async function doOrder() {
 
 <style lang="less">
 .product-card {
+  .ant-card-body {
+    padding: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    .product-intro {
+      font-size: 13px;
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 28px;
+      height: 28px;
+    }
+
+    .ant-divider {
+      margin: 8px 0;
+    }
+  }
+  .duration-label {
+    width: 32px;
+  }
   .duration-list {
     display: flex;
+    flex-wrap: wrap;
     .duration-item {
       width: 50px;
       border: 1px solid #cdcdcd;

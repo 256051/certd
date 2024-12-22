@@ -36,6 +36,10 @@ export const Constants = {
       code: 88,
       message: '需要VIP',
     },
+    needsuite: {
+      code: 89,
+      message: '需要购买或升级套餐',
+    },
     loginError: {
       code: 2,
       message: '登录失败',

@@ -12,17 +12,13 @@
 
       <div class="flex-o mt-5">
         时长：
-        <a-tag color="green"> {{ durationDict.dataMap[formRef.duration]?.label }}</a-tag>
+        <duration-value v-model="formRef.duration"></duration-value>
       </div>
       <div class="flex-o mt-5">价格： <price-input :edit="false" :model-value="durationSelected.price"></price-input></div>
 
       <div class="flex-o mt-5">
         支付方式：
-        <a-select v-model:value="formRef.payType">
-          <a-select-option value="yizhifu">易支付</a-select-option>
-          <a-select-option value="alipay">支付宝</a-select-option>
-          <a-select-option value="wxpay">微信支付</a-select-option>
-        </a-select>
+        <fs-dict-select v-model:value="formRef.payType" :dict="paymentsDictRef" style="width: 200px"> </fs-dict-select>
       </div>
     </div>
   </a-modal>
@@ -30,11 +26,13 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { durationDict, OrderModalOpenReq, TradeCreate } from "/@/views/certd/suite/api";
+import { GetPaymentTypes, OrderModalOpenReq, TradeCreate } from "/@/views/certd/suite/api";
 import SuiteValue from "/@/views/sys/suite/product/suite-value.vue";
 import PriceInput from "/@/views/sys/suite/product/price-input.vue";
-import { notification } from "ant-design-vue";
 import modal from "/@/views/certd/notification/notification-selector/modal/index.vue";
+import { dict } from "@fast-crud/fast-crud";
+import { notification } from "ant-design-vue";
+import DurationValue from "/@/views/sys/suite/product/duration-value.vue";
 
 const openRef = ref(false);
 
@@ -50,11 +48,26 @@ async function open(opts: OrderModalOpenReq) {
   formRef.value.productId = opts.product.id;
   formRef.value.duration = opts.duration;
   formRef.value.num = opts.num ?? 1;
-  formRef.value.payType = "alipay";
 }
+const paymentsDictRef = dict({
+  async getData() {
+    return await GetPaymentTypes();
+  },
+  onReady: ({ dict }) => {
+    if (dict.data.length > 0) {
+      formRef.value.payType = dict.data[0].value;
+    }
+  }
+});
 
 async function orderCreate() {
   console.log("orderCreate", formRef.value);
+  if (!formRef.value.payType) {
+    notification.error({
+      message: "请选择支付方式"
+    });
+    return;
+  }
   const paymentReq = await TradeCreate({
     productId: formRef.value.productId,
     duration: formRef.value.duration,

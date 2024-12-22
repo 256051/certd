@@ -1,50 +1,19 @@
 <template>
-  <fs-page class="page-cert">
-    <template #header>
-      <div class="title">
-        套餐管理
-        <span class="sub"> 必须设置一个初始套餐 </span>
-      </div>
-    </template>
-    <fs-crud ref="crudRef" v-bind="crudBinding">
-      <template #pagination-left>
-        <a-tooltip title="批量删除">
-          <fs-button icon="DeleteOutlined" @click="handleBatchDelete"></fs-button>
-        </a-tooltip>
-      </template>
-    </fs-crud>
-  </fs-page>
+  <fs-crud ref="crudRef" v-bind="crudBinding"> </fs-crud>
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from "vue";
+import { defineEmits, onMounted, ref } from "vue";
 import { useFs } from "@fast-crud/fast-crud";
 import createCrudOptions from "./crud";
-import { message, Modal } from "ant-design-vue";
-import { DeleteBatch } from "./api";
 
 defineOptions({
   name: "ProductManager"
 });
-const { crudBinding, crudRef, crudExpose, context } = useFs({ createCrudOptions });
+const emit = defineEmits(["refreshed"]);
 
-const selectedRowKeys = context.selectedRowKeys;
-const handleBatchDelete = () => {
-  if (selectedRowKeys.value?.length > 0) {
-    Modal.confirm({
-      title: "确认",
-      content: `确定要批量删除这${selectedRowKeys.value.length}条记录吗`,
-      async onOk() {
-        await DeleteBatch(selectedRowKeys.value);
-        message.info("删除成功");
-        crudExpose.doRefresh();
-        selectedRowKeys.value = [];
-      }
-    });
-  } else {
-    message.error("请先勾选记录");
-  }
-};
+const context: any = { emit };
+const { crudBinding, crudRef, crudExpose } = useFs({ createCrudOptions, context });
 
 // 页面打开后获取列表数据
 onMounted(() => {

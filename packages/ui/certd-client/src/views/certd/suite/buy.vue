@@ -4,8 +4,14 @@
       <div class="title">套餐购买</div>
     </template>
     <div class="suite-buy-content">
-      <a-row :gutter="12">
-        <a-col v-for="item of products" :key="item.id" class="mb-10" :xs="12" :sm="12" :md="8" :lg="6" :xl="6" :xxl="4">
+      <div class="mb-10">
+        <a-card>
+          <div>套餐说明：多个套餐内的数量可以叠加</div>
+          <div v-if="suiteIntro" v-html="suiteIntro"></div>
+        </a-card>
+      </div>
+      <a-row :gutter="8">
+        <a-col v-for="item of products" :key="item.id" class="mb-10 suite-card-col">
           <product-info :product="item" @order="doOrder" />
         </a-col>
       </a-row>
@@ -34,6 +40,13 @@ async function doOrder(req: any) {
     ...req
   });
 }
+
+const suiteIntro = ref("");
+async function loadSuiteIntro() {
+  const res = await api.GetSuiteSetting();
+  suiteIntro.value = res.intro;
+}
+loadSuiteIntro();
 </script>
 
 <style lang="less">
@@ -75,6 +88,11 @@ async function doOrder(req: any) {
         }
         margin-right: 10px;
       }
+    }
+
+    .suite-card-col {
+      width: 20% !important;
+      min-width: 360px !important;
     }
   }
 }

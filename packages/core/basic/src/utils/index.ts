@@ -8,6 +8,7 @@ export * from './util.hash.js';
 export * from './util.merge.js';
 export * from './util.cache.js';
 export * from './util.string.js';
+export * from './util.lock.js';
 import { stringUtils } from './util.string.js';
 import sleep from './util.sleep.js';
 import { http, download } from './util.request.js';
@@ -24,6 +25,8 @@ import { domainUtils } from './util.domain.js';
 import { optionsUtils } from './util.options.js';
 import { nanoid } from 'nanoid';
 import * as id from './util.id.js';
+import { locker } from './util.lock.js';
+import { mitter } from './util.mitter.js';
 export const utils = {
   sleep,
   http,
@@ -41,4 +44,6 @@ export const utils = {
   domain: domainUtils,
   options: optionsUtils,
   string: stringUtils,
+  locker,
+  mitter,
 };

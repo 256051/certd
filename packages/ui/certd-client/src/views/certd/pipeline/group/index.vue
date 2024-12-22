@@ -2,7 +2,7 @@
   <fs-page>
     <template #header>
       <div class="title">
-        分组管理
+        流水线分组管理
         <span class="sub">管理流水线分组</span>
       </div>
     </template>

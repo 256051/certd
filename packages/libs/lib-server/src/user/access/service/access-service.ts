@@ -1,7 +1,7 @@
 import { Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
-import { BaseService, PageReq, PermissionException, ValidateException } from '@certd/lib-server';
+import { BaseService, PageReq, PermissionException, ValidateException } from '../../../index.js';
 import { AccessEntity } from '../entity/access.js';
 import { AccessDefine, accessRegistry, newAccess } from '@certd/pipeline';
 import { EncryptService } from './encrypt-service.js';
@@ -18,6 +18,7 @@ export class AccessService extends BaseService<AccessEntity> {
   @Inject()
   encryptService: EncryptService;
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
   getRepository() {
     return this.repository;

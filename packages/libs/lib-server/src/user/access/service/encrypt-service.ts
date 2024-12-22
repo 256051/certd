@@ -1,7 +1,6 @@
 import { Init, Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
 import crypto from 'crypto';
-import { SysSettingsService } from '@certd/lib-server';
-import { SysPrivateSettings } from '@certd/lib-server';
+import { SysPrivateSettings, SysSettingsService } from '../../../system/index.js';
 
 /**
  * 授权

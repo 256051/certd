@@ -1,7 +1,7 @@
 import { request } from "/src/api/service";
 
-export function createPaymentApi() {
-  const apiPrefix = "/sys/suite/payment";
+export function createApi() {
+  const apiPrefix = "/pi/pipeline/group";
   return {
     async GetList(query: any) {
       return await request({
@@ -42,35 +42,13 @@ export function createPaymentApi() {
         params: { id }
       });
     },
-
-    async GetOptions(id: number) {
+    async ListAll() {
       return await request({
-        url: apiPrefix + "/options",
+        url: apiPrefix + "/all",
         method: "post"
-      });
-    },
-
-    async GetSimpleInfo(id: number) {
-      return await request({
-        url: apiPrefix + "/simpleInfo",
-        method: "post",
-        params: { id }
-      });
-    },
-
-    async GetDefineTypes() {
-      return await request({
-        url: apiPrefix + "/getTypeDict",
-        method: "post"
-      });
-    },
-
-    async GetProviderDefine(type: string) {
-      return await request({
-        url: apiPrefix + "/define",
-        method: "post",
-        params: { type }
       });
     }
   };
 }
+
+export const pipelineGroupApi = createApi();

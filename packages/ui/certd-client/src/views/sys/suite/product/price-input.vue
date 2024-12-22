@@ -10,7 +10,7 @@ import { computed } from "vue";
 
 const props = defineProps<{
   modelValue?: number;
-  edit: boolean;
+  edit?: boolean;
 }>();
 
 const priceValue = computed(() => {

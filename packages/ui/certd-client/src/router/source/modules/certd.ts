@@ -71,7 +71,7 @@ export const certdResources = [
         }
       },
       {
-        title: "分组管理",
+        title: "流水线分组管理",
         name: "PipelineGroupManager",
         path: "/certd/pipeline/group",
         component: "/certd/pipeline/group/index.vue",
@@ -87,6 +87,47 @@ export const certdResources = [
         component: "/certd/suite/buy.vue",
         meta: {
           icon: "mdi:format-list-group",
+          auth: true
+        }
+      },
+      {
+        title: "我的订单",
+        name: "MyTrade",
+        path: "/certd/trade",
+        component: "/certd/trade/index.vue",
+        meta: {
+          icon: "ion:person-outline",
+          auth: true
+        }
+      },
+      {
+        title: "支付返回",
+        name: "PaymentReturn",
+        path: "/certd/payment/return/:type",
+        component: "/certd/payment/return.vue",
+        meta: {
+          icon: "ion:person-outline",
+          auth: false,
+          isMenu: false
+        }
+      },
+      {
+        title: "站点证书监控",
+        name: "SiteCertMonitor",
+        path: "/certd/monitor/site",
+        component: "/certd/monitor/site/index.vue",
+        meta: {
+          icon: "ion:person-outline",
+          auth: true
+        }
+      },
+      {
+        title: "证书仓库",
+        name: "CertStore",
+        path: "/certd/monitor/cert",
+        component: "/certd/monitor/cert/index.vue",
+        meta: {
+          icon: "ion:person-outline",
           auth: true
         }
       },

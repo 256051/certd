@@ -206,6 +206,9 @@ export class UserService extends BaseService<UserEntity> {
     });
 
     delete newUser.password;
+
+    utils.mitter.emit('register', { userId: newUser.id });
+
     return newUser;
   }
 

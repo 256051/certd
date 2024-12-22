@@ -10,9 +10,8 @@ import {
   PluginRequestHandleReq,
   TaskInstanceContext,
 } from '@certd/pipeline';
-import { AccessService } from '../../modules/pipeline/service/access-service.js';
+import { AccessService, AccessGetter } from '@certd/lib-server';
 import { EmailService } from '../../modules/basic/service/email-service.js';
-import { AccessGetter } from '../../modules/pipeline/service/access-getter.js';
 import { http, HttpRequestConfig, logger, mergeUtils, utils } from '@certd/basic';
 import { NotificationService } from '../../modules/pipeline/service/notification-service.js';
 

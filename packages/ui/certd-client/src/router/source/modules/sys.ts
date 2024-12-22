@@ -171,46 +171,24 @@ export const sysResources = [
         }
       },
       {
-        title: "套餐支付",
-        name: "SuiteManager",
-        path: "/sys/suite",
-        redirect: "/sys/suite/product",
+        title: "套餐设置",
+        name: "SuiteSetting",
+        path: "/sys/suite/setting",
+        component: "/sys/suite/setting/index.vue",
         meta: {
-          icon: "ion:golf-outline",
-          permission: "sys:settings:view"
-        },
-        children: [
-          {
-            title: "套餐管理",
-            name: "ProductManager",
-            path: "/sys/suite/product",
-            component: "/sys/suite/product/index.vue",
-            meta: {
-              icon: "ion:person-outline",
-              permission: "sys:settings:edit"
-            }
-          },
-          {
-            title: "支付管理",
-            name: "PaymentManager",
-            path: "/sys/suite/payment",
-            component: "/sys/suite/payment/index.vue",
-            meta: {
-              icon: "ion:person-outline",
-              permission: "sys:settings:edit"
-            }
-          },
-          {
-            title: "订单管理",
-            name: "OrderManager",
-            path: "/sys/suite/order",
-            component: "/sys/suite/order/index.vue",
-            meta: {
-              icon: "ion:person-outline",
-              permission: "sys:settings:edit"
-            }
-          }
-        ]
+          icon: "ion:person-outline",
+          permission: "sys:settings:edit"
+        }
+      },
+      {
+        title: "订单管理",
+        name: "OrderManager",
+        path: "/sys/suite/trade",
+        component: "/sys/suite/trade/index.vue",
+        meta: {
+          icon: "ion:person-outline",
+          permission: "sys:settings:edit"
+        }
       }
 
       // {

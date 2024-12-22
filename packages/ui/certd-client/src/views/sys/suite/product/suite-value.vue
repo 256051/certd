@@ -1,6 +1,9 @@
 <template>
   <div v-if="target" class="cd-suite-value">
-    <a-tag :color="target.color" class="m-0">{{ target.label }}</a-tag>
+    <a-tag :color="target.color" class="m-0">
+      <span v-if="used != null">{{ used }} /</span>
+      {{ target.label }}
+    </a-tag>
   </div>
 </template>
 
@@ -10,6 +13,7 @@ import { computed } from "vue";
 const props = defineProps<{
   modelValue: number;
   unit?: string;
+  used?: number;
 }>();
 
 const target = computed(() => {
@@ -29,10 +33,14 @@ const target = computed(() => {
       color: "red"
     };
   } else {
+    let color = "blue";
+    if (props.used != null) {
+      color = props.used >= props.modelValue ? "red" : "green";
+    }
     return {
       value: props.modelValue,
       label: props.modelValue + (props.unit || ""),
-      color: "blue"
+      color: color
     };
   }
 });

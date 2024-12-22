@@ -51,3 +51,17 @@ export async function TradeCreate(form: TradeCreateReq) {
     data: form
   });
 }
+
+export async function GetPaymentTypes() {
+  return await request({
+    url: "/suite/trade/payments",
+    method: "POST"
+  });
+}
+
+export async function GetSuiteSetting() {
+  return await request({
+    url: "/suite/settings/get",
+    method: "POST"
+  });
+}

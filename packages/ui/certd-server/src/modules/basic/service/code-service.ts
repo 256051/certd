@@ -5,8 +5,8 @@ import { SmsServiceFactory } from '../sms/factory.js';
 import { ISmsService } from '../sms/api.js';
 import { CodeErrorException } from '@certd/lib-server/dist/basic/exception/code-error-exception.js';
 import { EmailService } from './email-service.js';
-import { AccessService } from '../../pipeline/service/access-service.js';
-import { AccessSysGetter } from '../../pipeline/service/access-sys-getter.js';
+import { AccessService } from '@certd/lib-server';
+import { AccessSysGetter } from '@certd/lib-server';
 import { isComm } from '@certd/plus-core';
 
 // {data: '<svg.../svg>', text: 'abcd'}

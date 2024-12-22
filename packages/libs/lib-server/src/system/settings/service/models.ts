@@ -136,3 +136,35 @@ export class SysHeaderMenus extends BaseSettings {
 
   menus: MenuItem[];
 }
+
+export type PaymentItem = {
+  enabled: boolean;
+  accessId?: number;
+};
+
+export class SysPaymentSetting extends BaseSettings {
+  static __title__ = '支付设置';
+  static __key__ = 'sys.payment';
+  static __access__ = 'private';
+
+  yizhifu?: PaymentItem = { enabled: false };
+
+  alipay?: PaymentItem = { enabled: false };
+
+  wxpay?: PaymentItem = { enabled: false };
+}
+
+export class SysSuiteSetting extends BaseSettings {
+  static __title__ = '套餐设置';
+  static __key__ = 'sys.suite';
+  static __access__ = 'private';
+
+  enabled = false;
+
+  registerGift?: {
+    productId: number;
+    duration: number;
+  };
+
+  intro?: string;
+}

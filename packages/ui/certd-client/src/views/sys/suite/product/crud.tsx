@@ -1,17 +1,12 @@
 import * as api from "./api";
-import { useI18n } from "vue-i18n";
-import { Ref, ref } from "vue";
-import { useRouter } from "vue-router";
 import { AddReq, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
-import { useUserStore } from "/@/store/modules/user";
-import { useSettingStore } from "/@/store/modules/settings";
 import SuiteValue from "./suite-value.vue";
 import SuiteValueEdit from "./suite-value-edit.vue";
 import PriceEdit from "./price-edit.vue";
+import DurationPriceValue from "/@/views/sys/suite/product/duration-price-value.vue";
 
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
-  const router = useRouter();
-  const { t } = useI18n();
+  const emit = context.emit;
   const pageRequest = async (query: UserPageQuery): Promise<UserPageRes> => {
     return await api.GetList(query);
   };
@@ -29,34 +24,25 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
     return res;
   };
 
-  const userStore = useUserStore();
-  const settingStore = useSettingStore();
-  const selectedRowKeys: Ref<any[]> = ref([]);
-  context.selectedRowKeys = selectedRowKeys;
-
   return {
     crudOptions: {
-      settings: {
-        plugins: {
-          //这里使用行选择插件，生成行选择crudOptions配置，最终会与crudOptions合并
-          rowSelection: {
-            enabled: true,
-            order: -2,
-            before: true,
-            // handle: (pluginProps,useCrudProps)=>CrudOptions,
-            props: {
-              multiple: true,
-              crossPage: true,
-              selectedRowKeys
-            }
-          }
+      table: {
+        onRefreshed: () => {
+          emit("refreshed");
         }
+      },
+      search: {
+        show: false
       },
       request: {
         pageRequest,
         addRequest,
         editRequest,
         delRequest
+      },
+      pagination: {
+        show: false,
+        pageSize: 999999
       },
       rowHandle: {
         minWidth: 200,
@@ -71,7 +57,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             },
             content: {
               header: "套餐内容",
-              columns: ["content.maxDomainCount", "content.maxPipelineCount", "content.maxDeployCount", "content.siteMonitor"]
+              columns: ["content.maxDomainCount", "content.maxPipelineCount", "content.maxDeployCount", "content.maxMonitorCount"]
             },
             price: {
               header: "价格",
@@ -81,17 +67,17 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         }
       },
       columns: {
-        id: {
-          title: "ID",
-          key: "id",
-          type: "number",
-          column: {
-            width: 100
-          },
-          form: {
-            show: false
-          }
-        },
+        // id: {
+        //   title: "ID",
+        //   key: "id",
+        //   type: "number",
+        //   column: {
+        //     width: 100
+        //   },
+        //   form: {
+        //     show: false
+        //   }
+        // },
         title: {
           title: "套餐名称",
           type: "text",
@@ -123,7 +109,8 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             rules: [{ required: true, message: "此项必填" }]
           },
           column: {
-            width: 100
+            width: 80,
+            align: "center"
           },
           valueBuilder: ({ row }) => {
             if (row.content) {
@@ -205,37 +192,25 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             }
           }
         },
-        "content.siteMonitor": {
-          title: "支持证书监控",
-          type: "dict-switch",
-          dict: dict({
-            data: [
-              { label: "是", value: true, color: "success" },
-              { label: "否", value: false, color: "error" }
-            ]
-          }),
+        "content.maxMonitorCount": {
+          title: "证书监控数量",
+          type: "text",
           form: {
-            key: ["content", "siteMonitor"],
-            value: false
+            key: ["content", "maxMonitorCount"],
+            component: {
+              name: SuiteValueEdit,
+              vModel: "modelValue",
+              unit: "个"
+            },
+            rules: [{ required: true, message: "此项必填" }]
           },
           column: {
-            width: 120
-          }
-        },
-        isBootstrap: {
-          title: "是否初始套餐",
-          type: "dict-switch",
-          dict: dict({
-            data: [
-              { label: "是", value: true, color: "success" },
-              { label: "否", value: false, color: "gray" }
-            ]
-          }),
-          form: {
-            value: false
-          },
-          column: {
-            width: 120
+            width: 120,
+            component: {
+              name: SuiteValue,
+              vModel: "modelValue",
+              unit: "个"
+            }
           }
         },
         durationPrices: {
@@ -258,10 +233,26 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           },
           column: {
             component: {
-              name: PriceEdit,
-              vModel: "modelValue",
-              edit: false
-            }
+              name: DurationPriceValue,
+              vModel: "modelValue"
+            },
+            width: 350
+          }
+        },
+        supportBuy: {
+          title: "支持购买",
+          type: "dict-switch",
+          dict: dict({
+            data: [
+              { label: "是", value: true, color: "success" },
+              { label: "否", value: false, color: "gray" }
+            ]
+          }),
+          form: {
+            value: false
+          },
+          column: {
+            width: 120
           }
         },
         disabled: {
