@@ -9,7 +9,7 @@
     "dev": "cross-env NODE_ENV=local mwtsc --watch --run @midwayjs/mock/app",
     "dev-commlocal": "cross-env NODE_ENV=dev-commlocal mwtsc --watch --run @midwayjs/mock/app",
     "dev-commpro": "cross-env NODE_ENV=dev-commpro mwtsc --watch --run @midwayjs/mock/app",
-    "dev-pgd": "cross-env NODE_ENV=dev-pgd mwtsc --watch --run @midwayjs/mock/app",
+    "dev-pg": "cross-env NODE_ENV=dev-pg mwtsc --watch --run @midwayjs/mock/app",
     "dev-mysql": "cross-env NODE_ENV=dev-mysql mwtsc --watch --run @midwayjs/mock/app",
     "dev-localplus": "cross-env NODE_ENV=dev-localplus mwtsc --watch --run @midwayjs/mock/app",
     "dev-pgpl": "cross-env NODE_ENV=dev-pgpl mwtsc --watch --run @midwayjs/mock/app",

@@ -160,7 +160,7 @@ export const useSettingStore = defineStore({
     async checkUrlBound() {
       const userStore = useUserStore();
       const settingStore = useSettingStore();
-      if (!userStore.isAdmin || !settingStore.isPlus) {
+      if (!userStore.isAdmin) {
         return;
       }
 

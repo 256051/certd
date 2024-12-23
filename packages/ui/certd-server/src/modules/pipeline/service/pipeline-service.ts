@@ -205,11 +205,11 @@ export class PipelineService extends BaseService<PipelineEntity> {
     if (isComm()) {
       //校验pipelineCount
       const userSuite = await this.userSuiteService.getMySuiteDetail(bean.userId);
-      if (userSuite?.pipelineCount.used + 1 > userSuite?.pipelineCount.max) {
+      if (userSuite?.pipelineCount.max != -1 && userSuite?.pipelineCount.used + 1 > userSuite?.pipelineCount.max) {
         throw new NeedSuiteException(`对不起，您最多只能创建${userSuite?.pipelineCount.max}条流水线，请购买或升级套餐`);
       }
 
-      if (userSuite.domainCount.used + domains.length > userSuite.domainCount.max) {
+      if (userSuite.domainCount.max != -1 && userSuite.domainCount.used + domains.length > userSuite.domainCount.max) {
         throw new NeedSuiteException(`对不起，您最多只能添加${userSuite.domainCount.max}个域名，请购买或升级套餐`);
       }
     }
@@ -222,7 +222,7 @@ export class PipelineService extends BaseService<PipelineEntity> {
       const sysPublic = await this.sysSettingsService.getSetting<SysPublicSettings>(SysPublicSettings);
       const limitUserPipelineCount = sysPublic.limitUserPipelineCount;
       if (limitUserPipelineCount && limitUserPipelineCount > 0 && count >= limitUserPipelineCount) {
-        throw new NeedVIPException(`您最多只能创建${limitUserPipelineCount}条流水线`);
+        throw new NeedVIPException(`普通用户最多只能创建${limitUserPipelineCount}条流水线`);
       }
     }
   }

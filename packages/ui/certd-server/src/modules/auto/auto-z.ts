@@ -24,7 +24,9 @@ export class AutoZPrint {
   async init() {
     //监听https
     this.startHttpsServer();
-
+    if (isDev()) {
+      this.startHeapLog();
+    }
     const installInfo: SysInstallInfo = await this.sysSettingsService.getSetting(SysInstallInfo);
     logger.info('=========================================');
     logger.info('当前站点ID:', installInfo.siteId);
@@ -36,9 +38,6 @@ export class AutoZPrint {
     }
     logger.info('Certd已启动');
     logger.info('=========================================');
-    if (isDev()) {
-      this.startHeapLog();
-    }
   }
 
   startHeapLog() {
@@ -50,7 +49,7 @@ export class AutoZPrint {
     }, 60000);
   }
 
-  async startHttpsServer() {
+  startHttpsServer() {
     if (!this.httpsConfig.enabled) {
       logger.info('Https server is not enabled');
       return;

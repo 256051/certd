@@ -7,7 +7,7 @@ import { Cron } from '../cron/cron.js';
 
 @Autoload()
 @Scope(ScopeEnum.Request, { allowDowngrade: true })
-export class AutoRegisterCron {
+export class AutoCRegisterCron {
   @Inject()
   pipelineService: PipelineService;
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="my-suite-card">
+  <div v-if="detail.enabled" class="my-suite-card">
     <div class="flex-o">
       <a-popover>
         <template #content>
@@ -52,6 +52,7 @@ type SuiteValue = {
   used: number;
 };
 type SuiteDetail = {
+  enabled?: boolean;
   suites?: any[];
   expiresTime?: number;
   pipelineCount?: SuiteValue;

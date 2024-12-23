@@ -46,10 +46,6 @@ export const certdResources = [
         path: "/certd/monitor/site",
         component: "/certd/monitor/site/index.vue",
         meta: {
-          show: () => {
-            const settingStore = useSettingStore();
-            return settingStore.isPlus;
-          },
           icon: "ion:videocam-outline",
           auth: true
         }

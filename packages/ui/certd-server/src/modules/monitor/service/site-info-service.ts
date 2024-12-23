@@ -1,5 +1,5 @@
 import { Inject, Provide } from '@midwayjs/core';
-import { BaseService } from '@certd/lib-server';
+import { BaseService, NeedSuiteException, NeedVIPException, SysSettingsService, SysSuiteSetting } from '@certd/lib-server';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
 import { SiteInfoEntity } from '../entity/site-info.js';
@@ -8,6 +8,8 @@ import dayjs from 'dayjs';
 import { logger } from '@certd/basic';
 import { PeerCertificate } from 'tls';
 import { NotificationService } from '../../pipeline/service/notification-service.js';
+import { isComm, isPlus } from '@certd/plus-core';
+import { UserSuiteService } from '@certd/commercial-core';
 
 @Provide()
 export class SiteInfoService extends BaseService<SiteInfoEntity> {
@@ -17,9 +19,39 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
   @Inject()
   notificationService: NotificationService;
 
+  @Inject()
+  sysSettingsService: SysSettingsService;
+
+  @Inject()
+  userSuiteService: UserSuiteService;
+
   //@ts-ignore
   getRepository() {
     return this.repository;
+  }
+
+  async add(data: SiteInfoEntity) {
+    if (!data.userId) {
+      throw new Error('userId is required');
+    }
+
+    if (!isPlus()) {
+      const count = await this.getUserMonitorCount(data.userId);
+      if (count >= 1) {
+        throw new NeedVIPException('站点监控数量已达上限，请升级专业版');
+      }
+    }
+    if (isComm()) {
+      const suiteSetting = await this.sysSettingsService.getSetting<SysSuiteSetting>(SysSuiteSetting);
+      if (suiteSetting.enabled) {
+        const userSuite = await this.userSuiteService.getMySuiteDetail(data.userId);
+        if (userSuite.monitorCount.max != -1 && userSuite.monitorCount.max <= userSuite.monitorCount.used) {
+          throw new NeedSuiteException('站点监控数量已达上限，请购买或升级套餐');
+        }
+      }
+    }
+
+    return await this.repository.save(data);
   }
 
   async getUserMonitorCount(userId: number) {

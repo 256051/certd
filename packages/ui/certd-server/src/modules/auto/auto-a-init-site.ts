@@ -7,7 +7,7 @@ import crypto from 'crypto';
 
 @Autoload()
 @Scope(ScopeEnum.Request, { allowDowngrade: true })
-export class AutoInitSite {
+export class AutoAInitSite {
   @Inject()
   userService: UserService;
 

@@ -23,8 +23,10 @@
                 </a-tag>
               </a-badge>
             </template>
-            <a-divider type="vertical" />
-            <suite-card class="m-0"></suite-card>
+            <template v-if="settingsStore.isComm">
+              <a-divider type="vertical" />
+              <suite-card class="m-0"></suite-card>
+            </template>
           </div>
         </div>
       </div>
@@ -92,7 +94,7 @@
         <a-row :gutter="10">
           <a-col v-for="item of pluginGroups.groups.all.plugins" :key="item.name" class="plugin-item-col" :span="4">
             <a-card>
-              <a-tooltip :title="item.desc">
+              <a-tooltip :title="item.desc" class="flex-between">
                 <div class="plugin-item pointer">
                   <div class="icon">
                     <fs-icon :icon="item.icon" class="font-size-16 color-blue" />
@@ -101,6 +103,7 @@
                     <div class="title">{{ item.title }}</div>
                   </div>
                 </div>
+                <div class="flex-o"><vip-button v-if="item.needPlus" mode="icon" class="" /></div>
               </a-tooltip>
             </a-card>
           </a-col>
@@ -158,7 +161,7 @@ const settingStore = useSettingStore();
 const siteInfo: Ref<SiteInfo> = computed(() => {
   return settingStore.siteInfo;
 });
-
+const settingsStore = useSettingStore();
 const userStore = useUserStore();
 const userInfo: ComputedRef<UserInfoRes> = computed(() => {
   return userStore.getUserInfo;
