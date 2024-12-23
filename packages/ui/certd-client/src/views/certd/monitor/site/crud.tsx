@@ -1,12 +1,13 @@
 // @ts-ignore
 import { useI18n } from "vue-i18n";
-import { ref } from "vue";
 import { AddReq, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
-import { pipelineGroupApi } from "./api";
+import { siteInfoApi } from "./api";
+import dayjs from "dayjs";
+import { notification } from "ant-design-vue";
 
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const { t } = useI18n();
-  const api = pipelineGroupApi;
+  const api = siteInfoApi;
   const pageRequest = async (query: UserPageQuery): Promise<UserPageRes> => {
     return await api.GetList(query);
   };
@@ -51,7 +52,24 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         }
       },
       rowHandle: {
-        width: 200
+        fixed: "right",
+        width: 240,
+        buttons: {
+          check: {
+            order: 0,
+            type: "link",
+            text: null,
+            title: "立即检查",
+            icon: "ion:play-sharp",
+            click: async ({ row }) => {
+              await api.DoCheck(row.id);
+              await crudExpose.doRefresh();
+              notification.success({
+                message: "检查完成"
+              });
+            }
+          }
+        }
       },
       columns: {
         id: {
@@ -62,42 +80,11 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             show: false
           },
           column: {
-            width: 100,
-            editable: {
-              disabled: true
-            }
+            width: 80,
+            align: "center"
           },
           form: {
             show: false
-          }
-        },
-
-        domain: {
-          title: "网站域名",
-          search: {
-            show: true
-          },
-          type: "text",
-          form: {
-            rules: [{ required: true, message: "请输入域名" }]
-          },
-          column: {
-            width: 200,
-            sorter: true
-          }
-        },
-        port: {
-          title: "HTTPS端口",
-          search: {
-            show: false
-          },
-          type: "number",
-          form: {
-            value: 443,
-            rules: [{ required: true, message: "请输入端口" }]
-          },
-          column: {
-            width: 100
           }
         },
         name: {
@@ -110,11 +97,40 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             rules: [{ required: true, message: "请输入站点名称" }]
           },
           column: {
-            width: 200
+            width: 160
           }
         },
-        domains: {
-          title: "其他域名",
+        domain: {
+          title: "网站域名",
+          search: {
+            show: true
+          },
+          type: "text",
+          form: {
+            rules: [{ required: true, message: "请输入域名" }]
+          },
+          column: {
+            width: 160,
+            sorter: true
+          }
+        },
+        httpsPort: {
+          title: "HTTPS端口",
+          search: {
+            show: false
+          },
+          type: "number",
+          form: {
+            value: 443,
+            rules: [{ required: true, message: "请输入端口" }]
+          },
+          column: {
+            align: "center",
+            width: 100
+          }
+        },
+        certDomains: {
+          title: "证书域名",
           search: {
             show: false
           },
@@ -123,13 +139,13 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             show: false
           },
           column: {
-            width: 300,
+            width: 200,
             sorter: true,
-            show: false
+            show: true
           }
         },
-        certInfo: {
-          title: "证书详情",
+        certProvider: {
+          title: "证书颁发者",
           search: {
             show: false
           },
@@ -138,8 +154,8 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             show: false
           },
           column: {
-            width: 100,
-            show: false
+            width: 200,
+            sorter: true
           }
         },
         certStatus: {
@@ -147,13 +163,20 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           search: {
             show: true
           },
-          type: "text",
+          type: "dict-select",
+          dict: dict({
+            data: [
+              { label: "正常", value: "ok", color: "green" },
+              { label: "过期", value: "expired", color: "red" }
+            ]
+          }),
           form: {
             show: false
           },
           column: {
             width: 100,
-            sorter: true
+            sorter: true,
+            show: false
           }
         },
         certExpiresTime: {
@@ -166,7 +189,17 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             show: false
           },
           column: {
-            sorter: true
+            sorter: true,
+            cellRender({ value }) {
+              if (!value) {
+                return "-";
+              }
+              const expireDate = dayjs(value).format("YYYY-MM-DD");
+              const leftDays = dayjs(value).diff(dayjs(), "day");
+              const color = leftDays < 20 ? "red" : "#389e0d";
+              const percent = (leftDays / 90) * 100;
+              return <a-progress title={expireDate + "过期"} percent={percent} strokeColor={color} format={(percent: number) => `${leftDays}天`} />;
+            }
           }
         },
         lastCheckTime: {
@@ -187,12 +220,33 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           search: {
             show: false
           },
-          type: "text",
+          type: "dict-select",
+          dict: dict({
+            data: [
+              { label: "正常", value: "ok", color: "green" },
+              { label: "异常", value: "error", color: "red" }
+            ]
+          }),
           form: {
             show: false
           },
           column: {
             width: 100,
+            align: "center",
+            sorter: true
+          }
+        },
+        error: {
+          title: "错误信息",
+          search: {
+            show: false
+          },
+          type: "text",
+          form: {
+            show: false
+          },
+          column: {
+            width: 200,
             sorter: true
           }
         },
@@ -205,7 +259,8 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           type: "number",
           column: {
             width: 200,
-            sorter: true
+            sorter: true,
+            show: false
           }
         },
         certInfoId: {
@@ -234,7 +289,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             ]
           }),
           form: {
-            value: true
+            value: false
           },
           column: {
             width: 100,

@@ -3,6 +3,7 @@ import { In, Repository, SelectQueryBuilder } from 'typeorm';
 import { Inject } from '@midwayjs/core';
 import { TypeORMDataSourceManager } from '@midwayjs/typeorm';
 import { EntityManager } from 'typeorm/entity-manager/EntityManager.js';
+import { FindManyOptions } from 'typeorm';
 
 export type PageReq<T = any> = {
   page?: { offset: number; limit: number };
@@ -15,6 +16,7 @@ export type ListReq<T = any> = {
     asc: boolean;
   };
   buildQuery?: (bq: SelectQueryBuilder<any>) => void;
+  select?: any;
 };
 
 /**
@@ -53,7 +55,7 @@ export abstract class BaseService<T> {
    * 非分页查询
    * @param options
    */
-  async find(options) {
+  async find(options: FindManyOptions<T>) {
     return await this.getRepository().find(options);
   }
 

@@ -8,13 +8,16 @@ export class SiteInfoEntity {
   id: number;
   @Column({ name: 'user_id', comment: '用户id' })
   userId: number;
-  @Column({ comment: '站点名称', length: 100 })
+  @Column({ name: 'name', comment: '站点名称', length: 100 })
   name: string;
-  @Column({ comment: '域名', length: 100 })
+  @Column({ name: 'domain', comment: '域名', length: 100 })
   domain: string;
-  @Column({ comment: '其他域名', length: 4096 })
-  domains: string;
 
+  @Column({ name: 'https_port', comment: '端口' })
+  httpsPort: number;
+
+  @Column({ name: 'cert_domains', comment: '证书域名', length: 4096 })
+  certDomains: string;
   @Column({ name: 'cert_info', comment: '证书详情', length: 4096 })
   certInfo: string;
   @Column({ name: 'cert_status', comment: '证书状态', length: 100 })
@@ -29,7 +32,8 @@ export class SiteInfoEntity {
   lastCheckTime: number;
   @Column({ name: 'check_status', comment: '检查状态' })
   checkStatus: string;
-
+  @Column({ name: 'error', comment: '错误信息' })
+  error: string;
   @Column({ name: 'pipeline_id', comment: '关联流水线id' })
   pipelineId: number;
 

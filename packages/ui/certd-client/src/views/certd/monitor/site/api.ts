@@ -1,54 +1,58 @@
 import { request } from "/src/api/service";
 
-export function createApi() {
-  const apiPrefix = "/monitor/site";
-  return {
-    async GetList(query: any) {
-      return await request({
-        url: apiPrefix + "/page",
-        method: "post",
-        data: query
-      });
-    },
+const apiPrefix = "/monitor/site";
 
-    async AddObj(obj: any) {
-      return await request({
-        url: apiPrefix + "/add",
-        method: "post",
-        data: obj
-      });
-    },
+export const siteInfoApi = {
+  async GetList(query: any) {
+    return await request({
+      url: apiPrefix + "/page",
+      method: "post",
+      data: query
+    });
+  },
 
-    async UpdateObj(obj: any) {
-      return await request({
-        url: apiPrefix + "/update",
-        method: "post",
-        data: obj
-      });
-    },
+  async AddObj(obj: any) {
+    return await request({
+      url: apiPrefix + "/add",
+      method: "post",
+      data: obj
+    });
+  },
 
-    async DelObj(id: number) {
-      return await request({
-        url: apiPrefix + "/delete",
-        method: "post",
-        params: { id }
-      });
-    },
+  async UpdateObj(obj: any) {
+    return await request({
+      url: apiPrefix + "/update",
+      method: "post",
+      data: obj
+    });
+  },
 
-    async GetObj(id: number) {
-      return await request({
-        url: apiPrefix + "/info",
-        method: "post",
-        params: { id }
-      });
-    },
-    async ListAll() {
-      return await request({
-        url: apiPrefix + "/all",
-        method: "post"
-      });
-    }
-  };
-}
+  async DelObj(id: number) {
+    return await request({
+      url: apiPrefix + "/delete",
+      method: "post",
+      params: { id }
+    });
+  },
 
-export const pipelineGroupApi = createApi();
+  async GetObj(id: number) {
+    return await request({
+      url: apiPrefix + "/info",
+      method: "post",
+      params: { id }
+    });
+  },
+  async DoCheck(id: number) {
+    return await request({
+      url: apiPrefix + "/check",
+      method: "post",
+      data: { id }
+    });
+  },
+  async CheckAll() {
+    return await request({
+      url: apiPrefix + "/checkAll",
+      method: "post"
+    });
+  }
+};

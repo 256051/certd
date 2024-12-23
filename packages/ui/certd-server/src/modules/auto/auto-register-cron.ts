@@ -2,6 +2,8 @@ import { Autoload, Config, Init, Inject, Scope, ScopeEnum } from '@midwayjs/core
 import { PipelineService } from '../pipeline/service/pipeline-service.js';
 import { logger } from '@certd/basic';
 import { SysSettingsService } from '@certd/lib-server';
+import { SiteInfoService } from '../monitor/index.js';
+import { Cron } from '../cron/cron.js';
 
 @Autoload()
 @Scope(ScopeEnum.Request, { allowDowngrade: true })
@@ -17,8 +19,17 @@ export class AutoRegisterCron {
   @Config('cron.immediateTriggerOnce')
   private immediateTriggerOnce = false;
 
+  @Config('cron.immediateTriggerSiteMonitor')
+  private immediateTriggerSiteMonitor = false;
+
   @Inject()
   sysSettingsService: SysSettingsService;
+
+  @Inject()
+  siteInfoService: SiteInfoService;
+
+  @Inject()
+  cron: Cron;
 
   @Init()
   async init() {
@@ -30,5 +41,45 @@ export class AutoRegisterCron {
     // console.log('meta', meta);
     // const metas = listPropertyDataFromClass(CLASS_KEY, this.echoPlugin);
     // console.log('metas', metas);
+    this.registerSiteMonitorCron();
+  }
+
+  registerSiteMonitorCron() {
+    const job = async () => {
+      logger.info('站点证书检查开始执行');
+
+      let offset = 0;
+      const limit = 50;
+      while (true) {
+        const res = await this.siteInfoService.page({
+          query: { disabled: false },
+          page: { offset, limit },
+        });
+        const { records } = res;
+
+        if (records.length === 0) {
+          break;
+        }
+        offset += records.length;
+        for (const record of records) {
+          try {
+            await this.siteInfoService.doCheck(record, true);
+          } catch (e) {
+            logger.error(`站点${record.name}检查出错：`, e);
+          }
+        }
+      }
+
+      logger.info('站点证书检查完成');
+    };
+
+    this.cron.register({
+      name: 'siteMonitor',
+      cron: '0 0 0 * * *',
+      job,
+    });
+    if (this.immediateTriggerSiteMonitor) {
+      job();
+    }
   }
 }

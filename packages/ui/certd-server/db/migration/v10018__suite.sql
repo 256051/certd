@@ -107,14 +107,16 @@ CREATE TABLE "cd_site_info"
 
   "name"              varchar(100),
   "domain"            varchar(100),
-  "domains"           varchar(10240),
-  "cert_info"         varchar(10240),
 
+  "https_port"        integer,
+  "cert_domains"      varchar(10240),
+  "cert_info"         varchar(10240),
   "cert_provider"     varchar(100),
   "cert_status"       varchar(100),
   "cert_expires_time" integer,
   "last_check_time"   integer,
   "check_status"      varchar(100),
+  "error"             varchar(4096),
   "pipeline_id"       integer,
   "cert_info_id"      integer,
   "disabled"          boolean  NOT NULL DEFAULT (false),
@@ -125,7 +127,6 @@ CREATE TABLE "cd_site_info"
 
 CREATE INDEX "index_site_info_user_id" ON "cd_site_info" ("user_id");
 CREATE INDEX "index_site_info_domain" ON "cd_site_info" ("domain");
-CREATE INDEX "index_site_info_domains" ON "cd_site_info" ("domains");
 CREATE INDEX "index_site_info_pipeline" ON "cd_site_info" ("pipeline_id");
 
 

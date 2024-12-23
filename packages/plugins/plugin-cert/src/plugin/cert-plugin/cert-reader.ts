@@ -84,6 +84,10 @@ export class CertReader {
   }
 
   getCrtDetail(crt: string = this.cert.crt) {
+    return CertReader.readCertDetail(crt);
+  }
+
+  static readCertDetail(crt: string) {
     const detail = crypto.readCertificateInfo(crt.toString());
     const expires = detail.notAfter;
     return { detail, expires };

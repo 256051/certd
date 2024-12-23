@@ -170,33 +170,63 @@ export const sysResources = [
           permission: "sys:auth:user:view"
         }
       },
+
       {
-        title: "套餐设置",
-        name: "SuiteSetting",
-        path: "/sys/suite/setting",
-        component: "/sys/suite/setting/index.vue",
+        title: "套餐管理",
+        name: "SuiteManager",
+        path: "/sys/suite",
         meta: {
+          icon: "ion:cart-outline",
+          permission: "sys:settings:edit",
           show: () => {
             const settingStore = useSettingStore();
             return settingStore.isComm;
+          }
+        },
+        children: [
+          {
+            title: "套餐设置",
+            name: "SuiteSetting",
+            path: "/sys/suite/setting",
+            component: "/sys/suite/setting/index.vue",
+            meta: {
+              show: () => {
+                const settingStore = useSettingStore();
+                return settingStore.isComm;
+              },
+              icon: "ion:cart",
+              permission: "sys:settings:edit"
+            }
           },
-          icon: "ion:cart",
-          permission: "sys:settings:edit"
-        }
-      },
-      {
-        title: "订单管理",
-        name: "OrderManager",
-        path: "/sys/suite/trade",
-        component: "/sys/suite/trade/index.vue",
-        meta: {
-          show: () => {
-            const settingStore = useSettingStore();
-            return settingStore.isComm;
+          {
+            title: "订单管理",
+            name: "OrderManager",
+            path: "/sys/suite/trade",
+            component: "/sys/suite/trade/index.vue",
+            meta: {
+              show: () => {
+                const settingStore = useSettingStore();
+                return settingStore.isComm;
+              },
+              icon: "ion:bag-check",
+              permission: "sys:settings:edit"
+            }
           },
-          icon: "ion:bag-check",
-          permission: "sys:settings:edit"
-        }
+          {
+            title: "用户套餐",
+            name: "UserSuites",
+            path: "/sys/suite/user-suite",
+            component: "/certd/suite/user-suite/index.vue",
+            meta: {
+              show: () => {
+                const settingStore = useSettingStore();
+                return settingStore.isComm;
+              },
+              icon: "ion:gift-outline",
+              auth: true
+            }
+          }
+        ]
       }
     ]
   }

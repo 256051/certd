@@ -60,13 +60,17 @@ export class SiteInfoController extends CrudController<SiteInfoService> {
     return await super.delete(id);
   }
 
-  @Post('/all', { summary: Constants.per.authOnly })
-  async all() {
-    const list: any = await this.service.find({
-      where: {
-        userId: this.getUserId(),
-      },
-    });
-    return this.ok(list);
+  @Post('/check', { summary: Constants.per.authOnly })
+  async check(@Body('id') id: number) {
+    await this.service.checkUserId(id, this.getUserId());
+    await this.service.check(id, false);
+    return this.ok();
+  }
+
+  @Post('/checkAll', { summary: Constants.per.authOnly })
+  async checkAll() {
+    const userId = this.getUserId();
+    this.service.checkAll(userId);
+    return this.ok();
   }
 }

@@ -1,5 +1,5 @@
 import { Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
-import { BaseService, SysSettingsService, SysSiteInfo, ValidateException } from '@certd/lib-server';
+import { BaseService, SysInstallInfo, SysSettingsService, SysSiteInfo, ValidateException } from '@certd/lib-server';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
 import { NotificationEntity } from '../entity/notification.js';
@@ -186,5 +186,11 @@ export class NotificationService extends BaseService<NotificationEntity> {
         });
       }
     }
+  }
+
+  async getBindUrl(path: string) {
+    const installInfo = await this.sysSettingsService.getSetting<SysInstallInfo>(SysInstallInfo);
+    const bindUrl = installInfo.bindUrl || 'http://127.0.0.1:7001';
+    return bindUrl + path;
   }
 }

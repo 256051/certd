@@ -41,7 +41,7 @@ export const certdResources = [
         }
       },
       {
-        title: "证书监控",
+        title: "站点证书监控",
         name: "SiteCertMonitor",
         path: "/certd/monitor/site",
         component: "/certd/monitor/site/index.vue",
