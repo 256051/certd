@@ -5,6 +5,7 @@ import SuiteValueEdit from "/@/views/sys/suite/product/suite-value-edit.vue";
 import SuiteValue from "/@/views/sys/suite/product/suite-value.vue";
 import DurationValue from "/@/views/sys/suite/product/duration-value.vue";
 import dayjs from "dayjs";
+import createCrudOptionsUser from "/@/views/sys/authority/user/crud";
 
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const api = pipelineGroupApi;
@@ -118,13 +119,27 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         userId: {
           title: "用户",
           type: "table-select",
+          search: {
+            show: true
+          },
           dict: dict({
             async getNodesByValues(ids: number[]) {
               return await api.GetSimpleUserByIds(ids);
             },
             value: "id",
             label: "nickName"
-          })
+          }),
+          form: {
+            component: {
+              crossPage: true,
+              multiple: false,
+              select: {
+                placeholder: "点击选择"
+              },
+              createCrudOptions: createCrudOptionsUser
+              // crudOptionsOverride: crudOptionsOverride
+            }
+          }
         },
         productType: {
           title: "类型",
