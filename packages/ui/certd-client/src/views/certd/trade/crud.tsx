@@ -158,7 +158,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             data: [
               { label: "待支付", value: "wait_pay", color: "warning" },
               { label: "已支付", value: "paid", color: "success" },
-              { label: "已取消", value: "canceled", color: "error" }
+              { label: "已关闭", value: "closed", color: "error" }
             ]
           }),
           column: {
