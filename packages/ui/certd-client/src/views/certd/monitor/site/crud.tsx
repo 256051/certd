@@ -59,7 +59,9 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             order: 0,
             type: "link",
             text: null,
-            title: "立即检查",
+            tooltip: {
+              title: "立即检查"
+            },
             icon: "ion:play-sharp",
             click: async ({ row }) => {
               await api.DoCheck(row.id);
@@ -107,7 +109,10 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           },
           type: "text",
           form: {
-            rules: [{ required: true, message: "请输入域名" }]
+            rules: [
+              { required: true, message: "请输入域名" },
+              { type: "domains", message: "请输入正确的域名" }
+            ]
           },
           column: {
             width: 160,

@@ -39,14 +39,18 @@ export class SiteInfoController extends CrudController<SiteInfoService> {
   @Post('/add', { summary: Constants.per.authOnly })
   async add(@Body(ALL) bean: any) {
     bean.userId = this.getUserId();
-    return await super.add(bean);
+    const res = await this.service.add(bean);
+    await this.service.check(res.id);
+    return this.ok(res);
   }
 
   @Post('/update', { summary: Constants.per.authOnly })
   async update(@Body(ALL) bean) {
     await this.service.checkUserId(bean.id, this.getUserId());
     delete bean.userId;
-    return await super.update(bean);
+    await this.service.update(bean);
+    await this.service.check(bean.id);
+    return this.ok();
   }
   @Post('/info', { summary: Constants.per.authOnly })
   async info(@Query('id') id: number) {

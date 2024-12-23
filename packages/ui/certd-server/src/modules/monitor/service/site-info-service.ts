@@ -51,7 +51,16 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
       }
     }
 
-    return await this.repository.save(data);
+    data.disabled = false;
+    return await super.add(data);
+  }
+
+  async update(data: any) {
+    if (!data.id) {
+      throw new Error('id is required');
+    }
+    delete data.userId;
+    await super.update(data);
   }
 
   async getUserMonitorCount(userId: number) {

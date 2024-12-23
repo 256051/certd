@@ -106,7 +106,9 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             ]
           }),
           form: {
-            rules: [{ required: true, message: "此项必填" }]
+            value: "suite",
+            rules: [{ required: true, message: "此项必填" }],
+            helper: "目前没区别,重复购买可叠加数量"
           },
           column: {
             width: 80,

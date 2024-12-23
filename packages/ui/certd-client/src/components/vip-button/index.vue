@@ -231,6 +231,7 @@ function openUpgrade() {
       title: "基础版",
       desc: "社区免费版",
       type: "free",
+      icon: "lucide:package-open",
       privilege: ["证书申请无限制", "域名数量无限制", "证书流水线数量无限制", "常用的主机、云平台、cdn等部署插件", "邮件、webhook通知方式"]
     },
     plus: {
@@ -244,6 +245,7 @@ function openUpgrade() {
           openStarModal();
         }
       },
+      icon: "stash:thumb-up",
       price: 29.9,
       get() {
         return (
@@ -259,6 +261,7 @@ function openUpgrade() {
       title: "商业版",
       desc: "商业授权，可对外运营",
       type: "comm",
+      icon: "vaadin:handshake",
       privilege: ["拥有专业版所有特权", "允许商用，可修改logo、标题", "数据统计", "插件管理", "多用户无限制", "支持用户支付"],
       price: 399,
       get() {
@@ -293,8 +296,8 @@ function openUpgrade() {
         slots.push(
           <a-col span={8}>
             <div class={vipBlockClass}>
-              <h3 class="block-header">
-                <span>{item.title}</span>
+              <h3 class="block-header ">
+                <span class="flex-o">{item.title}</span>
                 {item.trial && (
                   <span class="trial">
                     <a-tooltip title={item.trial.message}>
@@ -303,8 +306,11 @@ function openUpgrade() {
                   </span>
                 )}
               </h3>
-              <div style="color:green">{item.desc}</div>
-              <ul class="flex-1">
+              <div style="color:green" class="flex-o">
+                <fs-icon icon={item.icon} class="fs-16 flex-o" />
+                {item.desc}
+              </div>
+              <ul class="flex-1 privilege">
                 {item.privilege.map((p: string) => (
                   <li class="flex-baseline">
                     <fs-icon class="color-green" icon="ion:checkmark-sharp" />
@@ -430,9 +436,13 @@ onMounted(() => {
     color: green;
   }
   .vip-type-vs {
+    .privilege {
+      .fs-icon {
+        color: green;
+      }
+    }
     .fs-icon {
       margin-right: 5px;
-      color: green;
     }
   }
 }

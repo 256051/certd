@@ -55,26 +55,26 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
       },
       actionbar: {
         buttons: {
-          add: { show: false },
-          buy: {
-            text: "购买",
-            type: "primary",
-            click() {
-              router.push({
-                path: "/certd/suite/buy"
-              });
-            }
-          }
+          add: { show: false }
+          // buy: {
+          //   text: "购买",
+          //   type: "primary",
+          //   click() {
+          //     router.push({
+          //       path: "/certd/suite/buy"
+          //     });
+          //   }
+          // }
         }
       },
       rowHandle: {
         width: 200,
         fixed: "right",
         buttons: {
-          view: { show: false },
+          view: { show: true },
           copy: { show: false },
           edit: { show: false },
-          remove: { show: false }
+          remove: { show: true }
           // continue:{
           //   text:"续期",
           //   type:"link",
@@ -114,6 +114,17 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           column: {
             width: 200
           }
+        },
+        userId: {
+          title: "用户",
+          type: "table-select",
+          dict: dict({
+            async getNodesByValues(ids: number[]) {
+              return await api.GetSimpleUserByIds(ids);
+            },
+            value: "id",
+            label: "nickName"
+          })
         },
         productType: {
           title: "类型",

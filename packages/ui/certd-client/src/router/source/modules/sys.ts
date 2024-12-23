@@ -216,7 +216,7 @@ export const sysResources = [
             title: "用户套餐",
             name: "UserSuites",
             path: "/sys/suite/user-suite",
-            component: "/certd/suite/user-suite/index.vue",
+            component: "/sys/suite/user-suite/index.vue",
             meta: {
               show: () => {
                 const settingStore = useSettingStore();

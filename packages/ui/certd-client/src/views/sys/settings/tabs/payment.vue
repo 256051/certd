@@ -68,7 +68,11 @@ const formState = reactive<
     alipay: PaymentItem;
     wxpay: PaymentItem;
   }>
->({});
+>({
+  yizhifu: { enabled: false },
+  alipay: { enabled: false },
+  wxpay: { enabled: false }
+});
 
 async function loadSettings() {
   const data: any = await api.SettingGet();

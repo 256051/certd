@@ -11,7 +11,7 @@
         <a-tab-pane key="register" tab="注册设置">
           <SettingRegister v-if="activeKey === 'register'" />
         </a-tab-pane>
-        <a-tab-pane key="payment" tab="支付设置">
+        <a-tab-pane v-if="settingsStore.isComm" key="payment" tab="支付设置">
           <SettingPayment v-if="activeKey === 'payment'" />
         </a-tab-pane>
       </a-tabs>
@@ -25,10 +25,11 @@ import SettingRegister from "/@/views/sys/settings/tabs/register.vue";
 import SettingPayment from "/@/views/sys/settings/tabs/payment.vue";
 import { useRoute, useRouter } from "vue-router";
 import { ref } from "vue";
+import { useSettingStore } from "/@/store/modules/settings";
 defineOptions({
   name: "SysSettings"
 });
-
+const settingsStore = useSettingStore();
 const activeKey = ref("");
 const route = useRoute();
 const router = useRouter();

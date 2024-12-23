@@ -76,7 +76,7 @@ async function orderCreate() {
     payType: formRef.value.payType
   });
 
-  function onPaid() {
+  async function onPaid() {
     openRef.value = false;
     router.push({
       path: "/"
@@ -114,7 +114,7 @@ async function orderCreate() {
 }
 
 function doAlipay(paymentReq: any) {
-  window.open(paymentReq.api);
+  window.open(paymentReq.url);
 }
 
 async function doWxpay(qrcodeText: string, onPaid: () => Promise<void>) {
@@ -157,7 +157,7 @@ function doYizhifu(paymentReq: any) {
    * 签名类型	sign_type	是	String	MD5	默认为MD5
    */
   const form = document.createElement("form");
-  form.action = paymentReq.api;
+  form.action = paymentReq.url;
   form.method = "post";
   form.target = "_blank";
   // form.style.display = "none";
