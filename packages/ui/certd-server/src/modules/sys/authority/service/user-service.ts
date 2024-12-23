@@ -1,6 +1,6 @@
 import { Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
 import { InjectEntityModel } from '@midwayjs/typeorm';
-import { MoreThan, Repository } from 'typeorm';
+import { MoreThan, Not, Repository } from 'typeorm';
 import { UserEntity } from '../entity/user.js';
 import * as _ from 'lodash-es';
 import { BaseService, CommonException, Constants, FileService, SysInstallInfo, SysSettingsService } from '@certd/lib-server';
@@ -100,7 +100,18 @@ export class UserService extends BaseService<UserEntity> {
       throw new CommonException('用户不存在');
     }
 
-    delete param.username;
+    if (param.username) {
+      const username = param.username;
+      const id = param.id;
+      const old = await this.findOne([
+        { username: username, id: Not(id) },
+        { mobile: username, id: Not(id) },
+        { email: username, id: Not(id) },
+      ]);
+      if (old != null) {
+        throw new CommonException('用户名已被占用');
+      }
+    }
     if (!_.isEmpty(param.password)) {
       param.passwordVersion = 2;
       param.password = await this.genPassword(param.password, param.passwordVersion);

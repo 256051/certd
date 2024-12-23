@@ -1,248 +1,320 @@
-import * as api from "./api";
-import { useI18n } from "vue-i18n";
-import { computed, Ref, ref } from "vue";
+import { AddReq, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
+import { pipelineGroupApi } from "./api";
 import { useRouter } from "vue-router";
-import { AddReq, compute, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, UserPageQuery, UserPageRes, utils } from "@fast-crud/fast-crud";
-import { useUserStore } from "/@/store/modules/user";
-import { useSettingStore } from "/@/store/modules/settings";
-import { Modal } from "ant-design-vue";
+import SuiteValueEdit from "/@/views/sys/suite/product/suite-value-edit.vue";
+import SuiteValue from "/@/views/sys/suite/product/suite-value.vue";
+import DurationValue from "/@/views/sys/suite/product/duration-value.vue";
+import dayjs from "dayjs";
 
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
-  const router = useRouter();
-  const { t } = useI18n();
+  const api = pipelineGroupApi;
   const pageRequest = async (query: UserPageQuery): Promise<UserPageRes> => {
     return await api.GetList(query);
   };
-  const editRequest = async ({ form, row }: EditReq) => {
+  const editRequest = async (req: EditReq) => {
+    const { form, row } = req;
     form.id = row.id;
     const res = await api.UpdateObj(form);
     return res;
   };
-  const delRequest = async ({ row }: DelReq) => {
+  const delRequest = async (req: DelReq) => {
+    const { row } = req;
     return await api.DelObj(row.id);
   };
 
-  const addRequest = async ({ form }: AddReq) => {
+  const addRequest = async (req: AddReq) => {
+    const { form } = req;
     const res = await api.AddObj(form);
     return res;
   };
 
-  const userStore = useUserStore();
-  const settingStore = useSettingStore();
-  const selectedRowKeys: Ref<any[]> = ref([]);
-  context.selectedRowKeys = selectedRowKeys;
+  const router = useRouter();
 
   return {
     crudOptions: {
-      settings: {
-        plugins: {
-          //这里使用行选择插件，生成行选择crudOptions配置，最终会与crudOptions合并
-          rowSelection: {
-            enabled: true,
-            order: -2,
-            before: true,
-            // handle: (pluginProps,useCrudProps)=>CrudOptions,
-            props: {
-              multiple: true,
-              crossPage: true,
-              selectedRowKeys
-            }
-          }
-        }
-      },
       request: {
         pageRequest,
         addRequest,
         editRequest,
         delRequest
       },
+      form: {
+        labelCol: {
+          //固定label宽度
+          span: null,
+          style: {
+            width: "100px"
+          }
+        },
+        col: {
+          span: 22
+        },
+        wrapper: {
+          width: 600
+        }
+      },
+      actionbar: {
+        buttons: {
+          add: { show: false },
+          buy: {
+            text: "购买",
+            type: "primary",
+            click() {
+              router.push({
+                path: "/certd/suite/buy"
+              });
+            }
+          }
+        }
+      },
       rowHandle: {
-        minWidth: 200,
-        fixed: "right"
+        width: 200,
+        fixed: "right",
+        buttons: {
+          view: { show: false },
+          copy: { show: false },
+          edit: { show: false },
+          remove: { show: false }
+          // continue:{
+          //   text:"续期",
+          //   type:"link",
+          //   click(){
+          //     console.log("续期");
+          //   }
+          // }
+        }
       },
       columns: {
         id: {
           title: "ID",
           key: "id",
           type: "number",
+          search: {
+            show: false
+          },
           column: {
-            width: 100
+            width: 100,
+            editable: {
+              disabled: true
+            }
           },
           form: {
             show: false
           }
         },
-        domain: {
-          title: "CNAME域名",
+        title: {
+          title: "套餐名称",
           type: "text",
-          editForm: {
-            component: {
-              disabled: true
-            }
-          },
           search: {
             show: true
           },
           form: {
-            component: {
-              placeholder: "cname.handsfree.work"
-            },
-            helper: "需要一个右边DNS提供商注册的域名（也可以将其他域名的dns服务器转移到这几家来）。\nCNAME域名一旦确定不可修改，建议使用一级子域名",
             rules: [{ required: true, message: "此项必填" }]
           },
           column: {
             width: 200
           }
         },
-        dnsProviderType: {
-          title: "DNS提供商",
+        productType: {
+          title: "类型",
           type: "dict-select",
-          search: {
-            show: true
+          editForm: {
+            component: {
+              disabled: true
+            }
           },
           dict: dict({
-            url: "pi/dnsProvider/list",
-            value: "key",
-            label: "title"
+            data: [
+              { label: "套餐", value: "suite", color: "green" },
+              { label: "加量包", value: "addon", color: "blue" }
+            ]
           }),
           form: {
             rules: [{ required: true, message: "此项必填" }]
           },
           column: {
-            width: 150,
-            component: {
-              color: "auto"
+            width: 80,
+            align: "center"
+          },
+          valueBuilder: ({ row }) => {
+            if (row.content) {
+              row.content = JSON.parse(row.content);
+            }
+          },
+          valueResolve: ({ form }) => {
+            if (form.content) {
+              form.content = JSON.stringify(form.content);
             }
           }
         },
-        accessId: {
-          title: "DNS提供商授权",
-          type: "dict-select",
-          dict: dict({
-            url: "/pi/access/list",
-            value: "id",
-            label: "name"
-          }),
+        "content.maxDomainCount": {
+          title: "域名数量",
+          type: "text",
           form: {
+            key: ["content", "maxDomainCount"],
             component: {
-              name: "access-selector",
+              name: SuiteValueEdit,
               vModel: "modelValue",
-              type: compute(({ form }) => {
-                return form.dnsProviderType;
-              })
+              unit: "个"
             },
             rules: [{ required: true, message: "此项必填" }]
           },
           column: {
-            width: 150,
+            width: 100,
             component: {
-              color: "auto"
+              name: SuiteValue,
+              vModel: "modelValue",
+              unit: "个"
+            },
+            align: "center"
+          }
+        },
+        "content.maxPipelineCount": {
+          title: "流水线数量",
+          type: "text",
+          form: {
+            key: ["content", "maxPipelineCount"],
+            component: {
+              name: SuiteValueEdit,
+              vModel: "modelValue",
+              unit: "条"
+            },
+            rules: [{ required: true, message: "此项必填" }]
+          },
+          column: {
+            width: 100,
+            component: {
+              name: SuiteValue,
+              vModel: "modelValue",
+              unit: "条"
+            },
+            align: "center"
+          }
+        },
+        "content.maxDeployCount": {
+          title: "部署次数",
+          type: "text",
+          form: {
+            key: ["content", "maxDeployCount"],
+            component: {
+              name: SuiteValueEdit,
+              vModel: "modelValue",
+              unit: "次"
+            },
+            rules: [{ required: true, message: "此项必填" }]
+          },
+          column: {
+            width: 100,
+            component: {
+              name: SuiteValue,
+              vModel: "modelValue",
+              unit: "次"
+            },
+            align: "center"
+          }
+        },
+        "content.maxMonitorCount": {
+          title: "证书监控数量",
+          type: "text",
+          form: {
+            key: ["content", "maxMonitorCount"],
+            component: {
+              name: SuiteValueEdit,
+              vModel: "modelValue",
+              unit: "个"
+            },
+            rules: [{ required: true, message: "此项必填" }]
+          },
+          column: {
+            width: 120,
+            component: {
+              name: SuiteValue,
+              vModel: "modelValue",
+              unit: "个"
+            },
+            align: "center"
+          }
+        },
+        duration: {
+          title: "时长",
+          type: "text",
+          form: {},
+          column: {
+            component: {
+              name: DurationValue,
+              vModel: "modelValue"
+            },
+            width: 100,
+            align: "center"
+          }
+        },
+        status: {
+          title: "状态",
+          type: "text",
+          form: { show: false },
+          column: {
+            width: 100,
+            align: "center",
+            conditionalRender: {
+              match() {
+                return false;
+              }
+            },
+            cellRender({ row }) {
+              if (row.activeTime == null) {
+                return <a-tag color="blue">未使用</a-tag>;
+              }
+              const now = dayjs().valueOf();
+              //已过期
+              const isExpired = row.expiresTime != -1 && now > row.expiresTime;
+              if (isExpired) {
+                return <a-tag color="error">已过期</a-tag>;
+              }
+              //如果在激活时间之前
+              if (now < row.activeTime) {
+                return <a-tag color="blue">待生效</a-tag>;
+              }
+              // 是否在激活时间和过期时间之间
+              if (now > row.activeTime && (row.expiresTime == -1 || now < row.expiresTime)) {
+                return <a-tag color="success">生效中</a-tag>;
+              }
             }
           }
         },
-        isDefault: {
-          title: "是否默认",
+        activeTime: {
+          title: "激活时间",
+          type: "date",
+          column: {
+            width: 150
+          }
+        },
+        expiresTime: {
+          title: "过期时间",
+          type: "date",
+          column: {
+            width: 150,
+            component: {
+              name: "expires-time-text",
+              vModel: "value",
+              mode: "tag"
+            }
+          }
+        },
+        isPresent: {
+          title: "是否赠送",
           type: "dict-switch",
           dict: dict({
             data: [
               { label: "是", value: true, color: "success" },
-              { label: "否", value: false, color: "default" }
+              { label: "否", value: false, color: "blue" }
             ]
           }),
           form: {
-            value: false,
-            rules: [{ required: true, message: "请选择是否默认" }]
-          },
-          column: {
-            align: "center",
-            width: 100
-          }
-        },
-        setDefault: {
-          title: "设置默认",
-          type: "text",
-          form: {
-            show: false
+            value: true
           },
           column: {
             width: 100,
-            align: "center",
-            conditionalRenderDisabled: true,
-            cellRender: ({ row }) => {
-              if (row.isDefault) {
-                return;
-              }
-              const onClick = async () => {
-                Modal.confirm({
-                  title: "提示",
-                  content: `确定要设置为默认吗？`,
-                  onOk: async () => {
-                    await api.SetDefault(row.id);
-                    await crudExpose.doRefresh();
-                  }
-                });
-              };
-
-              return (
-                <a-button type={"link"} size={"small"} onClick={onClick}>
-                  设为默认
-                </a-button>
-              );
-            }
-          }
-        },
-        disabled: {
-          title: "禁用/启用",
-          type: "dict-switch",
-          dict: dict({
-            data: [
-              { label: "启用", value: false, color: "success" },
-              { label: "禁用", value: true, color: "error" }
-            ]
-          }),
-          form: {
-            value: false
-          },
-          column: {
-            width: 100,
-            component: {
-              title: "点击可禁用/启用",
-              on: {
-                async click({ value, row }) {
-                  Modal.confirm({
-                    title: "提示",
-                    content: `确定要${!value ? "禁用" : "启用"}吗？`,
-                    onOk: async () => {
-                      await api.SetDisabled(row.id, !value);
-                      await crudExpose.doRefresh();
-                    }
-                  });
-                }
-              }
-            }
-          }
-        },
-        createTime: {
-          title: "创建时间",
-          type: "datetime",
-          form: {
-            show: false
-          },
-          column: {
-            sorter: true,
-            width: 160,
             align: "center"
-          }
-        },
-        updateTime: {
-          title: "更新时间",
-          type: "datetime",
-          form: {
-            show: false
-          },
-          column: {
-            show: true,
-            width: 160
           }
         }
       }
