@@ -1,39 +1,39 @@
 <template>
   <a-modal v-model:open="openRef" class="order-modal" title="订单确认" @ok="orderCreate">
     <div v-if="product" class="order-box">
-      <div class="flex-o mt-5">套餐：{{ product.title }}</div>
-      <div class="flex-o mt-5">说明：{{ product.intro }}</div>
+      <div class="flex-o mt-5"><span class="label">套餐：</span>{{ product.title }}</div>
+      <div class="flex-o mt-5"><span class="label">说明：</span>{{ product.intro }}</div>
       <div class="flex-o mt-5">
-        <span class="flex-o">规格：</span>
+        <span class="label">规格：</span>
         <span class="flex-o">流水线<suite-value class="ml-5" :model-value="product.content.maxPipelineCount" unit="条" />；</span>
         <span class="flex-o">域名<suite-value class="ml-5" :model-value="product.content.maxDomainCount" unit="个" />；</span>
         <span class="flex-o">部署次数<suite-value class="ml-5" :model-value="product.content.maxDeployCount" unit="次" />；</span>
       </div>
 
       <div class="flex-o mt-5">
-        时长：
+        <span class="label">时长：</span>
         <duration-value v-model="formRef.duration"></duration-value>
       </div>
-      <div class="flex-o mt-5">价格： <price-input :edit="false" :model-value="durationSelected.price"></price-input></div>
+      <div class="flex-o mt-5"><span class="label">价格：</span> <price-input :edit="false" :model-value="durationSelected.price"></price-input></div>
 
       <div class="flex-o mt-5">
-        支付方式：
+        <span class="label">支付方式：</span>
         <fs-dict-select v-model:value="formRef.payType" :dict="paymentsDictRef" style="width: 200px"> </fs-dict-select>
       </div>
     </div>
   </a-modal>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue';
-import { GetPaymentTypes, OrderModalOpenReq, TradeCreate } from '/@/views/certd/suite/api';
-import SuiteValue from '/@/views/sys/suite/product/suite-value.vue';
-import PriceInput from '/@/views/sys/suite/product/price-input.vue';
-import { dict } from '@fast-crud/fast-crud';
-import { Modal, notification } from 'ant-design-vue';
-import DurationValue from '/@/views/sys/suite/product/duration-value.vue';
-import { useRouter } from 'vue-router';
-
+<script setup lang="tsx">
+import { ref } from "vue";
+import { GetPaymentTypes, OrderModalOpenReq, TradeCreate } from "/@/views/certd/suite/api";
+import SuiteValue from "/@/views/sys/suite/product/suite-value.vue";
+import PriceInput from "/@/views/sys/suite/product/price-input.vue";
+import { dict } from "@fast-crud/fast-crud";
+import { Modal, notification } from "ant-design-vue";
+import DurationValue from "/@/views/sys/suite/product/duration-value.vue";
+import { useRouter } from "vue-router";
+import qrcode from "qrcode";
 const openRef = ref(false);
 
 const product = ref<any>(null);
@@ -63,7 +63,6 @@ const paymentsDictRef = dict({
 const router = useRouter();
 
 async function orderCreate() {
-  console.log("orderCreate", formRef.value);
   if (!formRef.value.payType) {
     notification.error({
       message: "请选择支付方式"
@@ -77,6 +76,13 @@ async function orderCreate() {
     payType: formRef.value.payType
   });
 
+  function onPaid() {
+    openRef.value = false;
+    router.push({
+      path: "/"
+    });
+  }
+
   //跳转到对应的页面
   // http://pay.docmirror.cn/submit.php
   //易支付表单提交
@@ -87,7 +93,8 @@ async function orderCreate() {
     doAlipay(paymentReq);
   } else if (formRef.value.payType === "wxpay") {
     //微信支付
-    doWxpay(paymentReq);
+    doWxpay(paymentReq.qrcode, onPaid);
+    return;
   } else {
     notification.error({
       message: "暂不支持该支付方式"
@@ -99,10 +106,7 @@ async function orderCreate() {
     title: "请在新页面完成支付",
     content: "是否确认已完成支付",
     onOk: async () => {
-      openRef.value = false;
-      router.push({
-        path: "/"
-      });
+      onPaid();
     },
     cancelText: "取消支付",
     okText: "已完成支付"
@@ -113,8 +117,29 @@ function doAlipay(paymentReq: any) {
   window.open(paymentReq.api);
 }
 
-function doWxpay(paymentReq: any) {
-  window.open(paymentReq.api);
+async function doWxpay(qrcodeText: string, onPaid: () => Promise<void>) {
+  //展示微信支付二维码
+  const imageUrl = await qrcode.toDataURL(qrcodeText);
+
+  Modal.confirm({
+    wrapClassName: "modal-confirm-center",
+    title: "请微信扫码支付",
+    okText: "已完成支付",
+    cancelText: "取消支付",
+    icon() {
+      return "";
+    },
+    content: () => {
+      return (
+        <div style="text-align: center;">
+          <img src={imageUrl} style="width: 200px;height: 200px;display: initial;" />
+        </div>
+      );
+    },
+    async onOk() {
+      await onPaid();
+    }
+  });
 }
 
 function doYizhifu(paymentReq: any) {
@@ -161,3 +186,23 @@ defineExpose({
   open
 });
 </script>
+<style lang="less">
+.order-box {
+  .label {
+    width: 80px;
+    text-align: right;
+    margin-right: 5px;
+    color: #686868;
+  }
+}
+
+.modal-confirm-center {
+  .ant-modal-confirm-btns {
+    text-align: center;
+  }
+  .ant-modal-confirm-content {
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+}
+</style>

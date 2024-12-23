@@ -56,6 +56,7 @@
     "pinia": "2.1.7",
     "psl": "^1.9.0",
     "qiniu-js": "^3.4.2",
+    "qrcode": "^1.5.4",
     "sortablejs": "^1.15.2",
     "vue": "^3.4.21",
     "vue-cropperjs": "^5.0.0",

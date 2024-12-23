@@ -184,7 +184,7 @@ export abstract class AbstractTaskPlugin implements ITaskPlugin {
     return;
   }
 
-  abstract execute(): Promise<void>;
+  abstract execute(): Promise<void | string>;
 
   appendTimeSuffix(name?: string) {
     if (name == null) {

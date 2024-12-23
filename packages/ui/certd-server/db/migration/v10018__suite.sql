@@ -53,6 +53,7 @@ CREATE TABLE "cd_user_suite"
   "title"             varchar(100),
   "content"           text,
   "duration"          integer,
+  "product_type"      varchar(50),
   "deploy_count_used" integer,
   "is_present"        boolean,
   "is_bootstrap"      boolean,

@@ -1,6 +1,6 @@
 import { App, Autoload, Config, Init, Inject, Scope, ScopeEnum } from '@midwayjs/core';
 import { getPlusInfo, isPlus } from '@certd/plus-core';
-import { logger } from '@certd/basic';
+import { isDev, logger } from '@certd/basic';
 
 import { SysInstallInfo, SysSettingsService } from '@certd/lib-server';
 import { getVersion } from '../../utils/version.js';
@@ -36,6 +36,18 @@ export class AutoZPrint {
     }
     logger.info('Certd已启动');
     logger.info('=========================================');
+    if (isDev()) {
+      this.startHeapLog();
+    }
+  }
+
+  startHeapLog() {
+    function format(bytes: any) {
+      return (bytes / 1024 / 1024).toFixed(2) + ' MB';
+    }
+    setInterval(() => {
+      logger.info(`heapUsed: ${format(process.memoryUsage().heapUsed)}`);
+    }, 60000);
   }
 
   async startHttpsServer() {
