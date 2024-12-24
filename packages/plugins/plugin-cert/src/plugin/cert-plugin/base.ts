@@ -233,37 +233,36 @@ cert.jks：jks格式证书文件，java服务器使用
     //   return null;
     // }
 
-    let inputChanged = this.ctx.inputChanged;
-    if (inputChanged) {
-      this.logger.info("input hash 有变更，检查是否需要重新申请证书");
-      //判断域名有没有变更
-      /**
-       *                      "renewDays": 35,
-       *                     "certApplyPlugin": "CertApply",
-       *                     "sslProvider": "letsencrypt",
-       *                     "privateKeyType": "rsa_2048_pkcs1",
-       *                     "dnsProviderType": "aliyun",
-       *                     "domains": [
-       *                       "*.handsfree.work"
-       *                     ],
-       *                     "email": "xiaojunnuo@qq.com",
-       *                     "dnsProviderAccess": 3,
-       *                     "useProxy": false,
-       *                     "skipLocalVerify": false,
-       *                     "successNotify": true,
-       *                     "pfxPassword": "123456"
-       */
-      const checkInputChanges = ["domains", "sslProvider", "privateKeyType", "dnsProviderType", "pfxPassword"];
-      const oldInput = JSON.stringify(pick(this.lastStatus?.input, checkInputChanges));
-      const thisInput = JSON.stringify(pick(this, checkInputChanges));
-      inputChanged = oldInput !== thisInput;
+    let inputChanged = false;
+    //判断域名有没有变更
+    /**
+     *                      "renewDays": 35,
+     *                     "certApplyPlugin": "CertApply",
+     *                     "sslProvider": "letsencrypt",
+     *                     "privateKeyType": "rsa_2048_pkcs1",
+     *                     "dnsProviderType": "aliyun",
+     *                     "domains": [
+     *                       "*.handsfree.work"
+     *                     ],
+     *                     "email": "xiaojunnuo@qq.com",
+     *                     "dnsProviderAccess": 3,
+     *                     "useProxy": false,
+     *                     "skipLocalVerify": false,
+     *                     "successNotify": true,
+     *                     "pfxPassword": "123456"
+     */
+    const checkInputChanges = ["domains", "sslProvider", "privateKeyType", "dnsProviderType", "pfxPassword"];
+    const oldInput = JSON.stringify(pick(this.lastStatus?.input, checkInputChanges));
+    const thisInput = JSON.stringify(pick(this, checkInputChanges));
+    inputChanged = oldInput !== thisInput;
 
-      if (inputChanged) {
-        this.logger.info(`旧参数：${oldInput}`);
-        this.logger.info(`新参数：${thisInput}`);
-        this.logger.info("输入参数变更，准备申请新证书");
-        return null;
-      }
+    this.logger.info(`旧参数：${oldInput}`);
+    this.logger.info(`新参数：${thisInput}`);
+    if (inputChanged) {
+      this.logger.info("输入参数变更，准备申请新证书");
+      return null;
+    } else {
+      this.logger.info("输入参数未变更，不需要更新证书");
     }
 
     let oldCert: CertReader | undefined = undefined;

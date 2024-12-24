@@ -148,7 +148,7 @@ export class PipelineService extends BaseService<PipelineEntity> {
     return new PipelineDetail(pipeline);
   }
 
-  async update(bean: PipelineEntity) {
+  async update(bean: Partial<PipelineEntity>) {
     //更新非trigger部分
     await super.update(bean);
   }
@@ -304,18 +304,37 @@ export class PipelineService extends BaseService<PipelineEntity> {
   }
 
   async trigger(id: any, stepId?: string) {
+    const entity: PipelineEntity = await this.info(id);
+    if (isComm()) {
+      await this.checkHasDeployCount(id, entity.userId);
+    }
     this.cron.register({
       name: `pipeline.${id}.trigger.once`,
       cron: null,
       job: async () => {
         logger.info('用户手动启动job');
         try {
-          await this.run(id, null, stepId);
+          await this.doRun(entity, null, stepId);
         } catch (e) {
           logger.error('手动job执行失败：', e);
         }
       },
     });
+  }
+
+  async checkHasDeployCount(pipelineId: number, userId: number) {
+    try {
+      return await this.userSuiteService.checkHasDeployCount(userId);
+    } catch (e) {
+      if (e instanceof NeedSuiteException) {
+        logger.error(e.message);
+        await this.update({
+          id: pipelineId,
+          status: 'no_deploy_count',
+        });
+      }
+      throw e;
+    }
   }
 
   async delete(id: any) {
@@ -390,10 +409,14 @@ export class PipelineService extends BaseService<PipelineEntity> {
 
   async run(id: number, triggerId: string, stepId?: string) {
     const entity: PipelineEntity = await this.info(id);
+    await this.doRun(entity, triggerId, stepId);
+  }
 
+  async doRun(entity: PipelineEntity, triggerId: string, stepId?: string) {
+    const id = entity.id;
     let suite: UserSuiteEntity = null;
     if (isComm()) {
-      suite = await this.userSuiteService.checkHasDeployCount(entity.userId);
+      suite = await this.checkHasDeployCount(id, entity.userId);
     }
 
     const pipeline = JSON.parse(entity.content);

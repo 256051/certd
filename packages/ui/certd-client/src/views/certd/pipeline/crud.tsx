@@ -501,7 +501,7 @@ export default function ({ crudExpose, context: { certdFormRef, groupDictRef, se
           },
           column: {
             sorter: true,
-            width: 80,
+            width: 120,
             align: "center"
           }
         },

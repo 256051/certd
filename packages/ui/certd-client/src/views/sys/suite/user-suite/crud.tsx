@@ -1,4 +1,4 @@
-import { AddReq, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
+import { AddReq, compute, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
 import { pipelineGroupApi } from "./api";
 import { useRouter } from "vue-router";
 import SuiteValueEdit from "/@/views/sys/suite/product/suite-value-edit.vue";
@@ -6,6 +6,7 @@ import SuiteValue from "/@/views/sys/suite/product/suite-value.vue";
 import DurationValue from "/@/views/sys/suite/product/duration-value.vue";
 import dayjs from "dayjs";
 import createCrudOptionsUser from "/@/views/sys/authority/user/crud";
+import UserSuiteStatus from "/@/views/certd/suite/mine/user-suite-status.vue";
 
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const api = pipelineGroupApi;
@@ -68,6 +69,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           // }
         }
       },
+      toolbar: { show: false },
       rowHandle: {
         width: 200,
         fixed: "right",
@@ -234,7 +236,10 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             component: {
               name: SuiteValue,
               vModel: "modelValue",
-              unit: "次"
+              unit: "次",
+              used: compute(({ row }) => {
+                return row.deployCountUsed;
+              })
             },
             align: "center"
           }
@@ -281,28 +286,15 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           column: {
             width: 100,
             align: "center",
+            component: {
+              name: UserSuiteStatus,
+              userSuite: compute(({ row }) => {
+                return row;
+              })
+            },
             conditionalRender: {
               match() {
                 return false;
-              }
-            },
-            cellRender({ row }) {
-              if (row.activeTime == null) {
-                return <a-tag color="blue">未使用</a-tag>;
-              }
-              const now = dayjs().valueOf();
-              //已过期
-              const isExpired = row.expiresTime != -1 && now > row.expiresTime;
-              if (isExpired) {
-                return <a-tag color="error">已过期</a-tag>;
-              }
-              //如果在激活时间之前
-              if (now < row.activeTime) {
-                return <a-tag color="blue">待生效</a-tag>;
-              }
-              // 是否在激活时间和过期时间之间
-              if (now > row.activeTime && (row.expiresTime == -1 || now < row.expiresTime)) {
-                return <a-tag color="success">生效中</a-tag>;
               }
             }
           }
@@ -341,6 +333,29 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           column: {
             width: 100,
             align: "center"
+          }
+        },
+        createTime: {
+          title: "创建时间",
+          type: "datetime",
+          form: {
+            show: false
+          },
+          column: {
+            sorter: true,
+            width: 160,
+            align: "center"
+          }
+        },
+        updateTime: {
+          title: "更新时间",
+          type: "datetime",
+          form: {
+            show: false
+          },
+          column: {
+            show: true,
+            width: 160
           }
         }
       }

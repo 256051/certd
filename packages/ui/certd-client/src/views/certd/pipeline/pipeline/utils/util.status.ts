@@ -57,6 +57,12 @@ const StatusEnum: StatusEnumType = {
     label: "禁用",
     color: "gray",
     icon: "ant-design:stop-outlined"
+  },
+  no_deploy_count: {
+    value: "no_deploy_count",
+    label: "次数不足",
+    color: "gray",
+    icon: "ant-design:stop-outlined"
   }
 };
 export const statusUtil = {

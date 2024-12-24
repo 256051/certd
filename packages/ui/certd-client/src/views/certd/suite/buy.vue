@@ -14,14 +14,10 @@
           </a-card>
         </a-col>
       </a-row>
-      <h3>套餐</h3>
       <a-row :gutter="8" class="mt-10">
         <a-col v-for="item of suites" :key="item.id" class="mb-10 suite-card-col">
           <product-info :product="item" @order="doOrder" />
         </a-col>
-      </a-row>
-      <h3>加量包</h3>
-      <a-row :gutter="8" class="mt-10">
         <a-col v-for="item of addons" :key="item.id" class="mb-10 suite-card-col">
           <product-info :product="item" @order="doOrder" />
         </a-col>
@@ -44,7 +40,7 @@ const addons = ref([]);
 async function loadProducts() {
   const list = await api.ProductList();
   suites.value = list.filter((x: any) => x.type === "suite");
-  addons.value = list.filter((x: any) => x.type === "addone");
+  addons.value = list.filter((x: any) => x.type === "addon");
 }
 
 loadProducts();

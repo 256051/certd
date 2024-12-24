@@ -1,10 +1,11 @@
-import { AddReq, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
+import { AddReq, compute, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
 import api from "./api";
 import { useRouter } from "vue-router";
 import SuiteValueEdit from "/@/views/sys/suite/product/suite-value-edit.vue";
 import SuiteValue from "/@/views/sys/suite/product/suite-value.vue";
 import DurationValue from "/@/views/sys/suite/product/duration-value.vue";
 import dayjs from "dayjs";
+import UserSuiteStatus from "/@/views/certd/suite/mine/user-suite-status.vue";
 
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const pageRequest = async (query: UserPageQuery): Promise<UserPageRes> => {
@@ -207,7 +208,10 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             component: {
               name: SuiteValue,
               vModel: "modelValue",
-              unit: "次"
+              unit: "次",
+              used: compute(({ row }) => {
+                return row.deployCountUsed;
+              })
             },
             align: "center"
           }
@@ -254,37 +258,16 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           column: {
             width: 100,
             align: "center",
+            component: {
+              name: UserSuiteStatus,
+              userSuite: compute(({ row }) => {
+                return row;
+              }),
+              currentSuite: context.detail
+            },
             conditionalRender: {
               match() {
                 return false;
-              }
-            },
-            cellRender({ row }) {
-              if (row.activeTime == null) {
-                return <a-tag color="blue">未使用</a-tag>;
-              }
-              const now = dayjs().valueOf();
-              //已过期
-              const isExpired = row.expiresTime != -1 && now > row.expiresTime;
-              if (isExpired) {
-                return <a-tag color="error">已过期</a-tag>;
-              }
-              //如果在激活时间之前
-              if (now < row.activeTime) {
-                return <a-tag color="blue">待生效</a-tag>;
-              }
-
-              //是否是当前套餐
-              const suites = context.detail.value.suites;
-              if (suites && suites.length > 0) {
-                const suite = suites[0];
-                if (suite.productType === "suite" && suite.id === row.id) {
-                  return <a-tag color="success">当前套餐</a-tag>;
-                }
-              }
-              // 是否在激活时间和过期时间之间
-              if (now > row.activeTime && (row.expiresTime == -1 || now < row.expiresTime)) {
-                return <a-tag color="success">生效中</a-tag>;
               }
             }
           }

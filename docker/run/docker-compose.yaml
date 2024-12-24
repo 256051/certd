@@ -33,6 +33,7 @@ services:
 #     配置规则： certd_ + 配置项, 点号用_代替
 #                                    #↓↓↓↓ ----------------------------- 如果忘记管理员密码，可以设置为true，重启之后，管理员密码将改成123456，然后请及时修改回false
       - certd_system_resetAdminPasswd=false
+#     默认使用sqlite文件数据库，如果需要使用其他数据库，请设置以下环境变量
 #                                    #↓↓↓↓ ----------------------------- 使用postgresql数据库，需要提前创建数据库
 #      - certd_flyway_scriptDir=./db/migration-pg                        # 升级脚本目录
 #      - certd_typeorm_dataSource_default_type=postgres                  # 数据库类型

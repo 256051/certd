@@ -5,7 +5,7 @@
         {{ label }}
       </template>
       <template v-else>
-        <FsTimeHumanize :model-value="value" :use-format-greater="1000000000000" :options="{ units: ['d'] }"></FsTimeHumanize>
+        <FsTimeHumanize :model-value="value" :use-format-greater="1000000000000000" :options="{ units: ['y', 'd'] }"></FsTimeHumanize>
       </template>
     </component>
   </span>
@@ -35,12 +35,14 @@ const color = computed(() => {
   if (props.value == null) {
     return "";
   }
-  if (props.value === -1) {
+  //距离今天多少天
+  const days = dayjs(props.value).diff(dayjs(), "day");
+  if (props.value === -1 || days > 365) {
     return "green";
   }
 
   //小于3天 红色
-  if (dayjs().add(3, "day").valueOf() > props.value) {
+  if (days <= 6) {
     return "red";
   }
 

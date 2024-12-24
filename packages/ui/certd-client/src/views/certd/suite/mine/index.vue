@@ -1,12 +1,16 @@
 <template>
   <fs-page>
     <template #header>
-      <div class="title">
+      <div class="title flex-baseline">
         我的套餐
-        <span class="sub">我的所有套餐</span>
+        <div class="sub">
+          <div class="flex-o">当前套餐：<suite-card></suite-card></div>
+        </div>
       </div>
     </template>
-    <fs-crud ref="crudRef" v-bind="crudBinding"> </fs-crud>
+    <fs-crud ref="crudRef" v-bind="crudBinding">
+      <template #actionbar-right> </template>
+    </fs-crud>
   </fs-page>
 </template>
 
@@ -15,6 +19,7 @@ import { onActivated, onMounted, ref } from "vue";
 import { useFs } from "@fast-crud/fast-crud";
 import createCrudOptions from "./crud";
 import api, { SuiteDetail } from "/@/views/certd/suite/mine/api";
+import SuiteCard from "/@/views/framework/home/dashboard/suite-card.vue";
 
 defineOptions({
   name: "MySuites"

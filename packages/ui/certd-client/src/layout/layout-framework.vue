@@ -106,7 +106,7 @@
 
 <script lang="ts" setup>
 import { computed, onErrorCaptured, onMounted, ref } from "vue";
-import FsMenu from "./components/menu/index.jsx";
+import FsMenu from "./components/menu/index.vue";
 import FsLocale from "./components/locale/index.vue";
 import FsUserInfo from "./components/user-info/index.vue";
 import FsTabs from "./components/tabs/index.vue";

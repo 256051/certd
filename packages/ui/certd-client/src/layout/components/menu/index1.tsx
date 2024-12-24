@@ -6,60 +6,8 @@ import "./index.less";
 import { utils } from "@fast-crud/fast-crud";
 import { routerUtils } from "/@/utils/util.router";
 
-function useBetterScroll(enabled = true) {
-  const bsRef = ref(null);
-  const asideMenuRef = ref();
+defineOptions()
 
-  let onOpenChange = () => {};
-  if (enabled) {
-    function bsInit() {
-      if (asideMenuRef.value == null) {
-        return;
-      }
-      bsRef.value = new BScroll(asideMenuRef.value, {
-        mouseWheel: true,
-        click: true,
-        momentum: false,
-        // 如果你愿意可以打开显示滚动条
-        scrollbar: {
-          fade: true,
-          interactive: false
-        },
-        bounce: false
-      });
-    }
-
-    function bsDestroy() {
-      if (bsRef.value != null && bsRef.value.destroy) {
-        try {
-          bsRef.value.destroy();
-        } catch (e) {
-          // console.error(e);
-        } finally {
-          bsRef.value = null;
-        }
-      }
-    }
-
-    onMounted(() => {
-      bsInit();
-    });
-
-    onUnmounted(() => {
-      bsDestroy();
-    });
-    onOpenChange = async () => {
-      console.log("onOpenChange");
-      setTimeout(() => {
-        bsRef.value?.refresh();
-      }, 300);
-    };
-  }
-  return {
-    onOpenChange,
-    asideMenuRef
-  };
-}
 export default defineComponent({
   name: "FsMenu",
   inheritAttrs: true,
@@ -75,6 +23,31 @@ export default defineComponent({
       await routerUtils.open(item.key);
     }
 
+    const items = ref([]);
+
+    function buildItemMenus(menus: any) {
+      if (menus == null) {
+        return;
+      }
+      const list: any = [];
+      for (const sub of menus) {
+        const item: any = {
+          key: sub.path,
+          label: sub.title,
+          title: sub.title,
+          icon: () => {
+            return <fsIcon icon={sub.icon ?? sub.meta?.icon} />;
+          }
+        };
+        list.push(item);
+        if (sub.children && sub.children.length > 0) {
+          item.children = buildItemMenus(sub.children);
+        }
+      }
+      return list;
+    }
+    items.value = buildItemMenus(props.menus);
+    console.log("items", items.value);
     const fsIcon = resolveComponent("FsIcon");
 
     const buildMenus = (children: any) => {
@@ -114,7 +87,7 @@ export default defineComponent({
               open(sub.path);
             }
           }
-          slots.push(<a-sub-menu key={sub.path} v-slots={subSlots} onTitleClick={onTitleClick} />);
+          slots.push(<a-sub-menu key={sub.path} v-slots={subSlots} />);
         } else {
           slots.push(
             <a-menu-item key={sub.path} title={sub.title}>
@@ -132,6 +105,7 @@ export default defineComponent({
     };
     const selectedKeys = ref([]);
     const openKeys = ref([]);
+
     const route = useRoute();
     const router = useRouter();
 
@@ -168,7 +142,7 @@ export default defineComponent({
       return changed;
     }
 
-    const { asideMenuRef, onOpenChange } = useBetterScroll(props.scroll as any);
+    // const { asideMenuRef, onOpenChange } = useBetterScroll(props.scroll as any);
 
     watch(
       () => {
@@ -179,7 +153,7 @@ export default defineComponent({
         selectedKeys.value = [path];
         const changed = openSelectedParents(path);
         if (changed) {
-          onOpenChange();
+          // onOpenChange();
         }
       },
       {
@@ -191,22 +165,19 @@ export default defineComponent({
         <a-menu
           mode={"inline"}
           theme={"light"}
-          v-slots={slots}
-          onClick={onSelect}
-          onOpenChange={onOpenChange}
+          // v-slots={slots}
+          // onClick={onSelect}
+          // onOpenChange={onOpenChange}
           v-models={[
             [openKeys.value, "openKeys"],
             [selectedKeys.value, "selectedKeys"]
           ]}
-          {...ctx.attrs}
+          items={items.value}
+          inlineCollapsed={!props.expandSelected}
         />
       );
       const classNames = { "fs-menu-wrapper": true, "fs-menu-better-scroll": props.scroll };
-      return (
-        <div ref={asideMenuRef} class={classNames}>
-          {menu}
-        </div>
-      );
+      return <div>{menu}</div>;
     };
   }
 });

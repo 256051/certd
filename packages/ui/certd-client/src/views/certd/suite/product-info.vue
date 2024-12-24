@@ -16,7 +16,13 @@
         <suite-value :model-value="product.content.maxDomainCount" unit="个" />
       </div>
       <div class="flex-between mt-5">
-        <div class="flex-o"><fs-icon icon="ant-design:check-outlined" class="color-green mr-5" /> 部署次数：</div>
+        <div class="flex-o">
+          <fs-icon icon="ant-design:check-outlined" class="color-green mr-5" />
+          部署次数：
+          <a-tooltip title="只有运行成功才会扣除部署次数">
+            <fs-icon class="font-size-16 ml-5" icon="mingcute:question-line"></fs-icon>
+          </a-tooltip>
+        </div>
         <suite-value :model-value="product.content.maxDeployCount" unit="次" />
       </div>
       <div class="flex-between mt-5">
@@ -43,7 +49,7 @@
     <div class="price flex-between mt-5">
       <div class="flex-o">价格</div>
       <div class="flex-o price-text">
-        <price-input style="font-size: 18px; color: red" :model-value="selected?.price" :edit="false" />
+        <price-input style="color: red" :font-size="20" :model-value="selected?.price" :edit="false" />
         <span class="ml-5" style="font-size: 12px"> / {{ durationDict.dataMap[selected.duration]?.label }}</span>
       </div>
     </div>
@@ -58,7 +64,7 @@ import { durationDict } from "/@/views/certd/suite/api";
 import SuiteValue from "/@/views/sys/suite/product/suite-value.vue";
 import PriceInput from "/@/views/sys/suite/product/price-input.vue";
 import { ref } from "vue";
-import { dict } from "@fast-crud/fast-crud";
+import { dict, FsIcon } from "@fast-crud/fast-crud";
 
 const props = defineProps<{
   product: any;

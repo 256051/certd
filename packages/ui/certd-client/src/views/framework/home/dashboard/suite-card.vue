@@ -9,11 +9,17 @@
               <suite-value :model-value="detail.pipelineCount.max" :used="detail.pipelineCount.used" unit="条" />
             </div>
             <div class="flex-between mt-5">
-              <div class="flex-o"><fs-icon icon="ant-design:check-outlined" class="color-green mr-5" />域名数量：</div>
+              <div class="flex-o">
+                <fs-icon icon="ant-design:check-outlined" class="color-green mr-5" />
+                域名数量：
+              </div>
               <suite-value :model-value="detail.domainCount.max" :used="detail.domainCount.used" unit="个" />
             </div>
             <div class="flex-between mt-5">
-              <div class="flex-o"><fs-icon icon="ant-design:check-outlined" class="color-green mr-5" /> 部署次数：</div>
+              <div class="flex-o">
+                <fs-icon icon="ant-design:check-outlined" class="color-green mr-5" />
+                部署次数：
+              </div>
               <suite-value :model-value="detail.deployCount.max" :used="detail.deployCount.used" unit="次" />
             </div>
             <div class="flex-between mt-5">
@@ -41,6 +47,7 @@ import SuiteValue from "/@/views/sys/suite/product/suite-value.vue";
 import { ref } from "vue";
 import ExpiresTimeText from "/@/components/expires-time-text.vue";
 import api, { SuiteDetail } from "/@/views/certd/suite/mine/api";
+import { FsIcon } from "@fast-crud/fast-crud";
 
 defineOptions({
   name: "SuiteCard"
