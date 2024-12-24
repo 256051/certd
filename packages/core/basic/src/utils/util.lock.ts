@@ -36,10 +36,6 @@ export class Locker {
   }
 
   unlock(str: string) {
-    const isLocked = this.locked[str];
-    if (isLocked != null) {
-      return;
-    }
     delete this.locked[str];
   }
 
