@@ -128,6 +128,15 @@ function install(app: App, options: any = {}) {
             return { currentPage, pageSize, records: res.records, total: res.total, ...res };
           }
         },
+        search: {
+          formItem: {
+            wrapperCol: {
+              style: {
+                width: "50%"
+              }
+            }
+          }
+        },
         form: {
           display: "flex",
           labelCol: {

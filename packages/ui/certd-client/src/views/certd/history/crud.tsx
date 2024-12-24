@@ -66,7 +66,12 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         formItem: {
           labelCol: {
             style: {
-              width: "120px"
+              // width: "100px"
+            }
+          },
+          wrapperCol: {
+            style: {
+              width: "50%"
             }
           }
         }
@@ -127,10 +132,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           title: "流水线名称",
           type: "text",
           search: {
-            show: true,
-            component: {
-              name: "a-input"
-            }
+            show: true
           },
           column: {
             width: 300,
