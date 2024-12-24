@@ -100,18 +100,20 @@ const renderLabel = (option: any) => {
   return <span>{option.name}</span>;
 };
 
-async function openTableSelectDialog(e: any) {
-  e.preventDefault();
-  await tableSelectRef.value.open();
+async function openTableSelectDialog() {
+  selectOpened.value = false;
+  await tableSelectRef.value.open({});
   await tableSelectRef.value.crudExpose.openAdd({});
 }
+
+const selectOpened = ref(false);
 const selectSlots = ref({
-  dropdownRender({ menuNode }: any) {
+  dropdownRender({ menuNode, props }: any) {
     const res = [];
     res.push(menuNode);
-    res.push(<a-divider style="margin: 4px 0" />);
-    res.push(<a-space style="padding: 4px 8px" />);
-    res.push(<fs-button class="w-100" type="text" icon="plus-outlined" text="新建通知渠道" onClick={openTableSelectDialog}></fs-button>);
+    // res.push(<a-divider style="margin: 4px 0" />);
+    // res.push(<a-space style="padding: 4px 8px" />);
+    // res.push(<fs-button class="w-100" type="text" icon="plus-outlined" text="新建通知渠道" onClick={openTableSelectDialog}></fs-button>);
     return res;
   }
 });

@@ -63,6 +63,23 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
   challengeType!: string;
 
   @TaskInput({
+    title: "证书颁发机构",
+    value: "letsencrypt",
+    component: {
+      name: "icon-select",
+      vModel: "value",
+      options: [
+        { value: "letsencrypt", label: "Let's Encrypt", icon: "simple-icons:letsencrypt" },
+        { value: "google", label: "Google", icon: "flat-color-icons:google" },
+        { value: "zerossl", label: "ZeroSSL", icon: "emojione:digit-zero" },
+      ],
+    },
+    helper: "Let's Encrypt：申请最简单\nGoogle：大厂光环，兼容性好，仅首次需要翻墙获取EAB授权\nZeroSSL：需要EAB授权，无需翻墙",
+    required: true,
+  })
+  sslProvider!: SSLProvider;
+
+  @TaskInput({
     title: "DNS解析服务商",
     component: {
       name: "dns-provider-selector",
@@ -124,23 +141,6 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
     `,
   })
   domainsVerifyPlan!: DomainsVerifyPlanInput;
-
-  @TaskInput({
-    title: "证书颁发机构",
-    value: "letsencrypt",
-    component: {
-      name: "icon-select",
-      vModel: "value",
-      options: [
-        { value: "letsencrypt", label: "Let's Encrypt", icon: "simple-icons:letsencrypt" },
-        { value: "google", label: "Google", icon: "flat-color-icons:google" },
-        { value: "zerossl", label: "ZeroSSL", icon: "emojione:digit-zero" },
-      ],
-    },
-    helper: "Let's Encrypt：申请最简单\nGoogle：大厂光环，兼容性好，仅首次需要翻墙获取EAB授权\nZeroSSL：需要EAB授权，无需翻墙",
-    required: true,
-  })
-  sslProvider!: SSLProvider;
 
   @TaskInput({
     title: "Google公共EAB授权",
