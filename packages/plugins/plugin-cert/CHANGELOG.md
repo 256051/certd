@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.29.0](https://github.com/certd/certd/compare/v1.28.4...v1.29.0) (2024-12-24)
+
+### Bug Fixes
+
+* 修复左侧菜单收起时无法展开子菜单的bug ([0056223](https://github.com/certd/certd/commit/005622307e612717a5408aa1484717ef03003a22))
+
+### Performance Improvements
+
+* 调整创建证书表单字段的顺序 ([d393521](https://github.com/certd/certd/commit/d3935219f2aa50d6662c5b5ebf7ee25ad696ab2b))
+* 优化证书申请跳过的状态显示，成功通知现在在跳过时不会发送 ([67d762b](https://github.com/certd/certd/commit/67d762b6a520f1fa24719a124e5ae975a81f5f82))
+* 站点证书监控通知发送，每天定时检查 ([bb4910f](https://github.com/certd/certd/commit/bb4910f4e57234e42b44505f4620ae7af66025c5))
+* 支持一体证书 ([53c38cf](https://github.com/certd/certd/commit/53c38cf714a6f7486abbf1d71c9f48f56a790100))
+
 ## [1.28.4](https://github.com/certd/certd/compare/v1.28.3...v1.28.4) (2024-12-12)
 
 **Note:** Version bump only for package @certd/plugin-cert
