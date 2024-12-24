@@ -26,6 +26,11 @@ function buildItemMenus(menus: any) {
   }
   const list: any = [];
   for (const sub of menus) {
+    if (sub.meta?.show != null) {
+      if (sub.meta.show === false || (typeof sub.meta.show === "function" && !sub.meta.show())) {
+        continue;
+      }
+    }
     const item: any = {
       key: sub.path,
       label: sub.title,
@@ -34,6 +39,7 @@ function buildItemMenus(menus: any) {
         return <fsIcon icon={sub.icon ?? sub.meta?.icon} />;
       }
     };
+
     list.push(item);
     if (sub.children && sub.children.length > 0) {
       item.children = buildItemMenus(sub.children);
