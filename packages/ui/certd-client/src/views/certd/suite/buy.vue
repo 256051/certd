@@ -22,6 +22,8 @@
           <product-info :product="item" @order="doOrder" />
         </a-col>
       </a-row>
+
+      <a-empty v-if="suites.length == 0 && addons.length == 0" class="w-100 mt-10" description="暂无套餐可购买" />
     </div>
 
     <order-modal ref="orderModalRef" />

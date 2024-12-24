@@ -5,7 +5,7 @@ import * as _ from "lodash-es";
 import { LocalStorage } from "/src/utils/util.storage";
 
 import * as basicApi from "/@/api/modules/api.basic";
-import { HeaderMenus, PlusInfo, SiteEnv, SiteInfo, SysInstallInfo, SysPublicSetting } from "/@/api/modules/api.basic";
+import { HeaderMenus, PlusInfo, SiteEnv, SiteInfo, SuiteSetting, SysInstallInfo, SysPublicSetting } from "/@/api/modules/api.basic";
 import { useUserStore } from "/@/store/modules/user";
 import { mitter } from "/@/utils/util.mitt";
 import { env } from "/@/utils/util.env";
@@ -37,6 +37,7 @@ export interface SettingState {
   siteEnv?: SiteEnv;
   headerMenus?: HeaderMenus;
   inited?: boolean;
+  suiteSetting?: SuiteSetting;
 }
 
 const defaultThemeConfig = {
@@ -88,6 +89,7 @@ export const useSettingStore = defineStore({
     headerMenus: {
       menus: []
     },
+    suiteSetting: { enabled: false },
     inited: false
   }),
   getters: {
@@ -124,6 +126,10 @@ export const useSettingStore = defineStore({
     getHeaderMenus() {
       // @ts-ignore
       return this.headerMenus?.menus || { menus: [] };
+    },
+    isSuiteEnabled() {
+      // @ts-ignore
+      return this.suiteSetting?.enabled === true;
     }
   },
   actions: {
@@ -142,6 +148,7 @@ export const useSettingStore = defineStore({
       _.merge(this.siteEnv, allSettings.siteEnv || {});
       _.merge(this.plusInfo, allSettings.plusInfo || {});
       _.merge(this.headerMenus, allSettings.headerMenus || {});
+      _.merge(this.suiteSetting, allSettings.suiteSetting || {});
       //@ts-ignore
       this.initSiteInfo(allSettings.siteInfo || {});
     },

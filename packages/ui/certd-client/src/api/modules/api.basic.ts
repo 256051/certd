@@ -35,7 +35,9 @@ export type SysPublicSetting = {
   managerOtherUserPipeline?: boolean;
   icpNo?: string;
 };
-
+export type SuiteSetting = {
+  enabled?: boolean;
+};
 export type SysPrivateSetting = {
   httpProxy?: string;
   httpsProxy?: string;
@@ -67,6 +69,7 @@ export type AllSettings = {
   siteInfo: SiteInfo;
   siteEnv: SiteEnv;
   headerMenus: HeaderMenus;
+  suiteSetting: SuiteSetting;
 };
 
 export async function loadAllSettings(): Promise<AllSettings> {

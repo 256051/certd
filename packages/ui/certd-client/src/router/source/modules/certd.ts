@@ -138,7 +138,7 @@ export const certdResources = [
         meta: {
           show: () => {
             const settingStore = useSettingStore();
-            return settingStore.isComm;
+            return settingStore.isComm && settingStore.isSuiteEnabled;
           },
           icon: "ion:cart-outline",
           auth: true

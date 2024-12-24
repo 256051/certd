@@ -36,6 +36,9 @@
             </span>
             <span>(<expires-time-text :value="item.expiresTime" />)</span>
           </a-tag>
+          <div class="flex-o ml-5">
+            暂无套餐 <a-button v-if="detail.suites?.length === 0" class="ml-5" type="primary" size="small" @click="goBuy">去购买</a-button>
+          </div>
         </div>
       </a-popover>
     </div>
@@ -48,6 +51,7 @@ import { ref } from "vue";
 import ExpiresTimeText from "/@/components/expires-time-text.vue";
 import api, { SuiteDetail } from "/@/views/certd/suite/mine/api";
 import { FsIcon } from "@fast-crud/fast-crud";
+import { useRouter } from "vue-router";
 
 defineOptions({
   name: "SuiteCard"
@@ -60,4 +64,11 @@ async function loadSuiteDetail() {
 }
 
 loadSuiteDetail();
+
+const router = useRouter();
+function goBuy() {
+  router.push({
+    path: "/certd/suite/buy"
+  });
+}
 </script>

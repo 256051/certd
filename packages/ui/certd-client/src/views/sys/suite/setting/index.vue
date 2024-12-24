@@ -45,6 +45,7 @@ import { notification } from "ant-design-vue";
 import { request } from "/@/api/service";
 import SuiteDurationSelector from "/@/views/sys/suite/setting/suite-duration-selector.vue";
 import ProductManager from "/@/views/sys/suite/product/index.vue";
+import { useSettingStore } from "/@/store/modules/settings";
 
 defineOptions({
   name: "SettingsSuite"
@@ -83,11 +84,13 @@ async function loadSettings() {
   merge(formState, data);
 }
 
+const settingsStore = useSettingStore();
 loadSettings();
 const onClick = async () => {
   const form = await formRef.value.validateFields();
   await api.SuiteSettingSave(form);
   await loadSettings();
+  await settingsStore.loadSysSettings();
   notification.success({
     message: "保存成功"
   });
