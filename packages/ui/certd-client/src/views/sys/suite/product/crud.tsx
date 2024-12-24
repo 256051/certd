@@ -108,7 +108,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           form: {
             value: "suite",
             rules: [{ required: true, message: "此项必填" }],
-            helper: "目前没区别,重复购买可叠加数量"
+            helper: "套餐：同一时间只有最新购买的一个生效\n加量包：可购买多个，购买后立即生效，不影响套餐\n套餐和加量包数量可叠加"
           },
           column: {
             width: 80,

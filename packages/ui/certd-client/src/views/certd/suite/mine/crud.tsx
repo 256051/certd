@@ -1,5 +1,5 @@
 import { AddReq, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
-import { pipelineGroupApi } from "./api";
+import api from "./api";
 import { useRouter } from "vue-router";
 import SuiteValueEdit from "/@/views/sys/suite/product/suite-value-edit.vue";
 import SuiteValue from "/@/views/sys/suite/product/suite-value.vue";
@@ -7,7 +7,6 @@ import DurationValue from "/@/views/sys/suite/product/duration-value.vue";
 import dayjs from "dayjs";
 
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
-  const api = pipelineGroupApi;
   const pageRequest = async (query: UserPageQuery): Promise<UserPageRes> => {
     return await api.GetList(query);
   };
@@ -273,6 +272,15 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
               //如果在激活时间之前
               if (now < row.activeTime) {
                 return <a-tag color="blue">待生效</a-tag>;
+              }
+
+              //是否是当前套餐
+              const suites = context.detail.value.suites;
+              if (suites && suites.length > 0) {
+                const suite = suites[0];
+                if (suite.productType === "suite" && suite.id === row.id) {
+                  return <a-tag color="success">当前套餐</a-tag>;
+                }
               }
               // 是否在激活时间和过期时间之间
               if (now > row.activeTime && (row.expiresTime == -1 || now < row.expiresTime)) {

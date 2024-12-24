@@ -38,38 +38,16 @@
 
 <script lang="ts" setup>
 import SuiteValue from "/@/views/sys/suite/product/suite-value.vue";
-import { computed, ref } from "vue";
-import { request } from "/@/api/service";
-import dayjs from "dayjs";
+import { ref } from "vue";
 import ExpiresTimeText from "/@/components/expires-time-text.vue";
+import api, { SuiteDetail } from "/@/views/certd/suite/mine/api";
 
 defineOptions({
   name: "SuiteCard"
 });
 
-type SuiteValue = {
-  max: number;
-  used: number;
-};
-type SuiteDetail = {
-  enabled?: boolean;
-  suites?: any[];
-  expiresTime?: number;
-  pipelineCount?: SuiteValue;
-  domainCount?: SuiteValue;
-  deployCount?: SuiteValue;
-  monitorCount?: SuiteValue;
-};
 const detail = ref<SuiteDetail>({});
 
-const api = {
-  async SuiteDetailGet() {
-    return await request({
-      url: "/mine/suite/detail",
-      method: "post"
-    });
-  }
-};
 async function loadSuiteDetail() {
   detail.value = await api.SuiteDetailGet();
 }

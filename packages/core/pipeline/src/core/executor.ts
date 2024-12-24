@@ -102,6 +102,7 @@ export class Executor {
           await this.notification("success");
         }
       }
+      return result;
     } catch (e: any) {
       await this.notification("error", e);
       this.logger.error("pipeline 执行失败", e);

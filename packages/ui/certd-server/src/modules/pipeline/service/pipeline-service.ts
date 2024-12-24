@@ -34,7 +34,7 @@ import { logger } from '@certd/basic';
 import { UrlService } from './url-service.js';
 import { NotificationService } from './notification-service.js';
 import { NotificationGetter } from './notification-getter.js';
-import { UserSuiteService } from '@certd/commercial-core';
+import { UserSuiteEntity, UserSuiteService } from '@certd/commercial-core';
 import { CertInfoService } from '../../monitor/service/cert-info-service.js';
 
 const runningTasks: Map<string | number, Executor> = new Map();
@@ -391,6 +391,11 @@ export class PipelineService extends BaseService<PipelineEntity> {
   async run(id: number, triggerId: string, stepId?: string) {
     const entity: PipelineEntity = await this.info(id);
 
+    let suite: UserSuiteEntity = null;
+    if (isComm()) {
+      suite = await this.userSuiteService.checkHasDeployCount(entity.userId);
+    }
+
     const pipeline = JSON.parse(entity.content);
     if (!pipeline.id) {
       pipeline.id = id;
@@ -464,7 +469,14 @@ export class PipelineService extends BaseService<PipelineEntity> {
         // 清除该step的状态
         executor.clearLastStatus(stepId);
       }
-      await executor.run(historyId, triggerType);
+      const result = await executor.run(historyId, triggerType);
+
+      if (result === ResultType.success) {
+        if (isComm()) {
+          // 消耗成功次数
+          await this.userSuiteService.consumeDeployCount(suite, 1);
+        }
+      }
     } catch (e) {
       logger.error('执行失败：', e);
       // throw e;

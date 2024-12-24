@@ -1,54 +1,71 @@
 import { request } from "/src/api/service";
 
-export function createApi() {
-  const apiPrefix = "/mine/suite";
-  return {
-    async GetList(query: any) {
-      return await request({
-        url: apiPrefix + "/page",
-        method: "post",
-        data: query
-      });
-    },
+const apiPrefix = "/mine/suite";
 
-    async AddObj(obj: any) {
-      return await request({
-        url: apiPrefix + "/add",
-        method: "post",
-        data: obj
-      });
-    },
+export type SuiteValue = {
+  max: number;
+  used: number;
+};
+export type SuiteDetail = {
+  enabled?: boolean;
+  suites?: any[];
+  expiresTime?: number;
+  pipelineCount?: SuiteValue;
+  domainCount?: SuiteValue;
+  deployCount?: SuiteValue;
+  monitorCount?: SuiteValue;
+};
 
-    async UpdateObj(obj: any) {
-      return await request({
-        url: apiPrefix + "/update",
-        method: "post",
-        data: obj
-      });
-    },
+export default {
+  async GetList(query: any) {
+    return await request({
+      url: apiPrefix + "/page",
+      method: "post",
+      data: query
+    });
+  },
 
-    async DelObj(id: number) {
-      return await request({
-        url: apiPrefix + "/delete",
-        method: "post",
-        params: { id }
-      });
-    },
+  async AddObj(obj: any) {
+    return await request({
+      url: apiPrefix + "/add",
+      method: "post",
+      data: obj
+    });
+  },
 
-    async GetObj(id: number) {
-      return await request({
-        url: apiPrefix + "/info",
-        method: "post",
-        params: { id }
-      });
-    },
-    async ListAll() {
-      return await request({
-        url: apiPrefix + "/all",
-        method: "post"
-      });
-    }
-  };
-}
+  async UpdateObj(obj: any) {
+    return await request({
+      url: apiPrefix + "/update",
+      method: "post",
+      data: obj
+    });
+  },
 
-export const pipelineGroupApi = createApi();
+  async DelObj(id: number) {
+    return await request({
+      url: apiPrefix + "/delete",
+      method: "post",
+      params: { id }
+    });
+  },
+
+  async GetObj(id: number) {
+    return await request({
+      url: apiPrefix + "/info",
+      method: "post",
+      params: { id }
+    });
+  },
+  async ListAll() {
+    return await request({
+      url: apiPrefix + "/all",
+      method: "post"
+    });
+  },
+  async SuiteDetailGet() {
+    return await request({
+      url: `${apiPrefix}/detail`,
+      method: "post"
+    });
+  }
+};

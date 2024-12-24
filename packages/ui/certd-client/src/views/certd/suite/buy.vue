@@ -8,14 +8,21 @@
         <a-col :span="24">
           <a-card>
             <div class="suite-intro-box">
-              <div>套餐说明：多个套餐内的数量可以叠加</div>
+              <div>说明：① 同一时间只有最新购买的一个套餐生效；② 可以购买多个加量包，加量包立即生效；③ 套餐和加量包内的数量可以叠加</div>
               <div v-if="suiteIntro" v-html="suiteIntro"></div>
             </div>
           </a-card>
         </a-col>
       </a-row>
+      <h3>套餐</h3>
       <a-row :gutter="8" class="mt-10">
-        <a-col v-for="item of products" :key="item.id" class="mb-10 suite-card-col">
+        <a-col v-for="item of suites" :key="item.id" class="mb-10 suite-card-col">
+          <product-info :product="item" @order="doOrder" />
+        </a-col>
+      </a-row>
+      <h3>加量包</h3>
+      <a-row :gutter="8" class="mt-10">
+        <a-col v-for="item of addons" :key="item.id" class="mb-10 suite-card-col">
           <product-info :product="item" @order="doOrder" />
         </a-col>
       </a-row>
@@ -31,10 +38,13 @@ import * as api from "./api";
 import ProductInfo from "/@/views/certd/suite/product-info.vue";
 import OrderModal from "/@/views/certd/suite/order-modal.vue";
 
-const products = ref([]);
+const suites = ref([]);
+const addons = ref([]);
 
 async function loadProducts() {
-  products.value = await api.ProductList();
+  const list = await api.ProductList();
+  suites.value = list.filter((x: any) => x.type === "suite");
+  addons.value = list.filter((x: any) => x.type === "addone");
 }
 
 loadProducts();

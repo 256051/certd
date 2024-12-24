@@ -11,18 +11,25 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, onActivated, onMounted } from "vue";
+import { onActivated, onMounted, ref } from "vue";
 import { useFs } from "@fast-crud/fast-crud";
 import createCrudOptions from "./crud";
-import { createApi } from "./api";
+import api, { SuiteDetail } from "/@/views/certd/suite/mine/api";
+
 defineOptions({
   name: "MySuites"
 });
-const { crudBinding, crudRef, crudExpose } = useFs({ createCrudOptions, context: {} });
+const detail = ref<SuiteDetail>({});
+const { crudBinding, crudRef, crudExpose } = useFs({ createCrudOptions, context: { detail } });
+
+async function loadSuiteDetail() {
+  detail.value = await api.SuiteDetailGet();
+}
 
 // 页面打开后获取列表数据
-onMounted(() => {
-  crudExpose.doRefresh();
+onMounted(async () => {
+  await loadSuiteDetail();
+  await crudExpose.doRefresh();
 });
 onActivated(() => {
   crudExpose.doRefresh();

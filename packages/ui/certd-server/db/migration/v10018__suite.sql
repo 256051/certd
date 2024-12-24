@@ -57,6 +57,7 @@ CREATE TABLE "cd_user_suite"
   "deploy_count_used" integer,
   "is_present"        boolean,
   "is_bootstrap"      boolean,
+  "is_empty"          boolean,
   "disabled"          boolean  NOT NULL DEFAULT (false),
   "active_time"       integer,
   "expires_time"      integer,
