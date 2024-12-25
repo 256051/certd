@@ -6,7 +6,7 @@ import { remove } from 'lodash-es';
 
 @IsTaskPlugin({
   name: 'TencentDeleteExpiringCert',
-  title: '删除腾讯云即将过期证书',
+  title: '腾讯云-删除即将过期证书',
   icon: 'svg:icon-tencentcloud',
   group: pluginGroups.tencent.key,
   desc: '仅删除未使用的证书',

@@ -6,7 +6,7 @@ import { QiniuAccess, QiniuClient } from '@certd/plugin-plus';
 
 @IsTaskPlugin({
   name: 'QiniuDeployCertToCDN',
-  title: '部署证书至七牛云CDN',
+  title: '七牛云-部署证书至CDN',
   icon: 'svg:icon-qiniuyun',
   group: pluginGroups.qiniu.key,
   desc: '自动部署域名证书至七牛云CDN',

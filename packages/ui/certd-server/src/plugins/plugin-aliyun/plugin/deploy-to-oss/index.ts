@@ -3,7 +3,7 @@ import { AliyunAccess } from '@certd/plugin-lib';
 import { CertInfo } from '@certd/plugin-cert';
 @IsTaskPlugin({
   name: 'DeployCertToAliyunOSS',
-  title: '部署证书至阿里云OSS',
+  title: '阿里云-部署证书至OSS',
   icon: 'ant-design:aliyun-outlined',
   group: pluginGroups.aliyun.key,
   desc: '自动部署域名证书至阿里云OSS',

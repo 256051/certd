@@ -7,7 +7,7 @@ import { SshAccess, SshClient } from '@certd/plugin-lib';
 
 @IsTaskPlugin({
   name: 'QnapDeploy',
-  title: '部署证书到威联通',
+  title: '威联通-部署证书到威联通',
   icon: 'simple-icons:qnap',
   group: pluginGroups.panel.key,
   desc: '部署证书到qnap',

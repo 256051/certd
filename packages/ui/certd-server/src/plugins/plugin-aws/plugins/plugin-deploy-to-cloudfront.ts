@@ -8,7 +8,7 @@ import { AbstractPlusTaskPlugin } from '@certd/plugin-plus';
 
 @IsTaskPlugin({
   name: 'AwsDeployToCloudFront',
-  title: '部署证书到 AWS CloudFront',
+  title: 'AWS-部署证书到CloudFront',
   desc: '部署证书到 AWS CloudFront',
   icon: 'clarity:plugin-line',
   group: pluginGroups.aws.key,

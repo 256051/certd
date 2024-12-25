@@ -5,7 +5,7 @@ import { createRemoteSelectInputDefine } from '@certd/plugin-lib';
 
 @IsTaskPlugin({
   name: 'TencentActionInstancesPlugin',
-  title: '腾讯云实例开关机',
+  title: '腾讯云-实例开关机',
   icon: 'svg:icon-tencentcloud',
   group: pluginGroups.tencent.key,
   desc: '腾讯云实例开关机',

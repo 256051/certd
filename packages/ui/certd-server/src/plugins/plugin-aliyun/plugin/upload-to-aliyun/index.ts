@@ -23,7 +23,7 @@ const regionDict = [
 
 @IsTaskPlugin({
   name: 'uploadCertToAliyun',
-  title: '上传证书到阿里云',
+  title: '阿里云-上传证书到阿里云',
   icon: 'ant-design:aliyun-outlined',
   group: pluginGroups.aliyun.key,
   desc: '如果不想在阿里云上同一份证书上传多次，可以把此任务作为前置任务，其他阿里云任务证书那一项选择此任务的输出',

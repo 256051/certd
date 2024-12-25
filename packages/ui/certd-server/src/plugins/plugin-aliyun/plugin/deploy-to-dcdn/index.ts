@@ -5,7 +5,7 @@ import { CertInfo } from '@certd/plugin-cert';
 
 @IsTaskPlugin({
   name: 'DeployCertToAliyunDCDN',
-  title: '部署证书至阿里云DCDN',
+  title: '阿里云-部署证书至DCDN',
   icon: 'ant-design:aliyun-outlined',
   group: pluginGroups.aliyun.key,
   desc: '依赖证书申请前置任务，自动部署域名证书至阿里云DCDN',

@@ -4,7 +4,7 @@ import { CertInfo } from '@certd/plugin-cert';
 
 @IsTaskPlugin({
   name: 'QiniuCertUpload',
-  title: '上传到七牛云',
+  title: '七牛云-上传证书到七牛云',
   icon: 'svg:icon-qiniuyun',
   group: pluginGroups.qiniu.key,
   desc: '上传到七牛云',

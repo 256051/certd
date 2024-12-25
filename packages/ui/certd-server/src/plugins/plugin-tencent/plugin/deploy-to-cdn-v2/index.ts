@@ -6,7 +6,7 @@ import { createRemoteSelectInputDefine } from '@certd/plugin-lib';
 
 @IsTaskPlugin({
   name: 'TencentDeployCertToCDNv2',
-  title: '部署到腾讯云CDN-v2',
+  title: '腾讯云-部署到CDN-v2',
   icon: 'svg:icon-tencentcloud',
   group: pluginGroups.tencent.key,
   desc: '推荐使用',

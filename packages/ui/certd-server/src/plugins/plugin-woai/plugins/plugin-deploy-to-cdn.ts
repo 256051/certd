@@ -4,7 +4,7 @@ import { WoaiAccess } from '../access.js';
 
 @IsTaskPlugin({
   name: 'WoaiCDN',
-  title: '部署证书到我爱云 CDN',
+  title: '我爱云-部署证书到我爱云CDN',
   desc: '部署证书到我爱云CDN',
   icon: 'clarity:plugin-line',
   group: pluginGroups.cdn.key,

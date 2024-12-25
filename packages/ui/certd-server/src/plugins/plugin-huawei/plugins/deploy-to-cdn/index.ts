@@ -6,7 +6,7 @@ import { resetLogConfigure } from '@certd/basic';
 
 @IsTaskPlugin({
   name: 'HauweiDeployCertToCDN',
-  title: '部署证书至华为云CDN',
+  title: '华为云-部署证书至CDN',
   icon: 'svg:icon-huawei',
   group: pluginGroups.huawei.key,
   desc: '',

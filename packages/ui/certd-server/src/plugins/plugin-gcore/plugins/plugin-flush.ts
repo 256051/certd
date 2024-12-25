@@ -4,7 +4,7 @@ import { GcoreAccess } from '../access.js';
 
 @IsTaskPlugin({
   name: 'Gcoreflush',
-  title: '刷新证书 Gcore',
+  title: 'Gcore-刷新Gcore证书',
   desc: '刷新现有的证书',
   icon: 'clarity:plugin-line',
   group: pluginGroups.cdn.key,

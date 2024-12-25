@@ -6,7 +6,7 @@ import { optionsUtils } from '@certd/basic/dist/utils/util.options.js';
 @IsTaskPlugin({
   //命名规范，插件名称+功能（就是目录plugin-demo中的demo），大写字母开头，驼峰命名
   name: 'DemoTest',
-  title: 'Demo测试插件',
+  title: 'Demo-测试插件',
   icon: 'clarity:plugin-line',
   //插件分组
   group: pluginGroups.other.key,

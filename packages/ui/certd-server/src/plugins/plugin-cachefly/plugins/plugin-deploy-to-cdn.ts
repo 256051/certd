@@ -4,7 +4,7 @@ import { CacheflyAccess } from '../access.js';
 
 @IsTaskPlugin({
   name: 'CacheFly',
-  title: '部署证书到 CacheFly',
+  title: 'CacheFly-部署证书到CacheFly',
   desc: '部署证书到 CacheFly',
   icon: 'clarity:plugin-line',
   group: pluginGroups.cdn.key,
