@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.29.2](https://github.com/certd/certd/compare/v1.29.1...v1.29.2) (2024-12-25)
+
+### Bug Fixes
+
+* 修复套餐关闭状态下，仍然限制用户流水线数量的bug ([66fb9e5](https://github.com/certd/certd/commit/66fb9e5f49491f9c159363b48af14720a37673b1))
+
 ## [1.29.1](https://github.com/certd/certd/compare/v1.29.0...v1.29.1) (2024-12-25)
 
 ### Bug Fixes
