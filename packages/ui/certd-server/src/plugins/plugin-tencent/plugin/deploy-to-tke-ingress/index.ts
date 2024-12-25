@@ -6,7 +6,7 @@ import { AbstractPlusTaskPlugin } from '@certd/plugin-plus';
 
 @IsTaskPlugin({
   name: 'DeployCertToTencentTKEIngress',
-  title: '部署到腾讯云TKE-ingress',
+  title: '腾讯云-部署到TKE-ingress',
   needPlus: true,
   icon: 'svg:icon-tencentcloud',
   group: pluginGroups.tencent.key,

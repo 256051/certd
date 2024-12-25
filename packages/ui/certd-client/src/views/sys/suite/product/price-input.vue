@@ -7,7 +7,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-
+import { utils } from "/@/utils";
 const props = withDefaults(
   defineProps<{
     modelValue?: number;
@@ -34,11 +34,11 @@ const priceValue = computed(() => {
   if (props.modelValue == null) {
     return 0;
   }
-  return (props.modelValue / 100.0).toFixed(2);
+  return utils.amount.toYuan(props.modelValue);
 });
 
 const priceLabel = computed(() => {
-  if (priceValue.value === 0 || priceValue.value === "0.00") {
+  if (priceValue.value === 0) {
     return "免费";
   }
   return `¥${priceValue.value}`;
@@ -47,7 +47,7 @@ const priceLabel = computed(() => {
 const emit = defineEmits(["update:modelValue"]);
 
 const onPriceChange = (price: number) => {
-  emit("update:modelValue", price * 100);
+  emit("update:modelValue", utils.amount.toCent(price));
 };
 </script>
 

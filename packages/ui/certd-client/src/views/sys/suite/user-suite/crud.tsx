@@ -1,15 +1,14 @@
 import { AddReq, compute, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
-import { pipelineGroupApi } from "./api";
+import { sysUserSuiteApi } from "./api";
 import { useRouter } from "vue-router";
 import SuiteValueEdit from "/@/views/sys/suite/product/suite-value-edit.vue";
 import SuiteValue from "/@/views/sys/suite/product/suite-value.vue";
 import DurationValue from "/@/views/sys/suite/product/duration-value.vue";
-import dayjs from "dayjs";
 import createCrudOptionsUser from "/@/views/sys/authority/user/crud";
 import UserSuiteStatus from "/@/views/certd/suite/mine/user-suite-status.vue";
-
+import SuiteDurationSelector from "../setting/suite-duration-selector.vue";
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
-  const api = pipelineGroupApi;
+  const api = sysUserSuiteApi;
   const pageRequest = async (query: UserPageQuery): Promise<UserPageRes> => {
     return await api.GetList(query);
   };
@@ -26,7 +25,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 
   const addRequest = async (req: AddReq) => {
     const { form } = req;
-    const res = await api.AddObj(form);
+    const res = await api.PresentSuite(form);
     return res;
   };
 
@@ -57,16 +56,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
       },
       actionbar: {
         buttons: {
-          add: { show: false }
-          // buy: {
-          //   text: "购买",
-          //   type: "primary",
-          //   click() {
-          //     router.push({
-          //       path: "/certd/suite/buy"
-          //     });
-          //   }
-          // }
+          add: { text: "赠送套餐" }
         }
       },
       toolbar: { show: false },
@@ -112,7 +102,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             show: true
           },
           form: {
-            rules: [{ required: true, message: "此项必填" }]
+            show: false
           },
           column: {
             width: 200
@@ -143,6 +133,37 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             }
           }
         },
+        //赠送
+        presentSuiteId: {
+          title: "赠送套餐",
+          type: "dict-select",
+          column: { show: false },
+          addForm: {
+            show: true,
+            component: {
+              name: SuiteDurationSelector,
+              vModel: "modelValue"
+            },
+            rules: [
+              {
+                validator: async (rule, value) => {
+                  if (value && value.productId) {
+                    return true;
+                  }
+                  throw new Error("请选择套餐");
+                }
+              }
+            ]
+          },
+          valueResolve({ form, value }) {
+            debugger;
+            if (value && value.productId) {
+              form.productId = value.productId;
+              form.duration = value.duration;
+            }
+          },
+          form: { show: false }
+        },
         productType: {
           title: "类型",
           type: "dict-select",
@@ -158,7 +179,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             ]
           }),
           form: {
-            rules: [{ required: true, message: "此项必填" }]
+            show: false
           },
           column: {
             width: 80,
@@ -179,6 +200,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           title: "域名数量",
           type: "text",
           form: {
+            show: false,
             key: ["content", "maxDomainCount"],
             component: {
               name: SuiteValueEdit,
@@ -201,6 +223,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           title: "流水线数量",
           type: "text",
           form: {
+            show: false,
             key: ["content", "maxPipelineCount"],
             component: {
               name: SuiteValueEdit,
@@ -223,6 +246,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           title: "部署次数",
           type: "text",
           form: {
+            show: false,
             key: ["content", "maxDeployCount"],
             component: {
               name: SuiteValueEdit,
@@ -248,6 +272,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           title: "证书监控数量",
           type: "text",
           form: {
+            show: false,
             key: ["content", "maxMonitorCount"],
             component: {
               name: SuiteValueEdit,
@@ -269,7 +294,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         duration: {
           title: "时长",
           type: "text",
-          form: {},
+          form: { show: false },
           column: {
             component: {
               name: DurationValue,
@@ -304,11 +329,17 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           type: "date",
           column: {
             width: 150
+          },
+          form: {
+            show: false
           }
         },
         expiresTime: {
           title: "过期时间",
           type: "date",
+          form: {
+            show: false
+          },
           column: {
             width: 150,
             component: {
@@ -328,7 +359,8 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             ]
           }),
           form: {
-            value: true
+            value: true,
+            show: false
           },
           column: {
             width: 100,

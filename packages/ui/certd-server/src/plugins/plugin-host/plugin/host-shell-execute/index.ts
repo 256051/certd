@@ -3,7 +3,7 @@ import { SshClient } from '@certd/plugin-lib';
 
 @IsTaskPlugin({
   name: 'hostShellExecute',
-  title: '执行远程主机脚本命令',
+  title: '主机-执行远程主机脚本命令',
   icon: 'tabler:brand-powershell',
   group: pluginGroups.host.key,
   desc: '可以执行重启nginx等操作让证书生效',

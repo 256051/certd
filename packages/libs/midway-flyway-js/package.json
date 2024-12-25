@@ -1,6 +1,6 @@
 {
   "name": "@certd/midway-flyway-js",
-  "version": "1.29.0",
+  "version": "1.29.1",
   "description": "midway with flyway, sql upgrade way ",
   "private": false,
   "type": "module",
@@ -46,5 +46,5 @@
     "typeorm": "^0.3.11",
     "typescript": "^5.4.2"
   },
-  "gitHead": "36993cb6f8244f4a183d64fcdf5194282140d888"
+  "gitHead": "f9128d4d452e344b6990c117a5d647add226437b"
 }

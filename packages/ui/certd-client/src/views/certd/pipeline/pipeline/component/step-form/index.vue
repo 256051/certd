@@ -1,5 +1,5 @@
 <template>
-  <a-drawer v-model:open="stepDrawerVisible" placement="right" :closable="true" width="700px" class="step-form-drawer" :class="{ fullscreen }">
+  <a-drawer v-model:open="stepDrawerVisible" placement="right" :closable="true" width="760px" class="step-form-drawer" :class="{ fullscreen }">
     <template #title>
       <div>
         编辑步骤
@@ -48,7 +48,7 @@
                     <a-card-meta>
                       <template #title>
                         <fs-icon class="plugin-icon" :icon="item.icon || 'clarity:plugin-line'"></fs-icon>
-                        <span class="title">{{ item.title }}</span>
+                        <span class="title" :title="item.title">{{ item.title }}</span>
                         <vip-button v-if="item.needPlus" mode="icon" />
                       </template>
                       <template #description>

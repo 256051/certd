@@ -15,20 +15,27 @@
 </template>
 
 <script lang="ts" setup>
-import { onActivated, onMounted, ref } from "vue";
+import { computed, onActivated, onMounted, ref } from "vue";
 import { useFs } from "@fast-crud/fast-crud";
 import createCrudOptions from "./crud";
-import api, { SuiteDetail } from "/@/views/certd/suite/mine/api";
+import { mySuiteApi, SuiteDetail } from "/@/views/certd/suite/mine/api";
 import SuiteCard from "/@/views/framework/home/dashboard/suite-card.vue";
 
 defineOptions({
   name: "MySuites"
 });
 const detail = ref<SuiteDetail>({});
-const { crudBinding, crudRef, crudExpose } = useFs({ createCrudOptions, context: { detail } });
+const currentSuite = computed(() => {
+  if (detail.value?.suites && detail.value.suites.length > 0) {
+    return detail.value.suites[0];
+  }
+  return null;
+});
+
+const { crudBinding, crudRef, crudExpose } = useFs({ createCrudOptions, context: { detail, currentSuite } });
 
 async function loadSuiteDetail() {
-  detail.value = await api.SuiteDetailGet();
+  detail.value = await mySuiteApi.SuiteDetailGet();
 }
 
 // 页面打开后获取列表数据

@@ -30,6 +30,19 @@ export class QywxNotification extends BaseNotification {
   })
   mentionedList!: string[];
 
+  @NotificationInput({
+    title: '提醒指定手机号成员',
+    component: {
+      name: 'a-select',
+      vModel: 'value',
+      mode: 'tags',
+      open: false,
+    },
+    required: false,
+    helper: '填写成员手机号，@all 为提醒所有人',
+  })
+  mentionedMobileList!: string[];
+
   async send(body: NotificationBody) {
     if (!this.webhook) {
       throw new Error('webhook地址不能为空');
@@ -47,10 +60,11 @@ export class QywxNotification extends BaseNotification {
       url: this.webhook,
       method: 'POST',
       data: {
-        msgtype: 'markdown',
-        markdown: {
-          content: `# ${body.title}\n\n${body.content}\n\n[查看详情](${body.url})`,
+        msgtype: 'text',
+        text: {
+          content: `· ${body.title}\n· ${body.content}\n· 查看详情: ${body.url}`,
           mentioned_list: this.mentionedList,
+          mentioned_mobile_list: this.mentionedMobileList,
         },
       },
     });

@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 
 @IsTaskPlugin({
   name: 'DogeCloudDeployToCDN',
-  title: '部署证书到多吉云CDN',
+  title: '多吉云-部署到多吉云CDN',
   icon: 'svg:icon-dogecloud',
   group: pluginGroups.cdn.key,
   default: {

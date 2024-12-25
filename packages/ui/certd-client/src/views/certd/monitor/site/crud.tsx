@@ -4,10 +4,14 @@ import { AddReq, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, Edi
 import { siteInfoApi } from "./api";
 import dayjs from "dayjs";
 import { notification } from "ant-design-vue";
+import { useSettingStore } from "/@/store/modules/settings";
+import { mySuiteApi } from "/@/views/certd/suite/mine/api";
+import { mitter } from "/@/utils/util.mitt";
 
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const { t } = useI18n();
   const api = siteInfoApi;
+  const { crudBinding } = crudExpose;
   const pageRequest = async (query: UserPageQuery): Promise<UserPageRes> => {
     return await api.GetList(query);
   };
@@ -27,6 +31,8 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
     const res = await api.AddObj(form);
     return res;
   };
+
+  const settingsStore = useSettingStore();
 
   return {
     crudOptions: {
@@ -49,6 +55,38 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         },
         wrapper: {
           width: 600
+        }
+      },
+      actionbar: {
+        buttons: {
+          add: {
+            async click() {
+              if (!settingsStore.isPlus) {
+                //非plus
+                if (crudBinding.value.data.length >= 1) {
+                  notification.error({
+                    message: "基础版只能添加一个监控站点，请赞助升级专业版"
+                  });
+                  mitter.emit("openVipModal");
+                  return;
+                }
+              }
+
+              //检查是否监控站点数量超出限制
+              if (settingsStore.isComm && settingsStore.suiteSetting.enabled) {
+                //检查数量是否超限
+                const suiteDetail = await mySuiteApi.SuiteDetailGet();
+                const max = suiteDetail.monitorCount.max;
+                if (max != -1 && max <= suiteDetail.monitorCount.used) {
+                  notification.error({
+                    message: `对不起，您最多只能创建条${max}监控记录，请购买或升级套餐`
+                  });
+                  return;
+                }
+              }
+              await crudExpose.openAdd({});
+            }
+          }
         }
       },
       rowHandle: {
@@ -111,6 +149,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           form: {
             rules: [
               { required: true, message: "请输入域名" },
+              //@ts-ignore
               { type: "domains", message: "请输入正确的域名" }
             ]
           },

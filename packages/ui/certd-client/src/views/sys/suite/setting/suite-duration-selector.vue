@@ -7,6 +7,10 @@ import { ref, watch } from "vue";
 import { dict } from "@fast-crud/fast-crud";
 import { request } from "/@/api/service";
 
+defineOptions({
+  name: "SuiteDurationSelector"
+});
+
 const props = defineProps<{
   modelValue?: {
     productId?: number;

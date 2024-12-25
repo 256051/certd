@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.29.1](https://github.com/certd/certd/compare/v1.29.0...v1.29.1) (2024-12-25)
+
+### Bug Fixes
+
+* 修复某处金额转换丢失精度的bug ([d2d6f12](https://github.com/certd/certd/commit/d2d6f12218cbe7bd55f4ae082b93084be85f0a7b))
+
 # [1.29.0](https://github.com/certd/certd/compare/v1.28.4...v1.29.0) (2024-12-24)
 
 ### Features

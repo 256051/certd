@@ -5,7 +5,7 @@ import { AwsAcmClient } from '../libs/aws-acm-client.js';
 
 @IsTaskPlugin({
   name: 'AwsUploadToACM',
-  title: '上传证书 AWS ACM',
+  title: 'AWS-上传证书到ACM',
   desc: '上传证书 AWS ACM',
   icon: 'clarity:plugin-line',
   group: pluginGroups.aws.key,

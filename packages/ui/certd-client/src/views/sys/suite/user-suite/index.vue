@@ -11,10 +11,10 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, onActivated, onMounted } from "vue";
+import { onActivated, onMounted } from "vue";
 import { useFs } from "@fast-crud/fast-crud";
 import createCrudOptions from "./crud";
-import { createApi } from "./api";
+
 defineOptions({
   name: "UserSuites"
 });

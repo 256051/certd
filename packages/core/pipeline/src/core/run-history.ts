@@ -146,6 +146,10 @@ export class RunnableCollection {
 
   static initPipelineRunnableType(pipeline: Pipeline) {
     pipeline.runnableType = "pipeline";
+    if (pipeline.stages === undefined) {
+      pipeline.stages = [];
+      return;
+    }
     pipeline.stages.forEach((stage) => {
       stage.runnableType = "stage";
       stage.tasks.forEach((task) => {

@@ -16,7 +16,7 @@ export type SuiteDetail = {
   monitorCount?: SuiteValue;
 };
 
-export default {
+export const mySuiteApi = {
   async GetList(query: any) {
     return await request({
       url: apiPrefix + "/page",

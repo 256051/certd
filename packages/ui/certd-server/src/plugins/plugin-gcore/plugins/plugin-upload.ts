@@ -4,7 +4,7 @@ import { GcoreAccess } from '../access.js';
 
 @IsTaskPlugin({
   name: 'Gcoreupload',
-  title: '部署证书到 Gcore',
+  title: 'Gcore-部署证书到Gcore',
   desc: '仅上传 并不会部署到cdn',
   icon: 'clarity:plugin-line',
   group: pluginGroups.cdn.key,

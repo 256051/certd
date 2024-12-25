@@ -4,7 +4,7 @@ import { optionsUtils } from '@certd/basic/dist/utils/util.options.js';
 
 @IsTaskPlugin({
   name: 'DeployCertToAliyunCDN',
-  title: '部署证书至阿里云CDN',
+  title: '阿里云-部署证书至CDN',
   icon: 'ant-design:aliyun-outlined',
   group: pluginGroups.aliyun.key,
   desc: '自动部署域名证书至阿里云CDN',

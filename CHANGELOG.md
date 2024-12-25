@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.29.1](https://github.com/certd/certd/compare/v1.29.0...v1.29.1) (2024-12-25)
+
+### Bug Fixes
+
+* 免费套餐支持购买 ([f5ec987](https://github.com/certd/certd/commit/f5ec9870fd6af1f0c9099852bbdb4d07813ccce8))
+* 修复某处金额转换丢失精度的bug ([d2d6f12](https://github.com/certd/certd/commit/d2d6f12218cbe7bd55f4ae082b93084be85f0a7b))
+* 修复新版本小红点显示错误问题 ([fe4786e](https://github.com/certd/certd/commit/fe4786e168afe03a5243dd67971476c348339809))
+
+### Performance Improvements
+
+* 用户创建证书流水线没有购买套餐或者超限时提前报错 ([472f06c](https://github.com/certd/certd/commit/472f06c2d190d0ae48e8b53c18bc278437656a1c))
+* 优化插件名称显示 ([26adf7d](https://github.com/certd/certd/commit/26adf7d437e674385f26a8f92fded6521a620671))
+
 # [1.29.0](https://github.com/certd/certd/compare/v1.28.4...v1.29.0) (2024-12-24)
 
 ### Bug Fixes

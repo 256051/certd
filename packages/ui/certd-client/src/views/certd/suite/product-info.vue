@@ -80,7 +80,7 @@ const productTypeDictRef = dict({
 
 const emit = defineEmits(["order"]);
 async function doOrder() {
-  emit("order", { product: props.product, productId: props.product.id, duration: selected.value.duration });
+  emit("order", { product: props.product, productId: props.product.id, duration: selected.value.duration, price: selected.value.price });
 }
 </script>
 
