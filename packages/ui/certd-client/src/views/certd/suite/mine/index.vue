@@ -18,7 +18,7 @@
 import { computed, onActivated, onMounted, ref } from "vue";
 import { useFs } from "@fast-crud/fast-crud";
 import createCrudOptions from "./crud";
-import api, { SuiteDetail } from "/@/views/certd/suite/mine/api";
+import { mySuiteApi, SuiteDetail } from "/@/views/certd/suite/mine/api";
 import SuiteCard from "/@/views/framework/home/dashboard/suite-card.vue";
 
 defineOptions({
@@ -35,7 +35,7 @@ const currentSuite = computed(() => {
 const { crudBinding, crudRef, crudExpose } = useFs({ createCrudOptions, context: { detail, currentSuite } });
 
 async function loadSuiteDetail() {
-  detail.value = await api.SuiteDetailGet();
+  detail.value = await mySuiteApi.SuiteDetailGet();
 }
 
 // 页面打开后获取列表数据

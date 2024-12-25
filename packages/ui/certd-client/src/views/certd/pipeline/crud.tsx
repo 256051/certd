@@ -15,6 +15,7 @@ import { useModal } from "/@/use/use-modal";
 import CertView from "./cert-view.vue";
 import { eachStages } from "./utils";
 import { createNotificationApi as createNotificationApi } from "../notification/api";
+import { mySuiteApi } from "/@/views/certd/suite/mine/api";
 export default function ({ crudExpose, context: { certdFormRef, groupDictRef, selectedRowKeys } }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const router = useRouter();
   const { t } = useI18n();
@@ -94,7 +95,23 @@ export default function ({ crudExpose, context: { certdFormRef, groupDictRef, se
     lastResRef.value = res;
     return res;
   };
-  function addCertdPipeline() {
+
+  const settingsStore = useSettingStore();
+  async function addCertdPipeline() {
+    //检查是否流水线数量超出限制
+    if (settingsStore.isComm && settingsStore.suiteSetting.enabled) {
+      //检查数量是否超限
+
+      const suiteDetail = await mySuiteApi.SuiteDetailGet();
+      const max = suiteDetail.pipelineCount.max;
+      if (max != -1 && max <= suiteDetail.pipelineCount.used) {
+        notification.error({
+          message: `对不起，您最多只能创建${max}条流水线，请购买或升级套餐`
+        });
+        return;
+      }
+    }
+
     certdFormRef.value.open(async ({ form }: any) => {
       // 添加certd pipeline
       const triggers = [];

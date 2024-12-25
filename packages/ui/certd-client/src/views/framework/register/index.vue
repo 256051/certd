@@ -166,6 +166,11 @@ export default defineComponent({
         {
           required: true,
           message: "请输入图片验证码"
+        },
+        {
+          min: 4,
+          max: 4,
+          message: "请输入4位图片验证码"
         }
       ],
       smsCode: [

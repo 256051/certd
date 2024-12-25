@@ -139,17 +139,27 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           type: "dict-select",
           column: { show: false },
           addForm: {
+            show: true,
             component: {
               name: SuiteDurationSelector,
               vModel: "modelValue"
             },
-            rules: [{ required: true, message: "请选择套餐" }]
+            rules: [
+              {
+                validator: async (rule, value) => {
+                  if (value && value.productId) {
+                    return true;
+                  }
+                  throw new Error("请选择套餐");
+                }
+              }
+            ]
           },
           valueResolve({ form, value }) {
-            if (value) {
-              const arr = value.splict("_");
-              form.productId = parseInt(arr[0]);
-              form.duration = parseInt(arr[1]);
+            debugger;
+            if (value && value.productId) {
+              form.productId = value.productId;
+              form.duration = value.duration;
             }
           },
           form: { show: false }

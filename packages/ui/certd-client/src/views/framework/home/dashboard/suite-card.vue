@@ -49,7 +49,7 @@
 import SuiteValue from "/@/views/sys/suite/product/suite-value.vue";
 import { ref } from "vue";
 import ExpiresTimeText from "/@/components/expires-time-text.vue";
-import api, { SuiteDetail } from "/@/views/certd/suite/mine/api";
+import { mySuiteApi, SuiteDetail } from "/@/views/certd/suite/mine/api";
 import { FsIcon } from "@fast-crud/fast-crud";
 import { useRouter } from "vue-router";
 
@@ -60,7 +60,7 @@ defineOptions({
 const detail = ref<SuiteDetail>({});
 
 async function loadSuiteDetail() {
-  detail.value = await api.SuiteDetailGet();
+  detail.value = await mySuiteApi.SuiteDetailGet();
 }
 
 loadSuiteDetail();

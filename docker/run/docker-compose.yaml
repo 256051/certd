@@ -34,6 +34,8 @@ services:
 #                                    #↓↓↓↓ ----------------------------- 如果忘记管理员密码，可以设置为true，重启之后，管理员密码将改成123456，然后请及时修改回false
       - certd_system_resetAdminPasswd=false
 #     默认使用sqlite文件数据库，如果需要使用其他数据库，请设置以下环境变量
+#     注意： 选定使用一种数据库之后，不支持更换数据库。
+#     数据库迁移方法：1、使用新数据库重新部署一套，然后将旧数据同步过去，注意flyway_history表的数据不要同步
 #                                    #↓↓↓↓ ----------------------------- 使用postgresql数据库，需要提前创建数据库
 #      - certd_flyway_scriptDir=./db/migration-pg                        # 升级脚本目录
 #      - certd_typeorm_dataSource_default_type=postgres                  # 数据库类型
