@@ -143,15 +143,18 @@ const hasNewVersion = computed(() => {
   if (!latestVersion.value) {
     return false;
   }
+  if (latestVersion.value === version.value) {
+    return false;
+  }
   //分段比较
   const current = version.value.split(".");
   const latest = latestVersion.value.split(".");
   for (let i = 0; i < current.length; i++) {
-    if (parseInt(latest[i]) > parseInt(current[i])) {
-      return true;
+    if (parseInt(latest[i]) < parseInt(current[i])) {
+      return false;
     }
   }
-  return false;
+  return true;
 });
 async function loadLatestVersion() {
   latestVersion.value = await api.GetLatestVersion();
