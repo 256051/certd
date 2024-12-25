@@ -52,6 +52,14 @@ export async function TradeCreate(form: TradeCreateReq) {
   });
 }
 
+export async function TradeCreateFree(form: TradeCreateReq) {
+  return await request({
+    url: "/suite/trade/createFree",
+    method: "POST",
+    data: form
+  });
+}
+
 export async function GetPaymentTypes() {
   return await request({
     url: "/suite/trade/payments",

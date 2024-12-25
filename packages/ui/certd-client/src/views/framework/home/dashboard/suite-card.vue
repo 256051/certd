@@ -36,8 +36,8 @@
             </span>
             <span>(<expires-time-text :value="item.expiresTime" />)</span>
           </a-tag>
-          <div class="flex-o ml-5">
-            暂无套餐 <a-button v-if="detail.suites?.length === 0" class="ml-5" type="primary" size="small" @click="goBuy">去购买</a-button>
+          <div v-if="detail.suites?.length === 0" class="flex-o ml-5">
+            暂无套餐 <a-button class="ml-5" type="primary" size="small" @click="goBuy">去购买</a-button>
           </div>
         </div>
       </a-popover>

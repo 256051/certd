@@ -263,7 +263,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
               userSuite: compute(({ row }) => {
                 return row;
               }),
-              currentSuite: context.detail
+              currentSuite: context.currentSuite
             },
             conditionalRender: {
               match() {

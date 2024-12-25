@@ -17,6 +17,7 @@
             <div style="height: 400px">
               <ProductManager @refreshed="onTableRefresh"></ProductManager>
             </div>
+            <div class="helper">不建议设置免费套餐，可以在下方配置注册赠送套餐</div>
           </a-form-item>
 
           <a-form-item label="注册赠送套餐" name="registerGift">

@@ -122,12 +122,11 @@ export const useSettingStore = defineStore({
       };
       return vipLabelMap[this.plusInfo?.vipType || "free"];
     },
-    // @ts-ignore
-    getHeaderMenus() {
+    getHeaderMenus(): { menus: any[] } {
       // @ts-ignore
       return this.headerMenus?.menus || { menus: [] };
     },
-    isSuiteEnabled() {
+    isSuiteEnabled(): boolean {
       // @ts-ignore
       return this.suiteSetting?.enabled === true;
     }
