@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import { notification } from "ant-design-vue";
 import { useSettingStore } from "/@/store/modules/settings";
 import { mySuiteApi } from "/@/views/certd/suite/mine/api";
+import { mitter } from "/@/utils/util.mitt";
 
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const { t } = useI18n();
@@ -64,8 +65,9 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
                 //非plus
                 if (crudBinding.value.data.length >= 1) {
                   notification.error({
-                    message: "基础版只能添加一个监控站点"
+                    message: "基础版只能添加一个监控站点，请赞助升级专业版"
                   });
+                  mitter.emit("openVipModal");
                   return;
                 }
               }
