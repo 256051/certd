@@ -204,13 +204,16 @@ export class PipelineService extends BaseService<PipelineEntity> {
     // }
     if (isComm()) {
       //校验pipelineCount
-      const userSuite = await this.userSuiteService.getMySuiteDetail(bean.userId);
-      if (userSuite?.pipelineCount.max != -1 && userSuite?.pipelineCount.used + 1 > userSuite?.pipelineCount.max) {
-        throw new NeedSuiteException(`对不起，您最多只能创建${userSuite?.pipelineCount.max}条流水线，请购买或升级套餐`);
-      }
+      const suiteSetting = await this.userSuiteService.getSuiteSetting();
+      if (suiteSetting.enabled) {
+        const userSuite = await this.userSuiteService.getMySuiteDetail(bean.userId);
+        if (userSuite?.pipelineCount.max != -1 && userSuite?.pipelineCount.used + 1 > userSuite?.pipelineCount.max) {
+          throw new NeedSuiteException(`对不起，您最多只能创建${userSuite?.pipelineCount.max}条流水线，请购买或升级套餐`);
+        }
 
-      if (userSuite.domainCount.max != -1 && userSuite.domainCount.used + domains.length > userSuite.domainCount.max) {
-        throw new NeedSuiteException(`对不起，您最多只能添加${userSuite.domainCount.max}个域名，请购买或升级套餐`);
+        if (userSuite.domainCount.max != -1 && userSuite.domainCount.used + domains.length > userSuite.domainCount.max) {
+          throw new NeedSuiteException(`对不起，您最多只能添加${userSuite.domainCount.max}个域名，请购买或升级套餐`);
+        }
       }
     }
 
