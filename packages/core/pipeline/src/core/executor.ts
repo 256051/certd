@@ -109,7 +109,13 @@ export class Executor {
     } finally {
       clearInterval(intervalFlushLogId);
       await this.onChanged(this.runtime);
-      await this.pipelineContext.setObj("lastRuntime", this.runtime);
+      //保存之前移除logs
+      const lastRuntime: any = {
+        ...this.runtime,
+      };
+      delete lastRuntime.logs;
+      delete lastRuntime._loggers;
+      await this.pipelineContext.setObj("lastRuntime", lastRuntime);
       this.logger.info(`pipeline.${this.pipeline.id}  end`);
     }
   }
