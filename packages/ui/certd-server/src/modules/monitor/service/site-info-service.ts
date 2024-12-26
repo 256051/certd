@@ -1,5 +1,5 @@
 import { Inject, Provide } from '@midwayjs/core';
-import { BaseService, NeedSuiteException, NeedVIPException, SysSettingsService, SysSuiteSetting } from '@certd/lib-server';
+import { BaseService, NeedSuiteException, NeedVIPException, SysSettingsService } from '@certd/lib-server';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
 import { SiteInfoEntity } from '../entity/site-info.js';
@@ -42,7 +42,7 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
       }
     }
     if (isComm()) {
-      const suiteSetting = await this.sysSettingsService.getSetting<SysSuiteSetting>(SysSuiteSetting);
+      const suiteSetting = await this.userSuiteService.getSuiteSetting();
       if (suiteSetting.enabled) {
         const userSuite = await this.userSuiteService.getMySuiteDetail(data.userId);
         if (userSuite.monitorCount.max != -1 && userSuite.monitorCount.max <= userSuite.monitorCount.used) {

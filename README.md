@@ -88,11 +88,13 @@ https://certd.handfree.work/
 
 
 ## 五、 升级
-如果使用固定版本号
+
+### docker-compose方式部署
+#### 1. 如果使用固定版本号
 1. 修改`docker-compose.yaml`中的镜像版本号
 2. 运行`docker compose up -d` 即可
 
-如果需要使用最新版本
+#### 2. 如果需要使用最新版本
 ```shell
 #重新拉取镜像
 docker pull registry.cn-shenzhen.aliyuncs.com/handsfree/certd:latest
@@ -100,7 +102,9 @@ docker pull registry.cn-shenzhen.aliyuncs.com/handsfree/certd:latest
 docker compose down
 docker compose up -d
 ```
-关于自动升级(仅限尝鲜建议非生产使用)
+> 数据默认存在`/data/certd`目录下，不用担心数据丢失
+
+### 自动升级(仅限尝鲜建议非生产使用)
 ```yaml
 version: '3.3'
 services:
@@ -113,16 +117,8 @@ services:
     ports:
       - "7001:7001"
       - "7002:7002"
-    # 如果需要修改系统配置，可以通过环境变量传递；初次运行请保持默认配置
     environment:
       - certd_system_resetAdminPasswd=false
-    # 如果需要切换数据库类型，可以在此处设置为mysql或postgres
-    # - certd_typeorm_dataSource_default_type=mysql
-    # - certd_typeorm_dataSource_default_host=localhost
-    # - certd_typeorm_dataSource_default_port=3306
-    # - certd_typeorm_dataSource_default_username=root
-    # - certd_typeorm_dataSource_default_password=123456
-    # - certd_typeorm_dataSource_default_database=certd
     labels:
       com.centurylinklabs.watchtower.enable: "true"
 
@@ -139,19 +135,16 @@ services:
       - WATCHTOWER_LABEL_ENABLE=true       # 根据容器标签进行更新
       - WATCHTOWER_POLL_INTERVAL=300       # 每 5 分钟检查一次更新
 
-# 如果需要支持 IPv6，请取消以下注释
-# networks:
-#   ip6net:
-#     enable_ipv6: true
-#     ipam:
-#       config:
-#         - subnet: 2001:db8::/64
-
 ```
-> 数据默认存在`/data/certd`目录下，不用担心数据丢失   
+
+### 其他部署方式升级方法
+请参考 https://certd.docmirror.cn/guide/install/upgrade.html
 
 
-更新日志： [CHANGELOG](./CHANGELOG.md)
+
+###  更新日志：
+
+[CHANGELOG](./CHANGELOG.md)
 
 
 ## 六、一些说明
