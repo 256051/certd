@@ -45,6 +45,9 @@ export class AutoAInitSite {
 
     await this.sysSettingsService.backupSecret();
 
+    //加载一次密钥
+    await this.sysSettingsService.getSecret();
+
     await this.sysSettingsService.reloadPrivateSettings();
 
     // 授权许可

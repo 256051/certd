@@ -112,6 +112,17 @@ export class SysSecretBackup extends BaseSettings {
   encryptSecret?: string;
 }
 
+/**
+ * 不要修改
+ */
+export class SysSecret extends BaseSettings {
+  static __title__ = '密钥信息';
+  static __key__ = 'sys.secret';
+  static __access__ = 'private';
+  siteId?: string;
+  encryptSecret?: string;
+}
+
 export class SysSiteEnv {
   agent?: {
     enabled?: boolean;

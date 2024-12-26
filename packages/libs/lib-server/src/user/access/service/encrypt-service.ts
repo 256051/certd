@@ -1,6 +1,6 @@
 import { Init, Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
 import crypto from 'crypto';
-import { SysPrivateSettings, SysSettingsService } from '../../../system/index.js';
+import { SysSecret, SysSettingsService } from '../../../system/index.js';
 
 /**
  * 授权
@@ -15,8 +15,8 @@ export class EncryptService {
 
   @Init()
   async init() {
-    const privateInfo: SysPrivateSettings = await this.sysSettingService.getSetting(SysPrivateSettings);
-    this.secretKey = Buffer.from(privateInfo.encryptSecret, 'base64');
+    const secret: SysSecret = await this.sysSettingService.getSecret();
+    this.secretKey = Buffer.from(secret.encryptSecret, 'base64');
   }
 
   // 加密函数

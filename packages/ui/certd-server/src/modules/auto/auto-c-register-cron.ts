@@ -14,8 +14,6 @@ export class AutoCRegisterCron {
   @Config('cron.onlyAdminUser')
   private onlyAdminUser: boolean;
 
-  // @Inject()
-  // echoPlugin: EchoPlugin;
   @Config('cron.immediateTriggerOnce')
   private immediateTriggerOnce = false;
 

@@ -1,5 +1,5 @@
 import { ALL, Body, Controller, Inject, Post, Provide, Query } from '@midwayjs/core';
-import { AccessService } from '@certd/lib-server';
+import { AccessService, Constants } from '@certd/lib-server';
 import { AccessController } from '../../pipeline/access-controller.js';
 import { checkComm } from '@certd/plus-core';
 
@@ -53,6 +53,12 @@ export class SysAccessController extends AccessController {
   @Post('/define', { summary: 'sys:settings:view' })
   async define(@Query('type') type: string) {
     return await super.define(type);
+  }
+
+  @Post('/getSecretPlain', { summary: Constants.per.authOnly })
+  async getSecretPlain(@Body(ALL) body: { id: number; key: string }) {
+    const value = await this.service.getById(body.id, 0);
+    return this.ok(value[body.key]);
   }
 
   @Post('/accessTypeDict', { summary: 'sys:settings:view' })
