@@ -348,6 +348,7 @@ export class PipelineService extends BaseService<PipelineEntity> {
     await super.delete([id]);
     await this.historyService.deleteByPipelineId(id);
     await this.historyLogService.deleteByPipelineId(id);
+    await this.certInfoService.deleteByPipelineId(id);
   }
 
   async clearTriggers(id: number) {

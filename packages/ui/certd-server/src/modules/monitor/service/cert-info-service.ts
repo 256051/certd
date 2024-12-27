@@ -59,4 +59,13 @@ export class CertInfoService extends BaseService<CertInfoEntity> {
 
     await this.addOrUpdate(bean);
   }
+
+  async deleteByPipelineId(id: number) {
+    if (!id) {
+      return;
+    }
+    await this.repository.delete({
+      pipelineId: id,
+    });
+  }
 }

@@ -321,7 +321,7 @@ cert.jks：jks格式证书文件，java服务器使用
     // 检查有效期
     const leftDays = dayjs(expires).diff(dayjs(), "day");
     return {
-      isWillExpire: leftDays < maxDays,
+      isWillExpire: leftDays <= maxDays,
       leftDays,
     };
   }
