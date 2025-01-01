@@ -147,10 +147,11 @@ export class CertReader {
         tmpOnePath,
       });
     } catch (err) {
+      logger.error("处理失败", err);
       throw err;
     } finally {
       //删除临时文件
-      logger.info("删除临时文件");
+      logger.info("清理临时文件");
       function removeFile(filepath?: string) {
         if (filepath) {
           fs.unlinkSync(filepath);

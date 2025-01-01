@@ -1,6 +1,7 @@
 import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput, TaskOutput } from '@certd/pipeline';
-import { QiniuAccess, QiniuClient } from '@certd/plugin-plus';
+import { QiniuClient } from '@certd/plugin-plus';
 import { CertInfo } from '@certd/plugin-cert';
+import { QiniuAccess } from '@certd/plugin-lib';
 
 @IsTaskPlugin({
   name: 'QiniuCertUpload',
@@ -51,7 +52,7 @@ export class QiniuCertUpload extends AbstractTaskPlugin {
   async onInstance() {}
   async execute(): Promise<void> {
     this.logger.info('开始上传证书到七牛云');
-    const access = (await this.accessService.getById(this.accessId)) as QiniuAccess;
+    const access = await this.accessService.getById<QiniuAccess>(this.accessId);
     const qiniuClient = new QiniuClient({
       http: this.ctx.http,
       access,

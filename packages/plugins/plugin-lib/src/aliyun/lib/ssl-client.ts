@@ -1,8 +1,11 @@
 import { ILogger } from "@certd/basic";
 import { AliyunAccess } from "../access/index.js";
 import { AliyunClient } from "./index.js";
-import { CertInfo } from "@certd/plugin-cert";
 
+export type AliyunCertInfo = {
+  crt: string; //fullchain证书
+  key: string; //私钥
+};
 export type AliyunSslClientOpts = {
   access: AliyunAccess;
   logger: ILogger;
@@ -23,7 +26,7 @@ export type AliyunSslCreateDeploymentJobReq = {
 
 export type AliyunSslUploadCertReq = {
   name: string;
-  cert: CertInfo;
+  cert: AliyunCertInfo;
 };
 
 export class AliyunSslClient {

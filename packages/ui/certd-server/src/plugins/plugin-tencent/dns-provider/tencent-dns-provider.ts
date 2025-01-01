@@ -1,7 +1,7 @@
 import { Autowire } from '@certd/pipeline';
 
 import { AbstractDnsProvider, CreateRecordOptions, IsDnsProvider, RemoveRecordOptions } from '@certd/plugin-cert';
-import { TencentAccess } from '@certd/plugin-plus';
+import { TencentAccess } from '@certd/plugin-lib';
 
 @IsDnsProvider({
   name: 'tencent',

@@ -58,6 +58,9 @@
                   <div v-if="item.type === 'cname'" class="plan-cname">
                     <cname-verify-plan v-model="item.cnameVerifyPlan" @change="onPlanChanged" />
                   </div>
+                  <div v-if="item.type === 'http'" class="plan-http">
+                    <cname-verify-plan v-model="item.cnameVerifyPlan" @change="onPlanChanged" />
+                  </div>
                 </div>
               </td>
             </tr>
@@ -127,12 +130,7 @@ function showError(error: string) {
   errorMessageRef.value = error;
 }
 
-type DomainGroup = Record<
-  string,
-  {
-    [key: string]: CnameRecord;
-  }
->[];
+type DomainGroup = Record<string, Record<string, CnameRecord>>;
 
 function onDomainsChanged(domains: string[]) {
   console.log("域名变化", domains);
@@ -169,6 +167,7 @@ function onDomainsChanged(domains: string[]) {
       planItem = {
         domain,
         type: "cname",
+        //@ts-ignore
         cnameVerifyPlan: {
           ...subDomains
         }
@@ -178,6 +177,7 @@ function onDomainsChanged(domains: string[]) {
       const cnamePlan = planItem.cnameVerifyPlan;
       for (const subDomain in subDomains) {
         if (!cnamePlan[subDomain]) {
+          //@ts-ignore
           cnamePlan[subDomain] = {
             id: 0
           };

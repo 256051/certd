@@ -1,7 +1,6 @@
 import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
-import { TencentAccess } from '@certd/plugin-plus';
 import dayjs from 'dayjs';
-
+import { TencentAccess } from '@certd/plugin-lib';
 @IsTaskPlugin({
   name: 'DeployCertToTencentCLB',
   title: '腾讯云-部署到CLB',

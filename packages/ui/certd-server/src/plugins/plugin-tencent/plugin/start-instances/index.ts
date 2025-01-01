@@ -1,6 +1,6 @@
 import { IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
 import { AbstractTaskPlugin } from '@certd/pipeline';
-import { TencentAccess } from '@certd/plugin-plus';
+import { TencentAccess } from '@certd/plugin-lib';
 import { createRemoteSelectInputDefine } from '@certd/plugin-lib';
 
 @IsTaskPlugin({

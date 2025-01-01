@@ -1,6 +1,5 @@
 import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput, TaskOutput } from '@certd/pipeline';
 import { CertInfo, CertReader, CertReaderHandleContext } from '@certd/plugin-cert';
-import * as fs from 'fs';
 import dayjs from 'dayjs';
 import { SshAccess, SshClient } from '@certd/plugin-lib';
 
@@ -243,27 +242,32 @@ export class UploadCertToHostPlugin extends AbstractTaskPlugin {
   })
   hostJksPath!: string;
 
+  @TaskOutput({
+    title: '一体证书保存路径',
+  })
+  hostOnePath!: string;
+
   async onInstance() {}
 
-  copyFile(srcFile: string, destFile: string) {
-    if (!srcFile || !destFile) {
-      this.logger.warn(`srcFile:${srcFile} 或 destFile:${destFile} 为空，不复制`);
-      return;
-    }
-    const dir = destFile.substring(0, destFile.lastIndexOf('/'));
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    fs.copyFileSync(srcFile, destFile);
-    this.logger.info(`复制文件：${srcFile} => ${destFile}`);
-  }
+  // copyFile(srcFile: string, destFile: string) {
+  //   if (!srcFile || !destFile) {
+  //     this.logger.warn(`srcFile:${srcFile} 或 destFile:${destFile} 为空，不复制`);
+  //     return;
+  //   }
+  //   const dir = destFile.substring(0, destFile.lastIndexOf('/'));
+  //   if (!fs.existsSync(dir)) {
+  //     fs.mkdirSync(dir, { recursive: true });
+  //   }
+  //   fs.copyFileSync(srcFile, destFile);
+  //   this.logger.info(`复制文件：${srcFile} => ${destFile}`);
+  // }
   async execute(): Promise<void> {
     const { cert, accessId } = this;
-    let { crtPath, keyPath, icPath, pfxPath, derPath, jksPath } = this;
+    let { crtPath, keyPath, icPath, pfxPath, derPath, jksPath, onePath } = this;
     const certReader = new CertReader(cert);
 
     const handle = async (opts: CertReaderHandleContext) => {
-      const { tmpCrtPath, tmpKeyPath, tmpDerPath, tmpJksPath, tmpPfxPath, tmpIcPath } = opts;
+      const { tmpCrtPath, tmpKeyPath, tmpDerPath, tmpJksPath, tmpPfxPath, tmpIcPath, tmpOnePath } = opts;
       // if (this.copyToThisHost) {
       //   this.logger.info('复制到目标路径');
       //   this.copyFile(tmpCrtPath, crtPath);
@@ -336,6 +340,16 @@ export class UploadCertToHostPlugin extends AbstractTaskPlugin {
         });
         this.logger.info(`上传jks证书到主机：${jksPath}`);
       }
+
+      if (this.onePath) {
+        this.logger.info(`上传一体证书到主机：${this.onePath}`);
+        onePath = this.onePath.trim();
+        transports.push({
+          localPath: tmpOnePath,
+          remotePath: this.onePath,
+        });
+      }
+
       this.logger.info('开始上传文件到服务器');
       await sshClient.uploadFiles({
         connectConf,
@@ -350,6 +364,7 @@ export class UploadCertToHostPlugin extends AbstractTaskPlugin {
       this.hostPfxPath = pfxPath;
       this.hostDerPath = derPath;
       this.hostJksPath = jksPath;
+      this.hostOnePath = onePath;
     };
 
     await certReader.readCertFile({
@@ -376,6 +391,8 @@ export class UploadCertToHostPlugin extends AbstractTaskPlugin {
         env['HOST_IC_PATH'] = this.hostIcPath || '';
         env['HOST_PFX_PATH'] = this.hostPfxPath || '';
         env['HOST_DER_PATH'] = this.hostDerPath || '';
+        env['HOST_JKS_PATH'] = this.hostJksPath || '';
+        env['HOST_ONE_PATH'] = this.hostOnePath || '';
       }
 
       const scripts = this.script.split('\n');

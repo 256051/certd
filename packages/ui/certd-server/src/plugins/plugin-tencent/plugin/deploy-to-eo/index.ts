@@ -1,6 +1,5 @@
 import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
-import { TencentAccess } from '@certd/plugin-plus';
-
+import { TencentAccess } from '@certd/plugin-lib';
 @IsTaskPlugin({
   name: 'DeployCertToTencentEO',
   title: '腾讯云-部署到腾讯云EO',

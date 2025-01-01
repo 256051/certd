@@ -6,6 +6,7 @@ import { Challenge } from "@certd/acme-client/types/rfc8555";
 import { IContext } from "@certd/pipeline";
 import { ILogger, utils } from "@certd/basic";
 import { IDnsProvider, parseDomain } from "../../dns-provider/index.js";
+import { HttpChallengeUploader } from "./uploads/api.js";
 
 export type CnameVerifyPlan = {
   domain: string;
@@ -15,12 +16,18 @@ export type CnameVerifyPlan = {
 
 export type DomainVerifyPlan = {
   domain: string;
-  type: "cname" | "dns";
+  type: "cname" | "dns" | "http";
   dnsProvider?: IDnsProvider;
   cnameVerifyPlan?: Record<string, CnameVerifyPlan>;
 };
 export type DomainsVerifyPlan = {
   [key: string]: DomainVerifyPlan;
+};
+
+export type Providers = {
+  dnsProvider?: IDnsProvider;
+  domainsVerifyPlan?: DomainsVerifyPlan;
+  httpUploader?: HttpChallengeUploader;
 };
 
 export type CertInfo = {
@@ -155,20 +162,17 @@ export class AcmeService {
     return key.toString();
   }
 
-  async challengeCreateFn(authz: any, challenge: any, keyAuthorization: string, dnsProvider: IDnsProvider, domainsVerifyPlan: DomainsVerifyPlan) {
+  async challengeCreateFn(authz: any, challenge: any, keyAuthorization: string, providers: Providers) {
     this.logger.info("Triggered challengeCreateFn()");
 
     /* http-01 */
     const fullDomain = authz.identifier.value;
     if (challenge.type === "http-01") {
-      const filePath = `/var/www/html/.well-known/acme-challenge/${challenge.token}`;
+      const filePath = `.well-known/acme-challenge/${challenge.token}`;
       const fileContents = keyAuthorization;
-
-      this.logger.info(`Creating challenge response for ${fullDomain} at path: ${filePath}`);
-
-      /* Replace this */
-      this.logger.info(`Would write "${fileContents}" to path "${filePath}"`);
-      // await fs.writeFileAsync(filePath, fileContents);
+      this.logger.info(`校验 ${fullDomain} ，准备上传文件：${filePath}`);
+      await providers.httpUploader.upload(filePath, fileContents);
+      this.logger.info(`上传文件【${filePath}】成功`);
     } else if (challenge.type === "dns-01") {
       /* dns-01 */
       let fullRecord = `_acme-challenge.${fullDomain}`;
@@ -181,9 +185,10 @@ export class AcmeService {
       let domain = parseDomain(fullDomain);
       this.logger.info("解析到域名domain=" + domain);
 
-      if (domainsVerifyPlan) {
+      let dnsProvider = providers.dnsProvider;
+      if (providers.domainsVerifyPlan) {
         //按照计划执行
-        const domainVerifyPlan = domainsVerifyPlan[domain];
+        const domainVerifyPlan = providers.domainsVerifyPlan[domain];
         if (domainVerifyPlan) {
           if (domainVerifyPlan.type === "dns") {
             dnsProvider = domainVerifyPlan.dnsProvider;
@@ -239,22 +244,28 @@ export class AcmeService {
    * @param recordReq
    * @param recordRes
    * @param dnsProvider dnsProvider
+   * @param httpUploader
    * @returns {Promise}
    */
 
-  async challengeRemoveFn(authz: any, challenge: any, keyAuthorization: string, recordReq: any, recordRes: any, dnsProvider: IDnsProvider) {
-    this.logger.info("Triggered challengeRemoveFn()");
+  async challengeRemoveFn(
+    authz: any,
+    challenge: any,
+    keyAuthorization: string,
+    recordReq: any,
+    recordRes: any,
+    dnsProvider?: IDnsProvider,
+    httpUploader?: HttpChallengeUploader
+  ) {
+    this.logger.info("执行清理");
 
     /* http-01 */
     const fullDomain = authz.identifier.value;
     if (challenge.type === "http-01") {
-      const filePath = `/var/www/html/.well-known/acme-challenge/${challenge.token}`;
-
-      this.logger.info(`Removing challenge response for ${fullDomain} at path: ${filePath}`);
-
-      /* Replace this */
-      this.logger.info(`Would remove file on path "${filePath}"`);
-      // await fs.unlinkAsync(filePath);
+      const filePath = `.well-known/acme-challenge/${challenge.token}`;
+      this.logger.info(`Removing challenge response for ${fullDomain} at file: ${filePath}`);
+      await httpUploader.remove(filePath);
+      this.logger.info(`删除文件【${filePath}】成功`);
     } else if (challenge.type === "dns-01") {
       this.logger.info(`删除 TXT 解析记录:${JSON.stringify(recordReq)} ,recordRes = ${JSON.stringify(recordRes)}`);
       try {
@@ -275,11 +286,12 @@ export class AcmeService {
     domains: string | string[];
     dnsProvider?: any;
     domainsVerifyPlan?: DomainsVerifyPlan;
+    httpUploader?: any;
     csrInfo: any;
     isTest?: boolean;
     privateKeyType?: string;
   }): Promise<CertInfo> {
-    const { email, isTest, domains, csrInfo, dnsProvider, domainsVerifyPlan } = options;
+    const { email, isTest, domains, csrInfo, dnsProvider, domainsVerifyPlan, httpUploader } = options;
     const client: acme.Client = await this.getAcmeClient(email, isTest);
 
     /* Create CSR */
@@ -319,9 +331,15 @@ export class AcmeService {
       privateKey
     );
 
-    if (dnsProvider == null && domainsVerifyPlan == null) {
-      throw new Error("dnsProvider 、 domainsVerifyPlan 不能都为空");
+    if (dnsProvider == null && domainsVerifyPlan == null && httpUploader == null) {
+      throw new Error("dnsProvider 、 domainsVerifyPlan 、 httpUploader不能都为空");
     }
+
+    const providers: Providers = {
+      dnsProvider,
+      domainsVerifyPlan,
+      httpUploader,
+    };
     /* 自动申请证书 */
     const crt = await client.auto({
       csr,
@@ -334,7 +352,7 @@ export class AcmeService {
         challenge: Challenge,
         keyAuthorization: string
       ): Promise<{ recordReq: any; recordRes: any; dnsProvider: any }> => {
-        return await this.challengeCreateFn(authz, challenge, keyAuthorization, dnsProvider, domainsVerifyPlan);
+        return await this.challengeCreateFn(authz, challenge, keyAuthorization, providers);
       },
       challengeRemoveFn: async (
         authz: acme.Authorization,
@@ -344,7 +362,7 @@ export class AcmeService {
         recordRes: any,
         dnsProvider: IDnsProvider
       ): Promise<any> => {
-        return await this.challengeRemoveFn(authz, challenge, keyAuthorization, recordReq, recordRes, dnsProvider);
+        return await this.challengeRemoveFn(authz, challenge, keyAuthorization, recordReq, recordRes, dnsProvider, httpUploader);
       },
       signal: this.options.signal,
     });

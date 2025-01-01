@@ -18,6 +18,7 @@ export type CnameRecord = {
   status: string;
   commonDnsProvider?: any;
 };
+
 export type ICnameProxyService = {
   getByDomain: (domain: string) => Promise<CnameRecord>;
 };

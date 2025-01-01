@@ -7,6 +7,7 @@ import { SshAccess } from "./ssh-access.js";
 import stripAnsi from "strip-ansi";
 import { SocksClient } from "socks";
 import { SocksProxy, SocksProxyType } from "socks/typings/common/constants.js";
+export type TransportItem = { localPath: string; remotePath: string };
 
 export class AsyncSsh2Client {
   conn: ssh2.Client;
@@ -90,6 +91,21 @@ export class AsyncSsh2Client {
           return;
         }
         this.logger.info(`上传文件成功：${localPath} => ${remotePath}`);
+        resolve({});
+      });
+    });
+  }
+
+  async unlink(options: { sftp: any; remotePath: string }) {
+    const { sftp, remotePath } = options;
+    return new Promise((resolve, reject) => {
+      this.logger.info(`开始删除远程文件：${remotePath}`);
+      sftp.unlink(remotePath, (err: Error) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        this.logger.info(`删除文件成功：${remotePath}`);
         resolve({});
       });
     });
@@ -239,7 +255,7 @@ export class SshClient {
          }
    * @param options
    */
-  async uploadFiles(options: { connectConf: SshAccess; transports: any; mkdirs: boolean }) {
+  async uploadFiles(options: { connectConf: SshAccess; transports: TransportItem[]; mkdirs: boolean }) {
     const { connectConf, transports, mkdirs } = options;
     await this._call({
       connectConf,
@@ -268,6 +284,24 @@ export class SshClient {
           await conn.fastPut({ sftp, ...transport });
         }
         this.logger.info("文件全部上传成功");
+      },
+    });
+  }
+
+  async removeFiles(opts: { connectConf: SshAccess; files: string[] }) {
+    const { connectConf, files } = opts;
+    await this._call({
+      connectConf,
+      callable: async (conn: AsyncSsh2Client) => {
+        const sftp = await conn.getSftp();
+        this.logger.info("开始删除");
+        for (const file of files) {
+          await conn.unlink({
+            sftp,
+            remotePath: file,
+          });
+        }
+        this.logger.info("文件全部删除成功");
       },
     });
   }

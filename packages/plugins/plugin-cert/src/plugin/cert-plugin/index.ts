@@ -1,4 +1,4 @@
-import { IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from "@certd/pipeline";
+import { CancelError, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from "@certd/pipeline";
 import { utils } from "@certd/basic";
 
 import type { CertInfo, CnameVerifyPlan, DomainsVerifyPlan, PrivateKeyType, SSLProvider } from "./acme.js";
@@ -9,7 +9,8 @@ import { CertReader } from "./cert-reader.js";
 import { CertApplyBasePlugin } from "./base.js";
 import { GoogleClient } from "../../libs/google.js";
 import { EabAccess } from "../../access";
-import { CancelError } from "@certd/pipeline";
+import { HttpChallengeUploader } from "./uploads/api";
+import { httpChallengeUploaderFactory } from "./uploads/factory.js";
 
 export type { CertInfo };
 export * from "./cert-reader.js";
@@ -17,12 +18,20 @@ export type CnameRecordInput = {
   id: number;
   status: string;
 };
+
+export type HttpRecordInput = {
+  domain: string;
+  httpUploaderType: string;
+  httpUploaderAccess: number;
+  httpUploadRootDir: string;
+};
 export type DomainVerifyPlanInput = {
   domain: string;
-  type: "cname" | "dns";
+  type: "cname" | "dns" | "http";
   dnsProviderType?: string;
   dnsProviderAccessId?: number;
   cnameVerifyPlan?: Record<string, CnameRecordInput>;
+  httpVerifyPlan?: Record<string, HttpRecordInput>;
 };
 export type DomainsVerifyPlanInput = {
   [key: string]: DomainVerifyPlanInput;
@@ -54,6 +63,7 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
       options: [
         { value: "dns", label: "DNS直接验证" },
         { value: "cname", label: "CNAME代理验证" },
+        { value: "http", label: "HTTP文件验证" },
       ],
     },
     required: true,
@@ -116,6 +126,67 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
     `,
   })
   dnsProviderAccess!: number;
+
+  @TaskInput({
+    title: "文件上传方式",
+    component: {
+      name: "a-select",
+      vModel: "value",
+      options: [
+        { value: "ftp", label: "FTP" },
+        { value: "sftp", label: "SFTP" },
+        { value: "alioss", label: "阿里云OSS" },
+        { value: "tencentcos", label: "腾讯云COS" },
+        { value: "qiniuoss", label: "七牛OSS" },
+      ],
+    },
+    mergeScript: `
+    return {
+      show: ctx.compute(({form})=>{
+          return form.challengeType === 'http' 
+      })
+    }
+    `,
+    required: true,
+    helper: "您的域名注册商，或者域名的dns服务器属于哪个平台\n如果这里没有，请选择CNAME代理验证校验方式",
+  })
+  httpUploadType!: string;
+
+  @TaskInput({
+    title: "文件上传授权",
+    component: {
+      name: "access-selector",
+    },
+    required: true,
+    helper: "请选择文件上传授权",
+    mergeScript: `return {
+      component:{
+        type: ctx.compute(({form})=>{
+            return form.httpUploadType
+        })
+      },
+      show: ctx.compute(({form})=>{
+          return form.challengeType === 'http' 
+      })
+    }
+    `,
+  })
+  httpUploadAccess!: number;
+  @TaskInput({
+    title: "网站根路径",
+    component: {
+      name: "a-input",
+    },
+    required: true,
+    helper: "请选择网站根路径，校验文件将上传到此目录下",
+    mergeScript: `return {
+      show: ctx.compute(({form})=>{
+          return form.challengeType === 'http' 
+      })
+    }
+    `,
+  })
+  httpUploadRootDir!: string;
 
   @TaskInput({
     title: "域名验证配置",
@@ -320,10 +391,17 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
     );
     this.logger.info("开始申请证书,", email, domains);
 
-    let dnsProvider: any = null;
+    let dnsProvider: IDnsProvider = null;
     let domainsVerifyPlan: DomainsVerifyPlan = null;
+    let httpUploader: HttpChallengeUploader = null;
     if (this.challengeType === "cname") {
       domainsVerifyPlan = await this.createDomainsVerifyPlan();
+    } else if (this.challengeType === "http") {
+      const access = await this.ctx.accessService.getById(this.httpUploadAccess);
+      httpUploader = await httpChallengeUploaderFactory.createUploaderByType(this.httpUploadType, {
+        rootDir: this.httpUploadRootDir,
+        access,
+      });
     } else {
       const dnsProviderType = this.dnsProviderType;
       const access = await this.ctx.accessService.getById(this.dnsProviderAccess);
@@ -336,6 +414,7 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
         domains,
         dnsProvider,
         domainsVerifyPlan,
+        httpUploader,
         csrInfo,
         isTest: false,
         privateKeyType: this.privateKeyType,
