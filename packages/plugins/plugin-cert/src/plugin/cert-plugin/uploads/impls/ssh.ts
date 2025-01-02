@@ -1,4 +1,4 @@
-import { BaseHttpChallengeUploader } from "../api";
+import { BaseHttpChallengeUploader } from "../api.js";
 import { SshAccess, SshClient } from "@certd/plugin-lib";
 import path from "path";
 import os from "os";

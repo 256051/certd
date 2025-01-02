@@ -9,9 +9,16 @@ import { IDnsProvider, parseDomain } from "../../dns-provider/index.js";
 import { HttpChallengeUploader } from "./uploads/api.js";
 
 export type CnameVerifyPlan = {
+  type?: string;
   domain: string;
   fullRecord: string;
   dnsProvider: IDnsProvider;
+};
+
+export type HttpVerifyPlan = {
+  type: string;
+  domain: string;
+  httpUploader: HttpChallengeUploader;
 };
 
 export type DomainVerifyPlan = {
@@ -19,6 +26,7 @@ export type DomainVerifyPlan = {
   type: "cname" | "dns" | "http";
   dnsProvider?: IDnsProvider;
   cnameVerifyPlan?: Record<string, CnameVerifyPlan>;
+  httpVerifyPlan?: Record<string, HttpVerifyPlan>;
 };
 export type DomainsVerifyPlan = {
   [key: string]: DomainVerifyPlan;
@@ -171,7 +179,23 @@ export class AcmeService {
       const filePath = `.well-known/acme-challenge/${challenge.token}`;
       const fileContents = keyAuthorization;
       this.logger.info(`校验 ${fullDomain} ，准备上传文件：${filePath}`);
-      await providers.httpUploader.upload(filePath, fileContents);
+
+      let httpUploaderPlan: HttpVerifyPlan = null;
+      if (providers.domainsVerifyPlan) {
+        //查找文件上传配置
+        for (const mainDomain in providers.domainsVerifyPlan) {
+          const domainVerifyPlan = providers.domainsVerifyPlan[mainDomain];
+          if (domainVerifyPlan && domainVerifyPlan.type === "http" && domainVerifyPlan.httpVerifyPlan[fullDomain]) {
+            httpUploaderPlan = domainVerifyPlan.httpVerifyPlan[fullDomain];
+            break;
+          }
+        }
+      }
+      if (httpUploaderPlan == null) {
+        throw new Error(`未找到域名【${fullDomain}】的http校验计划`);
+      }
+
+      await httpUploaderPlan.httpUploader.upload(filePath, fileContents);
       this.logger.info(`上传文件【${filePath}】成功`);
     } else if (challenge.type === "dns-01") {
       /* dns-01 */
@@ -204,8 +228,11 @@ export class AcmeService {
             } else {
               this.logger.error("未找到域名Cname校验计划，使用默认的dnsProvider");
             }
+          } else if (domainVerifyPlan.type === "http") {
+            throw new Error("切换为http校验");
           } else {
-            this.logger.error("不支持的校验类型", domainVerifyPlan.type);
+            // this.logger.error("不支持的校验类型", domainVerifyPlan.type);
+            throw new Error("不支持的校验类型", domainVerifyPlan.type);
           }
         } else {
           this.logger.info("未找到域名校验计划，使用默认的dnsProvider");
@@ -346,7 +373,7 @@ export class AcmeService {
       email: email,
       termsOfServiceAgreed: true,
       skipChallengeVerification: this.skipLocalVerify,
-      challengePriority: ["dns-01"],
+      challengePriority: ["dns-01", "http-01"],
       challengeCreateFn: async (
         authz: acme.Authorization,
         challenge: Challenge,

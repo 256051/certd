@@ -1,6 +1,6 @@
-import { BaseHttpChallengeUploader } from "../api";
+import { BaseHttpChallengeUploader } from "../api.js";
 import { AliossAccess, AliyunAccess } from "@certd/plugin-lib";
-import { AliossClient } from "@certd/plugin-lib/dist/aliyun/lib/oss-client";
+import { AliossClient } from "@certd/plugin-lib";
 
 export class AliossHttpChallengeUploader extends BaseHttpChallengeUploader<AliossAccess> {
   async upload(filePath: string, fileContent: string) {

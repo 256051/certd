@@ -1,6 +1,5 @@
-import { BaseHttpChallengeUploader } from "../api";
-import { FtpAccess } from "@certd/plugin-lib";
-import { FtpClient } from "@certd/plugin-lib/dist/ftp/client";
+import { BaseHttpChallengeUploader } from "../api.js";
+import { FtpAccess, FtpClient } from "@certd/plugin-lib";
 
 export class FtpHttpChallengeUploader extends BaseHttpChallengeUploader<FtpAccess> {
   async upload(fileName: string, fileContent: string) {

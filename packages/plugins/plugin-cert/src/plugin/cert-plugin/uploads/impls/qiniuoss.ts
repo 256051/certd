@@ -1,7 +1,7 @@
-import { BaseHttpChallengeUploader } from "../api";
-import { FtpAccess } from "@certd/plugin-lib";
+import { BaseHttpChallengeUploader } from "../api.js";
+import { QiniuOssAccess } from "@certd/plugin-lib/dist/qiniu/access-oss";
 
-export class QiniuOssHttpChallengeUploader extends BaseHttpChallengeUploader<FtpAccess> {
+export class QiniuOssHttpChallengeUploader extends BaseHttpChallengeUploader<QiniuOssAccess> {
   async upload(fileName: string, fileContent: string) {
     return null;
   }

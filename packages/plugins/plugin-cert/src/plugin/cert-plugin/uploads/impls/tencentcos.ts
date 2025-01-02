@@ -1,7 +1,7 @@
-import { BaseHttpChallengeUploader } from "../api";
-import { FtpAccess } from "@certd/plugin-lib";
+import { BaseHttpChallengeUploader } from "../api.js";
+import { TencentCosAccess } from "@certd/plugin-lib/dist/tencent/access-cos";
 
-export class TencentCosHttpChallengeUploader extends BaseHttpChallengeUploader<FtpAccess> {
+export class TencentCosHttpChallengeUploader extends BaseHttpChallengeUploader<TencentCosAccess> {
   async upload(fileName: string, fileContent: string) {
     return null;
   }

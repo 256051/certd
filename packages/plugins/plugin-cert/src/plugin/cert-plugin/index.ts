@@ -1,7 +1,7 @@
 import { CancelError, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from "@certd/pipeline";
 import { utils } from "@certd/basic";
 
-import type { CertInfo, CnameVerifyPlan, DomainsVerifyPlan, PrivateKeyType, SSLProvider } from "./acme.js";
+import type { CertInfo, CnameVerifyPlan, DomainsVerifyPlan, HttpVerifyPlan, PrivateKeyType, SSLProvider } from "./acme.js";
 import { AcmeService } from "./acme.js";
 import * as _ from "lodash-es";
 import { createDnsProvider, DnsProviderContext, IDnsProvider } from "../../dns-provider/index.js";
@@ -9,7 +9,6 @@ import { CertReader } from "./cert-reader.js";
 import { CertApplyBasePlugin } from "./base.js";
 import { GoogleClient } from "../../libs/google.js";
 import { EabAccess } from "../../access";
-import { HttpChallengeUploader } from "./uploads/api";
 import { httpChallengeUploaderFactory } from "./uploads/factory.js";
 
 export type { CertInfo };
@@ -67,8 +66,9 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
       ],
     },
     required: true,
-    helper:
-      "DNS直接验证：域名是在阿里云、腾讯云、华为云、Cloudflare、NameSilo、西数注册的，选它。\nCNAME代理验证：支持任何注册商注册的域名，但第一次需要手动添加CNAME记录",
+    helper: `DNS直接验证：域名是在阿里云、腾讯云、华为云、Cloudflare、NameSilo、西数注册的，选它；
+CNAME代理验证：支持任何注册商注册的域名，但第一次需要手动添加CNAME记录；
+HTTP文件验证：不支持泛域名，需要配置网站文件上传`,
   })
   challengeType!: string;
 
@@ -128,74 +128,12 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
   dnsProviderAccess!: number;
 
   @TaskInput({
-    title: "文件上传方式",
-    component: {
-      name: "a-select",
-      vModel: "value",
-      options: [
-        { value: "ftp", label: "FTP" },
-        { value: "sftp", label: "SFTP" },
-        { value: "alioss", label: "阿里云OSS" },
-        { value: "tencentcos", label: "腾讯云COS" },
-        { value: "qiniuoss", label: "七牛OSS" },
-      ],
-    },
-    mergeScript: `
-    return {
-      show: ctx.compute(({form})=>{
-          return form.challengeType === 'http' 
-      })
-    }
-    `,
-    required: true,
-    helper: "您的域名注册商，或者域名的dns服务器属于哪个平台\n如果这里没有，请选择CNAME代理验证校验方式",
-  })
-  httpUploadType!: string;
-
-  @TaskInput({
-    title: "文件上传授权",
-    component: {
-      name: "access-selector",
-    },
-    required: true,
-    helper: "请选择文件上传授权",
-    mergeScript: `return {
-      component:{
-        type: ctx.compute(({form})=>{
-            return form.httpUploadType
-        })
-      },
-      show: ctx.compute(({form})=>{
-          return form.challengeType === 'http' 
-      })
-    }
-    `,
-  })
-  httpUploadAccess!: number;
-  @TaskInput({
-    title: "网站根路径",
-    component: {
-      name: "a-input",
-    },
-    required: true,
-    helper: "请选择网站根路径，校验文件将上传到此目录下",
-    mergeScript: `return {
-      show: ctx.compute(({form})=>{
-          return form.challengeType === 'http' 
-      })
-    }
-    `,
-  })
-  httpUploadRootDir!: string;
-
-  @TaskInput({
     title: "域名验证配置",
     component: {
       name: "domains-verify-plan-editor",
     },
-    rules: [{ type: "checkCnameVerifyPlan" }],
+    rules: [{ type: "checkDomainVerifyPlan" }],
     required: true,
-    helper: "如果选择CNAME方式，请按照上面的显示，给要申请证书的域名添加CNAME记录，添加后，点击验证，验证成功后不要删除记录，申请和续期证书会一直用它",
     col: {
       span: 24,
     },
@@ -203,10 +141,20 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
       component:{
         domains: ctx.compute(({form})=>{
             return form.domains
+        }),
+        defaultType: ctx.compute(({form})=>{
+            return form.challengeType || 'cname'
         })
       },
       show: ctx.compute(({form})=>{
-          return form.challengeType === 'cname' 
+          return form.challengeType === 'cname' ||  form.challengeType === 'http'
+      }),
+      helper: ctx.compute(({form})=>{
+          if(form.challengeType === 'cname' ){
+              return '请按照上面的提示，给要申请证书的域名添加CNAME记录，添加后，点击验证，验证成功后不要删除记录，申请和续期证书会一直用它'
+          }else if (form.challengeType === 'http'){
+              return '请按照上面的提示，给每个域名设置文件上传配置，证书申请过程中会上传校验文件到网站根目录下'
+          }
       })
     }
     `,
@@ -393,15 +341,8 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
 
     let dnsProvider: IDnsProvider = null;
     let domainsVerifyPlan: DomainsVerifyPlan = null;
-    let httpUploader: HttpChallengeUploader = null;
-    if (this.challengeType === "cname") {
+    if (this.challengeType === "cname" || this.challengeType === "http") {
       domainsVerifyPlan = await this.createDomainsVerifyPlan();
-    } else if (this.challengeType === "http") {
-      const access = await this.ctx.accessService.getById(this.httpUploadAccess);
-      httpUploader = await httpChallengeUploaderFactory.createUploaderByType(this.httpUploadType, {
-        rootDir: this.httpUploadRootDir,
-        access,
-      });
     } else {
       const dnsProviderType = this.dnsProviderType;
       const access = await this.ctx.accessService.getById(this.dnsProviderAccess);
@@ -414,7 +355,6 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
         domains,
         dnsProvider,
         domainsVerifyPlan,
-        httpUploader,
         csrInfo,
         isTest: false,
         privateKeyType: this.privateKeyType,
@@ -449,10 +389,11 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
       const domainVerifyPlan = this.domainsVerifyPlan[domain];
       let dnsProvider = null;
       const cnameVerifyPlan: Record<string, CnameVerifyPlan> = {};
+      const httpVerifyPlan: Record<string, HttpVerifyPlan> = {};
       if (domainVerifyPlan.type === "dns") {
         const access = await this.ctx.accessService.getById(domainVerifyPlan.dnsProviderAccessId);
         dnsProvider = await this.createDnsProvider(domainVerifyPlan.dnsProviderType, access);
-      } else {
+      } else if (domainVerifyPlan.type === "cname") {
         for (const key in domainVerifyPlan.cnameVerifyPlan) {
           const cnameRecord = await this.ctx.cnameProxyService.getByDomain(key);
           let dnsProvider = cnameRecord.commonDnsProvider;
@@ -460,9 +401,30 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
             dnsProvider = await this.createDnsProvider(cnameRecord.cnameProvider.dnsProviderType, cnameRecord.cnameProvider.access);
           }
           cnameVerifyPlan[key] = {
+            type: "cname",
             domain: cnameRecord.cnameProvider.domain,
             fullRecord: cnameRecord.recordValue,
             dnsProvider,
+          };
+        }
+      } else if (domainVerifyPlan.type === "http") {
+        const httpUploaderContext = {
+          accessService: this.ctx.accessService,
+          logger: this.logger,
+          utils,
+        };
+        for (const key in domainVerifyPlan.httpVerifyPlan) {
+          const httpRecord = domainVerifyPlan.httpVerifyPlan[key];
+          const access = await this.ctx.accessService.getById(httpRecord.httpUploaderAccess);
+          const httpUploader = await httpChallengeUploaderFactory.createUploaderByType(httpRecord.httpUploaderType, {
+            access,
+            rootDir: httpRecord.httpUploadRootDir,
+            ctx: httpUploaderContext,
+          });
+          httpVerifyPlan[key] = {
+            type: "http",
+            domain: key,
+            httpUploader,
           };
         }
       }
@@ -471,6 +433,7 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
         type: domainVerifyPlan.type,
         dnsProvider,
         cnameVerifyPlan,
+        httpVerifyPlan,
       };
     }
     return plan;

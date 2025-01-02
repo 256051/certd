@@ -13,7 +13,7 @@
         <table class="plan-table">
           <thead>
             <tr>
-              <th>域名</th>
+              <th style="min-width: 100px">主域名</th>
               <th>验证方式</th>
               <th>验证计划</th>
             </tr>
@@ -59,7 +59,7 @@
                     <cname-verify-plan v-model="item.cnameVerifyPlan" @change="onPlanChanged" />
                   </div>
                   <div v-if="item.type === 'http'" class="plan-http">
-                    <cname-verify-plan v-model="item.cnameVerifyPlan" @change="onPlanChanged" />
+                    <http-verify-plan v-model="item.httpVerifyPlan" @change="onPlanChanged" />
                   </div>
                 </div>
               </td>
@@ -79,6 +79,7 @@ import { ref, watch } from "vue";
 import { dict, FsDictSelect } from "@fast-crud/fast-crud";
 import AccessSelector from "/@/views/certd/access/access-selector/index.vue";
 import CnameVerifyPlan from "./cname-verify-plan.vue";
+import HttpVerifyPlan from "./http-verify-plan.vue";
 import psl from "psl";
 import { Form } from "ant-design-vue";
 import { DomainsVerifyPlanInput } from "./type";
@@ -95,12 +96,17 @@ const challengeTypeOptions = ref<any[]>([
   {
     label: "CNAME验证",
     value: "cname"
+  },
+  {
+    label: "HTTP验证",
+    value: "http"
   }
 ]);
 
 const props = defineProps<{
   modelValue?: DomainsVerifyPlanInput;
   domains?: string[];
+  defaultType?: string;
 }>();
 
 const emit = defineEmits<{
@@ -132,6 +138,16 @@ function showError(error: string) {
 
 type DomainGroup = Record<string, Record<string, CnameRecord>>;
 
+watch(
+  () => {
+    return props.defaultType;
+  },
+  (value: string) => {
+    planRef.value = {};
+    onDomainsChanged(props.domains);
+  }
+);
+
 function onDomainsChanged(domains: string[]) {
   console.log("域名变化", domains);
   if (domains == null) {
@@ -155,9 +171,7 @@ function onDomainsChanged(domains: string[]) {
       group = {};
       domainGroups[mainDomain] = group;
     }
-    group[domain] = {
-      id: 0
-    };
+    group[domain] = {};
   }
 
   for (const domain in domainGroups) {
@@ -166,27 +180,43 @@ function onDomainsChanged(domains: string[]) {
     if (!planItem) {
       planItem = {
         domain,
-        type: "cname",
+        //@ts-ignore
+        type: props.defaultType || "cname",
         //@ts-ignore
         cnameVerifyPlan: {
+          ...subDomains
+        },
+        //@ts-ignore
+        httpVerifyPlan: {
           ...subDomains
         }
       };
       planRef.value[domain] = planItem;
-    } else {
-      const cnamePlan = planItem.cnameVerifyPlan;
-      for (const subDomain in subDomains) {
-        if (!cnamePlan[subDomain]) {
-          //@ts-ignore
-          cnamePlan[subDomain] = {
-            id: 0
-          };
-        }
+    }
+    const cnamePlan = planItem.cnameVerifyPlan;
+    for (const subDomain in subDomains) {
+      //@ts-ignore
+      cnamePlan[subDomain] = {
+        id: 0
+      };
+    }
+    for (const subDomain of Object.keys(cnamePlan)) {
+      if (!subDomains[subDomain]) {
+        delete cnamePlan[subDomain];
       }
-      for (const subDomain of Object.keys(cnamePlan)) {
-        if (!subDomains[subDomain]) {
-          delete cnamePlan[subDomain];
-        }
+    }
+
+    // httpVerifyPlan
+    const httpPlan = planItem.httpVerifyPlan;
+    for (const subDomain in subDomains) {
+      //@ts-ignore
+      httpPlan[subDomain] = {
+        domain: subDomain
+      };
+    }
+    for (const subDomain of Object.keys(httpPlan)) {
+      if (!subDomains[subDomain]) {
+        delete httpPlan[subDomain];
       }
     }
   }
