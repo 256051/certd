@@ -7,7 +7,6 @@ import { IContext } from "@certd/pipeline";
 import { ILogger, utils } from "@certd/basic";
 import { IDnsProvider, parseDomain } from "../../dns-provider/index.js";
 import { HttpChallengeUploader } from "./uploads/api.js";
-
 export type CnameVerifyPlan = {
   type?: string;
   domain: string;
@@ -170,75 +169,36 @@ export class AcmeService {
     return key.toString();
   }
 
-  async challengeCreateFn(authz: any, challenge: any, keyAuthorization: string, providers: Providers) {
+  async challengeCreateFn(authz: any, keyAuthorizationGetter: (challenge: Challenge) => Promise<string>, providers: Providers) {
     this.logger.info("Triggered challengeCreateFn()");
 
-    /* http-01 */
     const fullDomain = authz.identifier.value;
-    if (challenge.type === "http-01") {
+    let domain = parseDomain(fullDomain);
+    this.logger.info("主域名为：" + domain);
+
+    const getChallenge = (type: string) => {
+      return authz.challenges.find((c: any) => c.type === type);
+    };
+
+    const doHttpVerify = async (challenge: any, httpUploader: HttpChallengeUploader) => {
+      const keyAuthorization = await keyAuthorizationGetter(challenge);
+      this.logger.info("http校验");
       const filePath = `.well-known/acme-challenge/${challenge.token}`;
       const fileContents = keyAuthorization;
       this.logger.info(`校验 ${fullDomain} ，准备上传文件：${filePath}`);
-
-      let httpUploaderPlan: HttpVerifyPlan = null;
-      if (providers.domainsVerifyPlan) {
-        //查找文件上传配置
-        for (const mainDomain in providers.domainsVerifyPlan) {
-          const domainVerifyPlan = providers.domainsVerifyPlan[mainDomain];
-          if (domainVerifyPlan && domainVerifyPlan.type === "http" && domainVerifyPlan.httpVerifyPlan[fullDomain]) {
-            httpUploaderPlan = domainVerifyPlan.httpVerifyPlan[fullDomain];
-            break;
-          }
-        }
-      }
-      if (httpUploaderPlan == null) {
-        throw new Error(`未找到域名【${fullDomain}】的http校验计划`);
-      }
-
-      await httpUploaderPlan.httpUploader.upload(filePath, fileContents);
+      await httpUploader.upload(filePath, fileContents);
       this.logger.info(`上传文件【${filePath}】成功`);
-    } else if (challenge.type === "dns-01") {
-      /* dns-01 */
-      let fullRecord = `_acme-challenge.${fullDomain}`;
+      return {
+        challenge,
+        keyAuthorization,
+      };
+    };
+
+    const doDnsVerify = async (challenge: any, fullRecord: string, dnsProvider: IDnsProvider) => {
+      this.logger.info("dns校验");
+      const keyAuthorization = await keyAuthorizationGetter(challenge);
+
       const recordValue = keyAuthorization;
-
-      this.logger.info(`Creating TXT record for ${fullDomain}: ${fullRecord}`);
-      /* Replace this */
-      this.logger.info(`Would create TXT record "${fullRecord}" with value "${recordValue}"`);
-
-      let domain = parseDomain(fullDomain);
-      this.logger.info("解析到域名domain=" + domain);
-
-      let dnsProvider = providers.dnsProvider;
-      if (providers.domainsVerifyPlan) {
-        //按照计划执行
-        const domainVerifyPlan = providers.domainsVerifyPlan[domain];
-        if (domainVerifyPlan) {
-          if (domainVerifyPlan.type === "dns") {
-            dnsProvider = domainVerifyPlan.dnsProvider;
-          } else if (domainVerifyPlan.type === "cname") {
-            const cnameVerifyPlan = domainVerifyPlan.cnameVerifyPlan;
-            if (cnameVerifyPlan) {
-              const cname = cnameVerifyPlan[fullDomain];
-              if (cname) {
-                dnsProvider = cname.dnsProvider;
-                domain = parseDomain(cname.domain);
-                fullRecord = cname.fullRecord;
-              }
-            } else {
-              this.logger.error("未找到域名Cname校验计划，使用默认的dnsProvider");
-            }
-          } else if (domainVerifyPlan.type === "http") {
-            throw new Error("切换为http校验");
-          } else {
-            // this.logger.error("不支持的校验类型", domainVerifyPlan.type);
-            throw new Error("不支持的校验类型", domainVerifyPlan.type);
-          }
-        } else {
-          this.logger.info("未找到域名校验计划，使用默认的dnsProvider");
-        }
-      }
-
       let hostRecord = fullRecord.replace(`${domain}`, "");
       if (hostRecord.endsWith(".")) {
         hostRecord = hostRecord.substring(0, hostRecord.length - 1);
@@ -258,8 +218,50 @@ export class AcmeService {
         recordReq,
         recordRes,
         dnsProvider,
+        challenge,
+        keyAuthorization,
       };
+    };
+
+    let dnsProvider = providers.dnsProvider;
+    let fullRecord = `_acme-challenge.${fullDomain}`;
+
+    if (providers.domainsVerifyPlan) {
+      //按照计划执行
+      const domainVerifyPlan = providers.domainsVerifyPlan[domain];
+      if (domainVerifyPlan) {
+        if (domainVerifyPlan.type === "dns") {
+          dnsProvider = domainVerifyPlan.dnsProvider;
+        } else if (domainVerifyPlan.type === "cname") {
+          const cnameVerifyPlan = domainVerifyPlan.cnameVerifyPlan;
+          if (cnameVerifyPlan) {
+            const cname = cnameVerifyPlan[fullDomain];
+            if (cname) {
+              dnsProvider = cname.dnsProvider;
+              domain = parseDomain(cname.domain);
+              fullRecord = cname.fullRecord;
+            }
+          } else {
+            this.logger.error("未找到域名Cname校验计划，使用默认的dnsProvider");
+          }
+        } else if (domainVerifyPlan.type === "http") {
+          const httpVerifyPlan = domainVerifyPlan.httpVerifyPlan;
+          if (httpVerifyPlan) {
+            const httpChallenge = getChallenge("http-01");
+            return await doHttpVerify(httpChallenge, httpVerifyPlan[fullDomain].httpUploader);
+          } else {
+            throw new Error("未找到域名【" + fullDomain + "】的http校验配置");
+          }
+        } else {
+          throw new Error("不支持的校验类型", domainVerifyPlan.type);
+        }
+      } else {
+        this.logger.info("未找到域名校验计划，使用默认的dnsProvider");
+      }
     }
+
+    const dnsChallenge = getChallenge("dns-01");
+    return await doDnsVerify(dnsChallenge, fullRecord, dnsProvider);
   }
 
   /**
@@ -376,10 +378,9 @@ export class AcmeService {
       challengePriority: ["dns-01", "http-01"],
       challengeCreateFn: async (
         authz: acme.Authorization,
-        challenge: Challenge,
-        keyAuthorization: string
-      ): Promise<{ recordReq: any; recordRes: any; dnsProvider: any }> => {
-        return await this.challengeCreateFn(authz, challenge, keyAuthorization, providers);
+        keyAuthorizationGetter: (challenge: Challenge) => Promise<string>
+      ): Promise<{ recordReq?: any; recordRes?: any; dnsProvider?: any; challenge: Challenge; keyAuthorization: string }> => {
+        return await this.challengeCreateFn(authz, keyAuthorizationGetter, providers);
       },
       challengeRemoveFn: async (
         authz: acme.Authorization,

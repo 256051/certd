@@ -13,9 +13,12 @@ export class AliossClient {
   }
 
   async init() {
+    if (this.client) {
+      return;
+    }
     // @ts-ignore
     const OSS = await import("ali-oss");
-    this.client = new OSS.default({
+    const ossClient = new OSS.default({
       accessKeyId: this.access.accessKeyId,
       accessKeySecret: this.access.accessKeySecret,
       // yourRegion填写Bucket所在地域。以华东1（杭州）为例，Region填写为oss-cn-hangzhou。
@@ -25,16 +28,20 @@ export class AliossClient {
       // yourBucketName填写Bucket名称。
       bucket: this.bucket,
     });
+    // oss
+
+    this.client = ossClient;
   }
 
-  async doRequest(client: any, bucket: string, xml: string, params: any) {
-    params = client._bucketRequestParams("POST", bucket, {
+  async doRequest(bucket: string, xml: string, params: any) {
+    await this.init();
+    params = this.client._bucketRequestParams("POST", bucket, {
       ...params,
     });
     params.content = xml;
     params.mime = "xml";
     params.successStatuses = [200];
-    const res = await client.request(params);
+    const res = await this.client.request(params);
     this.checkRet(res);
     return res;
   }
@@ -46,11 +53,12 @@ export class AliossClient {
   }
 
   async uploadFile(filePath: string, content: Buffer) {
-    const memFile = new File([content], filePath);
-    return await this.client.put(filePath, memFile);
+    await this.init();
+    return await this.client.put(filePath, content);
   }
 
   async removeFile(filePath: string) {
+    await this.init();
     return await this.client.delete(filePath);
   }
 }
