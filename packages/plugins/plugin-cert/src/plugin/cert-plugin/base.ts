@@ -267,6 +267,7 @@ cert.jks：jks格式证书文件，java服务器使用
 
     let oldCert: CertReader | undefined = undefined;
     try {
+      this.logger.info("读取上次证书");
       oldCert = await this.readLastCert();
     } catch (e) {
       this.logger.warn("读取cert失败：", e);
@@ -304,6 +305,7 @@ cert.jks：jks格式证书文件，java服务器使用
   async readLastCert(): Promise<CertReader | undefined> {
     const cert = this.lastStatus?.status?.output?.cert;
     if (cert == null) {
+      this.logger.info("没有找到上次的证书,lastStatus:", JSON.stringify(this.lastStatus?.status));
       return undefined;
     }
     return new CertReader(cert);
