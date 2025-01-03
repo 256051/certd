@@ -1,7 +1,6 @@
 import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput, TaskOutput } from '@certd/pipeline';
-import { QiniuClient } from '@certd/plugin-plus';
 import { CertInfo } from '@certd/plugin-cert';
-import { QiniuAccess } from '@certd/plugin-lib';
+import { QiniuAccess, QiniuClient } from '@certd/plugin-lib';
 
 @IsTaskPlugin({
   name: 'QiniuCertUpload',

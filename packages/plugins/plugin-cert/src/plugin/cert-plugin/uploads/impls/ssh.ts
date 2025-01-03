@@ -5,11 +5,17 @@ import os from "os";
 import fs from "fs";
 
 export class SshHttpChallengeUploader extends BaseHttpChallengeUploader<SshAccess> {
-  async upload(fileName: string, fileContent: string) {
-    const tmpFilePath = path.join(os.tmpdir(), "cert", "http", fileName);
+  async upload(filePath: string, fileContent: Buffer) {
+    const tmpFilePath = path.join(os.tmpdir(), "cert", "http", filePath);
 
     // Write file to temp path
+    const dir = path.dirname(tmpFilePath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
     fs.writeFileSync(tmpFilePath, fileContent);
+
+    const key = this.rootDir + filePath;
     try {
       const client = new SshClient(this.logger);
       await client.uploadFiles({
@@ -17,8 +23,8 @@ export class SshHttpChallengeUploader extends BaseHttpChallengeUploader<SshAcces
         mkdirs: true,
         transports: [
           {
-            localPath: fileName,
-            remotePath: fileName,
+            localPath: tmpFilePath,
+            remotePath: key,
           },
         ],
       });
@@ -30,9 +36,10 @@ export class SshHttpChallengeUploader extends BaseHttpChallengeUploader<SshAcces
 
   async remove(filePath: string) {
     const client = new SshClient(this.logger);
+    const key = this.rootDir + filePath;
     await client.removeFiles({
       connectConf: this.access,
-      files: [filePath],
+      files: [key],
     });
   }
 }

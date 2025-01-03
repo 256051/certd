@@ -138,18 +138,7 @@ function showError(error: string) {
 
 type DomainGroup = Record<string, Record<string, CnameRecord>>;
 
-watch(
-  () => {
-    return props.defaultType;
-  },
-  (value: string) => {
-    planRef.value = {};
-    onDomainsChanged(props.domains);
-  }
-);
-
 function onDomainsChanged(domains: string[]) {
-  console.log("域名变化", domains);
   if (domains == null) {
     return;
   }
@@ -183,22 +172,46 @@ function onDomainsChanged(domains: string[]) {
         //@ts-ignore
         type: props.defaultType || "cname",
         //@ts-ignore
-        cnameVerifyPlan: {
-          ...subDomains
-        },
+        cnameVerifyPlan: {},
         //@ts-ignore
-        httpVerifyPlan: {
-          ...subDomains
-        }
+        httpVerifyPlan: {}
       };
       planRef.value[domain] = planItem;
     }
+
+    const cnameOrigin = planItem.cnameVerifyPlan;
+    const httpOrigin = planItem.httpVerifyPlan;
+    planItem.cnameVerifyPlan = {};
+    planItem.httpVerifyPlan = {};
+    for (const subDomain in subDomains) {
+      if (!cnameOrigin[subDomain]) {
+        //@ts-ignore
+        planItem.cnameVerifyPlan[subDomain] = {
+          id: 0
+        };
+      } else {
+        planItem.cnameVerifyPlan[subDomain] = cnameOrigin[subDomain];
+      }
+    }
+    for (const subDomain in subDomains) {
+      if (!httpOrigin[subDomain]) {
+        //@ts-ignore
+        planItem.httpVerifyPlan[subDomain] = {
+          domain: subDomain
+        };
+      } else {
+        planItem.httpVerifyPlan[subDomain] = httpOrigin[subDomain];
+      }
+    }
+
     const cnamePlan = planItem.cnameVerifyPlan;
     for (const subDomain in subDomains) {
-      //@ts-ignore
-      cnamePlan[subDomain] = {
-        id: 0
-      };
+      if (!cnamePlan[subDomain]) {
+        //@ts-ignore
+        cnamePlan[subDomain] = {
+          id: 0
+        };
+      }
     }
     for (const subDomain of Object.keys(cnamePlan)) {
       if (!subDomains[subDomain]) {
@@ -209,10 +222,13 @@ function onDomainsChanged(domains: string[]) {
     // httpVerifyPlan
     const httpPlan = planItem.httpVerifyPlan;
     for (const subDomain in subDomains) {
-      //@ts-ignore
-      httpPlan[subDomain] = {
-        domain: subDomain
-      };
+      debugger;
+      if (!httpPlan[subDomain]) {
+        //@ts-ignore
+        httpPlan[subDomain] = {
+          domain: subDomain
+        };
+      }
     }
     for (const subDomain of Object.keys(httpPlan)) {
       if (!subDomains[subDomain]) {
@@ -226,14 +242,15 @@ function onDomainsChanged(domains: string[]) {
       delete planRef.value[domain];
     }
   }
+  debugger;
 }
 
 watch(
   () => {
-    return props.domains;
+    return props.domains && props.defaultType;
   },
-  (domains: string[]) => {
-    onDomainsChanged(domains);
+  () => {
+    onDomainsChanged(props.domains);
   },
   {
     immediate: true,

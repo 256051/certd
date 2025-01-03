@@ -61,3 +61,5 @@ export class TencentCosAccess extends BaseAccess {
   })
   bucket = "";
 }
+
+new TencentCosAccess();

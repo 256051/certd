@@ -52,6 +52,7 @@ watch(
   },
   (value: any) => {
     if (value) {
+      debugger;
       records.value = {
         ...value
       };

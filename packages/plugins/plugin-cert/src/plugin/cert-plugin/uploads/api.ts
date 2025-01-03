@@ -2,7 +2,7 @@ import { IAccessService } from "@certd/pipeline";
 import { ILogger, utils } from "@certd/basic";
 
 export type HttpChallengeUploader = {
-  upload: (fileName: string, fileContent: string) => Promise<void>;
+  upload: (fileName: string, fileContent: Buffer) => Promise<void>;
   remove: (fileName: string) => Promise<void>;
 };
 
@@ -31,5 +31,5 @@ export abstract class BaseHttpChallengeUploader<A> implements HttpChallengeUploa
   }
 
   abstract remove(fileName: string): Promise<void>;
-  abstract upload(fileName: string, fileContent: string): Promise<void>;
+  abstract upload(fileName: string, fileContent: Buffer): Promise<void>;
 }

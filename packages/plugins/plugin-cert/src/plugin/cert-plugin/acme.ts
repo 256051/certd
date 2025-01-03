@@ -186,11 +186,12 @@ export class AcmeService {
       const filePath = `.well-known/acme-challenge/${challenge.token}`;
       const fileContents = keyAuthorization;
       this.logger.info(`校验 ${fullDomain} ，准备上传文件：${filePath}`);
-      await httpUploader.upload(filePath, fileContents);
+      await httpUploader.upload(filePath, Buffer.from(fileContents));
       this.logger.info(`上传文件【${filePath}】成功`);
       return {
         challenge,
         keyAuthorization,
+        httpUploader,
       };
     };
 
@@ -248,7 +249,8 @@ export class AcmeService {
           const httpVerifyPlan = domainVerifyPlan.httpVerifyPlan;
           if (httpVerifyPlan) {
             const httpChallenge = getChallenge("http-01");
-            return await doHttpVerify(httpChallenge, httpVerifyPlan[fullDomain].httpUploader);
+            const plan = httpVerifyPlan[fullDomain];
+            return await doHttpVerify(httpChallenge, plan.httpUploader);
           } else {
             throw new Error("未找到域名【" + fullDomain + "】的http校验配置");
           }

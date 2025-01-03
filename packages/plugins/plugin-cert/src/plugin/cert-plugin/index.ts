@@ -416,9 +416,14 @@ HTTP文件验证：不支持泛域名，需要配置网站文件上传`,
         for (const key in domainVerifyPlan.httpVerifyPlan) {
           const httpRecord = domainVerifyPlan.httpVerifyPlan[key];
           const access = await this.ctx.accessService.getById(httpRecord.httpUploaderAccess);
+          let rootDir = httpRecord.httpUploadRootDir;
+          if (!rootDir.endsWith("/") && !rootDir.endsWith("\\")) {
+            rootDir = rootDir + "/";
+          }
+          this.logger.info("上传方式", httpRecord.httpUploaderType);
           const httpUploader = await httpChallengeUploaderFactory.createUploaderByType(httpRecord.httpUploaderType, {
             access,
-            rootDir: httpRecord.httpUploadRootDir,
+            rootDir: rootDir,
             ctx: httpUploaderContext,
           });
           httpVerifyPlan[key] = {

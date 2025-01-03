@@ -1,6 +1,10 @@
-import { TencentAccess } from '@certd/plugin-lib';
-import { CertInfo } from '@certd/plugin-cert';
-import { ILogger } from '@certd/basic';
+import { ILogger } from "@certd/basic";
+import { TencentAccess } from "../access.js";
+
+export type TencentCertInfo = {
+  key: string;
+  crt: string;
+};
 export class TencentSslClient {
   access: TencentAccess;
   logger: ILogger;
@@ -11,7 +15,7 @@ export class TencentSslClient {
     this.region = opts.region;
   }
   async getSslClient(): Promise<any> {
-    const sdk = await import('tencentcloud-sdk-nodejs/tencentcloud/services/ssl/v20191205/index.js');
+    const sdk = await import("tencentcloud-sdk-nodejs/tencentcloud/services/ssl/v20191205/index.js");
     const SslClient = sdk.v20191205.Client;
 
     const clientConfig = {
@@ -22,7 +26,7 @@ export class TencentSslClient {
       region: this.region,
       profile: {
         httpProfile: {
-          endpoint: 'ssl.tencentcloudapi.com',
+          endpoint: "ssl.tencentcloudapi.com",
         },
       },
     };
@@ -32,11 +36,11 @@ export class TencentSslClient {
 
   checkRet(ret: any) {
     if (!ret || ret.Error) {
-      throw new Error('请求失败：' + ret.Error.Code + ',' + ret.Error.Message);
+      throw new Error("请求失败：" + ret.Error.Code + "," + ret.Error.Message);
     }
   }
 
-  async uploadToTencent(opts: { certName: string; cert: CertInfo }): Promise<string> {
+  async uploadToTencent(opts: { certName: string; cert: TencentCertInfo }): Promise<string> {
     const client = await this.getSslClient();
     const params = {
       CertificatePublicKey: opts.cert.crt,
@@ -45,7 +49,7 @@ export class TencentSslClient {
     };
     const ret = await client.UploadCertificate(params);
     this.checkRet(ret);
-    this.logger.info('证书上传成功：tencentCertId=', ret.CertificateId);
+    this.logger.info("证书上传成功：tencentCertId=", ret.CertificateId);
     return ret.CertificateId;
   }
 

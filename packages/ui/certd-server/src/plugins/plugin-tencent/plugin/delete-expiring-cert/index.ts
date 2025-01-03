@@ -1,9 +1,8 @@
 import { IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
 import { AbstractPlusTaskPlugin } from '@certd/plugin-plus';
-import { TencentSslClient } from '../../lib/index.js';
 import dayjs from 'dayjs';
 import { remove } from 'lodash-es';
-import { TencentAccess } from '@certd/plugin-lib';
+import { TencentAccess, TencentSslClient } from '@certd/plugin-lib';
 
 @IsTaskPlugin({
   name: 'TencentDeleteExpiringCert',
