@@ -14,6 +14,7 @@
       </a-form-item>
       <a-form-item v-if="formState.alipay.enabled" label="支付宝配置" :name="['alipay', 'accessId']" :required="true">
         <access-selector v-model="formState.alipay.accessId" type="alipay" from="sys" />
+        <div class="helper">需要开通电脑网站支付</div>
       </a-form-item>
 
       <a-form-item label="微信支付" :name="['wxpay', 'enabled']" :required="true">
@@ -21,6 +22,7 @@
       </a-form-item>
       <a-form-item v-if="formState.wxpay.enabled" label="微信支付配置" :name="['wxpay', 'accessId']" :required="true">
         <access-selector v-model="formState.wxpay.accessId" type="wxpay" from="sys" />
+        <div class="helper">需要开通Native支付</div>
       </a-form-item>
 
       <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
