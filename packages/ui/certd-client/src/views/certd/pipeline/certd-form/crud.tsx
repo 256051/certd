@@ -43,6 +43,8 @@ export default function (certPlugins: any[], formWrapperRef: any): CreateCrudOpt
     }
   }
 
+  const randomHour = Math.floor(Math.random() * 6);
+  const randomMin = Math.floor(Math.random() * 60);
   return {
     crudOptions: {
       form: {
@@ -94,6 +96,7 @@ export default function (certPlugins: any[], formWrapperRef: any): CreateCrudOpt
           title: "定时触发",
           type: "text",
           form: {
+            value: `0 ${randomMin} ${randomHour} * * *`,
             component: {
               name: "cron-editor",
               vModel: "modelValue",
