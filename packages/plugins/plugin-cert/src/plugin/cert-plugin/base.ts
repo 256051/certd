@@ -305,7 +305,7 @@ cert.jks：jks格式证书文件，java服务器使用
   async readLastCert(): Promise<CertReader | undefined> {
     const cert = this.lastStatus?.status?.output?.cert;
     if (cert == null) {
-      this.logger.info("没有找到上次的证书,lastStatus:", JSON.stringify(this.lastStatus?.status));
+      this.logger.info("没有找到上次的证书");
       return undefined;
     }
     return new CertReader(cert);
