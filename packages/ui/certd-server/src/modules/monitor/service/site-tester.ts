@@ -1,4 +1,4 @@
-import { logger } from '@certd/basic';
+import { logger, utils } from '@certd/basic';
 import { merge } from 'lodash-es';
 import https from 'https';
 import { PeerCertificate } from 'tls';
@@ -6,6 +6,7 @@ export type SiteTestReq = {
   host: string; // 只用域名部分
   port?: number;
   method?: string;
+  retryTimes?: number;
 };
 
 export type SiteTestRes = {
@@ -14,6 +15,28 @@ export type SiteTestRes = {
 export class SiteTester {
   async test(req: SiteTestReq): Promise<SiteTestRes> {
     logger.info('测试站点:', JSON.stringify(req));
+    const maxRetryTimes = req.retryTimes ?? 3;
+    let tryCount = 0;
+    let result: SiteTestRes = {};
+    while (true) {
+      try {
+        result = await this.doTestOnce(req);
+        return result;
+      } catch (e) {
+        tryCount++;
+        if (tryCount > maxRetryTimes) {
+          logger.error(`测试站点出错，重试${maxRetryTimes}次`, e);
+          throw e;
+        }
+        //指数退避
+        const time = 2 ** tryCount;
+        logger.error(`测试站点出错，${time}s后重试`, e);
+        await utils.sleep(time * 1000);
+      }
+    }
+  }
+
+  async doTestOnce(req: SiteTestReq): Promise<SiteTestRes> {
     const agent = new https.Agent({ keepAlive: false });
 
     const options: any = merge(

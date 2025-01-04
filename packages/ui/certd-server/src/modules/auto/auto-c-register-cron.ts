@@ -1,6 +1,6 @@
 import { Autoload, Config, Init, Inject, Scope, ScopeEnum } from '@midwayjs/core';
 import { PipelineService } from '../pipeline/service/pipeline-service.js';
-import { logger } from '@certd/basic';
+import { logger, utils } from '@certd/basic';
 import { SysSettingsService } from '@certd/lib-server';
 import { SiteInfoService } from '../monitor/index.js';
 import { Cron } from '../cron/cron.js';
@@ -59,13 +59,7 @@ export class AutoCRegisterCron {
           break;
         }
         offset += records.length;
-        for (const record of records) {
-          try {
-            await this.siteInfoService.doCheck(record, true);
-          } catch (e) {
-            logger.error(`站点${record.name}检查出错：`, e);
-          }
-        }
+        await this.siteInfoService.checkList(records);
       }
 
       logger.info('站点证书检查完成');

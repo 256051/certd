@@ -145,7 +145,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           search: {
             show: true
           },
-          type: "text",
+          type: "copyable",
           form: {
             rules: [
               { required: true, message: "请输入域名" },
@@ -154,8 +154,15 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             ]
           },
           column: {
-            width: 160,
-            sorter: true
+            width: 200,
+            sorter: true,
+            cellRender({ value }) {
+              return (
+                <a-tooltip title={value} placement="left">
+                  <fs-copyable modelValue={value}></fs-copyable>
+                </a-tooltip>
+              );
+            }
           }
         },
         httpsPort: {
@@ -185,7 +192,14 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           column: {
             width: 200,
             sorter: true,
-            show: true
+            show: true,
+            cellRender({ value }) {
+              return (
+                <a-tooltip title={value} placement="left">
+                  {value}
+                </a-tooltip>
+              );
+            }
           }
         },
         certProvider: {
@@ -199,7 +213,10 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           },
           column: {
             width: 200,
-            sorter: true
+            sorter: true,
+            cellRender({ value }) {
+              return <a-tooltip title={value}>{value}</a-tooltip>;
+            }
           }
         },
         certStatus: {
@@ -256,7 +273,8 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             show: false
           },
           column: {
-            sorter: true
+            sorter: true,
+            width: 155
           }
         },
         checkStatus: {
@@ -268,6 +286,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           dict: dict({
             data: [
               { label: "正常", value: "ok", color: "green" },
+              { label: "检查中", value: "checking", color: "blue" },
               { label: "异常", value: "error", color: "red" }
             ]
           }),
@@ -291,7 +310,10 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           },
           column: {
             width: 200,
-            sorter: true
+            sorter: true,
+            cellRender({ value }) {
+              return <a-tooltip title={value}>{value}</a-tooltip>;
+            }
           }
         },
         pipelineId: {
@@ -336,7 +358,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             value: false
           },
           column: {
-            width: 100,
+            width: 90,
             sorter: true
           }
         }

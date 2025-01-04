@@ -40,7 +40,7 @@ export class SiteInfoController extends CrudController<SiteInfoService> {
   async add(@Body(ALL) bean: any) {
     bean.userId = this.getUserId();
     const res = await this.service.add(bean);
-    await this.service.check(res.id);
+    await this.service.check(res.id, false, 0);
     return this.ok(res);
   }
 
@@ -49,7 +49,7 @@ export class SiteInfoController extends CrudController<SiteInfoService> {
     await this.service.checkUserId(bean.id, this.getUserId());
     delete bean.userId;
     await this.service.update(bean);
-    await this.service.check(bean.id);
+    await this.service.check(bean.id, false, 0);
     return this.ok();
   }
   @Post('/info', { summary: Constants.per.authOnly })
@@ -67,14 +67,14 @@ export class SiteInfoController extends CrudController<SiteInfoService> {
   @Post('/check', { summary: Constants.per.authOnly })
   async check(@Body('id') id: number) {
     await this.service.checkUserId(id, this.getUserId());
-    await this.service.check(id, false);
+    await this.service.check(id, false, 0);
     return this.ok();
   }
 
   @Post('/checkAll', { summary: Constants.per.authOnly })
   async checkAll() {
     const userId = this.getUserId();
-    this.service.checkAll(userId);
+    await this.service.checkAllByUsers(userId);
     return this.ok();
   }
 }

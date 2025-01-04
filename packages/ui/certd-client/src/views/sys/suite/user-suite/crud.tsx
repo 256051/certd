@@ -7,6 +7,7 @@ import DurationValue from "/@/views/sys/suite/product/duration-value.vue";
 import createCrudOptionsUser from "/@/views/sys/authority/user/crud";
 import UserSuiteStatus from "/@/views/certd/suite/mine/user-suite-status.vue";
 import SuiteDurationSelector from "../setting/suite-duration-selector.vue";
+import dayjs from "dayjs";
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const api = sysUserSuiteApi;
   const pageRequest = async (query: UserPageQuery): Promise<UserPageRes> => {
@@ -345,7 +346,10 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             component: {
               name: "expires-time-text",
               vModel: "value",
-              mode: "tag"
+              mode: "tag",
+              title: compute(({ value }) => {
+                return dayjs(value).format("YYYY-MM-DD HH:mm:ss");
+              })
             }
           }
         },
