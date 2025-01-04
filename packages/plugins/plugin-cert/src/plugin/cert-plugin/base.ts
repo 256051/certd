@@ -263,7 +263,7 @@ cert.jks：jks格式证书文件，java服务器使用
       this.logger.info("输入参数变更，准备申请新证书");
       return null;
     } else {
-      this.logger.info("输入参数未变更，不需要更新证书");
+      this.logger.info("输入参数未变更，检查证书是否过期");
     }
 
     let oldCert: CertReader | undefined = undefined;

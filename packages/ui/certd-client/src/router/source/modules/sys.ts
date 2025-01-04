@@ -109,7 +109,7 @@ export const sysResources = [
         meta: {
           show: () => {
             const settingStore = useSettingStore();
-            return settingStore.isPlus;
+            return settingStore.isComm;
           },
           icon: "ion:extension-puzzle-outline",
           permission: "sys:settings:view"
