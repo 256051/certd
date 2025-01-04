@@ -157,7 +157,6 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             ]
           },
           valueResolve({ form, value }) {
-            debugger;
             if (value && value.productId) {
               form.productId = value.productId;
               form.duration = value.duration;

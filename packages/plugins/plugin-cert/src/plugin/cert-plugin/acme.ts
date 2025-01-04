@@ -249,6 +249,9 @@ export class AcmeService {
           const httpVerifyPlan = domainVerifyPlan.httpVerifyPlan;
           if (httpVerifyPlan) {
             const httpChallenge = getChallenge("http-01");
+            if (httpChallenge == null) {
+              throw new Error("该域名不支持http-01方式校验");
+            }
             const plan = httpVerifyPlan[fullDomain];
             return await doHttpVerify(httpChallenge, plan.httpUploader);
           } else {

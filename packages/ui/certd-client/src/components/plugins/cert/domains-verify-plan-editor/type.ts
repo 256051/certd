@@ -9,6 +9,7 @@ export type HttpRecord = {
 
 export type DomainVerifyPlanInput = {
   domain: string;
+  domains: string[];
   type: "cname" | "dns" | "http";
   dnsProviderType?: string;
   dnsProviderAccessId?: number;

@@ -80,10 +80,11 @@ import { dict, FsDictSelect } from "@fast-crud/fast-crud";
 import AccessSelector from "/@/views/certd/access/access-selector/index.vue";
 import CnameVerifyPlan from "./cname-verify-plan.vue";
 import HttpVerifyPlan from "./http-verify-plan.vue";
+//@ts-ignore
 import psl from "psl";
 import { Form } from "ant-design-vue";
 import { DomainsVerifyPlanInput } from "./type";
-import { CnameRecord } from "./api";
+import { CnameRecord, DomainGroupItem } from "./api";
 defineOptions({
   name: "DomainsVerifyPlanEditor"
 });
@@ -136,7 +137,7 @@ function showError(error: string) {
   errorMessageRef.value = error;
 }
 
-type DomainGroup = Record<string, Record<string, CnameRecord>>;
+type DomainGroup = Record<string, DomainGroupItem>;
 
 function onDomainsChanged(domains: string[]) {
   if (domains == null) {
@@ -145,8 +146,8 @@ function onDomainsChanged(domains: string[]) {
 
   const domainGroups: DomainGroup = {};
   for (let domain of domains) {
-    domain = domain.replace("*.", "");
-    const parsed = psl.parse(domain);
+    const keyDomain = domain.replace("*.", "");
+    const parsed = psl.parse(keyDomain);
     if (parsed.error) {
       showError(`域名${domain}解析失败: ${JSON.stringify(parsed.error)}`);
       continue;
@@ -157,15 +158,20 @@ function onDomainsChanged(domains: string[]) {
     }
     let group = domainGroups[mainDomain];
     if (!group) {
-      group = {};
+      group = {
+        domain: mainDomain,
+        domains: [],
+        keySubDomains: []
+      } as DomainGroupItem;
       domainGroups[mainDomain] = group;
     }
-    group[domain] = {};
+    group.domains.push(domain);
+    group.keySubDomains.push(keyDomain);
   }
 
   for (const domain in domainGroups) {
     let planItem = planRef.value[domain];
-    const subDomains = domainGroups[domain];
+    const domainGroupItem = domainGroups[domain];
     if (!planItem) {
       planItem = {
         domain,
@@ -178,12 +184,15 @@ function onDomainsChanged(domains: string[]) {
       };
       planRef.value[domain] = planItem;
     }
+    planItem.domains = domainGroupItem.domains;
 
     const cnameOrigin = planItem.cnameVerifyPlan;
     const httpOrigin = planItem.httpVerifyPlan;
     planItem.cnameVerifyPlan = {};
     planItem.httpVerifyPlan = {};
-    for (const subDomain in subDomains) {
+    const cnamePlan = planItem.cnameVerifyPlan;
+    const httpPlan = planItem.httpVerifyPlan;
+    for (const subDomain of domainGroupItem.keySubDomains) {
       if (!cnameOrigin[subDomain]) {
         //@ts-ignore
         planItem.cnameVerifyPlan[subDomain] = {
@@ -192,8 +201,14 @@ function onDomainsChanged(domains: string[]) {
       } else {
         planItem.cnameVerifyPlan[subDomain] = cnameOrigin[subDomain];
       }
-    }
-    for (const subDomain in subDomains) {
+
+      if (!cnamePlan[subDomain]) {
+        //@ts-ignore
+        cnamePlan[subDomain] = {
+          id: 0
+        };
+      }
+
       if (!httpOrigin[subDomain]) {
         //@ts-ignore
         planItem.httpVerifyPlan[subDomain] = {
@@ -202,27 +217,7 @@ function onDomainsChanged(domains: string[]) {
       } else {
         planItem.httpVerifyPlan[subDomain] = httpOrigin[subDomain];
       }
-    }
 
-    const cnamePlan = planItem.cnameVerifyPlan;
-    for (const subDomain in subDomains) {
-      if (!cnamePlan[subDomain]) {
-        //@ts-ignore
-        cnamePlan[subDomain] = {
-          id: 0
-        };
-      }
-    }
-    for (const subDomain of Object.keys(cnamePlan)) {
-      if (!subDomains[subDomain]) {
-        delete cnamePlan[subDomain];
-      }
-    }
-
-    // httpVerifyPlan
-    const httpPlan = planItem.httpVerifyPlan;
-    for (const subDomain in subDomains) {
-      debugger;
       if (!httpPlan[subDomain]) {
         //@ts-ignore
         httpPlan[subDomain] = {
@@ -230,8 +225,15 @@ function onDomainsChanged(domains: string[]) {
         };
       }
     }
+
+    for (const subDomain of Object.keys(cnamePlan)) {
+      if (!domainGroupItem.keySubDomains.includes(subDomain)) {
+        delete cnamePlan[subDomain];
+      }
+    }
+
     for (const subDomain of Object.keys(httpPlan)) {
-      if (!subDomains[subDomain]) {
+      if (!domainGroupItem.keySubDomains.includes(subDomain)) {
         delete httpPlan[subDomain];
       }
     }
@@ -242,7 +244,6 @@ function onDomainsChanged(domains: string[]) {
       delete planRef.value[domain];
     }
   }
-  debugger;
 }
 
 watch(
@@ -324,12 +325,15 @@ watch(
       padding: 10px 6px;
     }
     td {
-      border-bottom: 1px solid #e8e8e8;
+      border-bottom: 2px solid #d8d8d8;
       border-left: 1px solid #e8e8e8;
       padding: 6px 6px;
     }
 
     .plan {
+      td {
+        border-right: 1px solid #e8e8e8 !important;
+      }
       font-size: 14px;
       .ant-select {
         width: 100%;
