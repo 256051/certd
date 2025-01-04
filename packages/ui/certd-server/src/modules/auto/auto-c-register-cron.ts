@@ -1,6 +1,6 @@
 import { Autoload, Config, Init, Inject, Scope, ScopeEnum } from '@midwayjs/core';
 import { PipelineService } from '../pipeline/service/pipeline-service.js';
-import { logger, utils } from '@certd/basic';
+import { logger } from '@certd/basic';
 import { SysSettingsService } from '@certd/lib-server';
 import { SiteInfoService } from '../monitor/index.js';
 import { Cron } from '../cron/cron.js';

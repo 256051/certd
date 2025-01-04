@@ -25,7 +25,7 @@ export class SiteTester {
       } catch (e) {
         tryCount++;
         if (tryCount > maxRetryTimes) {
-          logger.error(`测试站点出错，重试${maxRetryTimes}次`, e);
+          logger.error(`测试站点出错，重试${maxRetryTimes}次。`, e.message);
           throw e;
         }
         //指数退避
