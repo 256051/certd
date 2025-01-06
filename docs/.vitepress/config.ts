@@ -57,6 +57,7 @@ export default defineConfig({
     nav: [
       { text: "首页", link: "/" },
       { text: "指南", link: "/guide/" },
+      { text: "商业版", link: "/comm/" },
       { text: "Demo体验", link: "https://certd.handfree.work" }
     ],
     sidebar: {
@@ -116,8 +117,20 @@ export default defineConfig({
 
           ]
         }
+      ],
+      "/comm/": [
+        {
+          text: "商业版",
+          items: [
+            { text: "支付宝配置", link: "/comm/payments/alipay.md" },
+            { text: "微信支付配置", link: "/comm/payments/wxpay.md" },
+            { text: "彩虹易支付配置", link: "/comm/payments/yizhifu.md" },
+          ]
+        }
       ]
+      ,
     },
+
     socialLinks: [
       { icon: "github", link: "https://github.com/certd/certd" }
     ],

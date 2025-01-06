@@ -2,11 +2,14 @@
   <div class="sys-settings-form sys-settings-payment">
     <a-form ref="formRef" :model="formState" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }" autocomplete="off">
       <div>支付方式</div>
-      <a-form-item label="易支付" :name="['yizhifu', 'enabled']" :required="true">
+      <a-form-item label="彩虹易支付" :name="['yizhifu', 'enabled']" :required="true">
         <a-switch v-model:checked="formState.yizhifu.enabled" />
       </a-form-item>
       <a-form-item v-if="formState.yizhifu.enabled" label="易支付配置" :name="['yizhifu', 'accessId']" :required="true">
         <access-selector v-model="formState.yizhifu.accessId" type="yizhifu" from="sys" />
+        <div class="helper">
+          <a href="https://certd.docmirror.cn/comm/payments/yizhifu.html">彩虹易支付配置帮助文档</a>
+        </div>
       </a-form-item>
 
       <a-form-item label="支付宝" :name="['alipay', 'enabled']" :required="true">
@@ -14,7 +17,7 @@
       </a-form-item>
       <a-form-item v-if="formState.alipay.enabled" label="支付宝配置" :name="['alipay', 'accessId']" :required="true">
         <access-selector v-model="formState.alipay.accessId" type="alipay" from="sys" />
-        <div class="helper">需要开通电脑网站支付</div>
+        <div class="helper">需要开通电脑网站支付， <a href="https://certd.docmirror.cn/comm/payments/alipay.html">支付宝配置帮助文档</a></div>
       </a-form-item>
 
       <a-form-item label="微信支付" :name="['wxpay', 'enabled']" :required="true">
@@ -22,7 +25,7 @@
       </a-form-item>
       <a-form-item v-if="formState.wxpay.enabled" label="微信支付配置" :name="['wxpay', 'accessId']" :required="true">
         <access-selector v-model="formState.wxpay.accessId" type="wxpay" from="sys" />
-        <div class="helper">需要开通Native支付</div>
+        <div class="helper">需要开通Native支付， <a href="https://certd.docmirror.cn/comm/payments/wxpay.html">微信配置帮助文档</a></div>
       </a-form-item>
 
       <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
