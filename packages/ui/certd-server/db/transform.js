@@ -67,7 +67,8 @@ function transformMysql() {
     pgSql = pgSql.replaceAll(/DEFAULT \(([^)]*)\)/g, 'DEFAULT $1');
     pgSql = pgSql.replaceAll(/integer/g, 'bigint');
     pgSql = pgSql.replaceAll(/last_insert_rowid\(\)/g, 'LAST_INSERT_ID()');
-
+    //text 改成longtext
+    pgSql = pgSql.replaceAll(/text/g, 'longtext');
     //双引号 替换成反引号
     pgSql = pgSql.replaceAll(/"/g, '`');
 

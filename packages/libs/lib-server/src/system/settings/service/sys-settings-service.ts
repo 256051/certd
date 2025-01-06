@@ -91,7 +91,7 @@ export class SysSettingsService extends BaseService<SysSettingsEntity> {
       entity.setting = JSON.stringify(bean);
       entity.access = type.__access__;
 
-      if (key === SysSecretBackup.__key__ || key === SysSecret.__key__) {
+      if (key === SysSecretBackup.__key__) {
         //备份密钥不允许更新
         return;
       }
