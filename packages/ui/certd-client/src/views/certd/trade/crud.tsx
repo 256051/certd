@@ -63,6 +63,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         width: 240,
         fixed: "right",
         buttons: {
+          view: { show: false },
           edit: { show: false },
           copy: { show: false },
           syncStatus: {

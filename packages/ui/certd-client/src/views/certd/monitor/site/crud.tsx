@@ -145,7 +145,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           search: {
             show: true
           },
-          type: "copyable",
+          type: "text",
           form: {
             rules: [
               { required: true, message: "请输入域名" },
