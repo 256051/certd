@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.29.4](https://github.com/certd/certd/compare/v1.29.3...v1.29.4) (2025-01-06)
+
+### Bug Fixes
+
+* 修复站点监控域名校验无法通过的bug ([1cb4a53](https://github.com/certd/certd/commit/1cb4a539cc523721ffd4b22d40d0e3d2d68cd915))
+
 ## [1.29.3](https://github.com/certd/certd/compare/v1.29.2...v1.29.3) (2025-01-04)
 
 ### Performance Improvements

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.29.4](https://github.com/certd/certd/compare/v1.29.3...v1.29.4) (2025-01-06)
+
+### Performance Improvements
+
+* 优化腾讯云CLB插件，支持非sni情况，sni情况支持填写多个域名 ([635b042](https://github.com/certd/certd/commit/635b042690637bff85e97e07c7aac4b87a8a124b))
+
 ## [1.29.3](https://github.com/certd/certd/compare/v1.29.2...v1.29.3) (2025-01-04)
 
 ### Bug Fixes
