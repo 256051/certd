@@ -41,7 +41,11 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
         column.suffixRender = (scope: { form: any; key: string }) => {
           const { form, key } = scope;
           const inputKey = scope.key.replace("access.", "");
-          return <SecretPlainGetter accessId={form.id} inputKey={inputKey} v-model={form[key]} />;
+          const onChange = (val: any) => {
+            set(form, key, val);
+          };
+          const value = get(form, key);
+          return <SecretPlainGetter accessId={form.id} inputKey={inputKey} modalValue={value} onUpdate:modelValue={onChange} />;
         };
       }
       //eval
