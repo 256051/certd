@@ -69,6 +69,9 @@ export class CertReader {
       return "";
     }
     const ic = this.crt.substring(start);
+    if (ic == null) {
+      return "";
+    }
     return ic.trim();
   }
 

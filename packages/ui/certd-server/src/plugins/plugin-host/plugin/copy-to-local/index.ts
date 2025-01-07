@@ -226,7 +226,7 @@ export class CopyCertToLocalPlugin extends AbstractTaskPlugin {
         this.hostIcPath = icPath;
       }
       if (pfxPath) {
-        pfxPath = icPath.trim();
+        pfxPath = pfxPath.trim();
         pfxPath = pfxPath.startsWith('/') ? pfxPath : path.join(Constants.dataDir, pfxPath);
         this.copyFile(tmpPfxPath, pfxPath);
         this.hostPfxPath = pfxPath;
