@@ -98,14 +98,16 @@
                                     {{ index + 1 }}. {{ item.title }}
                                   </span>
                                   <pi-status-show v-if="!editMode" :status="item.status?.result"></pi-status-show>
-                                  <fs-icon
-                                    v-if="!editMode"
-                                    class="pointer color-blue ml-2"
-                                    style="font-size: 16px"
-                                    title="强制重新执行此步骤"
-                                    icon="icon-park-outline:replay-music"
-                                    @click="run(item.id)"
-                                  ></fs-icon>
+                                  <a-tooltip title="强制重新执行此步骤">
+                                    <fs-icon
+                                      v-if="!editMode"
+                                      class="pointer color-blue ml-2"
+                                      style="font-size: 16px"
+                                      title="强制重新执行此步骤"
+                                      icon="icon-park-outline:replay-music"
+                                      @click="run(item.id)"
+                                    ></fs-icon>
+                                  </a-tooltip>
                                 </div>
                               </template>
                               <span class="flex-o w-100">
