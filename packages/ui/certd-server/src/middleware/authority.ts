@@ -1,11 +1,11 @@
 import { Init, Inject, MidwayWebRouterService, Provide, Scope, ScopeEnum } from '@midwayjs/core';
 import { IMidwayKoaContext, IWebMiddleware, NextFunction } from '@midwayjs/koa';
 import jwt from 'jsonwebtoken';
-import { Constants } from '@certd/lib-server';
+import { Constants, SysPrivateSettings, SysSettingsService } from '@certd/lib-server';
 import { logger } from '@certd/basic';
 import { AuthService } from '../modules/sys/authority/service/auth-service.js';
-import { SysSettingsService } from '@certd/lib-server';
-import { SysPrivateSettings } from '@certd/lib-server';
+import { Next } from 'koa';
+import { OpenKeyService } from '../modules/open/service/open-key-service.js';
 
 /**
  * 权限校验
@@ -17,6 +17,8 @@ export class AuthorityMiddleware implements IWebMiddleware {
   webRouterService: MidwayWebRouterService;
   @Inject()
   authService: AuthService;
+  @Inject()
+  openKeyService: OpenKeyService;
   @Inject()
   sysSettingsService: SysSettingsService;
 
@@ -46,6 +48,10 @@ export class AuthorityMiddleware implements IWebMiddleware {
       if (permission === Constants.per.guest) {
         await next();
         return;
+      }
+
+      if (permission === Constants.per.open) {
+        return this.doOpenHandler(ctx, next);
       }
 
       let token = ctx.get('Authorization') || '';
@@ -78,5 +84,22 @@ export class AuthorityMiddleware implements IWebMiddleware {
       }
       await next();
     };
+  }
+
+  async doOpenHandler(ctx: IMidwayKoaContext, next: Next) {
+    //开放接口
+    let openKey = ctx.get('Authorization') || '';
+    openKey = openKey.replace('Bearer ', '').trim();
+    if (!openKey) {
+      ctx.status = 401;
+      ctx.body = Constants.res.auth;
+      return;
+    }
+
+    //校验 openKey
+    const openKeyRes = await this.openKeyService.verifyOpenKey(openKey);
+    ctx.user = { id: openKeyRes.userId };
+    ctx.openKey = openKeyRes;
+    await next();
   }
 }

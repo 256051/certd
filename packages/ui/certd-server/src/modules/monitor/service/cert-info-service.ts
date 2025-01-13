@@ -1,8 +1,10 @@
 import { Provide } from '@midwayjs/core';
-import { BaseService, PageReq } from '@certd/lib-server';
+import { BaseService, CodeException, Constants, PageReq } from '@certd/lib-server';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
 import { CertInfoEntity } from '../entity/cert-info.js';
+import { utils } from '@certd/basic';
+import { CertInfo, CertReader } from '@certd/plugin-cert';
 
 @Provide()
 export class CertInfoService extends BaseService<CertInfoEntity> {
@@ -67,5 +69,26 @@ export class CertInfoService extends BaseService<CertInfoEntity> {
     await this.repository.delete({
       pipelineId: id,
     });
+  }
+
+  async getCertInfo(param: { domains: string[]; userId: number }) {
+    const { domains, userId } = param;
+
+    const list = await this.find({
+      where: {
+        userId,
+      },
+    });
+    //遍历查找
+    const matched = list.find(item => {
+      const itemDomains = item.domains.split(',');
+      return utils.domain.match(domains, itemDomains);
+    });
+    if (!matched || !matched.certInfo) {
+      throw new CodeException(Constants.res.openCertNotFound);
+    }
+    const certInfo = JSON.parse(matched.certInfo) as CertInfo;
+    const certReader = new CertReader(certInfo);
+    return certReader.toCertInfo();
   }
 }

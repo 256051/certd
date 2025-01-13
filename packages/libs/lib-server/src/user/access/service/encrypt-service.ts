@@ -1,6 +1,5 @@
 import { Init, Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
-import crypto from 'crypto';
-import { SysSecret, SysSettingsService } from '../../../system/index.js';
+import { Encryptor, SysSecret, SysSettingsService } from '../../../system/index.js';
 
 /**
  * 授权
@@ -8,7 +7,7 @@ import { SysSecret, SysSettingsService } from '../../../system/index.js';
 @Provide()
 @Scope(ScopeEnum.Singleton)
 export class EncryptService {
-  secretKey: Buffer;
+  encryptor: Encryptor;
 
   @Inject()
   sysSettingService: SysSettingsService;
@@ -16,28 +15,16 @@ export class EncryptService {
   @Init()
   async init() {
     const secret: SysSecret = await this.sysSettingService.getSecret();
-    this.secretKey = Buffer.from(secret.encryptSecret, 'base64');
+    this.encryptor = new Encryptor(secret.encryptSecret);
   }
 
   // 加密函数
   encrypt(text: string) {
-    const iv = crypto.randomBytes(16); // 初始化向量
-    // const secretKey = crypto.randomBytes(32);
-    // const key = Buffer.from(secretKey);
-    const cipher = crypto.createCipheriv('aes-256-cbc', this.secretKey, iv);
-    let encrypted = cipher.update(text);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-    return iv.toString('hex') + ':' + encrypted.toString('hex');
+    return this.encryptor.encrypt(text);
   }
 
   // 解密函数
   decrypt(encryptedText: string) {
-    const textParts = encryptedText.split(':');
-    const iv = Buffer.from(textParts.shift(), 'hex');
-    const encrypted = Buffer.from(textParts.join(':'), 'hex');
-    const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(this.secretKey), iv);
-    let decrypted = decipher.update(encrypted);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
-    return decrypted.toString();
+    return this.encryptor.decrypt(encryptedText);
   }
 }
