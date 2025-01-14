@@ -3,6 +3,7 @@ import { useI18n } from "vue-i18n";
 import { AddReq, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
 import { pipelineGroupApi } from "./api";
 import dayjs from "dayjs";
+import { Modal } from "ant-design-vue";
 
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const { t } = useI18n();
@@ -35,6 +36,9 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         editRequest,
         delRequest
       },
+      search: {
+        show: false
+      },
       form: {
         labelCol: {
           //固定label宽度
@@ -50,15 +54,31 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           width: 600
         }
       },
-      actionbar: { show: false },
+      actionbar: {
+        buttons: {
+          add: {
+            text: "生成新的Key",
+            click() {
+              Modal.confirm({
+                title: "确认",
+                content: "确定要生成新的Key?",
+                async onOk() {
+                  await api.AddObj({});
+                  await crudExpose.doRefresh();
+                }
+              });
+            }
+          }
+        }
+      },
       rowHandle: {
         width: 200,
         fixed: "right",
         buttons: {
-          view: { show: false },
+          view: { show: true },
           copy: { show: false },
           edit: { show: false },
-          remove: { show: false }
+          remove: { show: true }
         }
       },
       columns: {
@@ -79,125 +99,39 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             show: false
           }
         },
-        // domain: {
-        //   title: "主域名",
-        //   search: {
-        //     show: true
-        //   },
-        //   type: "text",
-        //   form: {
-        //     show: false
-        //   },
-        //   column: {
-        //     width: 180,
-        //     sorter: true,
-        //     component: {
-        //       name: "fs-values-format"
-        //     }
-        //   }
-        // },
-        domains: {
-          title: "全部域名",
+        keyId: {
+          title: "KeyId",
           search: {
+            show: false
+          },
+          form: {
             show: false
           },
           type: "text",
-          form: {
-            rules: [{ required: true, message: "请输入域名" }]
-          },
           column: {
-            width: 450,
-            sorter: true,
-            component: {
-              name: "fs-values-format",
-              color: "auto"
-            }
+            width: 200,
+            sorter: true
           }
         },
-        domainCount: {
-          title: "域名数量",
-          type: "number",
+        keySecret: {
+          title: "KeySecret",
+          type: "text",
           form: {
             show: false
           },
           column: {
-            width: 120,
-            sorter: true,
-            show: false
+            width: 550,
+            sorter: true
           }
         },
-        "pipeline.title": {
-          title: "已关联流水线",
-          search: { show: false },
-          type: "link",
-          form: {
-            show: false
-          },
-          column: {
-            width: 280,
-            sorter: true,
-            component: {}
-          }
-        },
-        applyTime: {
-          title: "申请时间",
-          search: {
-            show: false
-          },
+        createTime: {
+          title: "创建时间",
           type: "datetime",
-          form: {
+          search: {
             show: false
           },
-          column: {
-            sorter: true
-          }
-        },
-        expiresTime: {
-          title: "过期时间",
-          search: {
-            show: true
-          },
-          type: "date",
           form: {
             show: false
-          },
-          column: {
-            sorter: true,
-            cellRender({ value }) {
-              if (!value) {
-                return "-";
-              }
-              const expireDate = dayjs(value).format("YYYY-MM-DD");
-              const leftDays = dayjs(value).diff(dayjs(), "day");
-              const color = leftDays < 20 ? "red" : "#389e0d";
-              const percent = (leftDays / 90) * 100;
-              return <a-progress title={expireDate + "过期"} percent={percent} strokeColor={color} format={(percent: number) => `${leftDays}天`} />;
-            }
-          }
-        },
-        fromType: {
-          title: "来源",
-          search: {
-            show: true
-          },
-          type: "text",
-          form: { show: false },
-          column: {
-            width: 100,
-            sorter: true
-          }
-        },
-        certProvider: {
-          title: "证书颁发机构",
-          search: {
-            show: true
-          },
-          type: "text",
-          form: {
-            show: false
-          },
-          column: {
-            width: 400
           }
         }
       }

@@ -1,7 +1,7 @@
 import { request } from "/src/api/service";
 
 export function createApi() {
-  const apiPrefix = "/open/cert";
+  const apiPrefix = "/open/key";
   return {
     async GetList(query: any) {
       return await request({

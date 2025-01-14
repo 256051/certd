@@ -37,7 +37,8 @@ export class OpenKeyController extends CrudController<OpenKeyService> {
   }
 
   @Post('/add', { summary: Constants.per.authOnly })
-  async add(@Body(ALL) bean: any) {
+  async add() {
+    const bean: any = {};
     bean.userId = this.getUserId();
     const res = await this.service.add(bean);
     return this.ok(res);

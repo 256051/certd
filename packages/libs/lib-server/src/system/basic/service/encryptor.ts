@@ -2,8 +2,8 @@ import crypto from 'crypto';
 
 export class Encryptor {
   secretKey: Buffer;
-  constructor(encryptSecret: string) {
-    this.secretKey = Buffer.from(encryptSecret, 'base64');
+  constructor(encryptSecret: string, encoding: BufferEncoding = 'base64') {
+    this.secretKey = Buffer.from(encryptSecret, encoding);
   }
   // 加密函数
   encrypt(text: string) {

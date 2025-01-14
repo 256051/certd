@@ -6,7 +6,7 @@ export class BaseOpenController extends BaseController {
     const openKey: OpenKey = this.ctx.openKey;
     if (openKey.encrypt) {
       const data = JSON.stringify(res);
-      const encryptor = new Encryptor(openKey.keySecret);
+      const encryptor = new Encryptor(openKey.keySecret, 'hex');
       const encrypted = encryptor.encrypt(data);
       return this.ok(encrypted);
     }

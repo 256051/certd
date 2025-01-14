@@ -27,30 +27,20 @@ export class OpenKeyService extends BaseService<OpenKeyEntity> {
     return await super.page(pageReq);
   }
 
-  async getKey(userId: number) {
-    let entity = await this.getByUserId(userId);
-    if (entity) {
-      return {
-        keyId: entity.keyId,
-        keySecret: entity.keySecret,
-      };
-    }
-    const keyId = utils.id.simpleNanoId(12) + '_key';
+  async add(bean: OpenKeyEntity) {
+    return await this.generate(bean.userId);
+  }
+
+  async generate(userId: number) {
+    const keyId = utils.id.simpleNanoId(18) + '_key';
     const secretKey = crypto.randomBytes(32);
-    const keySecret = secretKey.toString('base64');
-    entity = new OpenKeyEntity();
+    const keySecret = Buffer.from(secretKey).toString('hex');
+    const entity = new OpenKeyEntity();
     entity.userId = userId;
     entity.keyId = keyId;
     entity.keySecret = keySecret;
     await this.repository.save(entity);
-    return {
-      keyId: entity.keyId,
-      keySecret: entity.keySecret,
-    };
-  }
-
-  private getByUserId(userId: number) {
-    return this.repository.findOne({ where: { userId } });
+    return entity;
   }
 
   async getByKeyId(keyId: string) {

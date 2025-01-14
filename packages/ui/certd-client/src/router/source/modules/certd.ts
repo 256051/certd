@@ -41,6 +41,17 @@ export const certdResources = [
         }
       },
       {
+        title: "证书仓库",
+        name: "CertStore",
+        path: "/certd/monitor/cert",
+        component: "/certd/monitor/cert/index.vue",
+        meta: {
+          icon: "ion:shield-checkmark-outline",
+          auth: true,
+          isMenu: true
+        }
+      },
+      {
         title: "站点证书监控",
         name: "SiteCertMonitor",
         path: "/certd/monitor/site",
@@ -81,25 +92,21 @@ export const certdResources = [
             }
           },
           {
-            title: "证书仓库",
-            name: "CertStore",
-            path: "/certd/monitor/cert",
-            component: "/certd/monitor/cert/index.vue",
-            meta: {
-              show: () => {
-                const settingStore = useSettingStore();
-                return settingStore.isPlus;
-              },
-              icon: "ion:shield-checkmark-outline",
-              auth: true,
-              isMenu: true
-            }
-          },
-          {
             title: "授权管理",
             name: "AccessManager",
             path: "/certd/access",
             component: "/certd/access/index.vue",
+            meta: {
+              icon: "ion:disc-outline",
+              auth: true,
+              cache: true
+            }
+          },
+          {
+            title: "OpenKey",
+            name: "OpenKey",
+            path: "/certd/open/openkey",
+            component: "/certd/open/openkey/index.vue",
             meta: {
               icon: "ion:disc-outline",
               auth: true,
