@@ -11,9 +11,9 @@ import {
   TaskInstanceContext,
 } from '@certd/pipeline';
 import { AccessService, AccessGetter } from '@certd/lib-server';
-import { EmailService } from '../../modules/basic/service/email-service.js';
+import { EmailService } from '../../../modules/basic/service/email-service.js';
 import { http, HttpRequestConfig, logger, mergeUtils, utils } from '@certd/basic';
-import { NotificationService } from '../../modules/pipeline/service/notification-service.js';
+import { NotificationService } from '../../../modules/pipeline/service/notification-service.js';
 
 @Provide()
 @Controller('/api/pi/handle')

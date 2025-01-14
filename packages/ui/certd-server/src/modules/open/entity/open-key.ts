@@ -5,13 +5,13 @@ export class OpenKeyEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'user_id', comment: '用户id', unique: true })
+  @Column({ name: 'user_id', comment: '用户id' })
   userId: number;
 
-  @Column({ name: 'key_id', comment: 'keyId', unique: true })
+  @Column({ name: 'key_id', comment: 'keyId' })
   keyId: string;
 
-  @Column({ name: 'key_secret', comment: 'keySecret', unique: true })
+  @Column({ name: 'key_secret', comment: 'keySecret' })
   keySecret: string;
 
   @Column({ name: 'create_time', comment: '创建时间', default: () => 'CURRENT_TIMESTAMP' })

@@ -7,9 +7,10 @@ import { CancelError, IContext, RunHistory, RunnableCollection } from "../core/i
 import { HttpRequestConfig, ILogger, logger, utils } from "@certd/basic";
 import { HttpClient } from "@certd/basic";
 import dayjs from "dayjs";
-import { IPluginConfigService } from "../service/config";
+import { IPluginConfigService } from "../service/config.js";
 import { upperFirst } from "lodash-es";
-import { INotificationService } from "../notification";
+import { INotificationService } from "../notification/index.js";
+import { TaskEmitter } from "../service/emit.js";
 
 export type PluginRequestHandleReq<T = any> = {
   typeName: string;
@@ -111,6 +112,8 @@ export type TaskInstanceContext = {
   utils: typeof utils;
   //用户信息
   user: UserInfo;
+
+  emitter: TaskEmitter;
 };
 
 export abstract class AbstractTaskPlugin implements ITaskPlugin {

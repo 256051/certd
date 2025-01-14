@@ -1,7 +1,7 @@
 import { ALL, Body, Controller, Inject, Post, Provide, Query } from '@midwayjs/core';
 import { Constants, CrudController } from '@certd/lib-server';
 import { AccessService } from '@certd/lib-server';
-import { AuthService } from '../../modules/sys/authority/service/auth-service.js';
+import { AuthService } from '../../../modules/sys/authority/service/auth-service.js';
 import { AccessDefine } from '@certd/pipeline';
 
 /**

@@ -1,7 +1,7 @@
 import { ALL, Body, Controller, Inject, Post, Provide, Query } from '@midwayjs/core';
 import { Constants, CrudController, ValidateException } from '@certd/lib-server';
-import { NotificationService } from '../../modules/pipeline/service/notification-service.js';
-import { AuthService } from '../../modules/sys/authority/service/auth-service.js';
+import { NotificationService } from '../../../modules/pipeline/service/notification-service.js';
+import { AuthService } from '../../../modules/sys/authority/service/auth-service.js';
 import { NotificationDefine } from '@certd/pipeline';
 import { checkPlus } from '@certd/plus-core';
 

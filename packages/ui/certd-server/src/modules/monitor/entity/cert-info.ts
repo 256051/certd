@@ -22,7 +22,7 @@ export class CertInfoEntity {
   pipelineId: number;
 
   @Column({ name: 'apply_time', comment: '申请时间' })
-  applyTime: string;
+  applyTime: number;
 
   @Column({ name: 'from_type', comment: '来源' })
   fromType: string;

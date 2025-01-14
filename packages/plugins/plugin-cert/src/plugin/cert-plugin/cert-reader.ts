@@ -2,7 +2,7 @@ import { CertInfo } from "./acme.js";
 import fs from "fs";
 import os from "os";
 import path from "path";
-import { crypto } from "@certd/acme-client";
+import { CertificateInfo, crypto } from "@certd/acme-client";
 import { ILogger } from "@certd/basic";
 import dayjs from "dayjs";
 
@@ -21,37 +21,22 @@ export type CertReaderHandle = (ctx: CertReaderHandleContext) => Promise<void>;
 export type HandleOpts = { logger: ILogger; handle: CertReaderHandle };
 export class CertReader {
   cert: CertInfo;
-  oc: string; //仅证书，非fullchain证书
-  crt: string;
-  key: string;
-  csr: string;
-  ic: string; //中间证书
-  one: string; //crt + key 合成一个pem文件
 
-  detail: any;
+  detail: CertificateInfo;
   expires: number;
   constructor(certInfo: CertInfo) {
     this.cert = certInfo;
-    this.crt = certInfo.crt;
-    this.key = certInfo.key;
-    this.csr = certInfo.csr;
 
-    this.ic = certInfo.ic;
-    if (!this.ic) {
-      this.ic = this.getIc();
-      this.cert.ic = this.ic;
+    if (!certInfo.ic) {
+      this.cert.ic = this.getIc();
     }
 
-    this.oc = certInfo.oc;
-    if (!this.oc) {
-      this.oc = this.getOc();
-      this.cert.oc = this.oc;
+    if (!certInfo.oc) {
+      this.cert.oc = this.getOc();
     }
 
-    this.one = certInfo.one;
-    if (!this.one) {
-      this.one = this.crt + "\n" + this.key;
-      this.cert.one = this.one;
+    if (!certInfo.one) {
+      this.cert.one = this.cert.crt + "\n" + this.cert.key;
     }
 
     const { detail, expires } = this.getCrtDetail(this.cert.crt);
@@ -62,13 +47,13 @@ export class CertReader {
   getIc() {
     //中间证书ic， 就是crt的第一个 -----END CERTIFICATE----- 之后的内容
     const endStr = "-----END CERTIFICATE-----";
-    const firstBlockEndIndex = this.crt.indexOf(endStr);
+    const firstBlockEndIndex = this.cert.crt.indexOf(endStr);
 
     const start = firstBlockEndIndex + endStr.length + 1;
-    if (this.crt.length <= start) {
+    if (this.cert.crt.length <= start) {
       return "";
     }
-    const ic = this.crt.substring(start);
+    const ic = this.cert.crt.substring(start);
     if (ic == null) {
       return "";
     }
@@ -78,7 +63,7 @@ export class CertReader {
   getOc() {
     //原始证书 就是crt的第一个 -----END CERTIFICATE----- 之前的内容
     const endStr = "-----END CERTIFICATE-----";
-    const arr = this.crt.split(endStr);
+    const arr = this.cert.crt.split(endStr);
     return arr[0] + endStr;
   }
 

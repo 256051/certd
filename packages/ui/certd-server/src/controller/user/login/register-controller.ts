@@ -1,7 +1,7 @@
 import { ALL, Body, Controller, Inject, Post, Provide } from '@midwayjs/core';
 import { BaseController, Constants, SysSettingsService } from '@certd/lib-server';
-import { RegisterType, UserService } from '../../modules/sys/authority/service/user-service.js';
-import { CodeService } from '../../modules/basic/service/code-service.js';
+import { RegisterType, UserService } from '../../../modules/sys/authority/service/user-service.js';
+import { CodeService } from '../../../modules/basic/service/code-service.js';
 import { checkComm, checkPlus } from '@certd/plus-core';
 
 export type RegisterReq = {

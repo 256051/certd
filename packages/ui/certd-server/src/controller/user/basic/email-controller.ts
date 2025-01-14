@@ -1,6 +1,6 @@
 import { Body, Controller, Inject, Post, Provide } from '@midwayjs/core';
 import { BaseController } from '@certd/lib-server';
-import { EmailService } from '../../modules/basic/service/email-service.js';
+import { EmailService } from '../../../modules/basic/service/email-service.js';
 import { Constants } from '@certd/lib-server';
 
 /**

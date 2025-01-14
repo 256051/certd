@@ -1,7 +1,7 @@
 import { ALL, Body, Controller, Inject, Post, Provide } from '@midwayjs/core';
-import { LoginService } from '../../modules/login/service/login-service.js';
+import { LoginService } from '../../../modules/login/service/login-service.js';
 import { BaseController, Constants, SysPublicSettings, SysSettingsService } from '@certd/lib-server';
-import { CodeService } from '../../modules/basic/service/code-service.js';
+import { CodeService } from '../../../modules/basic/service/code-service.js';
 import { checkComm } from '@certd/plus-core';
 
 /**

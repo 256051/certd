@@ -1,4 +1,4 @@
-import { AbstractTaskPlugin, IContext, NotificationBody, Step, TaskInput, TaskOutput } from "@certd/pipeline";
+import { AbstractTaskPlugin, IContext, NotificationBody, Step, TaskEmitter, TaskInput, TaskOutput } from "@certd/pipeline";
 import dayjs from "dayjs";
 import type { CertInfo } from "./acme.js";
 import { CertReader } from "./cert-reader.js";
@@ -6,8 +6,11 @@ import JSZip from "jszip";
 import { CertConverter } from "./convert.js";
 import { pick } from "lodash-es";
 
-export { CertReader };
-export type { CertInfo };
+export const EVENT_CERT_APPLY_SUCCESS = "CertApply.success";
+
+export async function emitCertApplySuccess(emitter: TaskEmitter, cert: CertReader) {
+  await emitter.emit(EVENT_CERT_APPLY_SUCCESS, cert);
+}
 
 export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
   @TaskInput({
@@ -119,7 +122,7 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
 
   abstract onInit(): Promise<void>;
 
-  abstract doCertApply(): Promise<any>;
+  abstract doCertApply(): Promise<CertReader>;
 
   async execute(): Promise<string | void> {
     const oldCert = await this.condition();
@@ -130,6 +133,8 @@ export abstract class CertApplyBasePlugin extends AbstractTaskPlugin {
     const cert = await this.doCertApply();
     if (cert != null) {
       await this.output(cert, true);
+
+      await emitCertApplySuccess(this.ctx.emitter, cert);
       //清空后续任务的状态，让后续任务能够重新执行
       this.clearLastStatus();
 
@@ -234,28 +239,10 @@ cert.jks：jks格式证书文件，java服务器使用
     //   return null;
     // }
 
-    let inputChanged = false;
-    //判断域名有没有变更
-    /**
-     *                      "renewDays": 35,
-     *                     "certApplyPlugin": "CertApply",
-     *                     "sslProvider": "letsencrypt",
-     *                     "privateKeyType": "rsa_2048_pkcs1",
-     *                     "dnsProviderType": "aliyun",
-     *                     "domains": [
-     *                       "*.handsfree.work"
-     *                     ],
-     *                     "email": "xiaojunnuo@qq.com",
-     *                     "dnsProviderAccess": 3,
-     *                     "useProxy": false,
-     *                     "skipLocalVerify": false,
-     *                     "successNotify": true,
-     *                     "pfxPassword": "123456"
-     */
     const checkInputChanges = ["domains", "sslProvider", "privateKeyType", "dnsProviderType", "pfxPassword"];
     const oldInput = JSON.stringify(pick(this.lastStatus?.input, checkInputChanges));
     const thisInput = JSON.stringify(pick(this, checkInputChanges));
-    inputChanged = oldInput !== thisInput;
+    const inputChanged = oldInput !== thisInput;
 
     this.logger.info(`旧参数：${oldInput}`);
     this.logger.info(`新参数：${thisInput}`);

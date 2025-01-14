@@ -10,7 +10,7 @@ import { CertApplyBasePlugin } from "./base.js";
 import { GoogleClient } from "../../libs/google.js";
 import { EabAccess } from "../../access";
 import { httpChallengeUploaderFactory } from "./uploads/factory.js";
-
+export * from "./base.js";
 export type { CertInfo };
 export * from "./cert-reader.js";
 export type CnameRecordInput = {

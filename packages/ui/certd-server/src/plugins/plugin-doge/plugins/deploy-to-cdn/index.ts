@@ -1,5 +1,5 @@
 import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
-import { CertInfo, CertReader } from '@certd/plugin-cert';
+import { CertInfo } from '@certd/plugin-cert';
 import { DogeClient } from '../../lib/index.js';
 import dayjs from 'dayjs';
 
@@ -68,11 +68,10 @@ export class DogeCloudDeployToCDNPlugin extends AbstractTaskPlugin {
   }
 
   async updateCert() {
-    const certReader = new CertReader(this.cert);
     const data = await this.dogeClient.request('/cdn/cert/upload.json', {
       note: 'certd-' + dayjs().format('YYYYMMDDHHmmss'),
-      cert: certReader.crt,
-      private: certReader.key,
+      cert: this.cert.crt,
+      private: this.cert.key,
     });
     return data.id;
   }

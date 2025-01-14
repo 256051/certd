@@ -1,7 +1,7 @@
 import { ALL, Body, Controller, Inject, Post, Provide } from '@midwayjs/core';
 import { BaseController, Constants } from '@certd/lib-server';
-import { CnameRecordService } from '../../modules/cname/service/cname-record-service.js';
-import { CnameProviderService } from '../../modules/cname/service/cname-provider-service.js';
+import { CnameRecordService } from '../../../modules/cname/service/cname-record-service.js';
+import { CnameProviderService } from '../../../modules/cname/service/cname-provider-service.js';
 
 /**
  * 授权

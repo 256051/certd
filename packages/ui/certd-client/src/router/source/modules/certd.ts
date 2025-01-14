@@ -92,7 +92,7 @@ export const certdResources = [
               },
               icon: "ion:shield-checkmark-outline",
               auth: true,
-              isMenu: false
+              isMenu: true
             }
           },
           {

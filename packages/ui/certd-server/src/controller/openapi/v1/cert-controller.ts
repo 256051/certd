@@ -1,9 +1,9 @@
 import { ALL, Body, Controller, Get, Inject, Post, Provide, Query } from '@midwayjs/core';
 import { CodeException, Constants, EncryptService } from '@certd/lib-server';
-import { CertInfoService } from '../../modules/monitor/service/cert-info-service.js';
+import { CertInfoService } from '../../../modules/monitor/service/cert-info-service.js';
 import { CertInfo } from '@certd/plugin-cert';
-import { OpenKey } from '../../modules/open/service/open-key-service.js';
-import { BaseOpenController } from './base-open-controller.js';
+import { OpenKey } from '../../../modules/open/service/open-key-service.js';
+import { BaseOpenController } from '../base-open-controller.js';
 
 export type CertGetReq = {
   domains: string;
@@ -12,7 +12,7 @@ export type CertGetReq = {
 /**
  */
 @Provide()
-@Controller('/open/cert')
+@Controller('/api/v1/cert')
 export class OpenCertController extends BaseOpenController {
   @Inject()
   certInfoService: CertInfoService;

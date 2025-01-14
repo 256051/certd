@@ -1,4 +1,4 @@
-import { Inject, Provide } from '@midwayjs/core';
+import { Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
 import { cache, isDev, randomNumber } from '@certd/basic';
 import { SysSettingsService, SysSiteInfo } from '@certd/lib-server';
 import { SmsServiceFactory } from '../sms/factory.js';
@@ -13,6 +13,7 @@ import { isComm } from '@certd/plus-core';
 /**
  */
 @Provide()
+@Scope(ScopeEnum.Request, { allowDowngrade: true })
 export class CodeService {
   @Inject()
   sysSettingsService: SysSettingsService;

@@ -1,14 +1,14 @@
 import { ALL, Body, Controller, Get, Inject, Post, Provide, Query } from '@midwayjs/core';
 import { CommonException, Constants, CrudController, PermissionException } from '@certd/lib-server';
-import { PipelineEntity } from '../../modules/pipeline/entity/pipeline.js';
-import { HistoryService } from '../../modules/pipeline/service/history-service.js';
-import { HistoryLogService } from '../../modules/pipeline/service/history-log-service.js';
-import { HistoryEntity } from '../../modules/pipeline/entity/history.js';
-import { HistoryLogEntity } from '../../modules/pipeline/entity/history-log.js';
-import { PipelineService } from '../../modules/pipeline/service/pipeline-service.js';
+import { PipelineEntity } from '../../../modules/pipeline/entity/pipeline.js';
+import { HistoryService } from '../../../modules/pipeline/service/history-service.js';
+import { HistoryLogService } from '../../../modules/pipeline/service/history-log-service.js';
+import { HistoryEntity } from '../../../modules/pipeline/entity/history.js';
+import { HistoryLogEntity } from '../../../modules/pipeline/entity/history-log.js';
+import { PipelineService } from '../../../modules/pipeline/service/pipeline-service.js';
 import * as fs from 'fs';
 import { logger } from '@certd/basic';
-import { AuthService } from '../../modules/sys/authority/service/auth-service.js';
+import { AuthService } from '../../../modules/sys/authority/service/auth-service.js';
 import { SysSettingsService } from '@certd/lib-server';
 import { In } from 'typeorm';
 

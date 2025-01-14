@@ -1,5 +1,5 @@
 import { ALL, Controller, Inject, Post, Provide, Query } from '@midwayjs/core';
-import { DnsProviderService } from '../../modules/pipeline/service/dns-provider-service.js';
+import { DnsProviderService } from '../../../modules/pipeline/service/dns-provider-service.js';
 import { BaseController } from '@certd/lib-server';
 import { Constants } from '@certd/lib-server';
 

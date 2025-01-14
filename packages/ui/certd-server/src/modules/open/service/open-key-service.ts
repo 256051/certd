@@ -1,4 +1,4 @@
-import { Provide } from '@midwayjs/core';
+import { Provide, Scope, ScopeEnum } from '@midwayjs/core';
 import { BaseService, Constants, CodeException, PageReq } from '@certd/lib-server';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
@@ -13,6 +13,7 @@ export type OpenKey = {
   encrypt: boolean;
 };
 @Provide()
+@Scope(ScopeEnum.Request, { allowDowngrade: true })
 export class OpenKeyService extends BaseService<OpenKeyEntity> {
   @InjectEntityModel(OpenKeyEntity)
   repository: Repository<OpenKeyEntity>;

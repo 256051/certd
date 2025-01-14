@@ -1,4 +1,4 @@
-import { Provide } from '@midwayjs/core';
+import { Provide, Scope, ScopeEnum } from '@midwayjs/core';
 import { BaseService, CodeException, Constants, PageReq } from '@certd/lib-server';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
@@ -7,6 +7,7 @@ import { utils } from '@certd/basic';
 import { CertInfo, CertReader } from '@certd/plugin-cert';
 
 @Provide()
+@Scope(ScopeEnum.Request, { allowDowngrade: true })
 export class CertInfoService extends BaseService<CertInfoEntity> {
   @InjectEntityModel(CertInfoEntity)
   repository: Repository<CertInfoEntity>;
@@ -90,5 +91,29 @@ export class CertInfoService extends BaseService<CertInfoEntity> {
     const certInfo = JSON.parse(matched.certInfo) as CertInfo;
     const certReader = new CertReader(certInfo);
     return certReader.toCertInfo();
+  }
+
+  async updateCert(pipelineId: number, certReader: CertReader) {
+    const found = await this.repository.findOne({
+      where: {
+        pipelineId,
+      },
+    });
+    if (!found) {
+      return;
+    }
+    const bean = new CertInfoEntity();
+    bean.id = found.id;
+    const certInfo = certReader.toCertInfo();
+    bean.certInfo = JSON.stringify(certInfo);
+    bean.applyTime = new Date().getTime();
+    const domains = certReader.detail.domains.altNames;
+    bean.domains = domains.join(',');
+    bean.domain = domains[0];
+    bean.domainCount = domains.length;
+    bean.expiresTime = certReader.expires;
+    bean.certProvider = certReader.detail.issuer.commonName;
+
+    await this.addOrUpdate(bean);
   }
 }
