@@ -1,8 +1,8 @@
 import { Rule, RuleType } from '@midwayjs/validate';
 import { ALL, Body, Controller, Get, Inject, Post, Provide, Query } from '@midwayjs/core';
 import { BaseController, Constants } from '@certd/lib-server';
-import { CodeService } from '../../modules/basic/service/code-service.js';
-import { EmailService } from '../../modules/basic/service/email-service.js';
+import { CodeService } from '../../../modules/basic/service/code-service.js';
+import { EmailService } from '../../../modules/basic/service/email-service.js';
 
 export class SmsCodeReq {
   @Rule(RuleType.string().required())

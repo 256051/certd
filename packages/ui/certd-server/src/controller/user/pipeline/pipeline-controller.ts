@@ -1,9 +1,9 @@
 import { ALL, Body, Controller, Inject, Post, Provide, Query } from '@midwayjs/core';
 import { Constants, CrudController, SysSettingsService } from '@certd/lib-server';
-import { PipelineService } from '../../modules/pipeline/service/pipeline-service.js';
-import { PipelineEntity } from '../../modules/pipeline/entity/pipeline.js';
-import { HistoryService } from '../../modules/pipeline/service/history-service.js';
-import { AuthService } from '../../modules/sys/authority/service/auth-service.js';
+import { PipelineService } from '../../../modules/pipeline/service/pipeline-service.js';
+import { PipelineEntity } from '../../../modules/pipeline/entity/pipeline.js';
+import { HistoryService } from '../../../modules/pipeline/service/history-service.js';
+import { AuthService } from '../../../modules/sys/authority/service/auth-service.js';
 
 /**
  * 证书
