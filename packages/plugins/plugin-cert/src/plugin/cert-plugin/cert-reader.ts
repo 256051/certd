@@ -57,7 +57,7 @@ export class CertReader {
     if (ic == null) {
       return "";
     }
-    return ic.trim();
+    return ic?.trim();
   }
 
   getOc() {
