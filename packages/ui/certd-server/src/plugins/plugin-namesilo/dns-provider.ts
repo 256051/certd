@@ -70,7 +70,7 @@ export class NamesiloDnsProvider extends AbstractDnsProvider<NamesiloRecord> {
       rrtype: type,
       rrhost: hostRecord,
       rrvalue: value,
-      rrttl: 10,
+      rrttl: 3600,
     });
 
     //本接口需要返回本次创建的dns解析记录，这个记录会在删除的时候用到
