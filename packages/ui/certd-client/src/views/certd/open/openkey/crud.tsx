@@ -4,6 +4,8 @@ import { AddReq, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, EditReq, 
 import { pipelineGroupApi } from "./api";
 import dayjs from "dayjs";
 import { Modal } from "ant-design-vue";
+import CertView from "/@/views/certd/pipeline/cert-view.vue";
+import { useModal } from "/@/use/use-modal";
 
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const { t } = useI18n();
@@ -27,7 +29,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
     const res = await api.AddObj(form);
     return res;
   };
-
+  const model = useModal();
   return {
     crudOptions: {
       request: {
@@ -83,13 +85,19 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             text: "测试ApiToken",
             async click({ row }) {
               const apiToken = await api.GetApiToken(row.id);
-              Modal.info({
+
+              model.success({
                 title: "ApiToken",
+                maskClosable: true,
+                okText: "确定",
+                width: 600,
                 content: () => {
                   return (
                     <div>
-                      <div>测试ApiKey如下，您可以在3分钟内使用它进行开放接口请求测试</div>
-                      <div>{apiToken}</div>
+                      <div class={"m-10 p-10"}>测试ApiKey如下，您可以在3分钟内使用它进行开放接口请求测试</div>
+                      <div class={"m-10 p-10"} style={{ border: "1px solid #333" }}>
+                        <fs-copyable model-value={apiToken}></fs-copyable>
+                      </div>
                     </div>
                   );
                 }

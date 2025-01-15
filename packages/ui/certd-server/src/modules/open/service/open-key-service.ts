@@ -71,7 +71,7 @@ export class OpenKeyService extends BaseService<OpenKeyEntity> {
     } else {
       throw new CodeException(Constants.res.openKeySignTypeError);
     }
-    if (computedSign !== sign) {
+    if (Buffer.from(computedSign).toString('base64') !== sign) {
       throw new CodeException(Constants.res.openKeySignError);
     }
 
@@ -101,6 +101,6 @@ export class OpenKeyService extends BaseService<OpenKeyEntity> {
     };
     const content = JSON.stringify(openKey);
     const sign = utils.hash.md5(content + keySecret);
-    return Buffer.from(content).toString('base64') + '.' + sign;
+    return Buffer.from(content).toString('base64') + '.' + Buffer.from(sign).toString('base64');
   }
 }
