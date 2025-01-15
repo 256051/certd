@@ -6,7 +6,8 @@ import { OpenKey } from '../../../modules/open/service/open-key-service.js';
 import { BaseOpenController } from '../base-open-controller.js';
 
 export type CertGetReq = {
-  domains: string;
+  domains?: string;
+  certId: number;
 };
 
 /**
@@ -25,17 +26,13 @@ export class OpenCertController extends BaseOpenController {
     const openKey: OpenKey = this.ctx.openKey;
     const userId = openKey.userId;
     if (!userId) {
-      return Constants.res.openKeyError;
+      throw new CodeException(Constants.res.openKeyError);
     }
 
-    const domains = bean.domains || query.domains;
-    if (!domains) {
-      throw new CodeException(Constants.res.openParamError);
-    }
-    const domainArr = domains.split(',');
     const res: CertInfo = await this.certInfoService.getCertInfo({
       userId,
-      domains: domainArr,
+      domains: bean.domains || query.domains,
+      certId: bean.certId || query.certId,
     });
     return this.ok(res);
   }

@@ -88,8 +88,7 @@ export class AuthorityMiddleware implements IWebMiddleware {
 
   async doOpenHandler(ctx: IMidwayKoaContext, next: Next) {
     //开放接口
-    let openKey = ctx.get('Authorization') || '';
-    openKey = openKey.replace('Bearer ', '').trim();
+    const openKey = ctx.get('x-api-token') || '';
     if (!openKey) {
       ctx.status = 401;
       ctx.body = Constants.res.auth;

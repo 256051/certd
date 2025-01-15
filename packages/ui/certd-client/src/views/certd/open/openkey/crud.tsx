@@ -72,13 +72,30 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         }
       },
       rowHandle: {
-        width: 200,
+        width: 300,
         fixed: "right",
         buttons: {
           view: { show: true },
           copy: { show: false },
           edit: { show: false },
-          remove: { show: true }
+          remove: { show: true },
+          gen: {
+            text: "测试ApiToken",
+            async click({ row }) {
+              const apiToken = await api.GetApiToken(row.id);
+              Modal.info({
+                title: "ApiToken",
+                content: () => {
+                  return (
+                    <div>
+                      <div>测试ApiKey如下，您可以在3分钟内使用它进行开放接口请求测试</div>
+                      <div>{apiToken}</div>
+                    </div>
+                  );
+                }
+              });
+            }
+          }
         }
       },
       columns: {

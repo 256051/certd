@@ -62,4 +62,11 @@ export class OpenKeyController extends CrudController<OpenKeyService> {
     await this.service.checkUserId(id, this.getUserId());
     return await super.delete(id);
   }
+
+  @Post('/getApiToken', { summary: Constants.per.authOnly })
+  async getApiToken(@Query('id') id: number) {
+    await this.service.checkUserId(id, this.getUserId());
+    const token = await this.service.getApiToken(id);
+    return this.ok(token);
+  }
 }

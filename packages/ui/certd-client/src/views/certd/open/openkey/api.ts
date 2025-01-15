@@ -42,10 +42,11 @@ export function createApi() {
         params: { id }
       });
     },
-    async ListAll() {
+    async GetApiToken(id: number) {
       return await request({
-        url: apiPrefix + "/all",
-        method: "post"
+        url: apiPrefix + "/getApiToken",
+        method: "post",
+        data: { id }
       });
     }
   };

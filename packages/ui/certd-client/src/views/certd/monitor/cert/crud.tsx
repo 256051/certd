@@ -126,32 +126,6 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             show: false
           }
         },
-        "pipeline.title": {
-          title: "已关联流水线",
-          search: { show: false },
-          type: "link",
-          form: {
-            show: false
-          },
-          column: {
-            width: 280,
-            sorter: true,
-            component: {}
-          }
-        },
-        applyTime: {
-          title: "申请时间",
-          search: {
-            show: false
-          },
-          type: "datetime",
-          form: {
-            show: false
-          },
-          column: {
-            sorter: true
-          }
-        },
         expiresTime: {
           title: "过期时间",
           search: {
@@ -175,18 +149,6 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             }
           }
         },
-        fromType: {
-          title: "来源",
-          search: {
-            show: true
-          },
-          type: "text",
-          form: { show: false },
-          column: {
-            width: 100,
-            sorter: true
-          }
-        },
         certProvider: {
           title: "证书颁发机构",
           search: {
@@ -197,7 +159,33 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             show: false
           },
           column: {
-            width: 400
+            width: 200
+          }
+        },
+        applyTime: {
+          title: "申请时间",
+          search: {
+            show: false
+          },
+          type: "datetime",
+          form: {
+            show: false
+          },
+          column: {
+            sorter: true
+          }
+        },
+        "pipeline.title": {
+          title: "已关联流水线",
+          search: { show: false },
+          type: "link",
+          form: {
+            show: false
+          },
+          column: {
+            width: 350,
+            sorter: true,
+            component: {}
           }
         }
       }

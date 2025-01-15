@@ -72,19 +72,19 @@ export const Constants = {
     },
     openKeyError: {
       code: 20000,
-      message: 'openKey错误',
+      message: 'ApiToken错误',
     },
     openKeySignError: {
       code: 20001,
-      message: 'openKey签名错误',
+      message: 'ApiToken签名错误',
     },
     openKeyExpiresError: {
       code: 20002,
-      message: 'openKey时间戳错误',
+      message: 'ApiToken时间戳错误',
     },
     openKeySignTypeError: {
       code: 20003,
-      message: 'openKey签名类型不支持',
+      message: 'ApiToken签名类型不支持',
     },
     openParamError: {
       code: 20010,
@@ -93,6 +93,10 @@ export const Constants = {
     openCertNotFound: {
       code: 20011,
       message: '证书不存在',
+    },
+    openCertNotReady: {
+      code: 20012,
+      message: '证书还未生成',
     },
   },
 };

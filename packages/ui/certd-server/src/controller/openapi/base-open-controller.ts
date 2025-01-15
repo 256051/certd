@@ -10,6 +10,6 @@ export class BaseOpenController extends BaseController {
       const encrypted = encryptor.encrypt(data);
       return this.ok(encrypted);
     }
-    super.ok(res);
+    return super.ok(res);
   }
 }

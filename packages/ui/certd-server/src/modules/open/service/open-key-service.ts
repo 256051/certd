@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { OpenKeyEntity } from '../entity/open-key.js';
 import { utils } from '@certd/basic';
 import crypto from 'crypto';
+import dayjs from 'dayjs';
 
 export type OpenKey = {
   userId: number;
@@ -84,5 +85,22 @@ export class OpenKeyService extends BaseService<OpenKeyEntity> {
       keySecret: entity.keySecret,
       encrypt: encrypt,
     };
+  }
+
+  async getApiToken(id: number) {
+    const entity = await this.repository.findOne({ where: { id } });
+    if (!entity) {
+      throw new Error('id不存在');
+    }
+    const { keyId, keySecret } = entity;
+    const openKey = {
+      keyId,
+      t: dayjs().unix(),
+      encrypt: false,
+      signType: 'md5',
+    };
+    const content = JSON.stringify(openKey);
+    const sign = utils.hash.md5(content + keySecret);
+    return Buffer.from(content).toString('base64') + '.' + sign;
   }
 }

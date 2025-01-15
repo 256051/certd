@@ -72,10 +72,29 @@ export class CertInfoService extends BaseService<CertInfoEntity> {
     });
   }
 
-  async getCertInfo(param: { domains: string[]; userId: number }) {
-    const { domains, userId } = param;
+  async getCertInfo(params: { domains?: string; certId?: number; userId: number }) {
+    const { domains, certId, userId } = params;
+    if (certId) {
+      return await this.getCertInfoById({ id: certId, userId });
+    }
+    return await this.getCertInfoByDomains({
+      domains,
+      userId,
+    });
+  }
+
+  private async getCertInfoByDomains(params: { domains: string; userId: number }) {
+    const { domains, userId } = params;
+    if (!domains) {
+      throw new CodeException(Constants.res.openCertNotFound);
+    }
+    const domainArr = domains.split(',');
 
     const list = await this.find({
+      select: {
+        id: true,
+        domains: true,
+      },
       where: {
         userId,
       },
@@ -83,12 +102,25 @@ export class CertInfoService extends BaseService<CertInfoEntity> {
     //遍历查找
     const matched = list.find(item => {
       const itemDomains = item.domains.split(',');
-      return utils.domain.match(domains, itemDomains);
+      return utils.domain.match(domainArr, itemDomains);
     });
-    if (!matched || !matched.certInfo) {
+    if (!matched) {
       throw new CodeException(Constants.res.openCertNotFound);
     }
-    const certInfo = JSON.parse(matched.certInfo) as CertInfo;
+
+    return await this.getCertInfoById({ id: matched.id, userId: userId });
+  }
+
+  async getCertInfoById(req: { id: number; userId: number }) {
+    const entity = await this.info(req.id);
+    if (!entity || entity.userId !== req.userId) {
+      throw new CodeException(Constants.res.openCertNotFound);
+    }
+
+    if (!entity.certInfo) {
+      throw new CodeException(Constants.res.openCertNotReady);
+    }
+    const certInfo = JSON.parse(entity.certInfo) as CertInfo;
     const certReader = new CertReader(certInfo);
     return certReader.toCertInfo();
   }
