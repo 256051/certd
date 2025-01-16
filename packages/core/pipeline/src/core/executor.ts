@@ -11,6 +11,7 @@ import { ICnameProxyService, IEmailService, IPluginConfigService, IUrlService } 
 import { FileStore } from "./file-store.js";
 import { cloneDeep, forEach, merge } from "lodash-es";
 import { INotificationService } from "../notification/index.js";
+import { taskEmitterCreate } from "../service/emit.js";
 
 export type SysInfo = {
   //系统标题
@@ -342,6 +343,10 @@ export class Executor {
       signal: this.abort.signal,
       utils,
       user: this.options.user,
+      emitter: taskEmitterCreate({
+        step,
+        pipeline: this.pipeline,
+      }),
     };
     instance.setCtx(taskCtx);
 

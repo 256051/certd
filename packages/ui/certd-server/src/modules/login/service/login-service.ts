@@ -1,4 +1,4 @@
-import { Config, Inject, Provide } from '@midwayjs/core';
+import { Config, Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
 import { UserService } from '../../sys/authority/service/user-service.js';
 import jwt from 'jsonwebtoken';
 import { CommonException } from '@certd/lib-server';
@@ -14,6 +14,7 @@ import { CodeService } from '../../basic/service/code-service.js';
  * 系统用户
  */
 @Provide()
+@Scope(ScopeEnum.Request, { allowDowngrade: true })
 export class LoginService {
   @Inject()
   userService: UserService;

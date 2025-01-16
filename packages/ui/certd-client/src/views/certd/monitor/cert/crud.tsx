@@ -2,6 +2,7 @@
 import { useI18n } from "vue-i18n";
 import { AddReq, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
 import { pipelineGroupApi } from "./api";
+import dayjs from "dayjs";
 
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const { t } = useI18n();
@@ -78,23 +79,23 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             show: false
           }
         },
-        domain: {
-          title: "主域名",
-          search: {
-            show: true
-          },
-          type: "text",
-          form: {
-            show: false
-          },
-          column: {
-            width: 180,
-            sorter: true,
-            component: {
-              name: "fs-values-format"
-            }
-          }
-        },
+        // domain: {
+        //   title: "主域名",
+        //   search: {
+        //     show: true
+        //   },
+        //   type: "text",
+        //   form: {
+        //     show: false
+        //   },
+        //   column: {
+        //     width: 180,
+        //     sorter: true,
+        //     component: {
+        //       name: "fs-values-format"
+        //     }
+        //   }
+        // },
         domains: {
           title: "全部域名",
           search: {
@@ -105,10 +106,11 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             rules: [{ required: true, message: "请输入域名" }]
           },
           column: {
-            width: 350,
+            width: 450,
             sorter: true,
             component: {
-              name: "fs-values-format"
+              name: "fs-values-format",
+              color: "auto"
             }
           }
         },
@@ -124,17 +126,40 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             show: false
           }
         },
-        "pipeline.title": {
-          title: "已关联流水线",
-          search: { show: false },
-          type: "link",
+        expiresTime: {
+          title: "过期时间",
+          search: {
+            show: true
+          },
+          type: "date",
           form: {
             show: false
           },
           column: {
-            width: 250,
             sorter: true,
-            component: {}
+            cellRender({ value }) {
+              if (!value) {
+                return "-";
+              }
+              const expireDate = dayjs(value).format("YYYY-MM-DD");
+              const leftDays = dayjs(value).diff(dayjs(), "day");
+              const color = leftDays < 20 ? "red" : "#389e0d";
+              const percent = (leftDays / 90) * 100;
+              return <a-progress title={expireDate + "过期"} percent={percent} strokeColor={color} format={(percent: number) => `${leftDays}天`} />;
+            }
+          }
+        },
+        certProvider: {
+          title: "证书颁发机构",
+          search: {
+            show: true
+          },
+          type: "text",
+          form: {
+            show: false
+          },
+          column: {
+            width: 200
           }
         },
         applyTime: {
@@ -150,42 +175,17 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             sorter: true
           }
         },
-        expiresTime: {
-          title: "过期时间",
-          search: {
-            show: true
-          },
-          type: "date",
+        "pipeline.title": {
+          title: "已关联流水线",
+          search: { show: false },
+          type: "link",
           form: {
             show: false
           },
           column: {
-            sorter: true
-          }
-        },
-        fromType: {
-          title: "来源",
-          search: {
-            show: true
-          },
-          type: "text",
-          form: { show: false },
-          column: {
-            width: 100,
-            sorter: true
-          }
-        },
-        certProvider: {
-          title: "证书颁发机构",
-          search: {
-            show: true
-          },
-          type: "text",
-          form: {
-            show: false
-          },
-          column: {
-            width: 400
+            width: 350,
+            sorter: true,
+            component: {}
           }
         }
       }
