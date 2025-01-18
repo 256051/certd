@@ -47,6 +47,9 @@ export class OpenKeyService extends BaseService<OpenKeyEntity> {
   }
 
   async getByKeyId(keyId: string) {
+    if (!keyId) {
+      throw new Error('keyId不能为空');
+    }
     return this.repository.findOne({ where: { keyId } });
   }
 
@@ -91,6 +94,9 @@ export class OpenKeyService extends BaseService<OpenKeyEntity> {
   }
 
   async getApiToken(id: number) {
+    if (!id) {
+      throw new Error('id不能为空');
+    }
     const entity = await this.repository.findOne({ where: { id } });
     if (!entity) {
       throw new Error('id不存在');

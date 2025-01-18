@@ -63,7 +63,7 @@ export class OpenKeyController extends CrudController<OpenKeyService> {
   }
 
   @Post('/getApiToken', { summary: Constants.per.authOnly })
-  async getApiToken(@Query('id') id: number) {
+  async getApiToken(@Body('id') id: number) {
     await this.service.checkUserId(id, this.getUserId());
     const token = await this.service.getApiToken(id);
     return this.ok(token);
