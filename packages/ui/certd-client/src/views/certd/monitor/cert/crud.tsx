@@ -99,7 +99,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         domains: {
           title: "全部域名",
           search: {
-            show: false
+            show: true
           },
           type: "text",
           form: {
@@ -129,7 +129,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         expiresTime: {
           title: "过期时间",
           search: {
-            show: true
+            show: false
           },
           type: "date",
           form: {
@@ -152,7 +152,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         certProvider: {
           title: "证书颁发机构",
           search: {
-            show: true
+            show: false
           },
           type: "text",
           form: {

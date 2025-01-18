@@ -96,6 +96,7 @@ export class AuthorityMiddleware implements IWebMiddleware {
         ctx.body = Constants.res.permission;
         return;
       }
+      await next();
     };
   }
 
