@@ -12,6 +12,7 @@ export type OpenKey = {
   keyId: string;
   keySecret: string;
   encrypt: boolean;
+  scope: string;
 };
 @Provide()
 @Scope(ScopeEnum.Request, { allowDowngrade: true })
@@ -29,10 +30,10 @@ export class OpenKeyService extends BaseService<OpenKeyEntity> {
   }
 
   async add(bean: OpenKeyEntity) {
-    return await this.generate(bean.userId);
+    return await this.generate(bean.userId, bean.scope);
   }
 
-  async generate(userId: number) {
+  async generate(userId: number, scope: string) {
     const keyId = utils.id.simpleNanoId(18) + '_key';
     const secretKey = crypto.randomBytes(32);
     const keySecret = Buffer.from(secretKey).toString('hex');
@@ -40,6 +41,7 @@ export class OpenKeyService extends BaseService<OpenKeyEntity> {
     entity.userId = userId;
     entity.keyId = keyId;
     entity.keySecret = keySecret;
+    entity.scope = scope ?? 'open';
     await this.repository.save(entity);
     return entity;
   }
@@ -84,6 +86,7 @@ export class OpenKeyService extends BaseService<OpenKeyEntity> {
       keyId: entity.keyId,
       keySecret: entity.keySecret,
       encrypt: encrypt,
+      scope: entity.scope,
     };
   }
 

@@ -4,6 +4,7 @@ CREATE TABLE "cd_open_key"
   "user_id"     integer,
   "key_id"      varchar(50),
   "key_secret"  varchar(100),
+  "scope"       varchar(50),
   "disabled"    boolean  NOT NULL DEFAULT (false),
   "create_time" datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP),
   "update_time" datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP)

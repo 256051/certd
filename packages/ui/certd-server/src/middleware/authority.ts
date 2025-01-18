@@ -4,8 +4,8 @@ import jwt from 'jsonwebtoken';
 import { Constants, SysPrivateSettings, SysSettingsService } from '@certd/lib-server';
 import { logger } from '@certd/basic';
 import { AuthService } from '../modules/sys/authority/service/auth-service.js';
-import { Next } from 'koa';
 import { OpenKeyService } from '../modules/open/service/open-key-service.js';
+import { RoleService } from '../modules/sys/authority/service/role-service.js';
 
 /**
  * 权限校验
@@ -17,6 +17,8 @@ export class AuthorityMiddleware implements IWebMiddleware {
   webRouterService: MidwayWebRouterService;
   @Inject()
   authService: AuthService;
+  @Inject()
+  roleService: RoleService;
   @Inject()
   openKeyService: OpenKeyService;
   @Inject()
@@ -50,10 +52,6 @@ export class AuthorityMiddleware implements IWebMiddleware {
         return;
       }
 
-      if (permission === Constants.per.open) {
-        return this.doOpenHandler(ctx, next);
-      }
-
       let token = ctx.get('Authorization') || '';
       token = token.replace('Bearer ', '').trim();
       if (!token) {
@@ -64,41 +62,61 @@ export class AuthorityMiddleware implements IWebMiddleware {
         //尝试从query中获取token
         token = (ctx.query.token as string) || '';
       }
-      try {
-        ctx.user = jwt.verify(token, this.secret);
-      } catch (err) {
-        logger.error('token verify error: ', err);
-        ctx.status = 401;
-        ctx.body = Constants.res.auth;
+
+      if (token) {
+        try {
+          ctx.user = jwt.verify(token, this.secret);
+        } catch (err) {
+          logger.error('token verify error: ', err);
+          return this.notAuth(ctx);
+        }
+      } else {
+        //找找openKey
+        const openKey = await this.doOpenHandler(ctx);
+        if (!openKey) {
+          return this.notAuth(ctx);
+        }
+        if (permission === Constants.per.open) {
+          await next();
+          return;
+        } else if (openKey.scope === 'open') {
+          return this.notAuth(ctx);
+        }
+      }
+
+      if (permission === Constants.per.authOnly) {
+        await next();
         return;
       }
 
-      if (permission !== Constants.per.authOnly) {
-        const pass = await this.authService.checkPermission(ctx, permission);
-        if (!pass) {
-          logger.info('not permission: ', ctx.req.url);
-          ctx.status = 401;
-          ctx.body = Constants.res.permission;
-          return;
-        }
+      const pass = await this.authService.checkPermission(ctx, permission);
+      if (!pass) {
+        logger.info('not permission: ', ctx.req.url);
+        ctx.status = 401;
+        ctx.body = Constants.res.permission;
+        return;
       }
-      await next();
     };
   }
 
-  async doOpenHandler(ctx: IMidwayKoaContext, next: Next) {
+  private notAuth(ctx: IMidwayKoaContext) {
+    ctx.status = 401;
+    ctx.body = Constants.res.auth;
+    return;
+  }
+
+  async doOpenHandler(ctx: IMidwayKoaContext) {
     //开放接口
-    const openKey = ctx.get('x-api-token') || '';
+    const openKey = ctx.get('x-certd-token') || '';
     if (!openKey) {
-      ctx.status = 401;
-      ctx.body = Constants.res.auth;
-      return;
+      return null;
     }
 
     //校验 openKey
     const openKeyRes = await this.openKeyService.verifyOpenKey(openKey);
-    ctx.user = { id: openKeyRes.userId };
+    const roles = await this.roleService.getRoleIdsByUserId(openKeyRes.userId);
+    ctx.user = { id: openKeyRes.userId, roles };
     ctx.openKey = openKeyRes;
-    await next();
+    return openKeyRes;
   }
 }

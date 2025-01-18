@@ -14,6 +14,9 @@ export class OpenKeyEntity {
   @Column({ name: 'key_secret', comment: 'keySecret' })
   keySecret: string;
 
+  @Column({ name: 'scope', comment: '权限范围' })
+  scope: string; // open 仅开放接口、 user 用户所有权限
+
   @Column({ name: 'create_time', comment: '创建时间', default: () => 'CURRENT_TIMESTAMP' })
   createTime: Date;
 
