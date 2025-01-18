@@ -69,7 +69,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           edit: { show: false },
           remove: { show: true },
           gen: {
-            text: " 接口测试",
+            text: "接口测试",
             size: "mini",
             icon: "devicon-plain:vitest",
             type: "primary",
@@ -77,7 +77,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
               const apiToken = await api.GetApiToken(row.id);
 
               model.success({
-                title: "ApiToken",
+                title: "x-certd-token",
                 maskClosable: true,
                 okText: "确定",
                 width: 600,
@@ -85,7 +85,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
                   return (
                     <div>
                       <div class={"m-10 p-10"}>
-                        测试ApiKey如下，您可以在3分钟内使用它进行
+                        测试x-certd-token如下，您可以在3分钟内使用它进行
                         <a href={OPEN_API_DOC} target={"_blank"}>
                           开放接口
                         </a>
@@ -124,7 +124,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           title: "KeyId",
           type: ["text", "copyable"],
           search: {
-            show: false
+            show: true
           },
           form: {
             show: false

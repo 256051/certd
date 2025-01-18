@@ -108,7 +108,7 @@ export const certdResources = [
             path: "/certd/open/openkey",
             component: "/certd/open/openkey/index.vue",
             meta: {
-              icon: "ion:disc-outline",
+              icon: "hugeicons:api",
               auth: true,
               cache: true
             }
