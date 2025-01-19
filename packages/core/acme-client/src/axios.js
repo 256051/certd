@@ -126,6 +126,7 @@ instance.interceptors.response.use(null, async (error) => {
 
             /* Wait and retry the request */
             await new Promise((resolve) => { setTimeout(resolve, (retryAfter * 1000)); });
+            log(`Retrying request to URL ${config.url}`);
             return instance(config);
         }
     }

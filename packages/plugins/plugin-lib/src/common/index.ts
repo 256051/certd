@@ -46,7 +46,13 @@ export function createRemoteSelectInputDefine(opts?: {
   const type = opts?.type || "plugin";
   const watches = opts?.watches || [];
   const helper = opts?.helper || "请选择";
-  const mode = opts?.mode || "tags";
+  let mode = "tags";
+  if (opts.multi === false) {
+    mode = undefined;
+  } else {
+    mode = opts?.mode ?? "tags";
+  }
+
   const item = {
     title,
     component: {

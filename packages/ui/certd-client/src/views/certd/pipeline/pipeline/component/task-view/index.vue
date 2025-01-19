@@ -89,7 +89,11 @@ export default {
                 return;
               }
               //判断当前是否在底部
-              const isBottom = el ? el.scrollHeight - el.scrollTop === el.clientHeight : true;
+              let isBottom = true;
+              if (el) {
+                isBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 5;
+                console.log("isBottom", isBottom, el.scrollHeight, el.scrollTop, el.clientHeight);
+              }
               await nextTick();
               el = document.querySelector(`.pi-task-view-logs.id-${node.node.id}`);
               //如果在底部则滚动到底部
