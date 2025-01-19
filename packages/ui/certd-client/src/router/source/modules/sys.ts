@@ -49,7 +49,7 @@ export const sysResources = [
         }
       },
       {
-        title: "邮箱设置",
+        title: "邮件服务器设置",
         name: "EmailSetting",
         path: "/sys/settings/email",
         component: "/sys/settings/email/index.vue",

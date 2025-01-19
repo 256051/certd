@@ -131,11 +131,10 @@ export class CertInfoService extends BaseService<CertInfoEntity> {
         pipelineId,
       },
     });
-    if (!found) {
-      return;
-    }
     const bean = new CertInfoEntity();
-    bean.id = found.id;
+    if (found) {
+      bean.id = found.id;
+    }
     const certInfo = certReader.toCertInfo();
     bean.certInfo = JSON.stringify(certInfo);
     bean.applyTime = new Date().getTime();

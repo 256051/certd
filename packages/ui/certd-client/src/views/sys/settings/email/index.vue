@@ -2,7 +2,7 @@
   <fs-page class="page-setting-email">
     <template #header>
       <div class="title">
-        邮件设置
+        邮件服务器设置
         <span class="sub">设置邮件发送服务器</span>
       </div>
     </template>
