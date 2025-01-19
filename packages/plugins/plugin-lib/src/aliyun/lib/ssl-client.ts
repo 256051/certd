@@ -29,6 +29,8 @@ export type AliyunSslUploadCertReq = {
   cert: AliyunCertInfo;
 };
 
+export type CasCertInfo = { certId: number; certName: string; certIdentifier: string };
+
 export class AliyunSslClient {
   opts: AliyunSslClientOpts;
   constructor(opts: AliyunSslClientOpts) {
@@ -51,6 +53,22 @@ export class AliyunSslClient {
       apiVersion: "2020-04-07",
     });
     return client;
+  }
+
+  async getCertInfo(certId: number): Promise<CasCertInfo> {
+    const client = await this.getClient();
+    const params = {
+      CertId: certId,
+    };
+
+    const res = await client.request("GetUserCertificateDetail", params);
+    this.checkRet(res);
+
+    return {
+      certId: certId,
+      certName: res.Name,
+      certIdentifier: res.CertIdentifier,
+    };
   }
 
   async uploadCert(req: AliyunSslUploadCertReq) {

@@ -1,13 +1,13 @@
 import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
 import { CertInfo } from '@certd/plugin-cert';
-import { AliyunAccess, AliyunClient, AliyunSslClient, createCertDomainGetterInputDefine, createRemoteSelectInputDefine } from '@certd/plugin-lib';
+import { AliyunAccess, AliyunClient, AliyunSslClient, CasCertInfo, createCertDomainGetterInputDefine, createRemoteSelectInputDefine } from '@certd/plugin-lib';
 
 @IsTaskPlugin({
-  name: 'AliyunDeployCertToLB',
-  title: '阿里云-部署至ALB（应用负载均衡）',
+  name: 'AliyunDeployCertToSLB',
+  title: '阿里云-部署至SLB(传统负载均衡)',
   icon: 'ant-design:aliyun-outlined',
   group: pluginGroups.aliyun.key,
-  desc: 'ALB,更新监听器的默认证书',
+  desc: '部署证书到阿里云SLB(传统负载均衡)',
   needPlus: false,
   default: {
     strategy: {
@@ -15,7 +15,7 @@ import { AliyunAccess, AliyunClient, AliyunSslClient, createCertDomainGetterInpu
     },
   },
 })
-export class AliyunDeployCertToALB extends AbstractTaskPlugin {
+export class AliyunDeployCertToSLB extends AbstractTaskPlugin {
   @TaskInput({
     title: '域名证书',
     helper: '请选择证书申请任务输出的域名证书\n或者选择前置任务“上传证书到阿里云”任务的证书ID，可以减少上传到阿里云的证书数量',
@@ -44,9 +44,9 @@ export class AliyunDeployCertToALB extends AbstractTaskPlugin {
   @TaskInput(
     createRemoteSelectInputDefine({
       title: 'LB所在地区',
-      typeName: 'AliyunDeployCertToALB',
+      typeName: 'AliyunDeployCertToSLB',
       multi: false,
-      action: AliyunDeployCertToALB.prototype.onGetRegionList.name,
+      action: AliyunDeployCertToSLB.prototype.onGetRegionList.name,
       watches: ['accessId'],
     })
   )
@@ -56,8 +56,8 @@ export class AliyunDeployCertToALB extends AbstractTaskPlugin {
     createRemoteSelectInputDefine({
       title: '负载均衡列表',
       helper: '要部署证书的负载均衡ID',
-      typeName: 'AliyunDeployCertToALB',
-      action: AliyunDeployCertToALB.prototype.onGetLoadBalanceList.name,
+      typeName: 'AliyunDeployCertToSLB',
+      action: AliyunDeployCertToSLB.prototype.onGetLoadBalanceList.name,
       watches: ['regionId'],
     })
   )
@@ -67,8 +67,8 @@ export class AliyunDeployCertToALB extends AbstractTaskPlugin {
     createRemoteSelectInputDefine({
       title: '监听器列表',
       helper: '要部署证书的监听器列表',
-      typeName: 'AliyunDeployCertToALB',
-      action: AliyunDeployCertToALB.prototype.onGetListenerList.name,
+      typeName: 'AliyunDeployCertToSLB',
+      action: AliyunDeployCertToSLB.prototype.onGetListenerList.name,
       watches: ['loadBalancers'],
     })
   )
@@ -94,61 +94,73 @@ export class AliyunDeployCertToALB extends AbstractTaskPlugin {
 
   async getLBClient(access: AliyunAccess, region: string) {
     const client = new AliyunClient({ logger: this.logger });
-
-    const version = '2020-06-16';
+    const version = '2014-05-15';
     await client.init({
       accessKeyId: access.accessKeyId,
       accessKeySecret: access.accessKeySecret,
       //https://wafopenapi.cn-hangzhou.aliyuncs.com
-      endpoint: `https://alb.${region}.aliyuncs.com`,
+      endpoint: `https://slb.${region}.aliyuncs.com`,
       apiVersion: version,
     });
     return client;
   }
 
   async execute(): Promise<void> {
-    this.logger.info(`开始部署证书到阿里云(alb)`);
+    this.logger.info(`开始部署证书到阿里云(slb)`);
     const access = await this.accessService.getById<AliyunAccess>(this.accessId);
-    const certId = await this.getAliyunCertId(access);
 
     const client = await this.getLBClient(access, this.regionId);
-
+    const aliyunCert = await this.getAliyunCertId(access);
+    const slbServerCertId = await this.uploadServerCert(client, aliyunCert);
     for (const listener of this.listeners) {
-      //查询原来的证书
-      let params: any = {};
-      params = {
-        ListenerId: listener,
-        Certificates: [
-          {
-            CertificateId: certId,
-          },
-        ],
+      const arr = listener.split('_');
+      const loadBalanceId = arr[0];
+      const port = arr[2];
+      const params = {
+        RegionId: this.regionId,
+        LoadBalancerId: loadBalanceId,
+        ListenerPort: parseInt(port),
+        ServerCertificateId: slbServerCertId,
       };
 
-      const res = await client.request('UpdateListenerAttribute', params);
+      const res = await client.request('SetLoadBalancerHTTPSListenerAttribute', params);
       this.checkRet(res);
       this.logger.info(`部署${listener}监听器证书成功`, JSON.stringify(res));
-
-      //删除旧证书关联
     }
     this.logger.info('执行完成');
   }
 
+  async uploadServerCert(client: any, aliyunCert: CasCertInfo) {
+    const params = {
+      RegionId: this.regionId,
+      AliCloudCertificateId: aliyunCert.certId,
+      AliCloudCertificateName: aliyunCert.certName,
+    };
+
+    const res = await client.request('UploadServerCertificate', params);
+    this.checkRet(res);
+    this.logger.info('SLBServerCertificate创建成功', res.ServerCertificateId);
+    return res.ServerCertificateId;
+  }
+
   async getAliyunCertId(access: AliyunAccess) {
     let certId: any = this.cert;
-    if (typeof this.cert === 'object') {
-      const sslClient = new AliyunSslClient({
-        access,
-        logger: this.logger,
-        endpoint: this.casEndpoint,
-      });
 
+    const sslClient = new AliyunSslClient({
+      access,
+      logger: this.logger,
+      endpoint: this.casEndpoint,
+    });
+
+    if (typeof this.cert === 'object') {
+      const name = this.appendTimeSuffix('certd');
       certId = await sslClient.uploadCert({
-        name: this.appendTimeSuffix('certd'),
+        name: name,
         cert: this.cert,
       });
     }
-    return certId;
+
+    return await sslClient.getCertInfo(certId);
   }
 
   async onGetRegionList(data: any) {
@@ -160,11 +172,11 @@ export class AliyunDeployCertToALB extends AbstractTaskPlugin {
 
     const res = await client.request('DescribeRegions', {});
     this.checkRet(res);
-    if (!res?.Regions || res?.Regions.length === 0) {
+    if (!res?.Regions?.Region || res?.Regions?.Region.length === 0) {
       throw new Error('没有找到Regions列表');
     }
 
-    return res.Regions.map((item: any) => {
+    return res.Regions.Region.map((item: any) => {
       return {
         label: item.LocalName,
         value: item.RegionId,
@@ -184,15 +196,16 @@ export class AliyunDeployCertToALB extends AbstractTaskPlugin {
     const client = await this.getLBClient(access, this.regionId);
 
     const params = {
+      RegionId: this.regionId,
       MaxResults: 100,
     };
-    const res = await client.request('ListLoadBalancers', params);
+    const res = await client.request('DescribeLoadBalancers', params);
     this.checkRet(res);
-    if (!res?.LoadBalancers || res?.LoadBalancers.length === 0) {
+    if (!res?.LoadBalancers?.LoadBalancer || res?.LoadBalancers.LoadBalancer.length === 0) {
       throw new Error('没有找到LoadBalancers');
     }
 
-    return res.LoadBalancers.map((item: any) => {
+    return res.LoadBalancers.LoadBalancer.map((item: any) => {
       const label = `${item.LoadBalancerId}<${item.LoadBalancerName}}>`;
       return {
         label: label,
@@ -213,22 +226,24 @@ export class AliyunDeployCertToALB extends AbstractTaskPlugin {
 
     const params: any = {
       MaxResults: 100,
+      RegionId: this.regionId,
+      ListenerProtocol: 'HTTPS',
     };
     if (this.loadBalancers && this.loadBalancers.length > 0) {
-      params.LoadBalancerIds = this.loadBalancers;
+      params.LoadBalancerId = this.loadBalancers;
     }
-    const res = await client.request('ListListeners', params);
+    const res = await client.request('DescribeLoadBalancerListeners', params);
     this.checkRet(res);
     if (!res?.Listeners || res?.Listeners.length === 0) {
       throw new Error('没有找到HTTPS监听器');
     }
 
     return res.Listeners.map((item: any) => {
-      const label = `${item.ListenerId}<${item.ListenerDescription}@${item.LoadBalancerId}>`;
+      const value = `${item.LoadBalancerId}_${item.ListenerProtocol}_${item.ListenerPort}`;
+      const label = `${value}<${item.Description}>`;
       return {
         label: label,
-        value: item.ListenerId,
-        lbid: item.LoadBalancerId,
+        value: value,
       };
     });
   }
@@ -240,4 +255,4 @@ export class AliyunDeployCertToALB extends AbstractTaskPlugin {
   }
 }
 
-new AliyunDeployCertToALB();
+new AliyunDeployCertToSLB();
