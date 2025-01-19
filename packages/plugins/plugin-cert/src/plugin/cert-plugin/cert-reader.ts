@@ -156,7 +156,7 @@ export class CertReader {
     }
   }
 
-  buildCertFileName(suffix: string, applyTime: number, prefix = "cert") {
+  buildCertFileName(suffix: string, applyTime: any, prefix = "cert") {
     const detail = this.getCrtDetail();
     let domain = detail.detail.domains.commonName;
     domain = domain.replace(".", "_").replace("*", "_");
