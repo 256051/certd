@@ -1,5 +1,6 @@
 import { BaseNotification, IsNotification, NotificationBody, NotificationInput } from '@certd/pipeline';
 import qs from 'qs';
+
 @IsNotification({
   name: 'webhook',
   title: '自定义webhook',
@@ -135,12 +136,13 @@ export class WebhookNotification extends BaseNotification {
       this.headers.split('\n').forEach(item => {
         item = item.trim();
         if (item) {
-          const arr = item.split('=');
-          if (arr.length !== 2) {
-            this.logger.warn('header格式错误,请使用=号', item);
+          const eqIndex = item.indexOf('=');
+          if (eqIndex <= 0) {
+            this.logger.warn('header格式错误,请使用=号分割', item);
             return;
           }
-          headers[arr[0]] = arr[1];
+          const key = item.substring(0, eqIndex);
+          headers[key] = item.substring(eqIndex + 1);
         }
       });
     }
