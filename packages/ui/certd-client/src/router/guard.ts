@@ -71,31 +71,11 @@ export function setupCommonGuard(router: Router) {
  */
 function setupAccessGuard(router: Router) {
   router.beforeEach(async (to, from) => {
-    // 基本路由，这些路由不需要进入权限拦截
-    const needAuth = to.matched.some((r) => {
-      return r.meta?.auth || r.meta?.permission;
-    });
-
     const accessStore = useAccessStore();
-    if (needAuth) {
-      if (!accessStore.accessToken) {
-        // 没有访问权限，跳转登录页面
-        if (to.fullPath !== LOGIN_PATH) {
-          return {
-            path: LOGIN_PATH,
-            // 如不需要，直接删除 query
-            query: to.fullPath === DEFAULT_HOME_PATH ? {} : { redirect: encodeURIComponent(to.fullPath) },
-            // 携带当前跳转的页面，登录后重新跳转该页面
-            replace: true
-          };
-        }
-        return true;
-      }
-    }
-
     // 是否已经生成过动态路由
     if (!accessStore.isAccessChecked) {
       if (accessStore.accessToken) {
+        //如果已登录
         const permissionStore = usePermissionStore();
         await permissionStore.loadFromRemote();
         const userStore = useUserStore();
@@ -109,25 +89,27 @@ function setupAccessGuard(router: Router) {
       accessStore.setIsAccessChecked(true);
     }
 
-    // 生成菜单和路由
-    // const { accessibleMenus, accessibleRoutes } = await generateAccess({
-    //   roles: [],
-    //   router,
-    //   // 则会在菜单中显示，但是访问会被重定向到403
-    //   routes: accessRoutes
-    // });
-    //
-    // // 保存菜单信息和路由信息
-    // accessStore.setAccessMenus(accessibleMenus);
-    // accessStore.setAccessRoutes(accessibleRoutes);
+    // 基本路由，这些路由不需要进入权限拦截
+    const needAuth = to.matched.some((r) => {
+      return r.meta?.auth || r.meta?.permission;
+    });
 
-    // const redirectPath = (from.query.redirect ?? (to.path === DEFAULT_HOME_PATH ? DEFAULT_HOME_PATH : to.fullPath)) as string;
-    //
-    // return {
-    //   ...router.resolve(decodeURIComponent(redirectPath)),
-    //   replace: true
-    // };
-    return true;
+    if (!needAuth) {
+      return true;
+    }
+    if (!accessStore.accessToken) {
+      // 没有访问权限，跳转登录页面
+      if (to.fullPath !== LOGIN_PATH) {
+        return {
+          path: LOGIN_PATH,
+          // 如不需要，直接删除 query
+          query: to.fullPath === DEFAULT_HOME_PATH ? {} : { redirect: encodeURIComponent(to.fullPath) },
+          // 携带当前跳转的页面，登录后重新跳转该页面
+          replace: true
+        };
+      }
+      return true;
+    }
   });
 }
 
