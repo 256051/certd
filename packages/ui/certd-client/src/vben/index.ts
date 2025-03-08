@@ -11,10 +11,16 @@ import "./styles/antd/index.css";
 import { useTitle } from "@vueuse/core";
 import { setupI18n } from "/@/vben/locales";
 
-export async function setupVben(app: any, { loadMessages }: any) {
+export async function setupVben(app: any, { loadMessages, router }: any) {
   await setupI18n(app, { loadMessages });
   const store = await initStores(app, { namespace: "fs" });
-
+  watchEffect(() => {
+    if (preferences.app.dynamicTitle) {
+      const routeTitle = router.currentRoute.value.title;
+      const pageTitle = routeTitle || "" + preferences.app.name;
+      useTitle(pageTitle);
+    }
+  });
   return { store };
 }
 

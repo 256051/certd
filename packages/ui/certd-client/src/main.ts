@@ -18,7 +18,7 @@ async function bootstrap() {
   const app = createApp(App);
   // app.use(Antd);
   app.use(Antd);
-  await setupVben(app, { loadMessages });
+  await setupVben(app, { loadMessages, router });
   app.use(router);
   // app.use(i18n);
   // app.use(store);

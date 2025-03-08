@@ -8,6 +8,7 @@ import Avatar from "ant-design-vue/es/avatar";
 import Steps from "ant-design-vue/es/steps";
 import Select from "ant-design-vue/es/select";
 import PageHeader from "ant-design-vue/es/page-header";
+import Card from "ant-design-vue/es/card";
 
 export default {
   install(app: any) {
@@ -20,14 +21,11 @@ export default {
     app.use(PageHeader);
     app.use(Steps);
     app.use(Select);
+    app.use(Card);
 
     app.component(
-      "AInputPassword",
-      defineAsyncComponent(() => import("ant-design-vue/es/input/Password"))
-    );
-    app.component(
-      "AButtonGroup",
-      defineAsyncComponent(() => import("ant-design-vue/es/button/button-group"))
+      "AAutoComplete",
+      defineAsyncComponent(() => import("ant-design-vue/es/auto-complete/index"))
     );
     app.component(
       "ARadio",
@@ -114,10 +112,7 @@ export default {
       "AInputAutoComplete",
       defineAsyncComponent(() => import("ant-design-vue/es/auto-complete/index"))
     );
-    app.component(
-      "ACard",
-      defineAsyncComponent(() => import("ant-design-vue/es/card/index"))
-    );
+
     app.component(
       "ACascader",
       defineAsyncComponent(() => import("ant-design-vue/es/cascader/index"))

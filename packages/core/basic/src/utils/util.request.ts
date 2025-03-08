@@ -310,3 +310,14 @@ export async function download(req: { http: HttpClient; config: HttpRequestConfi
       });
   });
 }
+
+export function getCookie(response: any, name: string) {
+  const cookies = response.headers['set-cookie'];
+  //根据name 返回对应的cookie
+  const found = cookies.find((cookie: any) => cookie.includes(name));
+  if (!found) {
+    return null;
+  }
+  const cookie = found.split(';')[0];
+  return cookie.substring(cookie.indexOf('=') + 1);
+}

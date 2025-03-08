@@ -32,6 +32,8 @@ import { nanoid } from 'nanoid';
 import * as id from './util.id.js';
 import { locker } from './util.lock.js';
 import { mitter } from './util.mitter.js';
+
+import * as request from './util.request.js';
 export const utils = {
   sleep,
   http,
@@ -52,4 +54,5 @@ export const utils = {
   locker,
   mitter,
   amount: amountUtils,
+  request,
 };
