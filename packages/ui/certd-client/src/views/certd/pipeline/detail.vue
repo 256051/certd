@@ -1,6 +1,6 @@
 <template>
   <fs-page class="fs-pipeline-detail">
-    <pipeline-edit v-model:edit-mode="editMode" :pipeline-id="pipelineId" :options="pipelineOptionsRef"></pipeline-edit>
+    <pipeline-edit v-model:edit-mode="editMode" :pipeline-id="pipelineId" :history-id="historyId" :options="pipelineOptionsRef"></pipeline-edit>
     <a-tour v-bind="tour" v-model:current="tour.current" />
   </fs-page>
 </template>
@@ -22,7 +22,7 @@ defineOptions({
 });
 const route = useRoute();
 const pipelineId: Ref = ref(route.query.id);
-
+const historyId = ref(route.query.historyId);
 const pipelineOptions: PipelineOptions = {
   async getPipelineDetail({ pipelineId }) {
     const detail = await api.GetDetail(pipelineId);

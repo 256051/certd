@@ -86,7 +86,7 @@ export class HistoryController extends CrudController<HistoryService> {
       return this.ok([]);
     }
     const buildQuery = qb => {
-      qb.limit(10);
+      qb.limit(20);
     };
     const listRet = await this.getService().list({
       query: body,

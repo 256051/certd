@@ -274,6 +274,10 @@ export default defineComponent({
       type: [Number, String],
       default: 0
     },
+    historyId: {
+      type: [Number, String],
+      default: 0
+    },
     editMode: {
       type: Boolean,
       default: false
@@ -333,6 +337,16 @@ export default defineComponent({
       histories.value = historyList;
 
       if (historyList.length > 0) {
+        if (props.historyId > 0) {
+          const found = historyList.find((item) => {
+            //字符串==int
+            return item.id == props.historyId;
+          });
+          if (found) {
+            await changeCurrentHistory(found);
+            return true;
+          }
+        }
         if (historyList[0].pipeline?.version === pipeline.value.version) {
           await changeCurrentHistory(historyList[0]);
         }
