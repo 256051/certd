@@ -48,6 +48,10 @@ function handleClick() {
   if (props.disabled) {
     return;
   }
+  if (props.click) {
+    props.click();
+    return;
+  }
   rootMenu?.handleMenuItemClick?.({
     parentPaths: parentPaths.value,
     path: props.path

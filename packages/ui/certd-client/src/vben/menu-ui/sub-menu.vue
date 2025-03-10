@@ -40,13 +40,13 @@ const hasChildren = computed(() => {
     :badge-variants="menu.badgeVariants"
     :icon="menu.icon"
     :path="menu.path"
-    @click="menu.meta?.onClick"
+    :click="menu.meta?.click"
   >
-    <template #title>
-      <span>{{ menu.name }}</span>
-    </template>
     <template v-if="menu.meta?.slot" #default>
       <fs-render :render-func="menu.meta.slot" />
+    </template>
+    <template v-else #title>
+      <span>{{ menu.name }}</span>
     </template>
   </MenuItem>
   <SubMenuComp v-else :key="`${menu.path}_sub`" :active-icon="menu.activeIcon" :icon="menu.icon" :path="menu.path">

@@ -1,6 +1,6 @@
-import type { Component, Ref } from 'vue';
+import type { Component, Ref } from "vue";
 
-import type { MenuRecordBadgeRaw, ThemeModeType } from '/@/vben/typings';
+import type { MenuRecordBadgeRaw, ThemeModeType } from "/@/vben/typings";
 
 interface MenuProps {
   /**
@@ -34,7 +34,7 @@ interface MenuProps {
    * @zh_CN 菜单模式
    * @default vertical
    */
-  mode?: 'horizontal' | 'vertical';
+  mode?: "horizontal" | "vertical";
 
   /**
    * @zh_CN 是否圆润风格
@@ -85,6 +85,7 @@ interface MenuItemProps extends MenuRecordBadgeRaw {
    * @zh_CN menuitem 名称
    */
   path: string;
+  click?: any;
 }
 
 interface MenuItemRegistered {
@@ -128,12 +129,4 @@ interface SubMenuProvider {
   removeSubMenu: (item: MenuItemRegistered) => void;
 }
 
-export type {
-  MenuItemClicked,
-  MenuItemProps,
-  MenuItemRegistered,
-  MenuProps,
-  MenuProvider,
-  SubMenuProps,
-  SubMenuProvider,
-};
+export type { MenuItemClicked, MenuItemProps, MenuItemRegistered, MenuProps, MenuProvider, SubMenuProps, SubMenuProvider };
