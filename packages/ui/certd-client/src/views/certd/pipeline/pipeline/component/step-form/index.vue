@@ -48,7 +48,7 @@
                         <vip-button v-if="item.needPlus" mode="icon" />
                       </template>
                       <template #description>
-                        <span :title="item.desc">{{ item.desc }}</span>
+                        <span :title="item.desc" v-html="transformDesc(item.desc)"></span>
                       </template>
                     </a-card-meta>
                   </a-card>
@@ -66,7 +66,11 @@
       <pi-container v-else class="pi-step-form">
         <template #header>
           <div class="mb-10">
-            <a-alert type="info" :message="currentPlugin.title" :description="currentPlugin.desc"> </a-alert>
+            <a-alert type="info" :message="currentPlugin.title">
+              <template #description>
+                <div v-html="transformDesc(currentPlugin.desc)"></div>
+              </template>
+            </a-alert>
           </div>
         </template>
         <div class="w-100 h-100">
@@ -114,6 +118,7 @@ import { useReference } from "/@/use/use-refrence";
 import { useSettingStore } from "/@/store/modules/settings";
 import * as pluginApi from "../../../api.plugin";
 import { mitter } from "/@/utils/util.mitt";
+import { utils } from "/@/utils";
 export default {
   name: "PiStepForm",
   // eslint-disable-next-line vue/no-unused-components
@@ -126,6 +131,10 @@ export default {
   },
   emits: ["update"],
   setup(props: any, context: any) {
+    function transformDesc(desc: string = "") {
+      return utils.transformLink(desc);
+    }
+
     /**
      *  step drawer
      * @returns
@@ -395,7 +404,8 @@ export default {
       ...useStepForm(),
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
-      runStrategyProps
+      runStrategyProps,
+      transformDesc
     };
   }
 };

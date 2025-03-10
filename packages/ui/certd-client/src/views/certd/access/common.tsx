@@ -3,6 +3,7 @@ import { computed, provide, ref, toRef } from "vue";
 import { useReference } from "/@/use/use-refrence";
 import { forEach, get, merge, set } from "lodash-es";
 import SecretPlainGetter from "/@/views/certd/access/access-selector/access/secret-plain-getter.vue";
+import { utils } from "/@/utils";
 
 export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
   provide("accessApi", api);
@@ -117,13 +118,15 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
             buildDefineFields(define, form, mode);
           }
         },
-        helper: computed(() => {
-          const define = currentDefine.value;
-          if (define == null) {
-            return "";
+        helper: {
+          render: () => {
+            const define = currentDefine.value;
+            if (define == null) {
+              return "";
+            }
+            return <div innerHTML={utils.transformLink(define.desc)}></div>;
           }
-          return define.desc;
-        })
+        }
       },
       addForm: {
         value: typeRef

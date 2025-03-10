@@ -40,5 +40,8 @@ export default {
       return str.length > length ? str.slice(0, length) + "..." : str;
     }
     return "";
+  },
+  transformLink(desc: string = "") {
+    return desc.replace(/\[(.*)\]\((.*)\)/g, '<a href="$2" target="_blank">$1</a>');
   }
 };
