@@ -107,6 +107,12 @@ export type Log = {
   text: string;
 };
 
+export type ResultError = {
+  e: any;
+  returnType: ResultType;
+  runnable: Runnable;
+};
+
 export enum ResultType {
   start = "start",
   success = "success",
