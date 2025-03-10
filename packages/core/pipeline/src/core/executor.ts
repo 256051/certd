@@ -1,4 +1,4 @@
-import { ConcurrencyStrategy, NotificationWhen, Pipeline, ResultType, Runnable, RunStrategy, Stage, Step, Task } from "../dt/index.js";
+import { ConcurrencyStrategy, NotificationWhen, Pipeline, ResultType, Runnable, RunStrategy, Stage, Step, Task, ResultError } from "../dt/index.js";
 import { RunHistory, RunnableCollection } from "./run-history.js";
 import { AbstractTaskPlugin, PluginDefine, pluginRegistry, TaskInstanceContext, UserInfo } from "../plugin/index.js";
 import { ContextFactory, IContext } from "./context.js";
@@ -17,16 +17,6 @@ import { RunnableError } from "./exceptions.js";
 export type SysInfo = {
   //系统标题
   title?: string;
-};
-
-export type ResultError = {
-  e: any;
-  returnType: ResultType;
-  runnable: Runnable;
-};
-export type ResultErrors = {
-  resultType: ResultType;
-  errors: ResultError[];
 };
 
 export type ExecutorOptions = {

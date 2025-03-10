@@ -1,4 +1,4 @@
-import { ResultError } from "../dt/index.js";
+import type { ResultError } from "../dt/index.js";
 
 export class CancelError extends Error {
   constructor(message: string) {
