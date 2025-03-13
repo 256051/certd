@@ -2,6 +2,10 @@ import { request } from "/@/api/service";
 import { dict } from "@fast-crud/fast-crud";
 export const durationDict = dict({
   data: [
+    { label: "3天", value: 3 },
+    { label: "7天", value: 7 },
+    { label: "30天", value: 30 },
+    { label: "90天", value: 90 },
     { label: "1年", value: 365 },
     { label: "2年", value: 730 },
     { label: "3年", value: 1095 },

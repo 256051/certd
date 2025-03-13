@@ -6,6 +6,10 @@
 
 ## 2. 使用示例
 ```js
+
+// 如果需要引用第三方库，必须使用import语法
+// const thirdSdk = await import("third-sdk-name")
+
 const certPem = ctx.self.cert.crt
 const certKey = ctx.self.cert.key
 
