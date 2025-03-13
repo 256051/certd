@@ -1,0 +1,172 @@
+import { AbstractDnsProvider, CreateRecordOptions, IsDnsProvider, RemoveRecordOptions } from "@certd/plugin-cert";
+
+import { DnslaAccess } from "./access.js";
+
+export type DnslaRecord = {
+  id: string;
+};
+
+// 这里通过IsDnsProvider注册一个dnsProvider
+@IsDnsProvider({
+  name: 'dnsla',
+  title: 'dnsla',
+  desc: 'dns.la',
+  icon: 'arcticons:dns-changer-3',
+  // 这里是对应的 cloudflare的access类型名称
+  accessType: 'dnsla',
+})
+export class DnslaDnsProvider extends AbstractDnsProvider<DnslaRecord> {
+  // 通过Autowire传递context
+  access!: DnslaAccess;
+  async onInstance() {
+    //一些初始化的操作
+    // 也可以通过ctx成员变量传递context， 与Autowire效果一样
+    this.access = this.ctx.access as DnslaAccess;
+  }
+
+
+  private async doRequestApi(url: string, data: any = null, method = 'post') {
+    /**
+     * Basic 认证
+     * 我的账户 API 密钥 中获取 APIID APISecret
+     * APIID=myApiId
+     * APISecret=mySecret
+     * 生成 Basic 令牌
+     * # 用冒号连接 APIID APISecret
+     * str = "myApiId:mySecret"
+     * token = base64Encode(str)
+     * 在请求头中添加 Basic 认证令牌
+     * Authorization: Basic {token}
+     * 响应示例
+     * application/json
+     * {
+     *  "code":200,
+     *  "msg":"",
+     *  "data":{}
+     * }
+     */
+      const token = Buffer.from(`${this.access.apiId}:${this.access.apiSecret}`).toString('base64');
+      const res = await this.http.request<any, any>({
+        url:"https://api.dns.la"+url,
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Basic ${token}`,
+        },
+        data,
+      });
+
+      if (res.code !== 200) {
+        throw new Error(res.msg);
+      }
+      return res;
+
+  }
+
+  async getDomainDetail(domain:string){
+    /**
+     * 请求示例
+     * GET /api/domain?id=85371689655342080&domain=test.com HTTP/1.1
+     * Authorization: Basic {token}
+     * 请求参数
+     * 参数	名称	类型	必选
+     * id	域名id	string	id、domain 二选一
+     * domain	域名	string	id、domain 二选一
+     * Response
+     * 响应示例
+     * {
+     *     "code": 200,
+     *     "msg": "",
+     *     "data": {
+     *         "id": "85371689655342080",
+     *         "createdAt": 1692856597,
+     *         "updatedAt": 1692856598,
+     *         "userId": "85068081529119744",
+     *         "userAccount": "foo@foo.com",
+     *         "assetId": "",
+     *         "groupId": "",
+     */
+
+    const url = `/api/domain?domain=${domain}`;
+    const res = await this.doRequestApi(url, null, 'get');
+    return res.data
+  }
+
+  /**
+   * 创建dns解析记录，用于验证域名所有权
+   */
+  async createRecord(options: CreateRecordOptions): Promise<DnslaRecord> {
+    /**
+     * fullRecord: '_acme-challenge.test.example.com',
+     * value: 一串uuid
+     * type: 'TXT',
+     * domain: 'example.com'
+     */
+    const { fullRecord, value, type, domain } = options;
+    this.logger.info('添加域名解析：', fullRecord, value, type, domain);
+
+    const domainDetail = await this.getDomainDetail(domain);
+    const domainId = domainDetail.id;
+    this.logger.info('获取domainId成功:', domainId);
+
+
+    // 给domain下创建txt类型的dns解析记录，fullRecord
+    /**
+     * POST /api/record HTTP/1.1
+     * Authorization: Basic {token}
+     * Content-Type: application/json; charset=utf-8
+     *
+     * {
+     *     "domainId": "85369994254488576",
+     *     "type": 1,
+     *     "host": "www",
+     *     "data": "1.1.1.1",
+     *     "ttl": 600,
+     *     "groupId": "",
+     *     "lineId": "",
+     *     "preference": 10,
+     *     "weight": 1,
+     *     "dominant": false
+     * }
+     */
+    const url = `/api/record`;
+    const res = await this.doRequestApi(url, {
+      domainId: domainId,
+      type: type,
+      host: fullRecord,
+      data: value,
+      ttl: 60,
+    });
+
+    return res.data;
+  }
+
+
+  /**
+   *  删除dns解析记录,清理申请痕迹
+   * @param options
+   */
+  async removeRecord(options: RemoveRecordOptions<DnslaRecord>): Promise<void> {
+    const { fullRecord, value } = options.recordReq;
+    const record = options.recordRes;
+    this.logger.info('删除域名解析：', fullRecord, value);
+    if (!record) {
+      this.logger.info('record为空，不执行删除');
+      return;
+    }
+    //这里调用删除txt dns解析记录接口
+    /**
+     * 请求示例
+     * DELETE /api/record?id=85371689655342080 HTTP/1.1
+     * Authorization: Basic {token}
+     * 请求参数
+     */
+    const recordId = record.id;
+    const url = `/api/record?id=${recordId}`;
+    await this.doRequestApi(url, null, 'delete');
+    this.logger.info(`删除域名解析成功:fullRecord=${fullRecord},value=${value}`);
+  }
+}
+
+//实例化这个provider，将其自动注册到系统中
+new DnslaDnsProvider();
