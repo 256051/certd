@@ -148,7 +148,7 @@ export class WebhookNotification extends BaseNotification {
     }
 
     try {
-      await this.http.request({
+      const res = await this.http.request({
         url: url,
         method: this.method,
         headers: {
@@ -158,6 +158,7 @@ export class WebhookNotification extends BaseNotification {
         data: data,
         skipSslVerify: this.skipSslVerify,
       });
+      return res
     } catch (e) {
       if (e.response?.data) {
         throw new Error(e.message + ',' + JSON.stringify(e.response.data));

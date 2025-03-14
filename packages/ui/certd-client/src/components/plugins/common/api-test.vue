@@ -60,6 +60,9 @@ const doTest = async () => {
       }
     );
     message.value = "测试请求成功";
+    if (res) {
+      message.value += `，返回：${JSON.stringify(res)}`;
+    }
   } finally {
     loading.value = false;
   }
