@@ -9,3 +9,4 @@ export * from './telegram/index.js';
 export * from './discord/index.js';
 export * from './slack/index.js';
 export * from './bark/index.js';
+export * from './feishu/index.js';
