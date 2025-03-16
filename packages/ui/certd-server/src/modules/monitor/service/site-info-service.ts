@@ -182,6 +182,9 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
     );
   }
   async sendExpiresNotify(site: SiteInfoEntity) {
+
+    const tipDays = 10
+
     const expires = site.certExpiresTime;
     const validDays = dayjs(expires).diff(dayjs(), 'day');
     const url = await this.notificationService.getBindUrl('#/monitor/site');
@@ -190,7 +193,7 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
 证书域名： ${site.certDomains} \n
 证书颁发者： ${site.certProvider} \n
 过期时间： ${dayjs(site.certExpiresTime).format('YYYY-MM-DD')} \n`;
-    if (validDays >= 0 && validDays < 10) {
+    if (validDays >= 0 && validDays < tipDays) {
       // 发通知
       await this.notificationService.send(
         {

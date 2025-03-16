@@ -4,7 +4,7 @@
       <div class="title flex items-center">
         站点证书监控
         <div class="sub flex-1">
-          <div>每天0点，检查网站证书的过期时间，并发出提醒;</div>
+          <div>每天0点，检查网站证书的过期时间，到期前10天时将发出提醒（使用默认通知渠道）;</div>
           <div class="flex items-center">基础版限制1条，专业版以上无限制，当前<vip-button class="ml-5" mode="nav"></vip-button></div>
         </div>
       </div>

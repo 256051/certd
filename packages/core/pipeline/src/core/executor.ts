@@ -33,6 +33,7 @@ export type ExecutorOptions = {
   user: UserInfo;
   baseURL?: string;
   sysInfo?: SysInfo;
+  serviceGetter: (name: string) => any;
 };
 
 export class Executor {

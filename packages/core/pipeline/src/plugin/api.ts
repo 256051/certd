@@ -114,6 +114,9 @@ export type TaskInstanceContext = {
   user: UserInfo;
 
   emitter: TaskEmitter;
+
+  //service 容器
+  serviceContainer?: Record<string, any>;
 };
 
 export abstract class AbstractTaskPlugin implements ITaskPlugin {

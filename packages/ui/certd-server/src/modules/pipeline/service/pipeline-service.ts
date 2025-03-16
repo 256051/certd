@@ -475,6 +475,12 @@ export class PipelineService extends BaseService<PipelineEntity> {
       const siteInfo = await this.sysSettingsService.getSetting<SysSiteInfo>(SysSiteInfo);
       sysInfo.title = siteInfo.title;
     }
+    const serviceContainer = {
+      CertInfoService: this.certInfoService
+    }
+    const serviceGetter = (name: string) => {
+      return serviceContainer[name]
+    }
     const executor = new Executor({
       user,
       pipeline,
@@ -488,6 +494,7 @@ export class PipelineService extends BaseService<PipelineEntity> {
       notificationService: notificationGetter,
       fileRootDir: this.certdConfig.fileRootDir,
       sysInfo,
+      serviceGetter
     });
     try {
       runningTasks.set(historyId, executor);

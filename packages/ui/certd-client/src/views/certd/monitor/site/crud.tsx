@@ -177,13 +177,13 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           },
           column: {
             align: "center",
-            width: 100
+            width: 110
           }
         },
         certDomains: {
           title: "证书域名",
           search: {
-            show: false
+            show: true
           },
           type: "text",
           form: {
@@ -294,7 +294,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             show: false
           },
           column: {
-            width: 100,
+            width: 110,
             align: "center",
             sorter: true
           }
@@ -358,7 +358,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             value: false
           },
           column: {
-            width: 90,
+            width: 110,
             sorter: true
           }
         }

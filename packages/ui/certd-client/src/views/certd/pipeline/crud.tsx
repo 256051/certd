@@ -504,6 +504,20 @@ export default function ({ crudExpose, context: { certdFormRef, groupDictRef, se
             width: 150
           }
         },
+        "lastVars.certExpiresTime": {
+          title: "过期时间",
+          search: {
+            show: false
+          },
+          type: "datetime",
+          form: {
+            show: false
+          },
+          column: {
+            sorter: true,
+            align: "center"
+          }
+        },
         status: {
           title: "状态",
           type: "dict-select",

@@ -4,6 +4,10 @@ export function createAccessApi(from = "user") {
   const apiPrefix = from === "sys" ? "/sys/access" : "/pi/access";
   return {
     async GetList(query: any) {
+      if (query?.query) {
+        delete query.query.access;
+      }
+
       return await request({
         url: apiPrefix + "/page",
         method: "post",

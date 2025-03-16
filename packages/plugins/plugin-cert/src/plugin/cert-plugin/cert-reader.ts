@@ -23,6 +23,7 @@ export class CertReader {
   cert: CertInfo;
 
   detail: CertificateInfo;
+  //毫秒时间戳
   expires: number;
   constructor(certInfo: CertInfo) {
     this.cert = certInfo;
@@ -39,9 +40,13 @@ export class CertReader {
       this.cert.one = this.cert.crt + "\n" + this.cert.key;
     }
 
-    const { detail, expires } = this.getCrtDetail(this.cert.crt);
-    this.detail = detail;
-    this.expires = expires.getTime();
+    try {
+      const { detail, expires } = this.getCrtDetail(this.cert.crt);
+      this.detail = detail;
+      this.expires = expires.getTime();
+    } catch (e) {
+      throw new Error("证书解析失败:" + e.message);
+    }
   }
 
   getIc() {

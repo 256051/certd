@@ -10,9 +10,10 @@ export type UploadCertReq = {
   id?: number;
   certReader: CertReader;
   fromType?: string;
+  userId?: number;
 };
 
-@Provide()
+@Provide("CertInfoService")
 @Scope(ScopeEnum.Request, { allowDowngrade: true })
 export class CertInfoService extends BaseService<CertInfoEntity> {
   @InjectEntityModel(CertInfoEntity)
@@ -147,7 +148,7 @@ export class CertInfoService extends BaseService<CertInfoEntity> {
 
   private async updateCert(req: UploadCertReq) {
     const bean = new CertInfoEntity();
-    const { id, fromType, certReader } = req;
+    const { id, fromType,userId, certReader } = req;
     if (id) {
       bean.id = id;
     } else {
@@ -162,13 +163,13 @@ export class CertInfoService extends BaseService<CertInfoEntity> {
     bean.domainCount = domains.length;
     bean.expiresTime = certReader.expires;
     bean.certProvider = certReader.detail.issuer.commonName;
-
+    bean.userId = userId
     await this.addOrUpdate(bean);
     return bean;
   }
 
-  async upload(body: { id?: number; cert: CertInfo }) {
-    const { id, cert } = body;
+  async upload(body: { id?: number; userId?:number ;cert: CertInfo }) {
+    const { id, userId, cert } = body;
     if (!cert) {
       throw new CommonException("cert can't be empty");
     }
@@ -176,6 +177,7 @@ export class CertInfoService extends BaseService<CertInfoEntity> {
       id,
       certReader: new CertReader(cert),
       fromType: 'upload',
+      userId
     });
     return res.id;
   }

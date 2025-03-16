@@ -77,7 +77,7 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
       type: "dict-select",
       dict: AccessTypeDictRef,
       search: {
-        show: false
+        show: true
       },
       column: {
         width: 200,

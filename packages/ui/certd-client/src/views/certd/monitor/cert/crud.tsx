@@ -1,12 +1,10 @@
 // @ts-ignore
 import { useI18n } from "vue-i18n";
-import { AddReq, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, EditReq, useFormWrapper, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
+import { AddReq, compute, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, useFormWrapper, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
 import { certInfoApi } from "./api";
 import dayjs from "dayjs";
-import { useUserStore } from "/@/store/modules/user";
 import { useRouter } from "vue-router";
 import { useModal } from "/@/use/use-modal";
-import * as api from "/@/views/certd/pipeline/api";
 import { notification } from "ant-design-vue";
 import CertView from "/@/views/certd/pipeline/cert-view.vue";
 
@@ -54,6 +52,69 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
     });
   };
 
+  async function openUpload(id?: any) {
+    function createCrudOptions() {
+      return {
+        crudOptions: {
+          request: {
+            // addRequest: async (form: any) => {
+            //   return await api.Upload(form);
+            // },
+            // editRequest: async (form: any) => {
+            //   return await api.Upload(form);
+            // }
+          },
+          columns: {
+            id: {
+              title: "ID",
+              type: "number",
+              form: {
+                show: false
+              }
+            },
+            "cert.crt": {
+              title: "证书",
+              type: "textarea",
+              form: {
+                component: {
+                  rows: 4
+                },
+                rules: [{ required: true, message: "此项必填" }],
+                col: { span: 24 }
+              }
+            },
+            "cert.key": {
+              title: "私钥",
+              type: "textarea",
+              form: {
+                component: {
+                  rows: 4
+                },
+                rules: [{ required: true, message: "此项必填" }],
+                col: { span: 24 }
+              }
+            }
+          },
+          form: {
+            wrapper: {
+              title: "上传自定义证书"
+            },
+            async doSubmit({ form }: any) {
+              if (!id) {
+                delete form.id;
+              } else {
+                form.id = id;
+              }
+              return await api.Upload(form);
+            }
+          }
+        }
+      };
+    }
+    const { crudOptions } = createCrudOptions();
+    const wrapperRef = await openCrudFormDialog({ crudOptions });
+  }
+
   return {
     crudOptions: {
       request: {
@@ -83,64 +144,19 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           add: {
             text: "上传自定义证书",
             type: "primary",
-            show: false,
+            show: true,
             async click() {
-              function createCrudOptions() {
-                return {
-                  crudOptions: {
-                    request: {
-                      addRequest: async (form: any) => {
-                        return await api.Upload(form);
-                      },
-                      editRequest: async (form: any) => {
-                        return await api.Upload(form);
-                      }
-                    },
-                    columns: {
-                      id: {
-                        title: "ID",
-                        type: "number",
-                        form: {
-                          show: false
-                        }
-                      },
-                      "cert.crt": {
-                        title: "证书",
-                        type: "textarea",
-                        form: {
-                          component: {
-                            rows: 4
-                          },
-                          rules: [{ required: true, message: "此项必填" }]
-                        }
-                      },
-                      "cert.key": {
-                        title: "私钥",
-                        type: "textarea",
-                        form: {
-                          component: {
-                            rows: 4
-                          },
-                          rules: [{ required: true, message: "此项必填" }]
-                        }
-                      }
-                    },
-                    form: {
-                      wrapper: {
-                        title: "上传自定义证书"
-                      }
-                    }
-                  }
-                };
-              }
-              const { crudOptions } = createCrudOptions();
-              const wrapperRef = await openCrudFormDialog({ crudOptions });
+              await openUpload();
             }
           }
         }
       },
+      tabs: {
+        name: "fromType",
+        show: true
+      },
       rowHandle: {
-        width: 100,
+        width: 140,
         fixed: "right",
         buttons: {
           view: { show: false },
@@ -155,7 +171,24 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           },
           copy: { show: false },
           edit: { show: false },
-          remove: { show: false }
+          upload: {
+            show: compute(({ row }) => {
+              return row.fromType === "upload";
+            }),
+            order: 4,
+            title: "更新证书",
+            type: "link",
+            icon: "ph:upload",
+            async click({ row }) {
+              await openUpload(row.id);
+            }
+          },
+          remove: {
+            order: 10,
+            show: compute(({ row }) => {
+              return row.fromType === "upload";
+            })
+          }
         }
       },
       columns: {
@@ -176,25 +209,37 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             show: false
           }
         },
-        // domain: {
-        //   title: "主域名",
-        //   search: {
-        //     show: true
-        //   },
-        //   type: "text",
-        //   form: {
-        //     show: false
-        //   },
-        //   column: {
-        //     width: 180,
-        //     sorter: true,
-        //     component: {
-        //       name: "fs-values-format"
-        //     }
-        //   }
-        // },
+        fromType: {
+          title: "来源",
+          search: {
+            show: true
+          },
+          type: "dict-select",
+          dict: dict({
+            data: [
+              { label: "流水线", value: "pipeline" },
+              { label: "手动上传", value: "upload" }
+            ]
+          }),
+          form: {
+            show: false
+          },
+          column: {
+            width: 100,
+            sorter: true,
+            component: {
+              color: "auto"
+            },
+            conditionalRender: false
+          },
+          valueBuilder({ value, row, key }) {
+            if (!value) {
+              row[key] = "pipeline";
+            }
+          }
+        },
         domains: {
-          title: "全部域名",
+          title: "域名",
           search: {
             show: true
           },

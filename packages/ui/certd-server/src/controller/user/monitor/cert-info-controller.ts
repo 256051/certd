@@ -24,11 +24,17 @@ export class CertInfoController extends CrudController<CertInfoService> {
   async page(@Body(ALL) body: any) {
     body.query = body.query ?? {};
     body.query.userId = this.getUserId();
-
+    const domains = body.query?.domains;
+    delete body.query.domains;
     const res = await this.service.page({
       query: body.query,
       page: body.page,
       sort: body.sort,
+      buildQuery: (bq) => {
+        if (domains) {
+          bq.andWhere('domains like :domains', { domains: `%${domains}%` });
+        }
+      }
     });
 
     const records = res.records;
@@ -88,7 +94,11 @@ export class CertInfoController extends CrudController<CertInfoService> {
   @Post('/upload', { summary: Constants.per.authOnly })
   async upload(@Body(ALL) body: any) {
     if (body.id) {
+      //修改
       await this.service.checkUserId(body.id, this.getUserId());
+    }else{
+      //添加
+      body.userId = this.getUserId();
     }
 
     const res = await this.service.upload(body);
