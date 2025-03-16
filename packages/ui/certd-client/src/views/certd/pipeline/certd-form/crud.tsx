@@ -10,6 +10,7 @@ export default function (certPlugins: any[], formWrapperRef: any): CreateCrudOpt
   const inputs: any = {};
   const userStore = useUserStore();
   const settingStore = useSettingStore();
+  const moreParams = [];
   for (const plugin of certPlugins) {
     for (const inputKey in plugin.input) {
       if (inputs[inputKey]) {
@@ -18,7 +19,8 @@ export default function (certPlugins: any[], formWrapperRef: any): CreateCrudOpt
       }
       const inputDefine = _.cloneDeep(plugin.input[inputKey]);
       if (!inputDefine.required && !inputDefine.maybeNeed) {
-        continue;
+        moreParams.push(inputKey);
+        // continue;
       }
       useReference(inputDefine);
       inputs[inputKey] = {
@@ -34,7 +36,11 @@ export default function (certPlugins: any[], formWrapperRef: any): CreateCrudOpt
             let inputDefineShow = true;
             if (inputDefine.show != null) {
               const computeShow = inputDefine.show as any;
-              inputDefineShow = computeShow.computeFn({ form });
+              if (computeShow === false) {
+                inputDefineShow = false;
+              } else if (computeShow && computeShow.computeFn) {
+                inputDefineShow = computeShow.computeFn({ form });
+              }
             }
             return form?.certApplyPlugin === plugin.name && inputDefineShow;
           })
@@ -52,6 +58,15 @@ export default function (certPlugins: any[], formWrapperRef: any): CreateCrudOpt
           width: 1350,
           saveRemind: false,
           title: "创建证书流水线"
+        },
+        group: {
+          groups: {
+            more: {
+              header: "更多参数",
+              columns: moreParams,
+              collapsed: true
+            }
+          }
         }
       },
       columns: {
@@ -61,7 +76,8 @@ export default function (certPlugins: any[], formWrapperRef: any): CreateCrudOpt
           dict: dict({
             data: [
               { value: "CertApply", label: "JS-ACME" },
-              { value: "CertApplyLego", label: "Lego-ACME" }
+              { value: "CertApplyLego", label: "Lego-ACME" },
+              { value: "CertUpload", label: "上传自定义证书" }
             ]
           }),
           form: {
