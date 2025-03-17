@@ -94,7 +94,6 @@ export class CertUploadService extends BaseService<CertInfoEntity> {
         title: "默认通知",
       });
       let pipeline = {
-        id: nanoid(10),
         title: pipelineTitle,
         runnableType: "pipeline",
         stages: [

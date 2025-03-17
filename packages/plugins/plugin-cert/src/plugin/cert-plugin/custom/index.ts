@@ -78,7 +78,7 @@ export class CertApplyUploadPlugin extends CertApplyBaseConvertPlugin {
 
     const leftDays = dayjs(certReader.expires).diff(dayjs(), "day");
     this.logger.info(`证书过期时间${dayjs(certReader.expires).format("YYYY-MM-DD HH:mm:ss")},剩余${leftDays}天`);
-    const lastCrtMd5 = this.lastStatus.status.output?.certMd5;
+    const lastCrtMd5 = this.lastStatus?.status?.output?.certMd5;
     this.logger.info("证书MD5", crtMd5);
     this.logger.info("上次证书MD5", lastCrtMd5);
     if (lastCrtMd5 === crtMd5) {
