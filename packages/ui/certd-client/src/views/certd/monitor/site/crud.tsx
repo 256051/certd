@@ -34,6 +34,13 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 
   const settingsStore = useSettingStore();
 
+  const checkStatusDict = dict({
+    data: [
+      { label: "正常", value: "ok", color: "green" },
+      { label: "检查中", value: "checking", color: "blue" },
+      { label: "异常", value: "error", color: "red" }
+    ]
+  });
   return {
     crudOptions: {
       request: {
@@ -284,39 +291,40 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             show: false
           },
           type: "dict-select",
-          dict: dict({
-            data: [
-              { label: "正常", value: "ok", color: "green" },
-              { label: "检查中", value: "checking", color: "blue" },
-              { label: "异常", value: "error", color: "red" }
-            ]
-          }),
+          dict: checkStatusDict,
           form: {
             show: false
           },
           column: {
             width: 110,
             align: "center",
-            sorter: true
-          }
-        },
-        error: {
-          title: "错误信息",
-          search: {
-            show: false
-          },
-          type: "text",
-          form: {
-            show: false
-          },
-          column: {
-            width: 200,
             sorter: true,
-            cellRender({ value }) {
-              return <a-tooltip title={value}>{value}</a-tooltip>;
+            cellRender({ value, row, key }) {
+              return (
+                <a-tooltip title={row.error}>
+                  <fs-values-format v-model={value} dict={checkStatusDict}></fs-values-format>
+                </a-tooltip>
+              );
             }
           }
         },
+        // error: {
+        //   title: "错误信息",
+        //   search: {
+        //     show: false
+        //   },
+        //   type: "text",
+        //   form: {
+        //     show: false
+        //   },
+        //   column: {
+        //     width: 200,
+        //     sorter: true,
+        //     cellRender({ value }) {
+        //       return <a-tooltip title={value}>{value}</a-tooltip>;
+        //     }
+        //   }
+        // },
         pipelineId: {
           title: "关联流水线id",
           search: {
