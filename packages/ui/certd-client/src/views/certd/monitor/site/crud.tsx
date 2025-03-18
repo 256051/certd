@@ -38,8 +38,8 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
     data: [
       { label: "成功", value: "ok", color: "green" },
       { label: "检查中", value: "checking", color: "blue" },
-      { label: "异常", value: "error", color: "red" }
-    ]
+      { label: "异常", value: "error", color: "red" },
+    ],
   });
   return {
     crudOptions: {
@@ -47,22 +47,22 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         pageRequest,
         addRequest,
         editRequest,
-        delRequest
+        delRequest,
       },
       form: {
         labelCol: {
           //固定label宽度
           span: null,
           style: {
-            width: "100px"
-          }
+            width: "100px",
+          },
         },
         col: {
-          span: 22
+          span: 22,
         },
         wrapper: {
-          width: 600
-        }
+          width: 600,
+        },
       },
       actionbar: {
         buttons: {
@@ -72,7 +72,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
                 //非plus
                 if (crudBinding.value.data.length >= 1) {
                   notification.error({
-                    message: "基础版只能添加一个监控站点，请赞助升级专业版"
+                    message: "基础版只能添加一个监控站点，请赞助升级专业版",
                   });
                   mitter.emit("openVipModal");
                   return;
@@ -86,15 +86,15 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
                 const max = suiteDetail.monitorCount.max;
                 if (max != -1 && max <= suiteDetail.monitorCount.used) {
                   notification.error({
-                    message: `对不起，您最多只能创建条${max}监控记录，请购买或升级套餐`
+                    message: `对不起，您最多只能创建条${max}监控记录，请购买或升级套餐`,
                   });
                   return;
                 }
               }
               await crudExpose.openAdd({});
-            }
-          }
-        }
+            },
+          },
+        },
       },
       rowHandle: {
         fixed: "right",
@@ -105,18 +105,18 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             type: "link",
             text: null,
             tooltip: {
-              title: "立即检查"
+              title: "立即检查",
             },
             icon: "ion:play-sharp",
             click: async ({ row }) => {
               await api.DoCheck(row.id);
               await crudExpose.doRefresh();
               notification.success({
-                message: "检查完成"
+                message: "检查完成",
               });
-            }
-          }
-        }
+            },
+          },
+        },
       },
       columns: {
         id: {
@@ -124,78 +124,67 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           key: "id",
           type: "number",
           search: {
-            show: false
+            show: false,
           },
           column: {
             width: 80,
-            align: "center"
+            align: "center",
           },
           form: {
-            show: false
-          }
+            show: false,
+          },
         },
         name: {
           title: "站点名称",
           search: {
-            show: true
+            show: true,
           },
           type: "text",
           form: {
-            rules: [{ required: true, message: "请输入站点名称" }]
+            rules: [{ required: true, message: "请输入站点名称" }],
           },
           column: {
-            width: 160
-          }
+            width: 160,
+          },
         },
         domain: {
           title: "网站域名",
           search: {
-            show: true
+            show: true,
           },
           type: "text",
           form: {
             rules: [
               { required: true, message: "请输入域名" },
               //@ts-ignore
-              { type: "domains", message: "请输入正确的域名" }
-            ]
+              { type: "domains", message: "请输入正确的域名" },
+            ],
           },
           column: {
-            width: 200,
+            width: 230,
             sorter: true,
-            cellRender({ value }) {
+            cellRender({ value, row }) {
+              const url = `https://${value}:${row.httpsPort}`;
               return (
                 <a-tooltip title={value} placement="left">
-                  <fs-copyable modelValue={value}></fs-copyable>
+                  <fs-copyable modelValue={value}>
+                    <a target="_blank" href={url}>
+                      {value}:{row.httpsPort}
+                    </a>
+                  </fs-copyable>
                 </a-tooltip>
               );
-            }
-          }
-        },
-        httpsPort: {
-          title: "HTTPS端口",
-          search: {
-            show: false
+            },
           },
-          type: "number",
-          form: {
-            value: 443,
-            rules: [{ required: true, message: "请输入端口" }]
-          },
-          column: {
-            align: "center",
-            width: 110,
-            show: false
-          }
         },
         certDomains: {
           title: "证书域名",
           search: {
-            show: true
+            show: true,
           },
           type: "text",
           form: {
-            show: false
+            show: false,
           },
           column: {
             width: 200,
@@ -207,56 +196,56 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
                   {value}
                 </a-tooltip>
               );
-            }
-          }
+            },
+          },
         },
         certProvider: {
           title: "颁发机构",
           search: {
-            show: false
+            show: false,
           },
           type: "text",
           form: {
-            show: false
+            show: false,
           },
           column: {
             width: 200,
             sorter: true,
             cellRender({ value }) {
               return <a-tooltip title={value}>{value}</a-tooltip>;
-            }
-          }
+            },
+          },
         },
         certStatus: {
           title: "证书状态",
           search: {
-            show: true
+            show: true,
           },
           type: "dict-select",
           dict: dict({
             data: [
               { label: "正常", value: "ok", color: "green" },
-              { label: "过期", value: "expired", color: "red" }
-            ]
+              { label: "过期", value: "expired", color: "red" },
+            ],
           }),
           form: {
-            show: false
+            show: false,
           },
           column: {
-            width: 110,
+            width: 100,
             sorter: true,
             show: true,
-            align: "center"
-          }
+            align: "center",
+          },
         },
         certExpiresTime: {
           title: "证书到期时间",
           search: {
-            show: false
+            show: false,
           },
           type: "date",
           form: {
-            show: false
+            show: false,
           },
           column: {
             sorter: true,
@@ -269,35 +258,56 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
               const color = leftDays < 20 ? "red" : "#389e0d";
               const percent = (leftDays / 90) * 100;
               return <a-progress title={expireDate + "过期"} percent={percent} strokeColor={color} format={(percent: number) => `${leftDays}天`} />;
-            }
-          }
+            },
+          },
         },
         lastCheckTime: {
           title: "上次检查时间",
           search: {
-            show: false
+            show: false,
           },
           type: "datetime",
           form: {
-            show: false
+            show: false,
           },
           column: {
             sorter: true,
-            width: 155
-          }
+            width: 155,
+          },
+        },
+        disabled: {
+          title: "禁用启用",
+          search: {
+            show: false,
+          },
+          type: "dict-switch",
+          dict: dict({
+            data: [
+              { label: "启用", value: false, color: "green" },
+              { label: "禁用", value: true, color: "red" },
+            ],
+          }),
+          form: {
+            value: false,
+          },
+          column: {
+            width: 100,
+            sorter: true,
+            align: "center",
+          },
         },
         checkStatus: {
           title: "检查状态",
           search: {
-            show: false
+            show: false,
           },
           type: "dict-select",
           dict: checkStatusDict,
           form: {
-            show: false
+            show: false,
           },
           column: {
-            width: 110,
+            width: 100,
             align: "center",
             sorter: true,
             cellRender({ value, row, key }) {
@@ -306,8 +316,8 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
                   <fs-values-format v-model={value} dict={checkStatusDict}></fs-values-format>
                 </a-tooltip>
               );
-            }
-          }
+            },
+          },
         },
         // error: {
         //   title: "错误信息",
@@ -329,51 +339,30 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         pipelineId: {
           title: "关联流水线id",
           search: {
-            show: false
+            show: false,
           },
           form: { show: false },
           type: "number",
           column: {
             width: 200,
             sorter: true,
-            show: false
-          }
+            show: false,
+          },
         },
         certInfoId: {
           title: "证书id",
           search: {
-            show: false
+            show: false,
           },
           type: "number",
           form: { show: false },
           column: {
             width: 100,
             sorter: true,
-            show: false
-          }
+            show: false,
+          },
         },
-        disabled: {
-          title: "禁用启用",
-          search: {
-            show: false
-          },
-          type: "dict-switch",
-          dict: dict({
-            data: [
-              { label: "启用", value: false, color: "green" },
-              { label: "禁用", value: true, color: "red" }
-            ]
-          }),
-          form: {
-            value: false
-          },
-          column: {
-            width: 110,
-            sorter: true,
-            align: "center"
-          }
-        }
-      }
-    }
+      },
+    },
   };
 }

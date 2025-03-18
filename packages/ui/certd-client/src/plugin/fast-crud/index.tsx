@@ -6,16 +6,48 @@ import { FsExtendsCopyable, FsExtendsEditor, FsExtendsJson, FsExtendsTime, FsExt
 import "@fast-crud/fast-extends/dist/style.css";
 import UiAntdv from "@fast-crud/ui-antdv4";
 import "@fast-crud/ui-antdv4/dist/style.css";
-import { merge } from "lodash-es";
+import { debounce, merge } from "lodash-es";
 import { useCrudPermission } from "../permission";
 import { App } from "vue";
 import { notification } from "ant-design-vue";
 import { usePreferences } from "/@/vben/preferences";
+import { LocalStorage } from "/@/utils/util.storage";
+
+class ColumnSizeSaver {
+  save: (key: string, size: number) => void;
+  constructor() {
+    this.save = debounce((key: string, size: number) => {
+      const saveKey = this.getKey();
+      let data = LocalStorage.get(saveKey);
+      if (!data) {
+        data = {};
+      }
+      data[key] = size;
+      LocalStorage.set(saveKey, data);
+    });
+  }
+  getKey() {
+    const loc = window.location;
+    const currentUrl = `${loc.pathname}${loc.search}${loc.hash}`;
+    return `columnSize-${currentUrl}`;
+  }
+  get(key: string) {
+    const saveKey = this.getKey();
+    const row = LocalStorage.get(saveKey);
+    return row?.[key];
+  }
+  clear() {
+    const saveKey = this.getKey();
+    LocalStorage.remove(saveKey);
+  }
+}
+const columnSizeSaver = new ColumnSizeSaver();
 
 function install(app: App, options: any = {}) {
   app.use(UiAntdv);
   //设置日志级别
   setLogger({ level: "info" });
+
   app.use(FastCrud, {
     i18n: options.i18n,
     async dictRequest({ url }: any) {
@@ -39,20 +71,21 @@ function install(app: App, options: any = {}) {
             mobile: {
               enabled: true,
               props: {
-                isMobile: isMobile
-              }
-            }
-          }
+                isMobile: isMobile,
+              },
+            },
+          },
         },
         table: {
           scroll: {
-            x: 960
+            x: 960,
           },
           size: "small",
           pagination: false,
-          onResizeColumn: (w: number | string, col: any) => {
+          onResizeColumn: (w: number, col: any) => {
             if (crudBinding.value?.table?.columnsMap && crudBinding.value?.table?.columnsMap[col.key]) {
               crudBinding.value.table.columnsMap[col.key].width = w;
+              columnSizeSaver.save(col.key, w);
             }
           },
           conditionalRender: {
@@ -70,13 +103,18 @@ function install(app: App, options: any = {}) {
             },
             render() {
               return "-";
-            }
-          }
+            },
+          },
         },
         toolbar: {
           export: {
-            fileType: "excel"
-          }
+            fileType: "excel",
+          },
+          columnsFilter: {
+            async onReset() {
+              columnSizeSaver.clear();
+            },
+          },
         },
         rowHandle: {
           fixed: "right",
@@ -84,13 +122,15 @@ function install(app: App, options: any = {}) {
             view: { type: "link", text: null, icon: "ion:eye-outline" },
             copy: { show: true, type: "link", text: null, icon: "ion:copy-outline" },
             edit: { type: "link", text: null, icon: "ion:create-outline" },
-            remove: { type: "link", style: { color: "red" }, text: null, icon: "ion:trash-outline" }
+            remove: { type: "link", style: { color: "red" }, text: null, icon: "ion:trash-outline" },
           },
           dropdown: {
             more: {
-              type: "link"
-            }
-          }
+              type: "link",
+            },
+          },
+          resizable: true,
+          width: 200,
         },
         request: {
           transformQuery: ({ page, form, sort }: PageQuery): UserPageQuery => {
@@ -103,10 +143,10 @@ function install(app: App, options: any = {}) {
             return {
               page: {
                 limit,
-                offset
+                offset,
               },
               query: form,
-              sort
+              sort,
             };
           },
           transformRes: ({ res }: TransformResProps): PageRes => {
@@ -116,16 +156,16 @@ function install(app: App, options: any = {}) {
               currentPage++;
             }
             return { currentPage, pageSize, records: res.records, total: res.total, ...res };
-          }
+          },
         },
         search: {
           formItem: {
             wrapperCol: {
               style: {
-                width: "50%"
-              }
-            }
-          }
+                width: "50%",
+              },
+            },
+          },
         },
         form: {
           display: "flex",
@@ -133,8 +173,8 @@ function install(app: App, options: any = {}) {
             //固定label宽度
             span: null,
             style: {
-              width: "145px"
-            }
+              width: "145px",
+            },
           },
           async afterSubmit({ mode }) {
             if (mode === "add") {
@@ -144,13 +184,13 @@ function install(app: App, options: any = {}) {
             }
           },
           wrapperCol: {
-            span: null
+            span: null,
           },
           wrapper: {
-            saveRemind: true
+            saveRemind: true,
             // inner: true,
             // innerContainerSelector: "main.fs-framework-content"
-          }
+          },
         },
         columns: {
           //最后一列空白，用于自动伸缩列宽
@@ -158,23 +198,23 @@ function install(app: App, options: any = {}) {
             title: "",
             type: "text",
             form: {
-              show: false
+              show: false,
             },
             column: {
               order: 99999,
               width: -1,
               columnSetShow: false,
-              resizable: false
-            }
-          }
-        }
+              resizable: false,
+            },
+          },
+        },
       };
 
       // 从 useCrud({permission}) 里获取permission参数，去设置各个按钮的权限
       const permission = props.context?.permission || null;
       const crudPermission = useCrudPermission({ permission });
       return crudPermission.merge(opts);
-    }
+    },
   });
 
   // fast-extends里面的扩展组件均为异步组件，只有在使用时才会被加载，并不会影响首页加载速度
@@ -202,19 +242,19 @@ function install(app: App, options: any = {}) {
           url: action,
           method: "post",
           headers: {
-            "Content-Type": "multipart/form-data"
+            "Content-Type": "multipart/form-data",
           },
           timeout: 60000,
           data,
           onUploadProgress: (p: any) => {
             onProgress({ percent: Math.round((p.loaded / p.total) * 100) });
-          }
+          },
         });
       },
       successHandle(res: any) {
         return res;
-      }
-    }
+      },
+    },
   });
 
   //安装editor
@@ -222,10 +262,10 @@ function install(app: App, options: any = {}) {
     //编辑器的公共配置
     wangEditor: {
       editorConfig: {
-        MENU_CONF: {}
+        MENU_CONF: {},
       },
-      toolbarConfig: {}
-    }
+      toolbarConfig: {},
+    },
   });
   app.use(FsExtendsJson);
   app.use(FsExtendsTime);
@@ -250,8 +290,8 @@ function install(app: App, options: any = {}) {
       column: { component: { name: "fs-date-format", format: "YYYY-MM-DD" } },
       valueBuilder(context: any) {
         console.log("time2,valueBuilder", context);
-      }
-    }
+      },
+    },
   });
 
   // 此处演示自定义字段合并插件
@@ -266,11 +306,11 @@ function install(app: App, options: any = {}) {
         // 合并column配置
         merge(columnProps, {
           form: { show: false },
-          viewForm: { show: true }
+          viewForm: { show: true },
         });
       }
       return columnProps;
-    }
+    },
   });
 
   //默认宽度，支持自动拖动调整列宽
@@ -281,35 +321,20 @@ function install(app: App, options: any = {}) {
       if (!columnProps.column) {
         columnProps.column = {};
       }
-      if (columnProps.column.resizable == null) {
-        columnProps.column.resizable = true;
-        if (!columnProps.column.width) {
-          columnProps.column.width = 200;
-        }
-      }
-
-      return columnProps;
-    }
-  });
-
-  registerMergeColumnPlugin({
-    name: "resize-column-plugin",
-    order: 2,
-    handle: (columnProps: ColumnCompositionProps) => {
-      if (!columnProps.column) {
-        columnProps.column = {};
-      }
       columnProps.column.resizable = true;
-      if (columnProps.column.width == null) {
+      const savedColumnWidth = columnSizeSaver.get(columnProps.key as string);
+      if (savedColumnWidth) {
+        columnProps.column.width = savedColumnWidth;
+      } else if (columnProps.column.width == null) {
         columnProps.column.width = 200;
       } else if (typeof columnProps.column?.width === "string" && columnProps.column.width.indexOf("px") > -1) {
         columnProps.column.width = parseInt(columnProps.column.width.replace("px", ""));
       }
       return columnProps;
-    }
+    },
   });
 }
 
 export default {
-  install
+  install,
 };
