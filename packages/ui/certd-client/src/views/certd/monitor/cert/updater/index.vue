@@ -2,7 +2,7 @@
   <div class="cert-info-updater w-full flex items-center">
     <div class="flex-o">
       <fs-values-format :model-value="modelValue" :dict="certInfoDict" />
-      <fs-button v-if="modelValue" type="primary" size="small" class="ml-1" icon="ion:upload" text="更新证书" @click="onUploadClick" />
+      <fs-button type="primary" size="small" class="ml-1" icon="ion:upload" text="更新证书" @click="onUploadClick" />
     </div>
   </div>
 </template>
@@ -24,7 +24,7 @@ const props = defineProps<{
   size?: string;
   disabled?: boolean;
 }>();
-const emit = defineEmits(["updated"]);
+const emit = defineEmits(["updated", "update:modelValue"]);
 
 const certInfoDict = dict({
   value: "id",
@@ -42,10 +42,19 @@ const certInfoDict = dict({
 
 const { openUpdateCertDialog } = useCertUpload();
 function onUpdated(res: any) {
+  if (!props.modelValue) {
+    emit("update:modelValue", res.id);
+  }
   emit("updated", res);
 }
+
+const pipeline: any = inject("pipeline");
 function onUploadClick() {
-  openUpdateCertDialog(props.modelValue, onUpdated);
+  openUpdateCertDialog({
+    id: props.modelValue,
+    pipelineId: pipeline.id,
+    onSubmit: onUpdated,
+  });
 }
 </script>
 <style lang="less">

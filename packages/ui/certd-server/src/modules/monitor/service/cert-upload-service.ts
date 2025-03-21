@@ -14,6 +14,7 @@ export type UploadCertReq = {
   certReader: CertReader;
   fromType?: string;
   userId?: number;
+  pipelineId?: number;
 };
 
 export type UpdateCertReq = {
@@ -25,6 +26,7 @@ export type UpdateCertReq = {
 export type CreateUploadPipelineReq = {
   cert: CertInfo;
   userId: number;
+  pipelineId?: number;
   pipeline?:{
     input?:any;
     notifications?:any[]
@@ -85,77 +87,84 @@ export class CertUploadService extends BaseService<CertInfoEntity> {
     }
     const certReader =  new CertReader(cert)
     return await this.transaction(async (tx:EntityManager)=>{
+      let pipelineId = body.pipelineId;
       const newCertInfo = await this.uploadCert(tx,{
         certReader: certReader,
         fromType: 'upload',
-        userId
-      });
-
-      const pipelineTitle = certReader.getAllDomains()[0] +"上传证书自动部署";
-      const notifications = body.pipeline?.notifications ||[];
-      if(notifications.length === 0){
-        notifications.push({
-          type: "custom",
-          when: ["error", "turnToSuccess", "success"],
-          notificationId: 0,
-          title: "默认通知",
-        });
-      }
-
-      let pipeline = {
-        title: pipelineTitle,
-        runnableType: "pipeline",
-        stages: [
-          {
-            id: nanoid(10),
-            title: "上传证书解析阶段",
-            maxTaskCount: 1,
-            runnableType: "stage",
-            tasks: [
-              {
-                id: nanoid(10),
-                title: "上传证书解析转换",
-                runnableType: "task",
-                steps: [
-                  {
-                    id: nanoid(10),
-                    title: "上传证书解析转换",
-                    runnableType: "step",
-                    input: {
-                      certInfoId: newCertInfo.id,
-                      domains: newCertInfo.domains.split(','),
-                      ...body.pipeline?.input
-                    },
-                    strategy: {
-                      runStrategy: 0, // 正常执行
-                    },
-                    type: "CertApplyUpload",
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-        triggers:[],
-        notifications,
-      }
-      const newPipeline = await tx.getRepository(PipelineEntity).save({
         userId,
-        title: pipelineTitle,
-        type:"cert_upload",
-        content: JSON.stringify(pipeline),
-        keepHistory:20,
-      })
-
-      newCertInfo.pipelineId = newPipeline.id;
-      await tx.getRepository(CertInfoEntity).save({
-        id: newCertInfo.id,
-        pipelineId: newPipeline.id
+        pipelineId
       });
+
+      if(!pipelineId){
+        const pipelineTitle = certReader.getAllDomains()[0] +"上传证书自动部署";
+        const notifications = body.pipeline?.notifications ||[];
+        if(notifications.length === 0){
+          notifications.push({
+            type: "custom",
+            when: ["error", "turnToSuccess", "success"],
+            notificationId: 0,
+            title: "默认通知",
+          });
+        }
+
+        let pipeline = {
+          title: pipelineTitle,
+          runnableType: "pipeline",
+          stages: [
+            {
+              id: nanoid(10),
+              title: "上传证书解析阶段",
+              maxTaskCount: 1,
+              runnableType: "stage",
+              tasks: [
+                {
+                  id: nanoid(10),
+                  title: "上传证书解析转换",
+                  runnableType: "task",
+                  steps: [
+                    {
+                      id: nanoid(10),
+                      title: "上传证书解析转换",
+                      runnableType: "step",
+                      input: {
+                        certInfoId: newCertInfo.id,
+                        domains: newCertInfo.domains.split(','),
+                        ...body.pipeline?.input
+                      },
+                      strategy: {
+                        runStrategy: 0, // 正常执行
+                      },
+                      type: "CertApplyUpload",
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+          triggers:[],
+          notifications,
+        }
+        const newPipeline = await tx.getRepository(PipelineEntity).save({
+          userId,
+          title: pipelineTitle,
+          type:"cert_upload",
+          content: JSON.stringify(pipeline),
+          keepHistory:20,
+        })
+
+        newCertInfo.pipelineId = newPipeline.id;
+        await tx.getRepository(CertInfoEntity).save({
+          id: newCertInfo.id,
+          pipelineId: newPipeline.id
+        });
+
+        pipelineId = newPipeline.id;
+
+      }
 
       return {
         id:newCertInfo.id,
-        pipelineId: newPipeline.id,
+        pipelineId: pipelineId,
         domains: newCertInfo.domains.split(','),
         fromType: newCertInfo.fromType,
         updateTime: newCertInfo.updateTime,
@@ -183,7 +192,9 @@ export class CertUploadService extends BaseService<CertInfoEntity> {
     bean.domainCount = domains.length;
     bean.expiresTime = certReader.expires;
     bean.certProvider = certReader.detail.issuer.commonName;
-
+    if (req.pipelineId){
+      bean.pipelineId = req.pipelineId;
+    }
 
     await tx.getRepository(CertInfoEntity).save(bean);
     return bean;

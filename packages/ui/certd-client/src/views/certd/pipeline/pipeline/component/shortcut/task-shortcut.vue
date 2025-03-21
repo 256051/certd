@@ -10,7 +10,7 @@ import { doRequest } from "/@/components/plugins/lib";
 import { ref, useAttrs, inject } from "vue";
 import { useFormWrapper } from "@fast-crud/fast-crud";
 import { notification } from "ant-design-vue";
-import { merge } from "lodash-es";
+import { mergeWith, isArray } from "lodash-es";
 defineOptions({
   name: "TaskShortcut",
 });
@@ -112,9 +112,9 @@ const doPluginFormSubmit = async (formData: any) => {
 <style lang="less">
 .task-shortcut {
   width: 25px;
-  height: 25px;
+  height: 22px;
   border: 1px solid #e3e3e3;
-  border-radius: 0 0 6px 6px;
+  border-radius: 0 0 5px 5px;
   background: #fff;
   display: flex;
   justify-content: center;

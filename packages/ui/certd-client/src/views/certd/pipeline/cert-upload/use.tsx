@@ -161,7 +161,7 @@ export function useCertUpload() {
     wrapperRef.value = wrapper;
   }
 
-  async function openUpdateCertDialog(id: any, onSubmit?: any) {
+  async function openUpdateCertDialog(opts: { id?: any; onSubmit?: any; pipelineId?: any }) {
     function createCrudOptions() {
       return {
         crudOptions: {
@@ -204,14 +204,18 @@ export function useCertUpload() {
               title: "更新证书",
               saveRemind: false,
             },
+            async afterSubmit() {
+              notification.success({ message: "更新成功" });
+            },
             async doSubmit({ form }: any) {
               const req = {
-                id: id,
+                id: opts.id,
+                pipelineId: opts.pipelineId,
                 cert: form.cert,
               };
               const res = await api.UploadCert(req);
-              if (onSubmit) {
-                await onSubmit(res);
+              if (opts.onSubmit) {
+                await opts.onSubmit(res);
               }
             },
           },

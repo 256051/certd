@@ -82,7 +82,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           add: {
             text: "上传自定义证书",
             type: "primary",
-            show: true,
+            show: false,
             async click() {
               await openUploadCreateDialog();
             },
@@ -116,9 +116,11 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             order: 4,
             title: "更新证书",
             type: "link",
-            icon: "ph:upload",
+            icon: "ion:upload",
             async click({ row }) {
-              await openUpdateCertDialog(row.id);
+              await openUpdateCertDialog({
+                id: row.id,
+              });
             },
           },
           remove: {

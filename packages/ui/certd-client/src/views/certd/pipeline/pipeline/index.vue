@@ -1091,7 +1091,7 @@ export default defineComponent({
               position: relative;
               .shortcut {
                 position: absolute;
-                bottom: -15px;
+                bottom: -10px;
                 left: 20px;
               }
             }
