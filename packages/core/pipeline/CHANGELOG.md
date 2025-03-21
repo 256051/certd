@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.31.4](https://github.com/certd/certd/compare/v1.31.3...v1.31.4) (2025-03-21)
+
+### Bug Fixes
+
+* 修复站点监控通知通过webhook发送失败的bug ([9be1ecc](https://github.com/certd/certd/commit/9be1ecc8aab3ea23dd0dc2dab3688f4edb90ef2c))
+
+### Performance Improvements
+
+* 流水线增加上传证书快捷方式 ([425bba6](https://github.com/certd/certd/commit/425bba67c539b734e2a85a83a4f9ecc9b2434fb4))
+* 支持飞书通知 ([b82e1dc](https://github.com/certd/certd/commit/b82e1dcd6217b09a7d7e21cd648bb31de320cadf))
+* 支持手动上传证书并部署 ([a9fffa5](https://github.com/certd/certd/commit/a9fffa5180c83da27b35886aa2e858a92a2c5f94))
+
 ## [1.31.3](https://github.com/certd/certd/compare/v1.31.2...v1.31.3) (2025-03-13)
 
 **Note:** Version bump only for package @certd/pipeline

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.31.4](https://github.com/certd/certd/compare/v1.31.3...v1.31.4) (2025-03-21)
+
+### Performance Improvements
+
+* 流水线增加上传证书快捷方式 ([425bba6](https://github.com/certd/certd/commit/425bba67c539b734e2a85a83a4f9ecc9b2434fb4))
+
 ## [1.31.3](https://github.com/certd/certd/compare/v1.31.2...v1.31.3) (2025-03-13)
 
 ### Performance Improvements
