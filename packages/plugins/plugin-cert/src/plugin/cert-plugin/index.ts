@@ -269,14 +269,14 @@ HTTP文件验证：不支持泛域名，需要配置网站文件上传`,
 
   @TaskInput({
     title: "检查解析重试次数",
-    value: 20,
+    value: 35,
     component: {
       name: "a-input-number",
       vModel: "value",
     },
     helper: "检查域名验证解析记录重试次数，如果你的域名服务商解析生效速度慢，可以适当增加此值",
   })
-  maxCheckRetryCount = 20;
+  maxCheckRetryCount = 35;
 
   acme!: AcmeService;
 
