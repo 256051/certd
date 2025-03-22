@@ -9,7 +9,7 @@
         :dict="optionsDictRef"
         :create-crud-options="createCrudOptions"
         :crud-options-override="{
-          search: { show: false, initialForm: { fromType: 'upload' } },
+          search: { show: false },
           table: {
             scroll: {
               x: 540,
