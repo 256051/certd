@@ -146,7 +146,9 @@ export class DnslaDnsProvider extends AbstractDnsProvider<DnslaRecord> {
       type: 16,
       host: fullRecord,
       data: value,
-      ttl: 1,
+      ttl: 60,
+      weight:1,
+      preference:1,
     });
 
     return res.data;

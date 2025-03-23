@@ -53,10 +53,10 @@ export default  async (client, userOpts) => {
 
     try {
         client.getAccountUrl();
-        log('[auto] Account URL already exists, skipping account registration');
+        log('[auto] Account URL already exists, skipping account registration（ 证书申请账户已存在，跳过注册 ）');
     }
     catch (e) {
-        log('[auto] Registering account');
+        log('[auto] Registering account （注册证书申请账户）');
         await client.createAccount(accountPayload);
     }
 
@@ -64,7 +64,7 @@ export default  async (client, userOpts) => {
      * Parse domains from CSR
      */
 
-    log('[auto] Parsing domains from Certificate Signing Request');
+    log('[auto] Parsing domains from Certificate Signing Request ');
     const { commonName, altNames } = readCsrDomains(opts.csr);
     const uniqueDomains = Array.from(new Set([commonName].concat(altNames).filter((d) => d)));
 
@@ -120,20 +120,20 @@ export default  async (client, userOpts) => {
                 // throw new Error('测试异常');
                 /* Challenge verification */
                 if (opts.skipChallengeVerification === true) {
-                    log(`[auto] [${d}] Skipping challenge verification since skipChallengeVerification=true，wait 60s`);
+                    log(`[auto] [${d}] 跳过本地验证（skipChallengeVerification=true），等待 60s`);
                     await wait(60 * 1000);
                 }
                 else {
-                    log(`[auto] [${d}] Running challenge verification, type = ${challenge.type}`);
+                    log(`[auto] [${d}] 开始本地验证, type = ${challenge.type}`);
                     try {
                         await client.verifyChallenge(authz, challenge);
                     }
                     catch (e) {
-                        log(`[auto] [${d}] challenge verification threw error: ${e.message}`);
+                        log(`[auto] [${d}] 本地验证失败，尝试请求ACME提供商获取状态: ${e.message}`);
                     }
                 }
                 /* Complete challenge and wait for valid status */
-                log(`[auto] [${d}] Completing challenge with ACME provider and waiting for valid status`);
+                log(`[auto] [${d}] 请求ACME提供商完成验证，等待返回valid状态`);
                 await client.completeChallenge(challenge);
                 challengeCompleted = true;
 

@@ -113,14 +113,14 @@ export async function walkTxtRecord(recordName) {
 
 async function verifyDnsChallenge(authz, challenge, keyAuthorization, prefix = '_acme-challenge.') {
     const recordName = `${prefix}${authz.identifier.value}`;
-    log(`Resolving DNS TXT from record: ${recordName}`);
+    log(`Resolving DNS TXT from record（解析DNS TXT记录）: ${recordName}`);
     const recordValues = await walkTxtRecord(recordName);
-    log(`DNS query finished successfully, found ${recordValues.length} TXT records`);
+    log(`DNS query finished successfully（DNS查询成功）, found ${recordValues.length} TXT records`);
     if (!recordValues.length || !recordValues.includes(keyAuthorization)) {
-        throw new Error(`Authorization not found in DNS TXT record: ${recordName}，need:${keyAuthorization},found:${recordValues}`);
+        throw new Error(`Authorization not found in DNS TXT record（没有找到需要的DNS TXT记录）: ${recordName}，need:${keyAuthorization},found:${recordValues}`);
     }
 
-    log(`Key authorization match for ${challenge.type}/${recordName}, ACME challenge verified`);
+    log(`Key authorization match for ${challenge.type}/${recordName}, ACME challenge verified（域名所有权校验成功）`);
     return true;
 }
 

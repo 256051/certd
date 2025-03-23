@@ -60,8 +60,9 @@ async function retryPromise(fn, attempts, backoff) {
             throw e;
         }
 
+        log(`Promise rejected: ${e.message}`);
         const duration = backoff.duration();
-        log(`Promise rejected attempt #${backoff.attempts}, retrying in ${duration}ms: ${e.message}`);
+        log(`attempt #${backoff.attempts}, ${duration}ms 后重试: ${e.message}`);
 
         await new Promise((resolve) => { setTimeout(resolve, duration); });
         return retryPromise(fn, attempts, backoff);
@@ -241,7 +242,7 @@ async function resolveDomainBySoaRecord(recordName) {
  */
 
 async function getAuthoritativeDnsResolver(recordName) {
-    log(`Locating authoritative NS records for name: ${recordName}`);
+    log(`Locating authoritative NS records for name: ${recordName} （获取域名的权威NS服务器）`);
     const resolver = new dns.Resolver();
 
     try {
@@ -249,13 +250,14 @@ async function getAuthoritativeDnsResolver(recordName) {
         const domain = await resolveDomainBySoaRecord(recordName);
 
         /* Resolve authoritative NS addresses */
-        log(`Looking up authoritative NS records for domain: ${domain}`);
+        log(`Looking up authoritative NS records for domain（获取域名的权威NS服务器）: ${domain}`);
         const nsRecords = await dns.resolveNs(domain);
+        log(`域名权威NS服务器：${nsRecords}`);
         const nsAddrArray = await Promise.all(nsRecords.map(async (r) => dns.resolve4(r)));
         const nsAddresses = [].concat(...nsAddrArray).filter((a) => a);
 
         if (!nsAddresses.length) {
-            throw new Error(`Unable to locate any valid authoritative NS addresses for domain: ${domain}`);
+            throw new Error(`Unable to locate any valid authoritative NS addresses for domain（获取权威服务器IP失败）: ${domain}`);
         }
 
         /* Authoritative NS success */
@@ -263,12 +265,12 @@ async function getAuthoritativeDnsResolver(recordName) {
         resolver.setServers(nsAddresses);
     }
     catch (e) {
-        log(`Authoritative NS lookup error: ${e.message}`);
+        log(`Authoritative NS lookup error（获取权威NS服务器地址失败）: ${e.message}`);
     }
 
     /* Return resolver */
     const addresses = resolver.getServers();
-    log(`DNS resolver addresses: ${addresses.join(', ')}`);
+    log(`DNS resolver addresses（域名的权威NS服务器地址）: ${addresses.join(', ')}`);
 
     return resolver;
 }
