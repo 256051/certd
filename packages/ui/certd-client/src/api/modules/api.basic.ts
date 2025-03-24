@@ -7,6 +7,11 @@ export type SiteEnv = {
     contactLink?: string;
   };
 };
+export type AppInfo = {
+  version?: string;
+  time?: number;
+  deltaTime?: number;
+};
 export type SiteInfo = {
   title?: string;
   slogan?: string;
@@ -71,12 +76,13 @@ export type AllSettings = {
   siteEnv: SiteEnv;
   headerMenus: HeaderMenus;
   suiteSetting: SuiteSetting;
+  app: AppInfo;
 };
 
 export async function loadAllSettings(): Promise<AllSettings> {
   return await request({
     url: "/basic/settings/all",
-    method: "get"
+    method: "get",
   });
 }
 
@@ -84,7 +90,7 @@ export async function bindUrl(data: any): Promise<any> {
   return await request({
     url: "/sys/plus/bindUrl",
     method: "post",
-    data
+    data,
   });
 }
 
@@ -92,7 +98,7 @@ export async function sendSmsCode(data: any): Promise<any> {
   return await request({
     url: "/basic/code/sendSmsCode",
     method: "post",
-    data
+    data,
   });
 }
 
@@ -100,6 +106,6 @@ export async function sendEmailCode(data: any): Promise<any> {
   return await request({
     url: "/basic/code/sendEmailCode",
     method: "post",
-    data
+    data,
   });
 }

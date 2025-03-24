@@ -12,6 +12,7 @@ import {
 } from '@certd/lib-server';
 import { AppKey, getPlusInfo, isComm } from '@certd/plus-core';
 import { cloneDeep } from 'lodash-es';
+import {getVersion} from "../../utils/version.js";
 
 /**
  */
@@ -81,6 +82,8 @@ export class BasicSettingsController extends BaseController {
     const plusInfo = await this.plusInfo();
     const headerMenus = await this.getHeaderMenus();
     const suiteSetting = await this.getSuiteSetting();
+
+    const version = await getVersion()
     return this.ok({
       sysPublic,
       installInfo,
@@ -89,6 +92,10 @@ export class BasicSettingsController extends BaseController {
       plusInfo,
       headerMenus,
       suiteSetting,
+      app:{
+        time: new Date().getTime(),
+        version,
+      }
     });
   }
 }

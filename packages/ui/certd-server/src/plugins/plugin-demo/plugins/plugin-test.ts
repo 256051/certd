@@ -4,7 +4,7 @@ import { createCertDomainGetterInputDefine, createRemoteSelectInputDefine } from
 import { optionsUtils } from '@certd/basic/dist/utils/util.options.js';
 import { CertApplyPluginNames} from '@certd/plugin-cert';
 @IsTaskPlugin({
-  //命名规范，插件名称+功能（就是目录plugin-demo中的demo），大写字母开头，驼峰命名
+  //命名规范，插件类型+功能（就是目录plugin-demo中的demo），大写字母开头，驼峰命名
   name: 'DemoTest',
   title: 'Demo-测试插件',
   icon: 'clarity:plugin-line',

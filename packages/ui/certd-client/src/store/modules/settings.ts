@@ -1,11 +1,8 @@
 import { defineStore } from "pinia";
 import { Modal, notification } from "ant-design-vue";
 import * as _ from "lodash-es";
-// @ts-ignore
-import { LocalStorage } from "/src/utils/util.storage";
-
 import * as basicApi from "/@/api/modules/api.basic";
-import { HeaderMenus, PlusInfo, SiteEnv, SiteInfo, SuiteSetting, SysInstallInfo, SysPublicSetting } from "/@/api/modules/api.basic";
+import { AppInfo, HeaderMenus, PlusInfo, SiteEnv, SiteInfo, SuiteSetting, SysInstallInfo, SysPublicSetting } from "/@/api/modules/api.basic";
 import { useUserStore } from "/@/store/modules/user";
 import { mitter } from "/@/utils/util.mitt";
 import { env } from "/@/utils/util.env";
@@ -29,6 +26,11 @@ export interface SettingState {
   headerMenus?: HeaderMenus;
   inited?: boolean;
   suiteSetting?: SuiteSetting;
+  app: {
+    version?: string;
+    time?: number;
+    deltaTime?: number;
+  };
 }
 
 const defaultSiteInfo: SiteInfo = {
@@ -37,7 +39,7 @@ const defaultSiteInfo: SiteInfo = {
   logo: env.LOGO || "/static/images/logo/logo.svg",
   loginLogo: env.LOGIN_LOGO || "/static/images/logo/rect-block.svg",
   licenseTo: "",
-  licenseToUrl: ""
+  licenseToUrl: "",
 };
 export const useSettingStore = defineStore({
   id: "app.setting",
@@ -45,33 +47,38 @@ export const useSettingStore = defineStore({
     plusInfo: {
       isPlus: false,
       vipType: "free",
-      isComm: false
+      isComm: false,
     },
     sysPublic: {
       registerEnabled: false,
       managerOtherUserPipeline: false,
-      icpNo: env.ICP_NO || ""
+      icpNo: env.ICP_NO || "",
     },
     installInfo: {
       siteId: "",
       bindUserId: null,
       bindUrl: "",
       accountServerBaseUrl: "",
-      appKey: ""
+      appKey: "",
     },
     siteInfo: defaultSiteInfo,
     siteEnv: {
       agent: {
         enabled: undefined,
         contactText: "",
-        contactLink: ""
-      }
+        contactLink: "",
+      },
     },
     headerMenus: {
-      menus: []
+      menus: [],
     },
     suiteSetting: { enabled: false },
-    inited: false
+    inited: false,
+    app: {
+      version: "",
+      time: 0,
+      deltaTime: 0,
+    },
   }),
   getters: {
     getSysPublic(): SysPublicSetting {
@@ -96,7 +103,7 @@ export const useSettingStore = defineStore({
       const vipLabelMap: any = {
         free: "基础版",
         plus: "专业版",
-        comm: "商业版"
+        comm: "商业版",
       };
       return vipLabelMap[this.plusInfo?.vipType || "free"];
     },
@@ -113,21 +120,21 @@ export const useSettingStore = defineStore({
             title: menu.title,
             icon: menu.icon,
             link: menu.path,
-            order: 99999
-          }
+            order: 99999,
+          },
         };
       });
     },
     isSuiteEnabled(): boolean {
       // @ts-ignore
       return this.suiteSetting?.enabled === true;
-    }
+    },
   },
   actions: {
     checkPlus() {
       if (!this.isPlus) {
         notification.warn({
-          message: "此为专业版功能，请先升级到专业版"
+          message: "此为专业版功能，请先升级到专业版",
         });
         throw new Error("此为专业版功能，请升级到专业版");
       }
@@ -142,6 +149,12 @@ export const useSettingStore = defineStore({
       _.merge(this.suiteSetting, allSettings.suiteSetting || {});
       //@ts-ignore
       this.initSiteInfo(allSettings.siteInfo || {});
+      this.initAppInfo(allSettings.app || {});
+    },
+    initAppInfo(appInfo: AppInfo) {
+      this.app.time = appInfo.time;
+      this.app.version = appInfo.version;
+      this.app.deltaTime = new Date().getTime() - this.app.time;
     },
     initSiteInfo(siteInfo: SiteInfo) {
       //@ts-ignore
@@ -158,15 +171,15 @@ export const useSettingStore = defineStore({
       if (this.siteInfo.logo) {
         updatePreferences({
           logo: {
-            source: this.siteInfo.logo
-          }
+            source: this.siteInfo.logo,
+          },
         });
       }
       if (this.siteInfo.title) {
         updatePreferences({
           app: {
-            name: this.siteInfo.title
-          }
+            name: this.siteInfo.title,
+          },
         });
         useTitle(this.siteInfo.title);
       }
@@ -210,7 +223,7 @@ export const useSettingStore = defineStore({
             cancelText: "不是，回到原来的地址",
             onCancel: () => {
               window.location.href = bindUrl;
-            }
+            },
           });
         }
       }
@@ -224,8 +237,8 @@ export const useSettingStore = defineStore({
       }
       await this.init();
       this.inited = true;
-    }
-  }
+    },
+  },
 });
 
 mitter.on("app.login", async () => {
