@@ -82,9 +82,9 @@
                 key: 'title',
                 component: {
                   name: 'a-input',
-                  vModel: 'value'
+                  vModel: 'value',
                 },
-                rules: [{ required: true, message: '此项必填' }]
+                rules: [{ required: true, message: '此项必填' }],
               }"
               :get-context-fn="getScopeFunc"
             />
@@ -126,8 +126,8 @@ export default {
   props: {
     editMode: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   emits: ["update"],
   setup(props: any, context: any) {
@@ -154,9 +154,9 @@ export default {
           {
             type: "string",
             required: true,
-            message: "请输入名称"
-          }
-        ]
+            message: "请输入名称",
+          },
+        ],
       });
 
       const stepTypeSelected = (item: any) => {
@@ -209,7 +209,7 @@ export default {
           type: undefined,
           _isAdd: true,
           input: {},
-          status: null
+          status: null,
         };
         _.merge(step, stepDef);
         stepOpen(step, emit);
@@ -235,7 +235,7 @@ export default {
 
       function getContext() {
         return {
-          form: currentStep.value.input
+          form: currentStep.value.input,
         };
       }
       const { doComputed } = useCompute();
@@ -300,7 +300,7 @@ export default {
           async onOk() {
             callback.value("delete");
             stepDrawerClose();
-          }
+          },
         });
       };
 
@@ -314,24 +314,24 @@ export default {
 
       const getScopeFunc = () => {
         return {
-          form: currentStep.value
+          form: currentStep.value,
         };
       };
 
       const pluginSearch = ref({
         keyword: "",
-        result: []
+        result: [],
       });
       const pluginGroupActive = ref("all");
       const computedPluginGroups: any = computed(() => {
         const groups = pluginGroups.groups;
         if (pluginSearch.value.keyword) {
           const keyword = pluginSearch.value.keyword.toLowerCase();
-          const list = groups.all.plugins.filter((plugin) => {
+          const list = groups.all.plugins.filter(plugin => {
             return plugin.title?.toLowerCase().includes(keyword) || plugin.desc?.toLowerCase().includes(keyword) || plugin.name?.toLowerCase().includes(keyword);
           });
           return {
-            search: { key: "search", title: "搜索结果", plugins: list }
+            search: { key: "search", title: "搜索结果", plugins: list },
           };
         } else {
           return groups;
@@ -371,7 +371,7 @@ export default {
         rules,
         getScopeFunc,
         stepCopy,
-        fullscreen
+        fullscreen,
       };
     }
 
@@ -382,22 +382,22 @@ export default {
         name: "a-select",
         vModel: "value",
         options: [
-          { value: 0, label: "正常运行（证书申请任务请选择它）" },
-          { value: 1, label: "成功后跳过（非证书任务请选择它）" }
-        ]
+          { value: 0, label: "正常运行（只有证书申请任务需要选择它）" },
+          { value: 1, label: "成功后跳过（其他任务请选择它）" },
+        ],
       },
       helper: {
         render: () => {
           return (
             <div>
               <div>正常运行：每次都运行，证书任务需要每次都运行</div>
-              <div>成功后跳过：在证书没变化时，该任务成功一次之后跳过，不重复部署</div>
-              <div>保持默认即可，如果你想要再次测试部署，可以临时设置为正常运行</div>
+              <div>成功后跳过：该任务成功一次之后跳过，不重复执行（证书变化之后才会再次运行）</div>
+              <div class="green">保持默认即可</div>
             </div>
           );
-        }
+        },
       },
-      rules: [{ required: true, message: "此项必填" }]
+      rules: [{ required: true, message: "此项必填" }],
     });
 
     return {
@@ -405,9 +405,9 @@ export default {
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
       runStrategyProps,
-      transformDesc
+      transformDesc,
     };
-  }
+  },
 };
 </script>
 
