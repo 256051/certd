@@ -82,21 +82,40 @@ async function walkDnsChallengeRecord(recordName, resolver = dns) {
 }
 
 export async function walkTxtRecord(recordName) {
+
+    const txtRecords = []
     try {
         /* Default DNS resolver first */
-        log('Attempting to resolve TXT with default DNS resolver first');
+        log('从本地DNS服务器获取TXT解析记录');
         const res = await walkDnsChallengeRecord(recordName);
         if (res && res.length > 0) {
-            return res;
+            for (const item of res) {
+                txtRecords.push(item)
+            }
         }
-        throw new Error('No TXT records found');
+
+    } catch (e) {
+        log(`本地获取TXT解析记录失败:${e.message}`)
     }
-    catch (e) {
+
+    try{
         /* Authoritative DNS resolver */
-        log(`Error using default resolver, attempting to resolve TXT with authoritative NS: ${e.message}`);
+        log(`从域名权威服务器获取TXT解析记录`);
         const authoritativeResolver = await util.getAuthoritativeDnsResolver(recordName);
-        return await walkDnsChallengeRecord(recordName, authoritativeResolver);
+        const res = await walkDnsChallengeRecord(recordName, authoritativeResolver);
+        if (res && res.length > 0) {
+            for (const item of res) {
+                txtRecords.push(item)
+            }
+        }
+    }catch (e) {
+        log(`权威服务器获取TXT解析记录失败:${e.message}`)
     }
+
+    if (txtRecords.length === 0) {
+        throw new Error(`没有找到TXT解析记录（${recordName}）`);
+    }
+    return txtRecords;
 }
 
 /**
