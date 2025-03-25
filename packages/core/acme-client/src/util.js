@@ -62,7 +62,7 @@ async function retryPromise(fn, attempts, backoff) {
 
         log(`Promise rejected: ${e.message}`);
         const duration = backoff.duration();
-        log(`attempt #${backoff.attempts}, ${duration}ms 后重试: ${e.message}`);
+        log(`Promise rejected attempt #${backoff.attempts}, ${duration}ms 后重试: ${e.message}`);
 
         await new Promise((resolve) => { setTimeout(resolve, duration); });
         return retryPromise(fn, attempts, backoff);
