@@ -131,7 +131,7 @@ export class DingTalkNotification extends BaseNotification {
       data: {
         at: at,
         text: {
-          content: `· ${body.title}\n· ${body.content}\n· 查看详情: ${body.url}`,
+          content: `${body.title}\n${body.content}\n查看详情: ${body.url}`,
         },
         msgtype:"text"
       },

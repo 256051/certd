@@ -106,7 +106,7 @@ export class DingTalkNotification extends BaseNotification {
     }
 
     if (atText){
-      atText = `\n· ${atText}`
+      atText = `\n${atText}`
     }
 
     let sign:any = {}
@@ -125,7 +125,7 @@ export class DingTalkNotification extends BaseNotification {
       data: {
         ...sign,
         content: {
-          text: `· ${body.title}\n· ${body.content}\n· 查看详情: ${body.url}${atText}`,
+          text: `${body.title}\n${body.content}\n查看详情: ${body.url}${atText}`,
         },
         msg_type:"text"
       },
