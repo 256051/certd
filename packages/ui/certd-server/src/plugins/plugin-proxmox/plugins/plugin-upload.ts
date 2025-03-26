@@ -7,7 +7,7 @@ import { CertApplyPluginNames} from '@certd/plugin-cert';
 @IsTaskPlugin({
   //命名规范，插件名称+功能（就是目录plugin-demo中的demo），大写字母开头，驼峰命名
   name: 'ProxmoxUploadCert',
-  title: '上传证书到Proxmox',
+  title: 'Proxmox-上传证书到Proxmox',
   icon: 'svg:icon-proxmox',
   //插件分组
   group: pluginGroups.other.key,
