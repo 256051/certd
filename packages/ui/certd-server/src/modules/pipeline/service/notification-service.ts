@@ -45,6 +45,23 @@ export class NotificationService extends BaseService<NotificationEntity> {
     return notificationRegistry.getDefine(type);
   }
 
+  async add(bean: NotificationEntity) {
+    const res = await super.add(bean);
+    if(bean.isDefault){
+      await this.setDefault(res.id, bean.userId);
+    }
+    return res
+  }
+
+  async update(bean: NotificationEntity) {
+    const res = await super.update(bean);
+    if(bean.isDefault){
+      const old = await this.info(bean.id);
+      await this.setDefault(bean.id, old.userId);
+    }
+    return res
+  }
+
   async getById(id: number, userId: number): Promise<NotificationInstanceConfig> {
     if (!id) {
       throw new ValidateException('id不能为空');
