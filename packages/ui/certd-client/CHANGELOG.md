@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.31.8](https://github.com/certd/certd/compare/v1.31.7...v1.31.8) (2025-03-26)
+
+### Bug Fixes
+
+* 修复网站监控无法设置端口的bug ([27a8a57](https://github.com/certd/certd/commit/27a8a57cf52b4bf83d628aa3049be1efaa74f29c))
+* 修复lego模式无法创建流水线的bug ([687bb8a](https://github.com/certd/certd/commit/687bb8a2376d0de7b72739a174e4a9560581f866))
+
+### Performance Improvements
+
+* 优化通知格式 ([c3c5006](https://github.com/certd/certd/commit/c3c5006daa39c20624cb58864f2b92b230a38a7a))
+* 支持又拍云cdn ([fd0536b](https://github.com/certd/certd/commit/fd0536bd4b41f15b6b5d42e0b447f0dcbf73b8a8))
+
 ## [1.31.7](https://github.com/certd/certd/compare/v1.31.6...v1.31.7) (2025-03-24)
 
 ### Performance Improvements

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.31.8](https://github.com/publishlab/node-acme-client/compare/v1.31.7...v1.31.8) (2025-03-26)
+
+### Performance Improvements
+
+* 优化txt本地校验效率 ([fd507f2](https://github.com/publishlab/node-acme-client/commit/fd507f269253607e68c5c099c99e0de11636f229))
+
 ## [1.31.7](https://github.com/publishlab/node-acme-client/compare/v1.31.6...v1.31.7) (2025-03-24)
 
 **Note:** Version bump only for package @certd/acme-client

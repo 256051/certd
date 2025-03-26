@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.31.8](https://github.com/certd/certd/compare/v1.31.7...v1.31.8) (2025-03-26)
+
+### Performance Improvements
+
+* 支持又拍云cdn ([fd0536b](https://github.com/certd/certd/commit/fd0536bd4b41f15b6b5d42e0b447f0dcbf73b8a8))
+
 ## [1.31.7](https://github.com/certd/certd/compare/v1.31.6...v1.31.7) (2025-03-24)
 
 **Note:** Version bump only for package @certd/basic

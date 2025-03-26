@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.31.8](https://github.com/certd/certd/compare/v1.31.7...v1.31.8) (2025-03-26)
+
+### Bug Fixes
+
+* 修复编辑通知勾选默认，导致出现多个默认通知的bug ([6cd7bdd](https://github.com/certd/certd/commit/6cd7bddc37da8b0d7b9860fd9a26ddfe84c869a7))
+
+### Performance Improvements
+
+* 优化scp上传 ([e51123a](https://github.com/certd/certd/commit/e51123a95131cc76d655937488caf08956a67020))
+* 支持又拍云cdn ([fd0536b](https://github.com/certd/certd/commit/fd0536bd4b41f15b6b5d42e0b447f0dcbf73b8a8))
+* 支持又拍云cdn ([57389a7](https://github.com/certd/certd/commit/57389a79a1a61c45d081712562f8b33c9633158e))
+
 ## [1.31.7](https://github.com/certd/certd/compare/v1.31.6...v1.31.7) (2025-03-24)
 
 ### Performance Improvements
