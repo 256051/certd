@@ -177,6 +177,21 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             },
           },
         },
+        port: {
+          title: "HTTPS端口",
+          search: {
+            show: false,
+          },
+          type: "number",
+          form: {
+            value: 443,
+            rules: [{ required: true, message: "请输入端口" }],
+          },
+          column: {
+            width: 100,
+            show: false,
+          },
+        },
         certDomains: {
           title: "证书域名",
           search: {
