@@ -101,7 +101,7 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
         throw new Error('没有发现证书');
       }
       const expires = certi.valid_to;
-      const allDomains = certi.subjectaltname?.replaceAll('DNS:', '').split(',');
+      const allDomains = certi.subjectaltname?.replaceAll('DNS:', '').split(',') ||[];
       const mainDomain = certi.subject?.CN;
       let domains = allDomains;
       if (!allDomains.includes(mainDomain)) {
