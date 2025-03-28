@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.31.9](https://github.com/certd/certd/compare/v1.31.8...v1.31.9) (2025-03-28)
+
+### Bug Fixes
+
+* 修复华为云dns接口请求出错的bug ([caa15b4](https://github.com/certd/certd/commit/caa15b47355363cbb8847f415ff12363cd53eeda))
+
 ## [1.31.8](https://github.com/certd/certd/compare/v1.31.7...v1.31.8) (2025-03-26)
 
 **Note:** Version bump only for package @certd/lib-huawei

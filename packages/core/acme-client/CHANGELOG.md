@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.31.9](https://github.com/publishlab/node-acme-client/compare/v1.31.8...v1.31.9) (2025-03-28)
+
+### Performance Improvements
+
+* dns支持火山引擎 ([99ff879](https://github.com/publishlab/node-acme-client/commit/99ff879d93658c29ea493a4bde7e9e3f85996d64))
+
 ## [1.31.8](https://github.com/publishlab/node-acme-client/compare/v1.31.7...v1.31.8) (2025-03-26)
 
 ### Performance Improvements
