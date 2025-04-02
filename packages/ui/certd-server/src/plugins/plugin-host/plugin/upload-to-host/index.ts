@@ -9,6 +9,7 @@ import { CertApplyPluginNames} from '@certd/plugin-cert';
   icon: 'line-md:uploading-loop',
   group: pluginGroups.host.key,
   desc: 'SFTP上传证书到主机，然后SSH执行部署脚本命令',
+  order: 1,
   default: {
     strategy: {
       runStrategy: RunStrategy.SkipWhenSucceed,
