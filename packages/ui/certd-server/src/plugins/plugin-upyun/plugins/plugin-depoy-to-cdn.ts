@@ -10,9 +10,9 @@ import { UpyunClient } from "../client.js";
 @IsTaskPlugin({
   //命名规范，插件名称+功能（就是目录plugin-demo中的demo），大写字母开头，驼峰命名
   name: "UpyunDeployToCdn",
-  title: "又拍云-部署证书到CDN",
+  title: "又拍云-部署证书到CDN/USS",
   icon: "svg:icon-upyun",
-  desc:"支持又拍云CDN，云存储",
+  desc:"支持又拍云CDN，又拍云云存储USS",
   //插件分组
   group: pluginGroups.cdn.key,
   needPlus: true,
