@@ -149,7 +149,7 @@ export default async (client, userOpts) => {
                 }
                 challengeCompleted = true;
                 log(`[auto] [${d}] 等待返回valid状态`);
-                await client.waitForValidStatus(challenge);
+                await client.waitForValidStatus(challenge,d);
             });
 
 
@@ -242,6 +242,8 @@ export default async (client, userOpts) => {
                 await wait(60 * 1000);
             } else {
                 await runPromisePa(localVerifyTasks, 1000);
+                log("本地校验完成，等待30s")
+                await wait(30 * 1000)
             }
 
             log("开始向提供商请求挑战验证");
