@@ -25,7 +25,7 @@
           </a-tabs>
 
           <div v-if="metadataActive === 'source'" class="metadata-source">
-            <fs-editor-code v-model="plugin.metadata" language="yaml"></fs-editor-code>
+            <fs-editor-code :model-value="metadataStr" language="yaml" @update:model-value="onMetadataStrUpdate"></fs-editor-code>
           </div>
         </div>
       </div>
@@ -39,10 +39,12 @@
   </fs-page>
 </template>
 <script lang="ts" setup>
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch, provide } from "vue";
 import { useRoute } from "vue-router";
 import * as api from "./api";
+import yaml from "js-yaml";
 import PluginInput from "/@/views/sys/plugin/components/plugin-input.vue";
+import { merge } from "lodash-es";
 defineOptions({
   name: "SysPluginEdit",
 });
@@ -50,14 +52,29 @@ const route = useRoute();
 
 const plugin = ref<any>({});
 
+const metadataStr = ref("");
+function onMetadataStrUpdate(value: string) {
+  metadataStr.value = value;
+}
 const metadataActive = ref("editor");
 async function getPlugin() {
   const id = route.query.id;
-  plugin.value = await api.GetObj(id);
+  const pluginObj = await api.GetObj(id);
+  if (!pluginObj.metadata) {
+    pluginObj.metadata = {
+      input: {},
+      output: {},
+    };
+  }
+  plugin.value = pluginObj;
 }
 
 onMounted(async () => {
   await getPlugin();
+});
+
+provide("get:plugin", () => {
+  return plugin;
 });
 </script>
 

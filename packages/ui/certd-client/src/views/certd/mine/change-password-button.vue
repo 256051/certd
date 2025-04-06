@@ -40,11 +40,11 @@ const { buildFormOptions } = useColumns();
 const passwordFormOptions: CrudOptions = {
   form: {
     col: {
-      span: 24
+      span: 24,
     },
     wrapper: {
       title: "修改密码",
-      width: "500px"
+      width: "500px",
     },
     async doSubmit({ form }) {
       await api.changePassword(form);
@@ -53,15 +53,15 @@ const passwordFormOptions: CrudOptions = {
     },
     async afterSubmit() {
       notification.success({ message: "修改成功" });
-    }
+    },
   },
   columns: {
     password: {
       title: "旧密码",
       type: "password",
       form: {
-        rules: [{ required: true, message: "请输入旧密码" }]
-      }
+        rules: [{ required: true, message: "请输入旧密码" }],
+      },
     },
     newPassword: {
       title: "新密码",
@@ -70,9 +70,9 @@ const passwordFormOptions: CrudOptions = {
         rules: [
           { required: true, message: "请输入确认密码" },
           //@ts-ignore
-          { validator: validatePass1, trigger: "blur" }
-        ]
-      }
+          { validator: validatePass1, trigger: "blur" },
+        ],
+      },
     },
     confirmNewPassword: {
       title: "确认新密码",
@@ -81,11 +81,11 @@ const passwordFormOptions: CrudOptions = {
         rules: [
           { required: true, message: "请输入确认密码" },
           //@ts-ignore
-          { validator: validatePass2, trigger: "blur" }
-        ]
-      }
-    }
-  }
+          { validator: validatePass2, trigger: "blur" },
+        ],
+      },
+    },
+  },
 };
 
 async function open(opts: { password: "" }) {
@@ -93,13 +93,13 @@ async function open(opts: { password: "" }) {
   formOptions.newInstance = true; //新实例打开
   passwordFormRef.value = await openDialog(formOptions);
   passwordFormRef.value.setFormData({
-    password: opts.password
+    password: opts.password,
   });
   console.log(passwordFormRef.value);
 }
 
 const scope = ref({
-  open: open
+  open: open,
 });
 
 defineExpose(scope.value);

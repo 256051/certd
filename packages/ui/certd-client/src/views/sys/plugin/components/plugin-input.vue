@@ -7,7 +7,7 @@
     <div class="inputs">
       <div class="inputs-inner">
         <a-collapse v-model:active-key="activeKey">
-          <a-collapse-panel v-for="(item, index) in inputs" :key="index">
+          <a-collapse-panel v-for="(item, index) of inputs" :key="index">
             <template #header> {{ item.key }} ： {{ item.title }} </template>
             <a-form :label-col="{ style: { width: '80px' } }">
               <a-form-item label="字段名称">
@@ -37,22 +37,62 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, Ref } from "vue";
+import { ref, Ref, inject, toRef } from "vue";
+import { useFormWrapper } from "@fast-crud/fast-crud";
 
 const activeKey = ref([]);
-const inputs: Ref = ref([]);
 
+const getPlugin: any = inject("get:plugin");
+const pluginRef = getPlugin();
+const inputs = toRef(pluginRef.value.metadata, "input");
+if (!inputs.value) {
+  inputs.value = {};
+}
 function addNewField() {
-  inputs.value.push({
-    key: "newInput",
-    title: "新字段",
-    component: `
+  const { openCrudFormDialog } = useFormWrapper();
+
+  openCrudFormDialog({
+    crudOptions: {
+      form: {
+        labelCol: { style: { width: "80px" } },
+        wrapperCol: { span: 18 },
+        wrapper: {
+          title: "添加输入",
+        },
+        doSubmit({ form }: any) {
+          debugger;
+          const key = form.key;
+          const title = form.title;
+          inputs.value[key] = {
+            key,
+            title,
+            component: `
   name: a-input
     
     `,
-    helper: "",
-    value: undefined,
-    required: false,
+            helper: "",
+            value: undefined,
+            required: false,
+          };
+        },
+      },
+      columns: {
+        key: {
+          title: "字段名称",
+          type: "text",
+          form: {
+            helper: "英文字段名称",
+          },
+        },
+        title: {
+          title: "字段标题",
+          type: "text",
+          form: {
+            helper: "字段标题",
+          },
+        },
+      },
+    },
   });
 }
 </script>
