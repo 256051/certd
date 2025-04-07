@@ -84,6 +84,10 @@ export class DeployCertToAliyunCDN extends AbstractTaskPlugin {
       endpoint: this.endpoint || 'cas.aliyuncs.com',
     });
 
+    if(this.cert == null){
+      throw new Error('域名证书参数为空，请检查前置任务')
+    }
+
     let certId: any = this.cert;
     if (typeof this.cert === 'object') {
       certId = await sslClient.uploadCert({
@@ -128,6 +132,7 @@ export class DeployCertToAliyunCDN extends AbstractTaskPlugin {
       'SetCdnDomainSSLCertificate',
       {
         SSLProtocol: 'on',
+        CertType:"cas",
         ...params,
       },
       requestOption
