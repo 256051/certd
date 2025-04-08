@@ -61,7 +61,7 @@ export default defineConfig({
     nav: [
       { text: "首页", link: "/" },
       { text: "指南", link: "/guide/" },
-      { text: "插件", link: "/deply/" },
+      { text: "插件", link: "/deploy/" },
       { text: "商业版", link: "/comm/" },
       { text: "Demo体验", link: "https://certd.handfree.work" }
     ],
@@ -127,8 +127,9 @@ export default defineConfig({
       ],
       "/deploy/":[
         {
-          text: "部署证书",
+          text: "部署证书插件",
           items: [
+            { text: "插件说明", link: "/deploy/index.md" },
             { text: "部署到ESXi", link: "/deploy/ESXi/index.md" },
           ]
         }
