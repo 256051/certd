@@ -24,7 +24,7 @@ import { siteInfoApi } from "./api";
 import { Modal, notification } from "ant-design-vue";
 import { useSettingStore } from "/@/store/modules/settings";
 defineOptions({
-  name: "SiteCertMonitor"
+  name: "SiteCertMonitor",
 });
 const { crudBinding, crudRef, crudExpose } = useFs({ createCrudOptions, context: {} });
 const settingStore = useSettingStore();
@@ -36,9 +36,9 @@ function checkAll() {
       await siteInfoApi.CheckAll();
       notification.success({
         message: "检查任务已提交",
-        description: "请稍后刷新页面查看结果"
+        description: "请稍后刷新页面查看结果",
       });
-    }
+    },
   });
 }
 

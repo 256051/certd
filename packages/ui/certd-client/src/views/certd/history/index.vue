@@ -14,14 +14,14 @@
 </template>
 
 <script lang="ts" setup>
-import {onActivated, onMounted} from "vue";
+import { onActivated, onMounted } from "vue";
 import { useFs } from "@fast-crud/fast-crud";
 import createCrudOptions from "./crud";
 import { message, Modal } from "ant-design-vue";
 import { DeleteBatch } from "./api";
 
 defineOptions({
-  name: "PipelineHistory"
+  name: "PipelineHistory",
 });
 const { crudBinding, crudRef, crudExpose, context } = useFs({ createCrudOptions });
 
@@ -36,7 +36,7 @@ const handleBatchDelete = () => {
         message.info("删除成功");
         crudExpose.doRefresh();
         selectedRowKeys.value = [];
-      }
+      },
     });
   } else {
     message.error("请先勾选记录");

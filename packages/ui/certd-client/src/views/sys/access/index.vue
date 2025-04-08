@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from "vue";
+import { defineComponent, onActivated, onMounted } from "vue";
 import { useFs } from "@fast-crud/fast-crud";
 import createCrudOptions from "../../certd/access/crud";
 import { createAccessApi } from "/@/views/certd/access/api";
@@ -27,10 +27,14 @@ export default defineComponent({
       crudExpose.doRefresh();
     });
 
+    onActivated(async () => {
+      await crudExpose.doRefresh();
+    });
+
     return {
       crudBinding,
-      crudRef
+      crudRef,
     };
-  }
+  },
 });
 </script>

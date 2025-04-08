@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted, onActivated } from "vue";
 import { useCrud, useExpose, useFs } from "@fast-crud/fast-crud";
 import createCrudOptions from "./crud";
 export default defineComponent({
@@ -23,11 +23,14 @@ export default defineComponent({
     onMounted(() => {
       crudExpose.doRefresh();
     });
+    onActivated(async () => {
+      await crudExpose.doRefresh();
+    });
 
     return {
       crudBinding,
-      crudRef
+      crudRef,
     };
-  }
+  },
 });
 </script>

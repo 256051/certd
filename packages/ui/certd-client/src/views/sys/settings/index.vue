@@ -27,7 +27,7 @@ import { useRoute, useRouter } from "vue-router";
 import { ref } from "vue";
 import { useSettingStore } from "/@/store/modules/settings";
 defineOptions({
-  name: "SysSettings"
+  name: "SysSettings",
 });
 const settingsStore = useSettingStore();
 const activeKey = ref("");

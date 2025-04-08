@@ -8,21 +8,13 @@
         <fs-icon :icon="ui.icons.add"></fs-icon>
         添加
       </a-button>
-      <fs-permission-tree
-        class="permission-tree mt-10"
-        :tree="crudBinding.data"
-        :checkable="false"
-        :actions="permission"
-        @add="addHandle"
-        @edit="editHandle"
-        @remove="removeHandle"
-      ></fs-permission-tree>
+      <fs-permission-tree class="permission-tree mt-10" :tree="crudBinding.data" :checkable="false" :actions="permission" @add="addHandle" @edit="editHandle" @remove="removeHandle"></fs-permission-tree>
     </fs-crud>
   </fs-page>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onActivated, onMounted, ref } from "vue";
 import createCrudOptions from "./crud.js";
 import FsPermissionTree from "./fs-permission-tree.vue";
 import { usePermission } from "/src/plugin/permission";
@@ -38,6 +30,9 @@ export default defineComponent({
 
     // 页面打开后获取列表数据
     onMounted(async () => {
+      await crudExpose.doRefresh();
+    });
+    onActivated(async () => {
       await crudExpose.doRefresh();
     });
 
@@ -59,7 +54,7 @@ export default defineComponent({
     const permission = ref({
       add: hasPermissions("1sys:auth:per:add"),
       edit: hasPermissions("1sys:auth:per:edit"),
-      remove: hasPermissions("1sys:auth:per:remove")
+      remove: hasPermissions("1sys:auth:per:remove"),
     });
 
     return {
@@ -69,9 +64,9 @@ export default defineComponent({
       addHandle,
       editHandle,
       removeHandle,
-      permission
+      permission,
     };
-  }
+  },
 });
 </script>
 <style lang="less">

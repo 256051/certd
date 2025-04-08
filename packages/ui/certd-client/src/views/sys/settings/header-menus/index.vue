@@ -8,13 +8,13 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from "vue";
+import { onActivated, onMounted } from "vue";
 import { useFs } from "@fast-crud/fast-crud";
 import createCrudOptions from "./crud";
 import { useSettingStore } from "/@/store/modules/settings";
 
 defineOptions({
-  name: "SettingsHeaderMenus"
+  name: "SettingsHeaderMenus",
 });
 const { crudBinding, crudRef, crudExpose, context } = useFs({ createCrudOptions });
 
@@ -22,6 +22,9 @@ const settingStore = useSettingStore();
 // 页面打开后获取列表数据
 onMounted(() => {
   crudExpose.doRefresh();
+});
+onActivated(async () => {
+  await crudExpose.doRefresh();
 });
 </script>
 <style lang="less"></style>

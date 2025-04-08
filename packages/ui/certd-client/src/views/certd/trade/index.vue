@@ -14,14 +14,14 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from "vue";
+import { onActivated, onMounted } from "vue";
 import { useFs } from "@fast-crud/fast-crud";
 import createCrudOptions from "./crud";
 import { message, Modal } from "ant-design-vue";
 import { DeleteBatch } from "./api";
 
 defineOptions({
-  name: "MyTrade"
+  name: "MyTrade",
 });
 const { crudBinding, crudRef, crudExpose, context } = useFs({ createCrudOptions });
 
@@ -36,7 +36,7 @@ const handleBatchDelete = () => {
         message.info("删除成功");
         crudExpose.doRefresh();
         selectedRowKeys.value = [];
-      }
+      },
     });
   } else {
     message.error("请先勾选记录");
@@ -46,6 +46,9 @@ const handleBatchDelete = () => {
 // 页面打开后获取列表数据
 onMounted(() => {
   crudExpose.doRefresh();
+});
+onActivated(async () => {
+  await crudExpose.doRefresh();
 });
 </script>
 <style lang="less"></style>

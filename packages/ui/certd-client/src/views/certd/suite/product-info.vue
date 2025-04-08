@@ -34,13 +34,7 @@
     <div class="duration flex-between mt-5">
       <div class="flex-o duration-label">时长</div>
       <div class="duration-list">
-        <div
-          v-for="dp of product.durationPrices"
-          :key="dp.duration"
-          class="duration-item"
-          :class="{ active: selected.duration === dp.duration }"
-          @click="selected = dp"
-        >
+        <div v-for="dp of product.durationPrices" :key="dp.duration" class="duration-item" :class="{ active: selected.duration === dp.duration }" @click="selected = dp">
           {{ durationDict.dataMap[dp.duration]?.label }}
         </div>
       </div>
@@ -74,8 +68,8 @@ const selected = ref(props.product.durationPrices[0]);
 const productTypeDictRef = dict({
   data: [
     { value: "suite", label: "套餐", color: "green" },
-    { value: "addon", label: "加量包", color: "blue" }
-  ]
+    { value: "addon", label: "加量包", color: "blue" },
+  ],
 });
 
 const emit = defineEmits(["order"]);

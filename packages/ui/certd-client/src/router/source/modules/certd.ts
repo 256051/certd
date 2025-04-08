@@ -95,6 +95,7 @@ export const certdResources = [
             meta: {
               icon: "ion:link-outline",
               auth: true,
+              keepAlive: true,
             },
           },
           {
@@ -105,6 +106,7 @@ export const certdResources = [
             meta: {
               icon: "mdi:format-list-group",
               auth: true,
+              keepAlive: true,
             },
           },
 
@@ -198,6 +200,7 @@ export const certdResources = [
               },
               icon: "ion:bag-check-outline",
               auth: true,
+              keepAlive: true,
             },
           },
           {

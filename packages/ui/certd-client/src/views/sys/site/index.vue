@@ -47,7 +47,7 @@ import { useUserStore } from "/@/store/modules/user";
 import { merge } from "lodash-es";
 
 defineOptions({
-  name: "SiteSetting"
+  name: "SiteSetting",
 });
 
 interface FormState {
@@ -78,7 +78,7 @@ const onFinish = async (form: any) => {
     await loadSysSiteSettings();
     await settingsStore.loadSysSettings();
     notification.success({
-      message: "保存成功"
+      message: "保存成功",
     });
   } finally {
     saveLoading.value = false;
@@ -91,11 +91,11 @@ const uploaderConfig = ref({
   action: "/basic/file/upload",
   name: "file",
   headers: {
-    Authorization: "Bearer " + userStore.getToken
+    Authorization: "Bearer " + userStore.getToken,
   },
   successHandle(res: any) {
     return res;
-  }
+  },
 });
 
 function buildUrl(key: string) {
@@ -109,12 +109,12 @@ function onFinishFailed(err: any) {
 const cropperOptions = ref({
   aspectRatio: 1,
   autoCropArea: 1,
-  viewMode: 0
+  viewMode: 0,
 });
 const loginLogoCropperOptions = ref({
   aspectRatio: 3,
   autoCropArea: 1,
-  viewMode: 0
+  viewMode: 0,
 });
 </script>
 

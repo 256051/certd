@@ -16,7 +16,7 @@ import { useFs } from "@fast-crud/fast-crud";
 import createCrudOptions from "./crud";
 
 defineOptions({
-  name: "UserSuites"
+  name: "UserSuites",
 });
 const { crudBinding, crudRef, crudExpose } = useFs({ createCrudOptions, context: {} });
 

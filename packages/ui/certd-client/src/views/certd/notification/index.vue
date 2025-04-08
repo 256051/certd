@@ -34,8 +34,8 @@ export default defineComponent({
 
     return {
       crudBinding,
-      crudRef
+      crudRef,
     };
-  }
+  },
 });
 </script>

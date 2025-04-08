@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from "vue";
+import { onActivated, onMounted } from "vue";
 import { useFs } from "@fast-crud/fast-crud";
 import createCrudOptions from "./crud";
 import { message, Modal } from "ant-design-vue";
@@ -24,6 +24,10 @@ defineOptions({
   name: "SysPlugin",
 });
 const { crudBinding, crudRef, crudExpose, context } = useFs({ createCrudOptions });
+
+onActivated(async () => {
+  await crudExpose.doRefresh();
+});
 
 const selectedRowKeys = context.selectedRowKeys;
 const handleBatchDelete = () => {

@@ -87,6 +87,7 @@ export const sysResources = [
           },
           icon: "ion:menu",
           permission: "sys:settings:view",
+          keepAlive: true,
         },
       },
       {
@@ -101,6 +102,7 @@ export const sysResources = [
           },
           icon: "ion:disc-outline",
           permission: "sys:settings:view",
+          keepAlive: true,
         },
       },
       {
@@ -160,6 +162,7 @@ export const sysResources = [
           icon: "ion:list-outline",
           //需要校验权限
           permission: "sys:auth:per:view",
+          keepAlive: true,
         },
       },
       {
@@ -170,6 +173,7 @@ export const sysResources = [
         meta: {
           icon: "ion:people-outline",
           permission: "sys:auth:role:view",
+          keepAlive: true,
         },
       },
       {
@@ -180,6 +184,7 @@ export const sysResources = [
         meta: {
           icon: "ion:person-outline",
           permission: "sys:auth:user:view",
+          keepAlive: true,
         },
       },
 
@@ -195,6 +200,7 @@ export const sysResources = [
             const settingStore = useSettingStore();
             return settingStore.isComm;
           },
+          keepAlive: true,
         },
         children: [
           {
@@ -223,6 +229,7 @@ export const sysResources = [
               },
               icon: "ion:bag-check",
               permission: "sys:settings:edit",
+              keepAlive: true,
             },
           },
           {
@@ -237,6 +244,7 @@ export const sysResources = [
               },
               icon: "ion:gift-outline",
               auth: true,
+              keepAlive: true,
             },
           },
         ],

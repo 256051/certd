@@ -17,7 +17,7 @@ import createCrudOptions from "./crud";
 import { OPEN_API_DOC } from "/@/views/certd/open/openkey/api";
 
 defineOptions({
-  name: "OpenKey"
+  name: "OpenKey",
 });
 const { crudBinding, crudRef, crudExpose } = useFs({ createCrudOptions, context: {} });
 

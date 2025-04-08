@@ -5,21 +5,13 @@
     </template>
     <fs-crud ref="crudRef" v-bind="crudBinding" />
     <a-modal v-model:open="authzDialogVisible" width="860px" title="分配权限" @ok="updatePermission">
-      <fs-permission-tree
-        ref="permissionTreeRef"
-        v-model:checked-keys="checkedKeys"
-        :tree="permissionTreeData"
-        :editable="false"
-        checkable
-        :replace-fields="{ key: 'id', label: 'title' }"
-      >
-      </fs-permission-tree>
+      <fs-permission-tree ref="permissionTreeRef" v-model:checked-keys="checkedKeys" :tree="permissionTreeData" :editable="false" checkable :replace-fields="{ key: 'id', label: 'title' }"> </fs-permission-tree>
     </a-modal>
   </fs-page>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onActivated, onMounted, ref } from "vue";
 import { useFs } from "@fast-crud/fast-crud";
 import createCrudOptions from "./crud";
 import * as permissionApi from "../permission/api";
@@ -87,7 +79,7 @@ function useAuthz() {
     authzDialogVisible,
     permissionTreeData,
     checkedKeys,
-    permissionTreeRef
+    permissionTreeRef,
   };
 }
 
@@ -102,7 +94,7 @@ export default defineComponent({
       extra: ({ hasActionPermission }: UseCrudPermissionExtraProps): any => {
         //额外按钮权限控制
         return { rowHandle: { buttons: { authz: { show: hasActionPermission("authz") } } } };
-      }
+      },
     };
 
     // 初始化crud配置
@@ -116,11 +108,14 @@ export default defineComponent({
       crudExpose.doRefresh();
     });
 
+    onActivated(async () => {
+      await crudExpose.doRefresh();
+    });
     return {
       crudBinding,
       crudRef,
-      ...authz
+      ...authz,
     };
-  }
+  },
 });
 </script>

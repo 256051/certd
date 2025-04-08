@@ -20,7 +20,7 @@ import * as api from "./api";
 import { notification } from "ant-design-vue";
 
 defineOptions({
-  name: "AccountBind"
+  name: "AccountBind",
 });
 const iframeRef = ref();
 
@@ -44,7 +44,7 @@ onMounted(() => {
   const iframeClient = new IframeClient(iframeRef.value, (e: any) => {
     notification.error({
       message: " error",
-      description: e.message
+      description: e.message,
     });
   });
   iframeClient.register("getSubjectInfo", async (req: any) => {
@@ -52,33 +52,33 @@ onMounted(() => {
       subjectId: settingStore.installInfo.siteId,
       installAt: settingStore.installInfo.installTime,
       vipType: settingStore.plusInfo.vipType || "free",
-      expiresAt: settingStore.plusInfo.expireTime
+      expiresAt: settingStore.plusInfo.expireTime,
     };
     return subjectInfo;
   });
 
   let preBindUserId: any = null;
-  iframeClient.register("preBindUser", async (req) => {
+  iframeClient.register("preBindUser", async req => {
     const userId = req.data.userId;
     preBindUserId = userId;
     await api.PreBindUser(userId);
   });
 
-  iframeClient.register("onBoundUser", async (req) => {
+  iframeClient.register("onBoundUser", async req => {
     await api.BindUser(preBindUserId);
   });
 
-  iframeClient.register("unbindUser", async (req) => {
+  iframeClient.register("unbindUser", async req => {
     const userId = req.data.userId;
     await api.UnbindUser(userId);
   });
 
-  iframeClient.register("updateLicense", async (req) => {
+  iframeClient.register("updateLicense", async req => {
     await api.UpdateLicense(req.data);
     await settingStore.init();
     notification.success({
       message: "更新成功",
-      description: "专业版/商业版已激活"
+      description: "专业版/商业版已激活",
     });
   });
 });
