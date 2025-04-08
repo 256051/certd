@@ -9,7 +9,9 @@ import { merge } from "lodash-es";
 import { accessRegistry, pluginRegistry } from "@certd/pipeline";
 import { dnsProviderRegistry } from "@certd/plugin-cert";
 import { logger } from "@certd/basic";
-import yaml from 'js-yaml'
+import yaml from "js-yaml";
+
+
 @Provide()
 @Scope(ScopeEnum.Request, { allowDowngrade: true })
 export class PluginService extends BaseService<PluginEntity> {
@@ -27,7 +29,7 @@ export class PluginService extends BaseService<PluginEntity> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async page(pageReq: PageReq<PluginEntity>) {
 
-    if(pageReq.query.type && pageReq.query.type !=='builtIn'){
+    if (pageReq.query.type && pageReq.query.type !== "builtIn") {
       return await super.page(pageReq);
     }
 
@@ -141,15 +143,22 @@ export class PluginService extends BaseService<PluginEntity> {
     return this.builtInPluginService.getByType(type);
   }
 
-  async getPluginTarget(pluginName: string){
+  async compile(code: string) {
+    const ts = await import("typescript")
+    return ts.transpileModule(code, {
+      compilerOptions: { module: ts.ModuleKind.ESNext }
+    }).outputText;
+  }
+
+  async getPluginTarget(pluginName: string) {
     //获取插件类实例对象
     let author = undefined;
-    let name = '';
-    if(pluginName.includes('/')){
-      const arr = pluginName.split('/');
+    let name = "";
+    if (pluginName.includes("/")) {
+      const arr = pluginName.split("/");
       author = arr[0];
       name = arr[1];
-    }else {
+    } else {
       name = pluginName;
     }
     const info = await this.find({
@@ -158,58 +167,69 @@ export class PluginService extends BaseService<PluginEntity> {
         author: author
       }
     });
-    if (info&&info.length > 0) {
+    if (info && info.length > 0) {
       const plugin = info[0];
-      const AsyncFunction = Object.getPrototypeOf(async () => {}).constructor;
-      const getPluginClass =  new AsyncFunction(plugin.content);
-      const pluginClass = await getPluginClass({logger: logger});
-      return new pluginClass()
+
+      try{
+        const AsyncFunction = Object.getPrototypeOf(async () => {
+        }).constructor;
+        // const script = await this.compile(plugin.content);
+        const script = plugin.content
+        const getPluginClass = new AsyncFunction(script);
+        const pluginClass = await getPluginClass({ logger: logger });
+        return new pluginClass();
+      }catch (e) {
+        logger.error("实例化插件失败:",e)
+        throw e
+      }
+
     }
     throw new Error(`插件${pluginName}不存在`);
   }
+
   /**
    * 从数据库加载插件
    */
   async registerFromDb() {
     const res = await this.list({
       buildQuery: ((bq) => {
-        bq.andWhere( "type != :type", {
-          type: 'builtIn'
-        })
+        bq.andWhere("type != :type", {
+          type: "builtIn"
+        });
       })
     });
 
     for (const item of res) {
-        await this.registerPlugin(item);
+      await this.registerPlugin(item);
     }
   }
 
-  async registerPlugin(plugin:PluginEntity){
+  async registerPlugin(plugin: PluginEntity) {
     const metadata = yaml.load(plugin.metadata);
     const item = {
       ...plugin,
       ...metadata
-    }
+    };
     delete item.metadata;
     delete item.content;
-    if(item.author){
-      item.name = item.author +"/"+ item.name;
+    if (item.author) {
+      item.name = item.author + "/" + item.name;
     }
-    let registry = null
-    if(item.pluginType === 'access'){
+    let registry = null;
+    if (item.pluginType === "access") {
       registry = accessRegistry;
-    }else if (item.pluginType === 'plugin'){
+    } else if (item.pluginType === "plugin") {
       registry = pluginRegistry;
-    }else if (item.pluginType === 'dnsProvider'){
-      registry = dnsProviderRegistry
-    }else {
-      logger.warn(`插件${item.name}类型错误:${item.pluginType}`)
-      return
+    } else if (item.pluginType === "dnsProvider") {
+      registry = dnsProviderRegistry;
+    } else {
+      logger.warn(`插件${item.name}类型错误:${item.pluginType}`);
+      return;
     }
 
     registry.register(item.name, {
-      define:item,
-      target: ()=>{
+      define: item,
+      target: () => {
         return this.getPluginTarget(item.name);
       }
     });
