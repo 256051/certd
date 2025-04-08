@@ -101,3 +101,11 @@ export async function SaveCommPluginConfigs(data: CommPluginConfig): Promise<voi
     data,
   });
 }
+
+export async function DoTest(req: { id: number; input: any }): Promise<void> {
+  return await request({
+    url: apiPrefix + "/doTest",
+    method: "post",
+    data: req,
+  });
+}

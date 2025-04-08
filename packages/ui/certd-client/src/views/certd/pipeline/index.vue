@@ -30,20 +30,20 @@ import { Modal, notification } from "ant-design-vue";
 import * as api from "./api";
 
 defineOptions({
-  name: "PipelineManager"
+  name: "PipelineManager",
 });
 
 const certdFormRef = ref();
 const groupDictRef = dict({
   url: "/pi/pipeline/group/all",
   value: "id",
-  label: "name"
+  label: "name",
 });
 const selectedRowKeys = ref([]);
 const context: any = {
   certdFormRef,
   groupDictRef,
-  selectedRowKeys
+  selectedRowKeys,
 };
 const { crudBinding, crudRef, crudExpose } = useFs({ createCrudOptions, context });
 
@@ -70,7 +70,7 @@ function batchDelete() {
       notification.success({ message: "删除成功" });
       await crudExpose.doRefresh();
       selectedRowKeys.value = [];
-    }
+    },
   });
 }
 </script>

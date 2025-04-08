@@ -47,6 +47,7 @@ export const sysResources = [
         meta: {
           icon: "ion:earth-outline",
           permission: "sys:settings:view",
+          cache: true,
         },
       },
       {
@@ -110,6 +111,7 @@ export const sysResources = [
         meta: {
           icon: "ion:extension-puzzle-outline",
           permission: "sys:settings:view",
+          cache: true,
         },
       },
       {
@@ -121,6 +123,7 @@ export const sysResources = [
           isMenu: false,
           icon: "ion:extension-puzzle",
           permission: "sys:settings:view",
+          cache: true,
         },
       },
       {
@@ -145,6 +148,7 @@ export const sysResources = [
         meta: {
           icon: "ion:golf-outline",
           permission: "sys:settings:view",
+          cache: true,
         },
       },
       {

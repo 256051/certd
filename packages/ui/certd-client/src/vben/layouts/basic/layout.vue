@@ -88,7 +88,7 @@ function wrapperMenus(menus: MenuRecordRaw[], deep: boolean = true) {
     ? mapTree(menus, (item: any) => {
         return { ...cloneDeep(item), name: $t(item.name) };
       })
-    : menus.map((item) => {
+    : menus.map(item => {
         return { ...cloneDeep(item), name: $t(item.name) };
       });
 }
@@ -96,8 +96,8 @@ function wrapperMenus(menus: MenuRecordRaw[], deep: boolean = true) {
 function toggleSidebar() {
   updatePreferences({
     sidebar: {
-      hidden: !preferences.sidebar.hidden
-    }
+      hidden: !preferences.sidebar.hidden,
+    },
   });
 }
 
@@ -107,12 +107,12 @@ function clearPreferencesAndLogout() {
 
 watch(
   () => preferences.app.layout,
-  async (val) => {
+  async val => {
     if (val === "sidebar-mixed-nav" && preferences.sidebar.hidden) {
       updatePreferences({
         sidebar: {
-          hidden: false
-        }
+          hidden: false,
+        },
       });
     }
   }
@@ -124,7 +124,7 @@ watch(i18n.global.locale, refresh, { flush: "post" });
 
 const slots: SetupContext["slots"] = useSlots();
 const headerSlots = computed(() => {
-  return Object.keys(slots).filter((key) => key.startsWith("header-"));
+  return Object.keys(slots).filter(key => key.startsWith("header-"));
 });
 </script>
 

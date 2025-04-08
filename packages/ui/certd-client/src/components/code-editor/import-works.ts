@@ -26,7 +26,6 @@ export function registerWorker(name: string, worker: any) {
 window.MonacoEnvironment = {
   //@ts-ignore
   getWorker(_, label) {
-    debugger;
     const custom = WorkerBucket[label];
     if (custom) {
       return new custom();

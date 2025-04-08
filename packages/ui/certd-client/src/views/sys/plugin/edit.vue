@@ -8,7 +8,8 @@
         </span>
       </div>
       <div class="more">
-        <a-button type="primary" :loading="saveLoading" @click="doSave">保存</a-button>
+        <a-button class="mr-1" type="primary" :loading="saveLoading" @click="doSave">保存</a-button>
+        <a-button type="primary" @click="doTest">测试运行</a-button>
       </div>
     </template>
     <div class="pi-plugin-editor">
@@ -34,6 +35,7 @@ import { onMounted, provide, ref } from "vue";
 import { useRoute } from "vue-router";
 import * as api from "./api";
 import yaml from "js-yaml";
+import { notification } from "ant-design-vue";
 
 const CertApplyPluginNames = ["CertApply", "CertApplyLego", "CertApplyUpload"];
 defineOptions({
@@ -48,38 +50,52 @@ async function getPlugin() {
   const pluginObj = await api.GetObj(id);
   if (!pluginObj.metadata) {
     pluginObj.metadata = yaml.dump({
-      input: [
-        {
-          key: "cert",
+      input: {
+        cert: {
           title: "前置任务生成的证书",
           component: {
             name: "output-selector",
             from: [...CertApplyPluginNames],
           },
         },
-      ],
-      output: [],
+      },
+      output: {},
     });
-  } else {
-    pluginObj.metadata = "";
   }
   plugin.value = pluginObj;
 }
-getPlugin();
-onMounted(async () => {});
+
+onMounted(async () => {
+  getPlugin();
+});
 
 provide("get:plugin", () => {
   return plugin;
 });
 
 const saveLoading = ref(false);
-function doSave() {
+async function doSave() {
   saveLoading.value = true;
   try {
-    // api.Save(plugin.value);
+    await api.UpdateObj(plugin.value);
+    notification.success({
+      message: "保存成功",
+    });
   } finally {
     saveLoading.value = false;
   }
+}
+
+async function doTest() {
+  await doSave();
+  const result = await api.DoTest({
+    id: plugin.value.id,
+    input: {},
+  });
+  notification.success({
+    message: "测试已开始",
+    description: result,
+  });
 }
 </script>
 

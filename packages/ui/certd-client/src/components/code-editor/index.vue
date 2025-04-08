@@ -83,17 +83,6 @@ const emitValue = lodashDebounce((value: any) => {
   emits("update:modelValue", value);
 }, props.debounce || 500);
 
-// watch(
-//   () => {
-//     return props.modelValue;
-//   },
-//   (value: string) => {
-//     if (instanceRef.value && value !== instanceRef.value.getValue()) {
-//       // instanceRef.value.setValue(value);
-//     }
-//   }
-// );
-
 async function createEditor(ctx: EditorCodeCtx) {
   disposeEditor();
   const instance = monaco.editor.create(monacoRef.value, {
@@ -121,6 +110,9 @@ async function createEditor(ctx: EditorCodeCtx) {
   instanceRef = instance;
   ctx.instance = instance;
   emits("ready", ctx);
+  if (props.modelValue) {
+    instanceRef.setValue(props.modelValue);
+  }
   return instance;
 }
 
@@ -224,6 +216,9 @@ watch(
         editor.setValue(newValue);
       }
     }
+  },
+  {
+    immediate: true,
   }
 );
 

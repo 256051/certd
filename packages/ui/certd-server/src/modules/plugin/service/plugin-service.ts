@@ -9,7 +9,7 @@ import { merge } from "lodash-es";
 import { accessRegistry, pluginRegistry } from "@certd/pipeline";
 import { dnsProviderRegistry } from "@certd/plugin-cert";
 import { logger } from "@certd/basic";
-
+import yaml from 'js-yaml'
 @Provide()
 @Scope(ScopeEnum.Request, { allowDowngrade: true })
 export class PluginService extends BaseService<PluginEntity> {
@@ -158,12 +158,14 @@ export class PluginService extends BaseService<PluginEntity> {
         author: author
       }
     });
-    if (info.length > 0) {
+    if (info&&info.length > 0) {
       const plugin = info[0];
       const AsyncFunction = Object.getPrototypeOf(async () => {}).constructor;
       const getPluginClass =  new AsyncFunction(plugin.content);
-      return await getPluginClass();
+      const pluginClass = await getPluginClass({logger: logger});
+      return new pluginClass()
     }
+    throw new Error(`插件${pluginName}不存在`);
   }
   /**
    * 从数据库加载插件
@@ -177,28 +179,40 @@ export class PluginService extends BaseService<PluginEntity> {
       })
     });
 
-
-
     for (const item of res) {
-      const pluginName = item.author ? item.author +"/"+ item.name : item.name;
-      let registry = null
-      if(item.pluginType === 'access'){
-        registry = accessRegistry;
-      }else if (item.pluginType === 'plugin'){
-        registry = pluginRegistry;
-      }else if (item.pluginType === 'dnsProvider'){
-        registry = dnsProviderRegistry
-      }else {
-        logger.warn(`插件${pluginName}类型错误:${item.pluginType}`)
-        continue
-      }
-
-      registry.register(pluginName, {
-        define:item,
-        target: ()=>{
-          return this.getPluginTarget(pluginName);
-        }
-      });
+        await this.registerPlugin(item);
     }
   }
+
+  async registerPlugin(plugin:PluginEntity){
+    const metadata = yaml.load(plugin.metadata);
+    const item = {
+      ...plugin,
+      ...metadata
+    }
+    delete item.metadata;
+    delete item.content;
+    if(item.author){
+      item.name = item.author +"/"+ item.name;
+    }
+    let registry = null
+    if(item.pluginType === 'access'){
+      registry = accessRegistry;
+    }else if (item.pluginType === 'plugin'){
+      registry = pluginRegistry;
+    }else if (item.pluginType === 'dnsProvider'){
+      registry = dnsProviderRegistry
+    }else {
+      logger.warn(`插件${item.name}类型错误:${item.pluginType}`)
+      return
+    }
+
+    registry.register(item.name, {
+      define:item,
+      target: ()=>{
+        return this.getPluginTarget(item.name);
+      }
+    });
+  }
+
 }

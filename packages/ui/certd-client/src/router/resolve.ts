@@ -58,7 +58,7 @@ function transformOneResource(resource: any, parent: any) {
   }
   return {
     menu,
-    route
+    route,
   };
 }
 
@@ -79,7 +79,7 @@ export const buildMenusAndRouters = (resources: any, parent: any = null) => {
   setIndex(menus);
   return {
     routes,
-    menus
+    menus,
   };
 };
 

@@ -37,7 +37,6 @@ const domain = computed(() => {
 });
 
 function onUpdated(res: { uploadCert: any }) {
-  debugger;
   emit("update:modelValue", res.uploadCert);
   const domains = getAllDomainsFromCrt(res.uploadCert.crt);
   emit("updated", { domains });
@@ -45,7 +44,6 @@ function onUpdated(res: { uploadCert: any }) {
 
 const pipeline: any = inject("pipeline");
 function onUploadClick() {
-  debugger;
   openUpdateCertDialog({
     onSubmit: onUpdated,
   });

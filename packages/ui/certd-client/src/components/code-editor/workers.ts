@@ -49,7 +49,6 @@ export async function initWorkers() {
       } else if (label === "typescript" || label === "javascript") {
         return new tsWorker.default();
       } else if (label === "yaml" || label === "yml") {
-        debugger;
         //@ts-ignore
         return new yamlWorker.default();
       }

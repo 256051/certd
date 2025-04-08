@@ -20,14 +20,14 @@ const defaultPreferences: Preferences = {
     loginExpiredMode: "page",
     name: "",
     preferencesButtonPosition: "auto",
-    watermark: false
+    watermark: false,
   },
   breadcrumb: {
     enable: true,
     hideOnlyOne: false,
     showHome: false,
     showIcon: true,
-    styleType: "normal"
+    styleType: "normal",
   },
   copyright: {
     companyName: "greper",
@@ -36,33 +36,33 @@ const defaultPreferences: Preferences = {
     enable: false,
     icp: "",
     icpLink: "",
-    settingShow: false
+    settingShow: false,
   },
   footer: {
     enable: true,
-    fixed: false
+    fixed: false,
   },
   header: {
     enable: true,
     hidden: false,
     menuAlign: "start",
-    mode: "fixed"
+    mode: "fixed",
   },
   logo: {
     enable: true,
-    source: "./static/images/logo/logo.svg"
+    source: "./static/images/logo/logo.svg",
   },
   navigation: {
     accordion: true,
     split: true,
-    styleType: "rounded"
+    styleType: "rounded",
   },
   shortcutKeys: {
     enable: true,
     globalLockScreen: true,
     globalLogout: true,
     globalPreferences: true,
-    globalSearch: true
+    globalSearch: true,
   },
   sidebar: {
     autoActivateChild: true,
@@ -72,7 +72,7 @@ const defaultPreferences: Preferences = {
     expandOnHover: true,
     extraCollapse: false,
     hidden: false,
-    width: 224
+    width: 224,
   },
   tabbar: {
     draggable: true,
@@ -86,7 +86,7 @@ const defaultPreferences: Preferences = {
     showMaximize: true,
     showMore: true,
     styleType: "chrome",
-    wheelable: true
+    wheelable: true,
   },
   theme: {
     builtinType: "default",
@@ -97,13 +97,13 @@ const defaultPreferences: Preferences = {
     mode: "light",
     radius: "0.5",
     semiDarkHeader: false,
-    semiDarkSidebar: false
+    semiDarkSidebar: false,
   },
   transition: {
     enable: true,
     loading: false,
     name: "fade-slide",
-    progress: true
+    progress: true,
   },
   widget: {
     fullscreen: true,
@@ -113,8 +113,8 @@ const defaultPreferences: Preferences = {
     notification: false,
     refresh: true,
     sidebarToggle: true,
-    themeToggle: true
-  }
+    themeToggle: true,
+  },
 };
 
 export { defaultPreferences };

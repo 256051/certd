@@ -42,7 +42,12 @@ export class PluginController extends CrudController<PluginService> {
 
   @Post('/update', { summary: 'sys:settings:edit' })
   async update(@Body(ALL) bean: any) {
-    return super.update(bean);
+
+    const res = await super.update(bean);
+      // 更新插件配置
+    const info = await this.service.info(bean.id)
+    await this.service.registerPlugin(info)
+    return res
   }
 
   @Post('/info', { summary: 'sys:settings:view' })
