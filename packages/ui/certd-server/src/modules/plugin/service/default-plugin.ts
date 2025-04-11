@@ -1,4 +1,3 @@
-import yaml from "js-yaml";
 import { CertApplyPluginNames } from "@certd/plugin-cert";
 
 
@@ -19,8 +18,6 @@ input:
     component:
       name: a-input
       allowClear: true
-
-
 `
 
   const script = `
@@ -34,7 +31,7 @@ return class DemoAccess extends BaseAccess {
 }
 `;
   return {
-    metadata:yaml.dump(metadata),
+    metadata:metadata,
     content: script
   };
 }
@@ -131,7 +128,7 @@ return class DemoTask extends AbstractTaskPlugin {
 }
 `
   return {
-    metadata: yaml.dump(metadata),
+    metadata: metadata,
     content: script
   };
 }
