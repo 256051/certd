@@ -1,8 +1,8 @@
 import * as api from "./api";
 import { useI18n } from "vue-i18n";
-import { computed, Ref, ref } from "vue";
+import { Ref, ref } from "vue";
 import { useRouter } from "vue-router";
-import { AddReq, compute, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, UserPageQuery, UserPageRes, utils } from "@fast-crud/fast-crud";
+import { AddReq, compute, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
 import { useUserStore } from "/src/store/modules/user";
 import { useSettingStore } from "/src/store/modules/settings";
 import { Modal } from "ant-design-vue";
@@ -96,6 +96,16 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         show: true,
         defaultOption: {
           show: false,
+        },
+      },
+      form: {
+        onSuccess(opts: any) {
+          router.push({
+            name: "SysPluginEdit",
+            query: {
+              id: opts.res.id,
+            },
+          });
         },
       },
       columns: {
