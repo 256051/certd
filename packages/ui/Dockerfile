@@ -3,7 +3,7 @@ WORKDIR /workspace/
 COPY . /workspace/
 # armv7 目前只能用node18， pnpm9不支持node18,所以pnpm只能用8.15.7版本
 # https://github.com/nodejs/docker-node/issues/1946
-RUN npm install -g pnpm@10.9.2
+RUN npm install -g pnpm
 
 #RUN cd /workspace/certd-client && pnpm install && npm run build
 RUN cp /workspace/certd-client/dist/* /workspace/certd-server/public/ -rf
@@ -18,8 +18,8 @@ RUN apk add --no-cache openjdk8
 WORKDIR /app/
 COPY --from=builder /workspace/certd-server/ /app/
 
-ENV LEGO_VERSION 4.22.2
-ENV LEGO_DOWNLOAD_DIR /app/tools/lego
+ENV LEGO_VERSION=4.22.2
+ENV LEGO_DOWNLOAD_DIR=/app/tools/lego
 RUN mkdir -p $LEGO_DOWNLOAD_DIR
 
 # 根据架构下载不同的文件
@@ -32,9 +32,9 @@ RUN ARCH=$(uname -m) && \
         echo "Unsupported architecture: $ARCH"; \
     fi
 
-ENV TZ Asia/Shanghai
-ENV NODE_ENV production
-ENV MIDWAY_SERVER_ENV production
+ENV TZ=Asia/Shanghai
+ENV NODE_ENV=production
+ENV MIDWAY_SERVER_ENV=production
 CMD ["npm", "run","start"]
 
 
