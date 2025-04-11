@@ -4,15 +4,11 @@
       <div class="title">
         插件编辑
         <span class="sub">
-          <span class="name">
-            <a-tag color="green">{{ plugin.title }}</a-tag>
-            【{{ plugin.author }}/{{ plugin.name }}】
-          </span>
+          <span class="name flex-inline"> 插件名称：<fs-copyable :model-value="pluginName"></fs-copyable> </span>
         </span>
       </div>
       <div class="more">
         <a-button class="mr-1" type="primary" :loading="saveLoading" @click="doSave">保存</a-button>
-        <a-button type="primary" @click="doTest">测试运行</a-button>
       </div>
     </template>
     <div class="pi-plugin-editor">
@@ -44,12 +40,13 @@
   </fs-page>
 </template>
 <script lang="ts" setup>
-import { onMounted, provide, ref, Ref } from "vue";
+import { onMounted, provide, ref, Ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import * as api from "./api";
 import { notification } from "ant-design-vue";
 import createCrudOptions from "./crud";
 import { useColumns } from "@fast-crud/fast-crud";
+//@ts-ignore
 import yaml from "js-yaml";
 
 defineOptions({
@@ -102,6 +99,16 @@ async function getPlugin() {
 
 onMounted(async () => {
   getPlugin();
+});
+
+const pluginName = computed(() => {
+  if (!plugin.value) {
+    return "";
+  }
+  if (plugin.value.author) {
+    return `${plugin.value.author}/${plugin.value.name}`;
+  }
+  return plugin.value.name;
 });
 
 provide("get:plugin", () => {
