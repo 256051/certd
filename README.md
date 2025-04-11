@@ -87,6 +87,7 @@ https://certd.handfree.work/
   * `greper/certd:armv7`、`greper/certd:[version]-armv7`
 * GitHub Packages地址:
   * `ghcr.io/certd/certd:latest`
+  * `ghcr.io/certd/certd:armv7`、`ghcr.io/certd/certd:[version]-armv7`
 
 * 镜像构建通过`Actions`自动执行，过程公开透明，请放心使用
   * [点我查看镜像构建日志](https://github.com/certd/certd/actions/workflows/build-image.yml) 
