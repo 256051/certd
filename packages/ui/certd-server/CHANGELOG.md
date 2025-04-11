@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.33.0](https://github.com/certd/certd/compare/v1.32.0...v1.33.0) (2025-04-11)
+
+### Bug Fixes
+
+* 升级mysql驱动，支持mysql8最新版本的认证 ([2f5ed3a](https://github.com/certd/certd/commit/2f5ed3aead97641f2c80d692a50226839016df0b))
+
+### Features
+
+* 支持在线自定义插件，无需源码开发 ([d0d9d68](https://github.com/certd/certd/commit/d0d9d68fe6740f6ff49fe40b7c9917c5a2e4b442))
+
+### Performance Improvements
+
+* 隐藏运行策略选项 ([2951df0](https://github.com/certd/certd/commit/2951df0cd94c23e2efee84ff1b843055aac56cae))
+
 # [1.32.0](https://github.com/certd/certd/compare/v1.31.11...v1.32.0) (2025-04-04)
 
 ### Bug Fixes

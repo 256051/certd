@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.33.0](https://github.com/certd/certd/compare/v1.32.0...v1.33.0) (2025-04-11)
+
+### Performance Improvements
+
+* 隐藏运行策略选项 ([2951df0](https://github.com/certd/certd/commit/2951df0cd94c23e2efee84ff1b843055aac56cae))
+
 # [1.32.0](https://github.com/certd/certd/compare/v1.31.11...v1.32.0) (2025-04-04)
 
 **Note:** Version bump only for package @certd/pipeline

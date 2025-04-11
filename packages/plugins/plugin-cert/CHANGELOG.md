@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.33.0](https://github.com/certd/certd/compare/v1.32.0...v1.33.0) (2025-04-11)
+
+### Bug Fixes
+
+* 修复eab授权，没有email绑定的bug ([2f1683b](https://github.com/certd/certd/commit/2f1683b26acebbfb7d6e2d751435be04a4e7cab4))
+
+### Features
+
+* **lego:** support set key type ([f3bf4fa](https://github.com/certd/certd/commit/f3bf4faee0be5bdbfdbcf70a502849ed4c8ed4c4))
+
+### Performance Improvements
+
+* 增加手动上传证书功能说明 ([5d083a1](https://github.com/certd/certd/commit/5d083a153637caddbc6f44e915d9fb2d1ae87b33))
+
 # [1.32.0](https://github.com/certd/certd/compare/v1.31.11...v1.32.0) (2025-04-04)
 
 **Note:** Version bump only for package @certd/plugin-cert
