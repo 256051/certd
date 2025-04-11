@@ -42,16 +42,16 @@ import { merge } from "lodash-es";
 import { notification } from "ant-design-vue";
 
 defineOptions({
-  name: "SysPluginConfig"
+  name: "SysPluginConfig",
 });
 const formState = reactive<Partial<CommPluginConfig>>({
   CertApply: {
     sysSetting: {
       input: {
-        googleCommonEabAccessId: null
-      }
-    }
-  }
+        googleCommonEabAccessId: null,
+      },
+    },
+  },
 });
 
 async function loadForm() {
@@ -67,7 +67,7 @@ const onFinish = async (form: any) => {
     saveLoading.value = true;
     await SaveCommPluginConfigs(form);
     notification.success({
-      message: "保存成功"
+      message: "保存成功",
     });
   } finally {
     saveLoading.value = false;

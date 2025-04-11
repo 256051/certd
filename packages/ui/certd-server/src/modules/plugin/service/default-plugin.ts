@@ -24,11 +24,11 @@ input:
 `
 
   const script = `
-# 必须使用 await import 来引入模块
+// 必须使用 await import 来引入模块
 const { BaseAccess } = await import("@certd/pipeline")
-# 需要返回一个继承BaseAccess的类
+// 需要返回一个继承BaseAccess的类
 return class DemoAccess extends BaseAccess {
-  # 授权的字段，跟左边input一一对应
+  // 授权的字段，跟左边input一一对应
   username;
   password;
 }
@@ -109,7 +109,7 @@ return class DemoTask extends AbstractTaskPlugin {
   key2;
   // 编写执行方法
   async execute(){
-    # 根据accessId获取授权配置
+    // 根据accessId获取授权配置
     const access = await this.getAccess(this.accessId)
 
     //必须使用this.logger打印日志

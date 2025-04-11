@@ -166,10 +166,12 @@ export class PluginService extends BaseService<PluginEntity> {
     let plugin:any = {}
     if (param.pluginType === "access") {
       plugin = getDefaultAccessPlugin()
+      delete param.group
     }else if (param.pluginType === "deploy") {
       plugin = getDefaultDeployPlugin()
     }else if (param.pluginType === "dnsProvider") {
       plugin = getDefaultDnsPlugin()
+      delete param.group
     }else{
       throw new Error(`插件类型${param.pluginType}不支持`);
     }

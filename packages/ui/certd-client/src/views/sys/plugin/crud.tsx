@@ -110,6 +110,54 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         //     show: false
         //   }
         // },
+        pluginType: {
+          title: "插件类型",
+          type: "dict-select",
+          search: {
+            show: true,
+          },
+          form: {
+            order: 0,
+            rules: [{ required: true }],
+          },
+          editForm: {
+            component: {
+              disabled: true,
+            },
+          },
+          dict: dict({
+            data: [
+              { label: "授权", value: "access" },
+              { label: "DNS", value: "dnsProvider" },
+              { label: "部署插件", value: "deploy" },
+            ],
+          }),
+          column: {
+            width: 100,
+            align: "center",
+            component: {
+              color: "auto",
+            },
+          },
+        },
+        icon: {
+          title: "图标",
+          type: "icon",
+          form: {
+            rules: [{ required: true }],
+          },
+          column: {
+            width: 70,
+            align: "center",
+            component: {
+              name: "fs-icon",
+              vModel: "icon",
+              style: {
+                fontSize: "22px",
+              },
+            },
+          },
+        },
         name: {
           title: "插件名称",
           type: "text",
@@ -118,7 +166,6 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           },
           form: {
             show: true,
-            order: 0,
             helper: "必须为英文，驼峰命名，类型作为前缀\n例如AliyunDeployToCDN\n插件一旦被使用，不要修改名称",
             rules: [{ required: true }],
           },
@@ -141,7 +188,6 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           },
           form: {
             show: true,
-            order: 0,
             helper: "上传到插件商店时，将作为插件名称前缀,例如：greper/pluginName",
             rules: [{ required: true }],
           },
@@ -150,30 +196,10 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             show: false,
           },
         },
-        icon: {
-          title: "图标",
-          type: "icon",
-          form: {
-            rules: [{ required: true }],
-          },
-          column: {
-            width: 70,
-            align: "center",
-            component: {
-              name: "fs-icon",
-              vModel: "icon",
-              style: {
-                fontSize: "22px",
-              },
-            },
-          },
-        },
-
         title: {
           title: "标题",
           type: "text",
           form: {
-            order: 0,
             helper: "插件中文名称",
             rules: [{ required: true }],
           },
@@ -196,6 +222,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             show: false,
           },
         },
+
         type: {
           title: "来源",
           type: "dict-select",
@@ -223,60 +250,12 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             },
           },
         },
-        pluginType: {
-          title: "插件类型",
-          type: "dict-select",
-          search: {
-            show: true,
-          },
-          form: {
-            rules: [{ required: true }],
-          },
-          editForm: {
-            component: {
-              disabled: true,
-            },
-          },
-          dict: dict({
-            data: [
-              { label: "授权", value: "access" },
-              { label: "DNS", value: "dnsProvider" },
-              { label: "部署插件", value: "deploy" },
-            ],
-          }),
-          column: {
-            width: 100,
-            align: "center",
-            component: {
-              color: "auto",
-            },
-          },
-        },
         version: {
           title: "版本",
           type: "text",
           column: {
             width: 100,
             align: "center",
-          },
-        },
-        group: {
-          title: "分组",
-          type: "dict-select",
-          dict: dict({
-            url: "/pi/plugin/groupsList",
-            label: "title",
-            value: "key",
-          }),
-          form: {
-            rules: [{ required: true }],
-          },
-          column: {
-            width: 100,
-            align: "left",
-            component: {
-              color: "auto",
-            },
           },
         },
         "extra.dependLibs": {
@@ -316,8 +295,8 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           type: "dict-switch",
           dict: dict({
             data: [
-              { value: false, label: "不可修改" },
               { value: true, label: "可修改" },
+              { value: false, label: "不可修改" },
             ],
           }),
           form: {
@@ -401,6 +380,28 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
                   });
                 },
               },
+            },
+          },
+        },
+        group: {
+          title: "插件分组",
+          type: "dict-select",
+          dict: dict({
+            url: "/pi/plugin/groupsList",
+            label: "title",
+            value: "key",
+          }),
+          form: {
+            rules: [{ required: true }],
+            show: compute(({ form }) => {
+              return form.pluginType === "deploy";
+            }),
+          },
+          column: {
+            width: 100,
+            align: "left",
+            component: {
+              color: "auto",
             },
           },
         },
