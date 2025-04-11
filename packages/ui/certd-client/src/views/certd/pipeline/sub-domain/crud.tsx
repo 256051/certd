@@ -68,7 +68,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           },
         },
         domain: {
-          title: "子域名",
+          title: "托管的子域名",
           type: "text",
           search: {
             show: true,
