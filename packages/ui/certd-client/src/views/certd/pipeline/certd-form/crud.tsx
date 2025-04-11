@@ -1,15 +1,11 @@
 import { compute, CreateCrudOptionsRet, dict } from "@fast-crud/fast-crud";
 import { useReference } from "/@/use/use-refrence";
-import _, { merge } from "lodash-es";
-import { useUserStore } from "/@/store/modules/user";
-import { useSettingStore } from "/@/store/modules/settings";
+import { merge, cloneDeep } from "lodash-es";
 import * as api from "../api.plugin";
 import NotificationSelector from "/@/views/certd/notification/notification-selector/index.vue";
 
 export default function (certPlugins: any[], formWrapperRef: any): CreateCrudOptionsRet {
   const inputs: any = {};
-  const userStore = useUserStore();
-  const settingStore = useSettingStore();
   const moreParams = [];
   for (const plugin of certPlugins) {
     for (const inputKey in plugin.input) {
@@ -18,7 +14,7 @@ export default function (certPlugins: any[], formWrapperRef: any): CreateCrudOpt
         inputs[inputKey].form.show = true;
         continue;
       }
-      const inputDefine = _.cloneDeep(plugin.input[inputKey]);
+      const inputDefine = cloneDeep(plugin.input[inputKey]);
       if (!inputDefine.required && !inputDefine.maybeNeed) {
         moreParams.push(inputKey);
         // continue;

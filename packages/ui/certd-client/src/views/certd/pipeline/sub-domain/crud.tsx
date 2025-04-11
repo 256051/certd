@@ -73,6 +73,18 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           search: {
             show: true,
           },
+          form: {
+            helper: {
+              render() {
+                return (
+                  <div>
+                    如果您不理解什么是子域托管，可以参考文档
+                    <a href={"https://help.aliyun.com/zh/dns/subdomain-management"}>子域管理</a>
+                  </div>
+                );
+              },
+            },
+          },
           editForm: {
             component: {
               disabled: true,
