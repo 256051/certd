@@ -27,6 +27,8 @@ export class DnsProviderController extends BaseController {
       dict.push({
         value: item.name,
         label: item.title,
+        //@ts-ignore
+        accessType: item.accessType,
       });
     }
     return this.ok(dict);

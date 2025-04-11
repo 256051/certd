@@ -29,6 +29,7 @@ export type DomainVerifyPlanInput = {
   domain: string;
   type: "cname" | "dns" | "http";
   dnsProviderType?: string;
+  dnsProviderAccessType?: string;
   dnsProviderAccessId?: number;
   cnameVerifyPlan?: Record<string, CnameRecordInput>;
   httpVerifyPlan?: Record<string, HttpRecordInput>;
@@ -99,13 +100,22 @@ HTTP文件验证：不支持泛域名，需要配置网站文件上传`,
     return {
       show: ctx.compute(({form})=>{
           return form.challengeType === 'dns' 
-      })
+      }),
+      component:{
+        on:{
+          selectedChange({form,$event}){
+            form.dnsProviderAccessType = $event.accessType
+          }
+        }
+      }
     }
     `,
     required: true,
     helper: "您的域名注册商，或者域名的dns服务器属于哪个平台\n如果这里没有，请选择CNAME代理验证校验方式",
   })
   dnsProviderType!: string;
+
+  dnsProviderAccessType!: string;
 
   @TaskInput({
     title: "DNS解析授权",
@@ -117,7 +127,7 @@ HTTP文件验证：不支持泛域名，需要配置网站文件上传`,
     mergeScript: `return {
       component:{
         type: ctx.compute(({form})=>{
-            return form.dnsProviderType
+            return form.dnsProviderAccessType || form.dnsProviderType
         })
       },
       show: ctx.compute(({form})=>{

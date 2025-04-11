@@ -26,7 +26,9 @@ export function IsNotification(define: NotificationDefine): ClassDecorator {
     target.define = define;
     notificationRegistry.register(define.name, {
       define,
-      target,
+      target: async () => {
+        return target;
+      },
     });
   };
 }
@@ -44,9 +46,10 @@ export async function newNotification(type: string, input: any, ctx: Notificatio
   if (register == null) {
     throw new Error(`notification ${type} not found`);
   }
-
   // @ts-ignore
-  const plugin = new register.target();
+  const pluginCls = await register.target();
+  // @ts-ignore
+  const plugin = new pluginCls();
   merge(plugin, input);
   if (!ctx) {
     throw new Error("ctx is required");

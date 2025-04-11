@@ -32,14 +32,21 @@
                     <div class="form-item">
                       <span class="label">DNS类型：</span>
                       <span class="input">
-                        <fs-dict-select v-model:value="item.dnsProviderType" size="small" :dict="dnsProviderTypeDict" placeholder="DNS提供商" @change="onPlanChanged"></fs-dict-select>
+                        <fs-dict-select
+                          v-model:value="item.dnsProviderType"
+                          size="small"
+                          :dict="dnsProviderTypeDict"
+                          placeholder="DNS提供商"
+                          @change="onPlanChanged"
+                          @selected-change="onDnsProviderChange(item, $event)"
+                        ></fs-dict-select>
                       </span>
                     </div>
                     <a-divider type="vertical" />
                     <div class="form-item">
                       <span class="label">DNS授权：</span>
                       <span class="input">
-                        <access-selector v-model="item.dnsProviderAccessId" size="small" :type="item.dnsProviderType" placeholder="请选择" @change="onPlanChanged"></access-selector>
+                        <access-selector v-model="item.dnsProviderAccessId" size="small" :type="item.dnsProviderAccessType || item.dnsProviderType" placeholder="请选择" @change="onPlanChanged"></access-selector>
                       </span>
                     </div>
                   </div>
@@ -100,6 +107,10 @@ const props = defineProps<{
 const emit = defineEmits<{
   "update:modelValue": any;
 }>();
+
+function onDnsProviderChange(item: any, option: any) {
+  item.dnsProviderAccessType = option.accessType;
+}
 
 const fullscreen = ref(false);
 function fullscreenExit() {

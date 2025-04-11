@@ -49,7 +49,7 @@ export class HandleController extends BaseController {
       }
     }
 
-    const access = newAccess(body.typeName, inputAccess);
+    const access = await newAccess(body.typeName, inputAccess);
 
     const res = await access.onRequest(body);
 
@@ -76,7 +76,7 @@ export class HandleController extends BaseController {
   async pluginRequest(@Body(ALL) body: PluginRequestHandleReq) {
     const userId = this.getUserId();
     const pluginDefine = pluginRegistry.get(body.typeName);
-    const pluginCls = pluginDefine.target;
+    const pluginCls = await pluginDefine.target();
     if (pluginCls == null) {
       throw new Error(`plugin ${body.typeName} not found`);
     }

@@ -11,7 +11,7 @@ export type Registrable = {
 export type TargetGetter<T> = () => Promise<T>;
 export type RegistryItem<T> = {
   define: Registrable;
-  target: T | TargetGetter<T>;
+  target: TargetGetter<T>;
 };
 
 export type OnRegisterContext<T> = {

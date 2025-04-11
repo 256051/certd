@@ -213,10 +213,9 @@ export class PluginService extends BaseService<PluginEntity> {
         // const script = await this.compile(plugin.content);
         const script = plugin.content
         const getPluginClass = new AsyncFunction(script);
-        const pluginClass = await getPluginClass({ logger: logger });
-        return new pluginClass();
+        return await getPluginClass({ logger: logger });
       }catch (e) {
-        logger.error("实例化插件失败:",e)
+        logger.error("编译插件失败:",e)
         throw e
       }
 
@@ -266,8 +265,8 @@ export class PluginService extends BaseService<PluginEntity> {
 
     registry.register(item.name, {
       define: item,
-      target: () => {
-        return this.getPluginTarget(item.name);
+      target: async () => {
+        return await this.getPluginTarget(item.name);
       }
     });
   }

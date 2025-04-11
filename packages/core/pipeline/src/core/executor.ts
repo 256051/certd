@@ -281,13 +281,9 @@ export class Executor {
     let instance: ITaskPlugin = null;
     try {
       //@ts-ignore
-      if (plugin.target.define) {
-        //@ts-ignore
-        instance = new plugin.target();
-      } else {
-        //@ts-ignore
-        instance = await plugin.target();
-      }
+      const pluginCls = await plugin.target();
+      //@ts-ignore
+      instance = new pluginCls();
     } catch (e: any) {
       currentLogger.error(`实例化插件失败:${e.message}`);
       throw new Error(`实例化插件失败`, e);

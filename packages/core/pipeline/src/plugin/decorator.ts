@@ -65,7 +65,9 @@ export function IsTaskPlugin(define: PluginDefine): ClassDecorator {
 
     pluginRegistry.register(define.name, {
       define,
-      target,
+      target: async () => {
+        return target;
+      },
     });
   };
 }

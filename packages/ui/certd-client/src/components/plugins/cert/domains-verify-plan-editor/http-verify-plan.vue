@@ -35,7 +35,7 @@ import { HttpRecord } from "/@/components/plugins/cert/domains-verify-plan-edito
 import { dict } from "@fast-crud/fast-crud";
 
 defineOptions({
-  name: "HttpVerifyPlan"
+  name: "HttpVerifyPlan",
 });
 
 const emit = defineEmits(["update:modelValue", "change"]);
@@ -53,12 +53,12 @@ watch(
   (value: any) => {
     if (value) {
       records.value = {
-        ...value
+        ...value,
       };
     }
   },
   {
-    immediate: true
+    immediate: true,
   }
 );
 
@@ -75,8 +75,8 @@ const uploaderTypeDict = dict({
     { label: "阿里云OSS", value: "alioss" },
     { label: "腾讯云COS", value: "tencentcos" },
     { label: "七牛OSS", value: "qiniuoss" },
-    { label: "SSH(已废弃，请选择SFTP方式)", value: "ssh", disabled: true }
-  ]
+    { label: "SSH(已废弃，请选择SFTP方式)", value: "ssh", disabled: true },
+  ],
 });
 </script>
 

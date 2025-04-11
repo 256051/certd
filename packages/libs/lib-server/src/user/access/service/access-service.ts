@@ -140,7 +140,7 @@ export class AccessService extends BaseService<AccessEntity> {
       id: entity.id,
       ...setting,
     };
-    return newAccess(entity.type, input);
+    return await newAccess(entity.type, input);
   }
 
   async getById(id: any, userId: number): Promise<any> {

@@ -26,7 +26,9 @@ export function IsAccess(define: AccessDefine): ClassDecorator {
     target.define = define;
     accessRegistry.register(define.name, {
       define,
-      target,
+      target: async () => {
+        return target;
+      },
     });
   };
 }
@@ -39,13 +41,15 @@ export function AccessInput(input?: AccessInputDefine): PropertyDecorator {
   };
 }
 
-export function newAccess(type: string, input: any, ctx?: AccessContext) {
+export async function newAccess(type: string, input: any, ctx?: AccessContext) {
   const register = accessRegistry.get(type);
   if (register == null) {
     throw new Error(`access ${type} not found`);
   }
   // @ts-ignore
-  const access = new register.target();
+  const accessCls = await register.target();
+  // @ts-ignore
+  const access = new accessCls();
   for (const key in input) {
     access[key] = input[key];
   }

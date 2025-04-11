@@ -12,6 +12,7 @@ export type DomainVerifyPlanInput = {
   domains: string[];
   type: "cname" | "dns" | "http";
   dnsProviderType?: string;
+  dnsProviderAccessType?: string;
   dnsProviderAccessId?: number;
   cnameVerifyPlan?: Record<string, CnameRecord>;
   httpVerifyPlan?: Record<string, HttpRecord>;
