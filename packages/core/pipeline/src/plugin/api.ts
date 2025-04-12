@@ -180,7 +180,7 @@ export abstract class AbstractTaskPlugin implements ITaskPlugin {
       // @ts-ignore
       const input = define.input;
       for (const key in input) {
-        if (input[key].encrypt) {
+        if (input[key].encrypt && res[key] != null) {
           // @ts-ignore
           this.logger.addSecret(res[key]);
         }
