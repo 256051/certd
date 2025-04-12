@@ -42,8 +42,7 @@ export function buildLogger(write: (text: string) => void) {
           continue;
         }
         //换成同长度的*号， item可能有多行
-        const reg = new RegExp(item, "g");
-        text = text.replaceAll(reg, "*".repeat(item.length));
+        text = text.replaceAll(item, "*".repeat(item.length));
       }
       write(text);
     },
