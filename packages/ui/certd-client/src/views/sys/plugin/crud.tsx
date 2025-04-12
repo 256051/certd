@@ -10,7 +10,14 @@ import yaml from "js-yaml";
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const router = useRouter();
   const { t } = useI18n();
+
+  let lastType = "";
   const pageRequest = async (query: UserPageQuery): Promise<UserPageRes> => {
+    if (lastType && lastType != query?.query?.type) {
+      //lastType有变化
+      query.page.offset = 0;
+    }
+    lastType = query?.query?.type;
     return await api.GetList(query);
   };
   const editRequest = async ({ form, row }: EditReq) => {

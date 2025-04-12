@@ -33,13 +33,21 @@ export class PluginService extends BaseService<PluginEntity> {
     if (pageReq.query.type && pageReq.query.type !== "builtIn") {
       return await super.page(pageReq);
     }
+    //仅查询内置插件
+    const offset = pageReq.page.offset;
+    const limit = pageReq.page.limit;
+
 
     const builtInList = await this.getBuiltInEntityList();
+
+    //获取分页数据
+    const data =  builtInList.slice(offset, offset + limit);
+
     return {
-      records: builtInList,
+      records: data,
       total: builtInList.length,
-      offset: 0,
-      limit: 99999
+      offset: offset,
+      limit: limit
     };
   }
 
