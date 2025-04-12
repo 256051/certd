@@ -9,9 +9,10 @@
 
 <script setup lang="ts">
 import { inject, ref, watch } from "vue";
+import { CertApplyPluginNames } from "/@/constants";
 
 defineOptions({
-  name: "CertDomainsGetter"
+  name: "CertDomainsGetter",
 });
 
 const props = defineProps<{
@@ -52,7 +53,8 @@ function getDomainFromPipeline(inputKey: string) {
     errorRef.value = "找不到目标步骤，请先选择域名证书";
     return;
   }
-  if (certStep.type !== "CertApply" && certStep.type !== "CertApplyLego") {
+
+  if (!CertApplyPluginNames.includes(certStep.type)) {
     targetStepId = getStepIdFromInputKey(certStep.input?.cert);
     certStep = findStepFromPipeline(targetStepId);
     if (!certStep) {
@@ -73,7 +75,7 @@ watch(
     getDomainFromPipeline(inputKey);
   },
   {
-    immediate: true
+    immediate: true,
   }
 );
 </script>
