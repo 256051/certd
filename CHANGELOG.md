@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.33.2](https://github.com/certd/certd/compare/v1.33.1...v1.33.2) (2025-04-12)
+
+### Bug Fixes
+
+* 修复某些情况下无法输出日志的bug ([70101bf](https://github.com/certd/certd/commit/70101bfa7ade65678d9202c804bbae2cb808b594))
+
+### Performance Improvements
+
+* 修复内置插件分页查询逻辑 ([a2710dd](https://github.com/certd/certd/commit/a2710ddc2525e4e637fd157f0180e6d3b801c8be))
+
 ## [1.33.1](https://github.com/certd/certd/compare/v1.33.0...v1.33.1) (2025-04-12)
 
 ### Bug Fixes

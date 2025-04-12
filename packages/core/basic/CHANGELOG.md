@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.33.2](https://github.com/certd/certd/compare/v1.33.1...v1.33.2) (2025-04-12)
+
+### Bug Fixes
+
+* 修复某些情况下无法输出日志的bug ([70101bf](https://github.com/certd/certd/commit/70101bfa7ade65678d9202c804bbae2cb808b594))
+
 ## [1.33.1](https://github.com/certd/certd/compare/v1.33.0...v1.33.1) (2025-04-12)
 
 **Note:** Version bump only for package @certd/basic
