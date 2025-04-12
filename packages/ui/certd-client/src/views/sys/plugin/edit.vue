@@ -46,6 +46,7 @@ import * as api from "./api";
 import { notification } from "ant-design-vue";
 import createCrudOptions from "./crud";
 import { useColumns } from "@fast-crud/fast-crud";
+import { usePluginStore } from "/@/store/plugin";
 //@ts-ignore
 import yaml from "js-yaml";
 

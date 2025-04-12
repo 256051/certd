@@ -1142,6 +1142,9 @@ importers:
       cropperjs:
         specifier: ^1.6.1
         version: 1.6.2
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       cssnano:
         specifier: ^7.0.6
         version: 7.0.6(postcss@8.5.3)

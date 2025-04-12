@@ -14,9 +14,8 @@
 </template>
 <script setup lang="ts">
 import { computed, ref, useAttrs } from "vue";
-import { nanoid } from "nanoid";
 import { notification } from "ant-design-vue";
-import * as api from "/@/api/modules/api.basic";
+import * as api from "/@/store/settings/api.basic";
 
 const props = defineProps<{
   value?: string;
@@ -53,7 +52,7 @@ async function sendSmsCode() {
     await api.sendEmailCode({
       email: props.email,
       imgCode: props.imgCode,
-      randomStr: props.randomStr
+      randomStr: props.randomStr,
     });
   } finally {
     loading.value = false;

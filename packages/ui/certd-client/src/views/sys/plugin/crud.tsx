@@ -267,22 +267,22 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             align: "center",
           },
         },
-        "extra.dependLibs": {
-          title: "第三方依赖",
-          type: "text",
-          form: {
-            helper: "依赖的第三方库,package.dependencies的格式：name[:^version]",
-            component: {
-              name: "a-select",
-              mode: "tags",
-              allowClear: true,
-              open: false,
-            },
-          },
-          column: {
-            show: false,
-          },
-        },
+        // "extra.dependLibs": {
+        //   title: "第三方依赖",
+        //   type: "text",
+        //   form: {
+        //     helper: "依赖的第三方库,package.dependencies的格式：name[:^version]",
+        //     component: {
+        //       name: "a-select",
+        //       mode: "tags",
+        //       allowClear: true,
+        //       open: false,
+        //     },
+        //   },
+        //   column: {
+        //     show: false,
+        //   },
+        // },
         "extra.dependPlugins": {
           title: "插件依赖",
           type: "text",

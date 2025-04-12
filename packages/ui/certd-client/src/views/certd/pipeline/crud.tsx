@@ -164,7 +164,19 @@ export default function ({ crudExpose, context: { certdFormRef, groupDictRef, se
             order: 2,
             text: "商用证书托管",
             type: "primary",
-            title: "手动上传自有证书，执行自动部署（证书有更新时，都需要手动上传一次）",
+            tooltip: {
+              slots: {
+                title() {
+                  return (
+                    <ul>
+                      <li>手动上传自有证书，执行自动部署</li>
+                      <li>并不能自动申请商业证书</li>
+                      <li>证书有更新时，都需要手动上传一次</li>
+                    </ul>
+                  );
+                },
+              },
+            },
             icon: "ion:cloud-upload-outline",
             click() {
               openUploadCreateDialog();

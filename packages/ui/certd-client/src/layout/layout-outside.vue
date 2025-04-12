@@ -41,7 +41,7 @@
 import { env } from "/@/utils/util.env";
 import { computed, ref, Ref } from "vue";
 import { useSettingStore } from "/@/store/settings";
-import { SiteInfo, SysPublicSetting } from "/@/api/modules/api.basic";
+import { SiteInfo, SysPublicSetting } from "/@/store/settings/api.basic";
 
 const envRef = ref(env);
 const settingStore = useSettingStore();

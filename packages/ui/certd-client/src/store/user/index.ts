@@ -6,7 +6,7 @@ import { LocalStorage } from "/src/utils/util.storage";
 import * as UserApi from "./api.user";
 import { RegisterReq, SmsLoginReq } from "./api.user";
 // @ts-ignore
-import { LoginReq, UserInfoRes } from "/@/api/modules/api.user";
+import { LoginReq, UserInfoRes } from "/@/store/user/api.user";
 import { message, Modal, notification } from "ant-design-vue";
 import { useI18n } from "vue-i18n";
 
