@@ -51,6 +51,7 @@ export class UpyunDeployToCdn extends AbstractPlusTaskPlugin {
   accessId!: string;
   //
 
+
   @TaskInput(
     createRemoteSelectInputDefine({
       title: "加速域名",
@@ -61,6 +62,38 @@ export class UpyunDeployToCdn extends AbstractPlusTaskPlugin {
     })
   )
   cdnList!: string[];
+
+  @TaskInput({
+    title: "强制HTTPS",
+    value:"keep",
+    component: {
+      name: "a-select",
+      vModel:"value",
+      options:[
+        {value:"true","label":"强制HTTPS"},
+        {value:"false","label":"不强制HTTPS"},
+        {value:"keep","label":"保持原样"}
+      ]
+    },
+    required: true //必填
+  })
+  forceHttps!: string;
+
+  @TaskInput({
+    title: "开启HTTPS",
+    value:"true",
+    component: {
+      name: "a-select",
+      vModel:"value",
+      options:[
+        {value:"true","label":"开启HTTPS"},
+        {value:"false","label":"关闭HTTPS"},
+        {value:"keep","label":"保持原样"}
+      ]
+    },
+    required: true //必填
+  })
+  https!: string;
 
   //插件实例化时执行的方法
   async onInstance() {
@@ -80,15 +113,24 @@ export class UpyunDeployToCdn extends AbstractPlusTaskPlugin {
     const certId = await upyunClient.uploadCert(cookie, this.cert);
     this.logger.info(`上传证书成功：${certId}`);
     for (const item of this.cdnList) {
+
+      const data :any= {
+        crt_id: certId,
+        domain_name: item,
+      }
+      if (this.forceHttps !== 'keep') {
+        data.force_https = Boolean(this.forceHttps);
+      }
+      if (this.https !=='keep') {
+        data.https = Boolean(this.https);
+      }
+
       this.logger.info(`开始部署证书：${item}`);
       const res = await upyunClient.doRequest({
         cookie: cookie,
         url: "https://console.upyun.com/api/https/migrate/domain",
         method: "POST",
-        data: {
-          crt_id: certId,
-          domain_name: item
-        }
+        data: data
       });
       this.logger.info(`部署成功：${JSON.stringify(res)}`);
     }
