@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.33.3](https://github.com/certd/certd/compare/v1.33.2...v1.33.3) (2025-04-14)
+
+### Bug Fixes
+
+* 修复登录错误次数过多阻止再次登录逻辑 ([bf4d191](https://github.com/certd/certd/commit/bf4d191c8bd2f9209eb6768f662b9c77de99e998))
+
 ## [1.33.2](https://github.com/certd/certd/compare/v1.33.1...v1.33.2) (2025-04-12)
 
 ### Performance Improvements
