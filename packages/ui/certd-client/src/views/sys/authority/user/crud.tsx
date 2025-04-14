@@ -1,6 +1,7 @@
 import * as api from "./api";
 import { AddReq, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
 import { useUserStore } from "/@/store/user";
+import { Modal, notification } from "ant-design-vue";
 
 export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const pageRequest = async (query: UserPageQuery): Promise<UserPageRes> => {
@@ -26,16 +27,36 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
         pageRequest,
         addRequest,
         editRequest,
-        delRequest
+        delRequest,
       },
       rowHandle: {
-        fixed: "right"
+        fixed: "right",
+        buttons: {
+          unlock: {
+            title: "解除登录锁定",
+            text: null,
+            type: "link",
+            icon: "ion:lock-open-outline",
+            click: async ({ row }) => {
+              Modal.confirm({
+                title: "提示",
+                content: "确定要解除该用户的登录锁定吗？",
+                onOk: async () => {
+                  await api.Unlock(row.id);
+                  notification.success({
+                    message: "解除成功",
+                  });
+                },
+              });
+            },
+          },
+        },
       },
       table: {
         scroll: {
           //使用固定列时需要设置此值，并且大于等于列宽度之和的值
-          x: 1400
-        }
+          x: 1400,
+        },
       },
       columns: {
         id: {
@@ -44,8 +65,8 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
           form: { show: false }, // 表单配置
           column: {
             width: 100,
-            sorter: true
-          }
+            sorter: true,
+          },
         },
         createTime: {
           title: "创建时间",
@@ -53,8 +74,8 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
           form: { show: false }, // 表单配置
           column: {
             width: 180,
-            sorter: true
-          }
+            sorter: true,
+          },
         },
         // updateTime: {
         //   title: "修改时间",
@@ -72,64 +93,64 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
           form: {
             rules: [
               { required: true, message: "请输入用户名" },
-              { max: 50, message: "最大50个字符" }
-            ]
+              { max: 50, message: "最大50个字符" },
+            ],
           },
           editForm: { component: { disabled: false } },
           column: {
             sorter: true,
-            width: 200
-          }
+            width: 200,
+          },
         },
         password: {
           title: "密码",
           type: "text",
           key: "password",
           column: {
-            show: false
+            show: false,
           },
           form: {
             rules: [{ max: 50, message: "最大50个字符" }],
             component: {
-              showPassword: true
+              showPassword: true,
             },
-            helper: "填写则修改密码"
-          }
+            helper: "填写则修改密码",
+          },
         },
         nickName: {
           title: "昵称",
           type: "text",
           search: { show: true }, // 开启查询
           form: {
-            rules: [{ max: 50, message: "最大50个字符" }]
+            rules: [{ max: 50, message: "最大50个字符" }],
           },
           column: {
-            sorter: true
-          }
+            sorter: true,
+          },
         },
         email: {
           title: "邮箱",
           type: "text",
           search: { show: true }, // 开启查询
           form: {
-            rules: [{ max: 50, message: "最大50个字符" }]
+            rules: [{ max: 50, message: "最大50个字符" }],
           },
           column: {
             sorter: true,
-            width: 160
-          }
+            width: 160,
+          },
         },
         mobile: {
           title: "手机号",
           type: "text",
           search: { show: true }, // 开启查询
           form: {
-            rules: [{ max: 50, message: "最大50个字符" }]
+            rules: [{ max: 50, message: "最大50个字符" }],
           },
           column: {
             sorter: true,
-            width: 130
-          }
+            width: 130,
+          },
         },
         avatar: {
           title: "头像",
@@ -140,12 +161,12 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
               //设置高度，修复操作列错位的问题
               style: {
                 height: "30px",
-                width: "auto"
+                width: "auto",
               },
               buildUrl(key: string) {
                 return `/api/basic/file/download?&key=` + key;
-              }
-            }
+              },
+            },
           },
           form: {
             component: {
@@ -154,7 +175,7 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
               cropper: {
                 aspectRatio: 1,
                 autoCropArea: 1,
-                viewMode: 0
+                viewMode: 0,
               },
               onReady: null,
               uploader: {
@@ -162,17 +183,17 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
                 action: "/basic/file/upload",
                 name: "file",
                 headers: {
-                  Authorization: "Bearer " + userStore.getToken
+                  Authorization: "Bearer " + userStore.getToken,
                 },
                 successHandle(res: any) {
                   return res;
-                }
+                },
               },
               buildUrl(key: string) {
                 return `/api/basic/file/download?&key=` + key;
-              }
-            }
-          }
+              },
+            },
+          },
         },
         status: {
           title: "状态",
@@ -180,24 +201,24 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
           dict: dict({
             data: [
               { label: "启用", value: 1, color: "green" },
-              { label: "禁用", value: 0, color: "red" }
-            ]
+              { label: "禁用", value: 0, color: "red" },
+            ],
           }),
           column: {
             align: "center",
             sorter: true,
-            width: 100
-          }
+            width: 100,
+          },
         },
         remark: {
           title: "备注",
           type: "text",
           column: {
-            sorter: true
+            sorter: true,
           },
           form: {
-            rules: [{ max: 100, message: "最大100个字符" }]
-          }
+            rules: [{ max: 100, message: "最大100个字符" }],
+          },
         },
         roles: {
           title: "角色",
@@ -205,17 +226,17 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
           dict: dict({
             url: "/sys/authority/role/list",
             value: "id",
-            label: "name"
+            label: "name",
           }), // 数据字典
           form: {
-            component: { mode: "multiple" }
+            component: { mode: "multiple" },
           },
           column: {
             width: 250,
-            sortable: true
-          }
-        }
-      }
-    }
+            sortable: true,
+          },
+        },
+      },
+    },
   };
 }

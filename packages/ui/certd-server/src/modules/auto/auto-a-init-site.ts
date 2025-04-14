@@ -4,6 +4,7 @@ import { UserService } from '../sys/authority/service/user-service.js';
 import { PlusService, SysInstallInfo, SysPrivateSettings, SysSettingsService } from '@certd/lib-server';
 import { nanoid } from 'nanoid';
 import crypto from 'crypto';
+import {SafeService} from "../sys/settings/safe-service.js";
 
 @Autoload()
 @Scope(ScopeEnum.Request, { allowDowngrade: true })
@@ -18,6 +19,8 @@ export class AutoAInitSite {
   sysSettingsService: SysSettingsService;
   @Inject()
   plusService: PlusService;
+  @Inject()
+  safeService: SafeService;
 
   @Init()
   async init() {
@@ -57,6 +60,8 @@ export class AutoAInitSite {
       logger.error('授权许可验证失败', e);
     }
 
+    //加载站点隐藏配置
+    await this.safeService.reloadHiddenStatus(true)
     logger.info('初始化站点完成');
   }
 

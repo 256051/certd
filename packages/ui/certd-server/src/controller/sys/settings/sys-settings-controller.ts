@@ -1,12 +1,19 @@
-import { ALL, Body, Controller, Inject, Post, Provide, Query } from '@midwayjs/core';
-import { CrudController, SysPrivateSettings, SysPublicSettings, SysSettingsEntity, SysSettingsService } from '@certd/lib-server';
-import { merge } from 'lodash-es';
-import { PipelineService } from '../../../modules/pipeline/service/pipeline-service.js';
-import { UserSettingsService } from '../../../modules/mine/service/user-settings-service.js';
-import { getEmailSettings } from '../../../modules/sys/settings/fix.js';
-import { http, logger, simpleNanoId } from '@certd/basic';
-import { CodeService } from '../../../modules/basic/service/code-service.js';
-import { SmsServiceFactory } from '../../../modules/basic/sms/factory.js';
+import {ALL, Body, Controller, Inject, Post, Provide, Query} from '@midwayjs/core';
+import {
+  CrudController,
+  SysPrivateSettings,
+  SysPublicSettings,
+  SysSafeSetting,
+  SysSettingsEntity,
+  SysSettingsService
+} from '@certd/lib-server';
+import {cloneDeep, merge} from 'lodash-es';
+import {PipelineService} from '../../../modules/pipeline/service/pipeline-service.js';
+import {UserSettingsService} from '../../../modules/mine/service/user-settings-service.js';
+import {getEmailSettings} from '../../../modules/sys/settings/fix.js';
+import {http, logger, simpleNanoId, utils} from '@certd/basic';
+import {CodeService} from '../../../modules/basic/service/code-service.js';
+import {SmsServiceFactory} from '../../../modules/basic/sms/factory.js';
 
 
 /**
@@ -158,5 +165,30 @@ export class SysSettingsController extends CrudController<SysSettingsService> {
   @Post('/getSmsTypeDefine', { summary: 'sys:settings:view' })
   async getSmsTypeDefine(@Body('type') type: string) {
     return this.ok(SmsServiceFactory.getDefine(type));
+  }
+
+
+
+  @Post("/safe/get", { summary: "sys:settings:view" })
+  async safeGet() {
+    const res = await this.service.getSetting<SysSafeSetting>(SysSafeSetting);
+    const clone:SysSafeSetting = cloneDeep(res);
+    delete clone.hidden?.openPassword;
+    return this.ok(clone);
+  }
+
+  @Post("/safe/save", { summary: "sys:settings:edit" })
+  async safeSave(@Body(ALL) body: any) {
+    if(body.hidden.openPassword){
+      body.hidden.openPassword = utils.hash.md5(body.hidden.openPassword);
+    }
+    const blankSetting = new SysSafeSetting()
+    const setting = await this.service.getSetting<SysSafeSetting>(SysSafeSetting);
+    const newSetting = merge(blankSetting,cloneDeep(setting), body);
+    if(newSetting.hidden?.enabled && !newSetting.hidden?.openPassword){
+      throw new Error("首次设置需要填写解锁密码")
+    }
+    await this.service.saveSetting(blankSetting);
+    return this.ok({});
   }
 }

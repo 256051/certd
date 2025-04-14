@@ -14,36 +14,19 @@ import DefineOptions from "unplugin-vue-define-options/vite";
 // 增加环境变量 _
 process.env.VITE_APP_VERSION = require("./package.json").version;
 process.env.VITE_APP_BUILD_TIME = require("dayjs")().format("YYYY-M-D HH:mm:ss");
-
-import { theme } from "ant-design-vue";
 import * as https from "node:https";
-const { defaultAlgorithm, defaultSeed } = theme;
-
-const mapToken = defaultAlgorithm(defaultSeed);
 
 export default ({ command, mode }) => {
   console.log("args", command, mode);
   const env = loadEnv(mode, process.cwd());
-  let devServerFs: any = {};
-  let devAlias: any[] = [];
-  if (mode.startsWith("debug")) {
-    devAlias = [
-      { find: /@fast-crud\/fast-crud\/dist/, replacement: path.resolve("../../fast-crud/src/") },
-      // { find: /@fast-crud\/fast-crud$/, replacement: path.resolve("../../fast-crud/src/") },
-      { find: /@fast-crud\/fast-extends\/dist/, replacement: path.resolve("../../fast-extends/src/") },
-      // { find: /@fast-crud\/fast-extends$/, replacement: path.resolve("../../fast-extends/src/") },
-      // { find: /@fast-crud\/ui-antdv$/, replacement: path.resolve("../../ui/ui-antdv/src/") },
-      // { find: /@fast-crud\/ui-interface$/, replacement: path.resolve("../../ui/ui-interface/src/") }
-      { find: /@fast-crud\/ui-antdv4\/dist/, replacement: path.resolve("../../ui/ui-antdv4/src/") }
-    ];
-    devServerFs = {
-      // 这里配置dev启动时读取的项目根目录
-      allow: ["../../../"]
-    };
-    console.log("devAlias", devAlias);
-  }
+  const devServerFs: any = {};
+  const devAlias: any[] = [];
+  const base = "/";
+  // if (mode.startsWith("dev")) {
+  //   base = "/dev";
+  // }
   return {
-    base: "/",
+    base: base,
     plugins: [
       DefineOptions(),
       vueJsx(),
@@ -52,12 +35,12 @@ export default ({ command, mode }) => {
         inject: {
           data: {
             title: env.VITE_APP_TITLE,
-            projectPath: env.VITE_APP_PROJECT_PATH
-          }
-        }
+            projectPath: env.VITE_APP_PROJECT_PATH,
+          },
+        },
       }),
       // 压缩build后的代码
-      viteCompression()
+      viteCompression(),
       //主题色替换
       //...configThemePlugin(true),
       // viteThemePlugin({
@@ -71,29 +54,29 @@ export default ({ command, mode }) => {
       drop: command === "build" ? ["debugger"] : [],
       pure: ["console.log", "debugger"],
       jsxFactory: "h",
-      jsxFragment: "Fragment"
+      jsxFragment: "Fragment",
     },
     resolve: {
       alias: [...devAlias, { find: "/@", replacement: path.resolve("./src") }, { find: "/#", replacement: path.resolve("./types") }],
-      dedupe: ["vue"]
+      dedupe: ["vue"],
     },
     optimizeDeps: {
-      include: ["ant-design-vue"]
+      include: ["ant-design-vue"],
     },
     build: {
       rollupOptions: {
-        plugins: [visualizer()]
-      }
+        plugins: [visualizer()],
+      },
     },
     css: {
       preprocessorOptions: {
         less: {
           // 修改默认主题颜色，配置less变量
           // modifyVars: generateModifyVars(),
-          javascriptEnabled: true
+          javascriptEnabled: true,
           // modifyVars: mapToken
-        }
-      }
+        },
+      },
     },
     server: {
       host: "0.0.0.0",
@@ -105,9 +88,9 @@ export default ({ command, mode }) => {
           //配套后端 https://github.com/fast-crud/fs-server-js
           target: "https://127.0.0.1:7002",
           //忽略证书
-          agent: new https.Agent({ rejectUnauthorized: false })
-        }
-      }
-    }
+          agent: new https.Agent({ rejectUnauthorized: false }),
+        },
+      },
+    },
   };
 };

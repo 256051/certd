@@ -46,7 +46,7 @@ export class WebStorage {
     const stringData = JSON.stringify({
       value,
       time: Date.now(),
-      expire: expire != null ? new Date().getTime() + expire * 1000 : null
+      expire: expire != null ? new Date().getTime() + expire * 1000 : null,
     });
     this.storage.setItem(this.getKey(key), stringData);
   }

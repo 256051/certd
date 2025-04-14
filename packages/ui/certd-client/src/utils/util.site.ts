@@ -7,5 +7,5 @@ export const site = {
   title: function (titleText: string, baseTitle?: string) {
     const processTitle = baseTitle || env.TITLE || "Certd";
     window.document.title = `${processTitle}${titleText ? ` | ${titleText}` : ""}`;
-  }
+  },
 };

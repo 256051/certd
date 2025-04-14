@@ -47,4 +47,13 @@ export default {
     }
     return desc.replace(/\[(.*)\]\((.*)\)/g, '<a href="$2" target="_blank">$1</a>');
   },
+
+  randomString(length: number) {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
+    for (let i = 0; i < length; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  },
 };

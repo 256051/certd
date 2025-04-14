@@ -5,14 +5,17 @@
     <!--    </template>-->
     <div class="sys-settings-body md:p-5">
       <a-tabs :active-key="activeKey" type="card" class="sys-settings-tabs" @update:active-key="onChange">
-        <a-tab-pane key="" tab="基本设置">
-          <SettingBase v-if="activeKey === ''" />
+        <a-tab-pane key="base" tab="基本设置">
+          <SettingBase v-if="activeKey === 'base'" />
         </a-tab-pane>
         <a-tab-pane key="register" tab="注册设置">
           <SettingRegister v-if="activeKey === 'register'" />
         </a-tab-pane>
         <a-tab-pane v-if="settingsStore.isComm" key="payment" tab="支付设置">
           <SettingPayment v-if="activeKey === 'payment'" />
+        </a-tab-pane>
+        <a-tab-pane key="save" tab="安全设置">
+          <SettingSafe v-if="activeKey === 'save'" />
         </a-tab-pane>
       </a-tabs>
     </div>
@@ -23,6 +26,7 @@
 import SettingBase from "/@/views/sys/settings/tabs/base.vue";
 import SettingRegister from "/@/views/sys/settings/tabs/register.vue";
 import SettingPayment from "/@/views/sys/settings/tabs/payment.vue";
+import SettingSafe from "/@/views/sys/settings/tabs/safe.vue";
 import { useRoute, useRouter } from "vue-router";
 import { ref } from "vue";
 import { useSettingStore } from "/@/store/settings";
@@ -30,11 +34,11 @@ defineOptions({
   name: "SysSettings",
 });
 const settingsStore = useSettingStore();
-const activeKey = ref("");
+const activeKey = ref("base");
 const route = useRoute();
 const router = useRouter();
 if (route.query.tab) {
-  activeKey.value = (route.query.tab as string) || "";
+  activeKey.value = (route.query.tab as string) || "base";
 }
 
 function onChange(value: string) {
@@ -52,7 +56,7 @@ function onChange(value: string) {
 <style lang="less">
 .page-sys-settings {
   .sys-settings-form {
-    width: 500px;
+    width: 600px;
     max-width: 100%;
     padding: 20px;
   }

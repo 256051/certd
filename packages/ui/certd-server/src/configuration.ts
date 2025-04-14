@@ -19,6 +19,7 @@ import * as libServer from '@certd/lib-server';
 import * as commercial from '@certd/commercial-core';
 import * as upload from '@midwayjs/upload';
 import { setLogger } from '@certd/acme-client';
+import {HiddenMiddleware} from "./middleware/hidden.js";
 process.on('uncaughtException', error => {
   console.error('未捕获的异常：', error);
   // 在这里可以添加日志记录、发送错误通知等操作
@@ -77,6 +78,8 @@ export class MainConfiguration {
     this.app.useMiddleware([
       //统一异常处理
       GlobalExceptionMiddleware,
+      //站点隐藏
+      HiddenMiddleware,
       //预览模式限制修改id<1000的数据
       PreviewMiddleware,
       //授权处理

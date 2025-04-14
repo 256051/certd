@@ -103,3 +103,4 @@ export async function GetSmsTypeDefine(type: string) {
     },
   });
 }
+

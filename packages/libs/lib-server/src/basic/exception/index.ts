@@ -7,3 +7,4 @@ export * from './vip-exception.js';
 export * from './common-exception.js';
 export * from './not-found-exception.js';
 export * from './param-exception.js';
+export * from './site-off-exception.js';

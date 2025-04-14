@@ -128,11 +128,11 @@ export class DeployCertToTencentAll extends AbstractTaskPlugin {
     });
 
     let certId:string = null
-    if (typeof certId === 'string') {
-      certId = this.tencentCertId  as string;
-    } else {
+    if (typeof certId === 'object') {
       //上传
       certId = await this.uploadToTencent(access,this.tencentCertId as CertInfo);
+    } else {
+      certId = this.tencentCertId  as string;
     }
 
     const params = {

@@ -16,6 +16,6 @@ export const util = {
   router: routerUtils,
   tree: treeUtils,
   hash: hashUtils,
-  amount: amountUtils
+  amount: amountUtils,
 };
 export const utils = util;

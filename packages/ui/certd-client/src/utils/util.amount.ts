@@ -5,5 +5,5 @@ export const amountUtils = {
 
   toYuan(amount: number): number {
     return parseFloat((amount / 100).toFixed(2));
-  }
+  },
 };

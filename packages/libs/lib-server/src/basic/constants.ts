@@ -66,9 +66,14 @@ export const Constants = {
       code: 404,
       message: '页面/文件/资源不存在',
     },
+
     preview: {
       code: 10001,
       message: '对不起，预览环境不允许修改此数据',
+    },
+    siteOff:{
+      code: 10010,
+      message: '站点已关闭',
     },
     openKeyError: {
       code: 20000,

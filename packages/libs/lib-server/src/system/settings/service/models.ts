@@ -171,7 +171,7 @@ export class SysSuiteSetting extends BaseSettings {
   static __key__ = 'sys.suite';
   static __access__ = 'private';
 
-  enabled = false;
+  enabled:boolean = false;
 
   registerGift?: {
     productId: number;
@@ -179,4 +179,26 @@ export class SysSuiteSetting extends BaseSettings {
   };
 
   intro?: string;
+}
+
+
+export type SiteHidden = {
+  enabled: boolean;
+  openPath?: string;
+  //md5 hash 两次后保存
+  openPassword?: string;
+  autoHiddenTimes?: number;
+  hiddenOpenApi?: boolean
+};
+export class SysSafeSetting extends BaseSettings {
+  static __title__ = '站点安全设置';
+  static __key__ = 'sys.safe';
+  static __access__ = 'private';
+
+  // 站点隐藏
+  hidden:SiteHidden = {
+    enabled: false,
+    hiddenOpenApi:false,
+    autoHiddenTimes: 5,
+  };
 }

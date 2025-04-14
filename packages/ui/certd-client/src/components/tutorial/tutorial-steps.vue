@@ -54,23 +54,23 @@ const steps = ref<Step[]>([
         descriptions: ["本教程演示如何自动申请证书并部署到Nginx上", "仅需3步，全自动申请部署证书"],
         body: () => {
           return <SimpleSteps></SimpleSteps>;
-        }
+        },
       },
       {
         image: "/static/doc/images/1-add.png",
         title: "创建证书流水线",
-        descriptions: ["点击添加证书流水线，填写证书申请信息"]
+        descriptions: ["点击添加证书流水线，填写证书申请信息"],
       },
       {
         image: "/static/doc/images/3-add-success.png",
         title: "流水线创建成功",
-        descriptions: ["点击手动触发即可申请证书"]
+        descriptions: ["点击手动触发即可申请证书"],
       },
       {
         title: "接下来演示如何自动部署证书",
-        descriptions: ["如果您只需要申请证书，那么到这一步就可以了"]
-      }
-    ]
+        descriptions: ["如果您只需要申请证书，那么到这一步就可以了"],
+      },
+    ],
   },
   {
     title: "添加部署证书任务",
@@ -79,29 +79,29 @@ const steps = ref<Step[]>([
       {
         image: "/static/doc/images/5-1-add-host.png",
         title: "添加证书部署任务",
-        descriptions: ["这里演示自动部署证书到nginx", "本系统提供海量部署插件，满足您的各种部署需求"]
+        descriptions: ["这里演示自动部署证书到nginx", "本系统提供海量部署插件，满足您的各种部署需求"],
       },
       {
         image: "/static/doc/images/5-2-add-host.png",
         title: "填写任务参数",
-        descriptions: ["填写主机上证书文件的路径", "选择主机ssh登录授权"]
+        descriptions: ["填写主机上证书文件的路径", "选择主机ssh登录授权"],
       },
       {
         image: "/static/doc/images/5-3-add-host.png",
         title: "让新证书生效",
-        descriptions: ["执行重启脚本", "让证书生效"]
+        descriptions: ["执行重启脚本", "让证书生效"],
       },
       {
         image: "/static/doc/images/5-4-add-host.png",
         title: "部署任务添加成功",
-        descriptions: ["现在可以运行"]
+        descriptions: ["现在可以运行"],
       },
       {
         image: "/static/doc/images/5-5-plugin-list.png",
         title: "本系统提供茫茫多的部署插件",
-        descriptions: ["您可以根据自身需求将证书部署到各种应用和平台"]
-      }
-    ]
+        descriptions: ["您可以根据自身需求将证书部署到各种应用和平台"],
+      },
+    ],
   },
   {
     title: "运行与测试",
@@ -110,44 +110,44 @@ const steps = ref<Step[]>([
       {
         image: "/static/doc/images/9-start.png",
         title: "运行测试一下",
-        descriptions: ["点击手动触发按钮，即可测试运行"]
+        descriptions: ["点击手动触发按钮，即可测试运行"],
       },
       {
         image: "/static/doc/images/10-1-log.png",
         title: "查看日志",
-        descriptions: ["点击任务可以查看状态和日志"]
+        descriptions: ["点击任务可以查看状态和日志"],
       },
       {
         image: "/static/doc/images/11-1-error.png",
         title: "执行失败如何排查",
-        descriptions: ["查看错误日志"]
+        descriptions: ["查看错误日志"],
       },
       {
         image: "/static/doc/images/11-2-error.png",
         title: "执行失败如何排查",
-        descriptions: ["查看错误日志", "这里报的是nginx容器不存在，修改命令，改成正确的nginx容器名称即可"]
+        descriptions: ["查看错误日志", "这里报的是nginx容器不存在，修改命令，改成正确的nginx容器名称即可"],
       },
       {
         image: "/static/doc/images/12-1-log-success.png",
         title: "执行成功",
-        descriptions: ["修改正确后，重新点击手动触发，重新运行一次，执行成功"]
+        descriptions: ["修改正确后，重新点击手动触发，重新运行一次，执行成功"],
       },
       {
         image: "/static/doc/images/12-2-skip-log.png",
         title: "成功后自动跳过",
-        descriptions: ["可以看到成功过的将会自动跳过，不会重复执行，只有当参数变更或者证书更新了，才会重新运行"]
+        descriptions: ["可以看到成功过的将会自动跳过，不会重复执行，只有当参数变更或者证书更新了，才会重新运行"],
       },
       {
         image: "/static/doc/images/13-1-result.png",
         title: "查看证书部署成功",
-        descriptions: ["访问nginx上的网站，可以看到证书已经部署成功"]
+        descriptions: ["访问nginx上的网站，可以看到证书已经部署成功"],
       },
       {
         image: "/static/doc/images/13-3-download.png",
         title: "还可以下载证书，手动部署",
-        descriptions: ["如果还没有好用的部署插件，没办法自动部署，你还可以下载证书，手动部署"]
-      }
-    ]
+        descriptions: ["如果还没有好用的部署插件，没办法自动部署，你还可以下载证书，手动部署"],
+      },
+    ],
   },
   {
     title: "设置定时执行和邮件通知",
@@ -156,22 +156,19 @@ const steps = ref<Step[]>([
       {
         image: "/static/doc/images/14-timer.png",
         title: "设置定时执行",
-        descriptions: [
-          "流水线测试成功，接下来配置定时触发，以后每天定时执行就不用管了",
-          "推荐配置每天运行一次，在到期前35天才会重新申请新证书并部署，没到期前会自动跳过，不会重复申请。"
-        ]
+        descriptions: ["流水线测试成功，接下来配置定时触发，以后每天定时执行就不用管了", "推荐配置每天运行一次，在到期前35天才会重新申请新证书并部署，没到期前会自动跳过，不会重复申请。"],
       },
       {
         image: "/static/doc/images/15-1-email.png",
         title: "设置邮件通知",
-        descriptions: ["建议选择监听'错误时'和'错误转成功'两种即可，在意外失败时可以尽快去排查问题，（基础版需要配置邮件服务器）"]
+        descriptions: ["建议选择监听'错误时'和'错误转成功'两种即可，在意外失败时可以尽快去排查问题，（基础版需要配置邮件服务器）"],
       },
       {
         title: "教程结束",
-        descriptions: ["感谢观看，希望对你有所帮助"]
-      }
-    ]
-  }
+        descriptions: ["感谢观看，希望对你有所帮助"],
+      },
+    ],
+  },
 ]);
 
 const current = ref(0);
