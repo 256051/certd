@@ -1,10 +1,11 @@
-import { Provide, Controller, Post, Inject, Body, Query, ALL } from '@midwayjs/core';
-import { UserService } from '../../../modules/sys/authority/service/user-service.js';
-import { CrudController } from '@certd/lib-server';
-import { RoleService } from '../../../modules/sys/authority/service/role-service.js';
-import { PermissionService } from '../../../modules/sys/authority/service/permission-service.js';
-import { Constants } from '@certd/lib-server';
-import { In } from 'typeorm';
+import {Provide, Controller, Post, Inject, Body, Query, ALL} from '@midwayjs/core';
+import {UserService} from '../../../modules/sys/authority/service/user-service.js';
+import {CrudController} from '@certd/lib-server';
+import {RoleService} from '../../../modules/sys/authority/service/role-service.js';
+import {PermissionService} from '../../../modules/sys/authority/service/permission-service.js';
+import {Constants} from '@certd/lib-server';
+import {In} from 'typeorm';
+import {LoginService} from "../../../modules/login/service/login-service.js";
 
 /**
  * 系统用户
@@ -20,11 +21,14 @@ export class UserController extends CrudController<UserService> {
   @Inject()
   permissionService: PermissionService;
 
+  @Inject()
+  loginService: LoginService;
+
   getService() {
     return this.service;
   }
 
-  @Post('/getSimpleUserByIds', { summary: 'sys:auth:user:add' })
+  @Post('/getSimpleUserByIds', {summary: 'sys:auth:user:add'})
   async getSimpleUserByIds(@Body('ids') ids: number[]) {
     const users = await this.service.find({
       select: {
@@ -42,10 +46,10 @@ export class UserController extends CrudController<UserService> {
     return this.ok(users);
   }
 
-  @Post('/page', { summary: 'sys:auth:user:view' })
+  @Post('/page', {summary: 'sys:auth:user:view'})
   async page(
     @Body(ALL)
-    body
+      body
   ) {
     const ret = await super.page(body);
 
@@ -74,25 +78,26 @@ export class UserController extends CrudController<UserService> {
     return ret;
   }
 
-  @Post('/add', { summary: 'sys:auth:user:add' })
+  @Post('/add', {summary: 'sys:auth:user:add'})
   async add(
     @Body(ALL)
-    bean
+      bean
   ) {
     return await super.add(bean);
   }
 
-  @Post('/update', { summary: 'sys:auth:user:edit' })
+  @Post('/update', {summary: 'sys:auth:user:edit'})
   async update(
     @Body(ALL)
-    bean
+      bean
   ) {
     return await super.update(bean);
   }
-  @Post('/delete', { summary: 'sys:auth:user:remove' })
+
+  @Post('/delete', {summary: 'sys:auth:user:remove'})
   async delete(
     @Query('id')
-    id: number
+      id: number
   ) {
     if (id === 1) {
       throw new Error('不能删除默认的管理员角色');
@@ -104,9 +109,22 @@ export class UserController extends CrudController<UserService> {
   }
 
   /**
+   * 解除登录锁定
+   */
+  @Post('/unlockBlock', {summary: "sys:auth:user:edit"})
+  public async unlockBlock(@Body('id') id: number) {
+    const info = await this.service.info(id, ['password']);
+    this.loginService.clearCacheOnSuccess(info.username)
+    if (info.mobile) {
+      this.loginService.clearCacheOnSuccess(info.mobile)
+    }
+    return this.ok(info);
+  }
+
+  /**
    * 当前登录用户的个人信息
    */
-  @Post('/mine', { summary: Constants.per.authOnly })
+  @Post('/mine', {summary: Constants.per.authOnly})
   public async mine() {
     const id = this.getUserId();
     const info = await this.service.info(id, ['password']);
@@ -116,7 +134,7 @@ export class UserController extends CrudController<UserService> {
   /**
    * 当前登录用户的权限列表
    */
-  @Post('/permissions', { summary: Constants.per.authOnly })
+  @Post('/permissions', {summary: Constants.per.authOnly})
   public async permissions() {
     const id = this.getUserId();
     const permissions = await this.service.getUserPermissions(id);
@@ -126,11 +144,13 @@ export class UserController extends CrudController<UserService> {
   /**
    * 当前登录用户的权限树形列表
    */
-  @Post('/permissionTree', { summary: Constants.per.authOnly })
+  @Post('/permissionTree', {summary: Constants.per.authOnly})
   public async permissionTree() {
     const id = this.getUserId();
     const permissions = await this.service.getUserPermissions(id);
     const tree = this.permissionService.buildTree(permissions);
     return this.ok(tree);
   }
+
+
 }

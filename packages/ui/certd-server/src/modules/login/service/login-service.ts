@@ -1,20 +1,20 @@
-import { Config, Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
-import { UserService } from '../../sys/authority/service/user-service.js';
+import {Config, Inject, Provide, Scope, ScopeEnum} from '@midwayjs/core';
+import {UserService} from '../../sys/authority/service/user-service.js';
 import jwt from 'jsonwebtoken';
-import { CommonException } from '@certd/lib-server';
-import { RoleService } from '../../sys/authority/service/role-service.js';
-import { UserEntity } from '../../sys/authority/entity/user.js';
-import { SysSettingsService } from '@certd/lib-server';
-import { SysPrivateSettings } from '@certd/lib-server';
-import { cache } from '@certd/basic';
-import { LoginErrorException } from '@certd/lib-server/dist/basic/exception/login-error-exception.js';
-import { CodeService } from '../../basic/service/code-service.js';
+import {CommonException} from '@certd/lib-server';
+import {RoleService} from '../../sys/authority/service/role-service.js';
+import {UserEntity} from '../../sys/authority/entity/user.js';
+import {SysSettingsService} from '@certd/lib-server';
+import {SysPrivateSettings} from '@certd/lib-server';
+import {cache} from '@certd/basic';
+import {LoginErrorException} from '@certd/lib-server/dist/basic/exception/login-error-exception.js';
+import {CodeService} from '../../basic/service/code-service.js';
 
 /**
  * 系统用户
  */
 @Provide()
-@Scope(ScopeEnum.Request, { allowDowngrade: true })
+@Scope(ScopeEnum.Request, {allowDowngrade: true})
 export class LoginService {
   @Inject()
   userService: UserService;
@@ -29,51 +29,72 @@ export class LoginService {
   @Inject()
   sysSettingsService: SysSettingsService;
 
-  checkErrorTimes(username: string, errorMessage: string) {
-    const cacheKey = `login_error_times:${username}`;
-    const blockTimesKey = `login_block_times:${username}`;
-    let blockTimes = cache.get(blockTimesKey);
-    let maxWaitMin = 2;
-    const maxRetryTimes = 5;
-    if (blockTimes == null) {
-      blockTimes = 1;
+  checkIsBlocked(username: string) {
+    const blockDurationKey = `login_block_duration:${username}`;
+    const value = cache.get(blockDurationKey);
+    if (value) {
+      const ttl = cache.getRemainingTTL(blockDurationKey)
+      const leftMin = Math.ceil(ttl / 1000 / 60);
+      throw new CommonException(`账号被锁定，请${leftMin}分钟后重试`);
     }
-    maxWaitMin = maxWaitMin * blockTimes;
-    let ttl = maxWaitMin * 60 * 1000;
+  }
 
-    let errorTimes = cache.get(cacheKey);
+  clearCacheOnSuccess(username: string) {
+    cache.delete(`login_error_times:${username}`);
+    cache.delete(`login_block_times:${username}`);
+    cache.delete(`login_block_duration:${username}`);
+  }
+
+  addErrorTimes(username: string, errorMessage: string) {
+    const errorTimesKey = `login_error_times:${username}`;
+    const blockTimesKey = `login_block_times:${username}`;
+    const blockDurationKey = `login_block_duration:${username}`;
+    let blockTimes = cache.get(blockTimesKey);
+    // let maxWaitMin = 2;
+    const maxRetryTimes = blockTimes > 1 ? 3 : 5;
+    if (blockTimes == null) {
+      blockTimes = 0;
+    }
+    // maxWaitMin = maxWaitMin * blockTimes;
+    // let ttl = maxWaitMin * 60 * 1000;
+
+    let errorTimes = cache.get(errorTimesKey);
 
     if (errorTimes == null) {
       errorTimes = 0;
-    } else {
-      const remainingTTL = cache.getRemainingTTL(cacheKey);
-      if (remainingTTL > 0) {
-        ttl = remainingTTL;
-      }
     }
     errorTimes += 1;
-
-    cache.set(cacheKey, errorTimes, {
-      ttl: ttl,
+    const ttl24H = 24 * 60 * 60 * 1000;
+    cache.set(errorTimesKey, errorTimes, {
+      ttl: ttl24H,
     });
-    if (errorTimes >= maxRetryTimes) {
-      if (errorTimes === maxRetryTimes) {
-        blockTimes += 1;
-        cache.set(blockTimesKey, blockTimes, {
-          ttl: 24 * 60 * 60 * 1000,
-        });
-      }
+    if (errorTimes > maxRetryTimes) {
+      blockTimes += 1;
+      cache.set(blockTimesKey, blockTimes, {
+        ttl: ttl24H,
+      });
+      //按照block次数指数递增，最长24小时
+      const ttl = Math.min(blockTimes * blockTimes * 60 * 1000, ttl24H);
       const leftMin = Math.ceil(ttl / 1000 / 60);
+      cache.set(blockDurationKey, 1, {
+        ttl: ttl,
+      })
+      // 清除error次数
+      cache.delete(errorTimesKey);
       throw new LoginErrorException(`登录失败次数过多，请${leftMin}分钟后重试`, 0);
     }
     const leftTimes = maxRetryTimes - errorTimes;
     if (leftTimes < 3) {
-      throw new LoginErrorException(`登录失败，剩余尝试次数：${leftTimes}`, leftTimes);
+      throw new LoginErrorException(`登录失败(${errorMessage})，剩余尝试次数：${leftTimes}`, leftTimes);
     }
     throw new LoginErrorException(errorMessage, leftTimes);
   }
 
+
   async loginBySmsCode(req: { mobile: string; phoneCode: string; smsCode: string; randomStr: string }) {
+
+    this.checkIsBlocked(req.mobile)
+
     const smsChecked = await this.codeService.checkSmsCode({
       mobile: req.mobile,
       phoneCode: req.phoneCode,
@@ -82,11 +103,11 @@ export class LoginService {
       throwError: false,
     });
 
-    const { mobile, phoneCode } = req;
+    const {mobile, phoneCode} = req;
     if (!smsChecked) {
-      this.checkErrorTimes(mobile, '验证码错误');
+      this.addErrorTimes(mobile, '验证码错误');
     }
-    let info = await this.userService.findOne({ phoneCode, mobile: mobile });
+    let info = await this.userService.findOne({phoneCode, mobile: mobile});
     if (info == null) {
       //用户不存在，注册
       info = await this.userService.register('mobile', {
@@ -95,39 +116,30 @@ export class LoginService {
         password: '',
       } as any);
     }
+    this.clearCacheOnSuccess(mobile);
     return this.onLoginSuccess(info);
   }
 
   async loginByPassword(req: { username: string; password: string; phoneCode: string }) {
-    const { username, password, phoneCode } = req;
-    const info = await this.userService.findOne([{ username: username }, { email: username }, { phoneCode, mobile: username }]);
+    this.checkIsBlocked(req.username)
+    const {username, password, phoneCode} = req;
+    const info = await this.userService.findOne([{username: username}, {email: username}, {
+      phoneCode,
+      mobile: username
+    }]);
     if (info == null) {
       throw new CommonException('用户名或密码错误');
     }
     const right = await this.userService.checkPassword(password, info.password, info.passwordVersion);
     if (!right) {
-      this.checkErrorTimes(username, '用户名或密码错误');
+      this.addErrorTimes(username, '用户名或密码错误');
     }
+    this.clearCacheOnSuccess(username);
     return this.onLoginSuccess(info);
   }
 
-  // /**
-  //  * login
-  //  */
-  // async login(user) {
-  //   console.assert(user.username != null, '用户名不能为空');
-  //   const info = await this.userService.findOne({ username: user.username });
-  //   if (info == null) {
-  //     throw new CommonException('用户名或密码错误');
-  //   }
-  //   const right = await this.userService.checkPassword(user.password, info.password, info.passwordVersion);
-  //   if (!right) {
-  //     this.checkErrorTimes(user.username, '用户名或密码错误');
-  //   }
-  //   return await this.onLoginSuccess(info);
-  // }
-
   private async onLoginSuccess(info: UserEntity) {
+
     if (info.status === 0) {
       throw new CommonException('用户已被禁用');
     }
