@@ -65,7 +65,7 @@ https://certd.handfree.work/
 -------> [点我查看详细使用步骤演示](./step.md)   <--------      
 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑     
 
-更多教程请访问官方文档 [certd.docmirror.cn](https://certd.docmirror.cn/)
+更多教程请访问官方文档 [certd.docmirror.cn](https://certd.docmirror.cn/guide/)
 
 
 
@@ -108,7 +108,7 @@ https://certd.handfree.work/
 
 
 ## 五、更多帮助
-请访问官方文档：[https://certd.docmirror.cn/](https://certd.docmirror.cn/)
+请访问官方文档：[https://certd.docmirror.cn/](https://certd.docmirror.cn/guide/)
 
 * 升级方法：[升级方法](https://certd.docmirror.cn/guide/install/upgrade/)
 * 常见问题：[忘记密码](https://certd.docmirror.cn/guide/use/forgotpasswd/)
