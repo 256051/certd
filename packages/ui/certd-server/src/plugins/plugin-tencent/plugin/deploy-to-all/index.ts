@@ -129,9 +129,9 @@ export class DeployCertToTencentAll extends AbstractTaskPlugin {
 
     let certId:string = null
     if (typeof this.tencentCertId === 'string') {
-      certId = this.tencentCertId;
+      certId = this.tencentCertId as string;
     } else if (this.tencentCertId && typeof this.tencentCertId === 'object') {
-      certId = await this.uploadToTencent(access, this.tencentCertId);
+      certId = await this.uploadToTencent(access, this.tencentCertId as CertInfo);
     } else {
       throw new Error('无效的证书输入类型');
     }
