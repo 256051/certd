@@ -103,8 +103,7 @@ https://certd.handfree.work/
 > * 请务必使用web应用防火墙防护本应用，防止XSS、SQL注入等攻击
 > * 请务必做好服务器本身的安全防护，防止数据库泄露
 > * 请务必做好数据备份，避免数据丢失
-
-
+> * [更多安全生产建议点我](https://certd.docmirror.cn/guide/feature/safe/)
 
 
 ## 五、更多帮助
