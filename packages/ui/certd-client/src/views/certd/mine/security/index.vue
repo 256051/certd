@@ -35,18 +35,18 @@
                 </a-tooltip>
               </li>
               <li>
+                <a href="https://sj.qq.com/appdetail/com.tencent.authenticator" target="_blank">腾讯身份验证器</a>
+              </li>
+              <li>
+                <a href="https://www.synology.cn/zh-cn/dsm/feature/authentication" target="_blank">群晖身份验证器</a>
+              </li>
+              <li>
                 <a-tooltip title="如果报没有找到谷歌服务的错误，您可以安装KK谷歌助手">
                   <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" target="_blank">Google Authenticator</a>
                 </a-tooltip>
               </li>
               <li>
-                <a href="https://sj.qq.com/appdetail/com.tencent.authenticator" target="_blank">腾讯身份验证器</a>
-              </li>
-              <li>
                 <a href="https://play.google.com/store/apps/details?id=com.authy.authy" target="_blank">Authy</a>
-              </li>
-              <li>
-                <a href="https://www.synology.cn/zh-cn/dsm/feature/authentication" target="_blank">群晖身份验证器</a>
               </li>
             </ul>
           </div>
