@@ -418,7 +418,7 @@ export default function ({ crudExpose, context: { certdFormRef, groupDictRef, se
             show: false,
           },
           column: {
-            sorter: true,
+            sorter: false,
             width: 150,
             align: "center",
           },
