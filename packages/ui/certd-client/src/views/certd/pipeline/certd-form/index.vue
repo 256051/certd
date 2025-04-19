@@ -18,7 +18,7 @@ const formWrapperRef = ref();
 const formWrapperOptions = ref();
 const doSubmitRef = ref();
 const pluginStore = usePluginStore();
-async function buildFormOptions() {
+async function buildFormOptions(req: { defaultGroupId?: number }) {
   const pluginGroup = await pluginStore.getGroups();
   const pluginGroups: { [key: string]: PluginGroup } = pluginGroup.groups;
   const certPluginGroup = pluginGroups.cert;
@@ -51,10 +51,13 @@ async function buildFormOptions() {
     }) as any
   );
 
+  formOptions.columns.groupId.value = req.defaultGroupId;
+
   formWrapperOptions.value = formOptions;
 }
-buildFormOptions();
-function open(doSubmit: any) {
+
+function open(doSubmit: any, req: { defaultGroupId?: number }) {
+  buildFormOptions(req);
   doSubmitRef.value = doSubmit;
   formWrapperRef.value.open(formWrapperOptions.value);
 }

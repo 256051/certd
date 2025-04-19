@@ -3,6 +3,7 @@ import { mySuiteApi } from "/@/views/certd/suite/mine/api";
 import { notification } from "ant-design-vue";
 import { useSettingStore } from "/@/store/settings";
 import { ReadCertDetail } from "./api";
+import { util } from "/@/utils";
 export function eachStages(list: any[], exec: (item: any, runnableType: string) => void, runnableType: string = "stage") {
   if (!list || list.length <= 0) {
     return;
@@ -70,7 +71,13 @@ export async function checkPipelineLimit() {
 }
 
 export async function readCertDetail(crt: string) {
-  return await ReadCertDetail(crt);
+  const cached = await util.cache.get(crt);
+  if (cached) {
+    return cached;
+  }
+  const res = await ReadCertDetail(crt);
+  await util.cache.set(crt, res);
+  return res;
 }
 
 export async function getAllDomainsFromCrt(crt: string) {
