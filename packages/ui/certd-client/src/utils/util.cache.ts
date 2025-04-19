@@ -5,7 +5,7 @@ export class Cache {
     return this.bucket[key];
   }
 
-  async set(key: string, value: any, ttl: number) {
+  async set(key: string, value: any, ttl?: number) {
     this.bucket[key] = value;
   }
 

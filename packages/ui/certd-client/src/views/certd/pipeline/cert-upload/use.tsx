@@ -8,6 +8,7 @@ import { checkPipelineLimit, getAllDomainsFromCrt } from "/@/views/certd/pipelin
 import { useRouter } from "vue-router";
 import { nanoid } from "nanoid";
 import { usePluginStore } from "/@/store/plugin";
+import GroupSelector from "/@/views/certd/pipeline/group/group-selector.vue";
 
 export function useCertUpload() {
   const { openCrudFormDialog } = useFormWrapper();
@@ -136,6 +137,10 @@ export function useCertUpload() {
               type: "dict-select",
               dict: groupDictRef,
               form: {
+                component: {
+                  name: GroupSelector,
+                  vModel: "modelValue",
+                },
                 value: req.defaultGroupId || undefined,
                 order: 9999,
               },

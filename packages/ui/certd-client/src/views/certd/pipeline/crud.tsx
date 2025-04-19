@@ -15,6 +15,7 @@ import CertView from "./cert-view.vue";
 import { eachStages } from "./utils";
 import { setRunnableIds, useCertPipelineCreator } from "/@/views/certd/pipeline/certd-form/use";
 import { useCertUpload } from "/@/views/certd/pipeline/cert-upload/use";
+import GroupSelector from "/@/views/certd/pipeline/group/group-selector.vue";
 
 export default function ({ crudExpose, context: { groupDictRef, selectedRowKeys } }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const router = useRouter();
@@ -116,6 +117,13 @@ export default function ({ crudExpose, context: { groupDictRef, selectedRowKeys 
   const userStore = useUserStore();
   const settingStore = useSettingStore();
 
+  function onDialogOpen(opt: any) {
+    const searchForm = crudExpose.getSearchValidatedFormData();
+    opt.initialForm = {
+      groupId: searchForm.groupId,
+    };
+  }
+
   return {
     crudOptions: {
       request: {
@@ -192,6 +200,9 @@ export default function ({ crudExpose, context: { groupDictRef, selectedRowKeys 
           if (mode === "add") {
             router.push({ path: "/certd/pipeline/detail", query: { id: res.id, editMode: "true" } });
           }
+        },
+        wrapper: {
+          onOpen: onDialogOpen,
         },
       },
       table: {
@@ -492,6 +503,12 @@ export default function ({ crudExpose, context: { groupDictRef, selectedRowKeys 
             show: true,
           },
           dict: groupDictRef,
+          form: {
+            component: {
+              name: GroupSelector,
+              vModel: "modelValue",
+            },
+          },
           column: {
             width: 130,
             align: "center",

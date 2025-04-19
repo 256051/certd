@@ -10,6 +10,7 @@ import { ref } from "vue";
 import * as api from "../api";
 import { PluginGroup, usePluginStore } from "/@/store/plugin";
 import { createNotificationApi } from "/@/views/certd/notification/api";
+import GroupSelector from "../group/group-selector.vue";
 
 export function setRunnableIds(pipeline: any) {
   const idMap: any = {};
@@ -203,6 +204,10 @@ export function useCertPipelineCreator() {
             type: "dict-select",
             dict: groupDictRef,
             form: {
+              component: {
+                name: GroupSelector,
+                vModel: "modelValue",
+              },
               order: 9999,
             },
           },
