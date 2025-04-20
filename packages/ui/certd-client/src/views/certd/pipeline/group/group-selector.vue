@@ -37,7 +37,7 @@ import createCrudOptions from "./crud";
 import { dict, FsDictSelect } from "@fast-crud/fast-crud";
 
 const props = defineProps<{
-  modelValue: number;
+  modelValue?: number;
 }>();
 
 defineOptions({
