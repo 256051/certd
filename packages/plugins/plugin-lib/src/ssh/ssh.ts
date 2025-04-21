@@ -170,9 +170,10 @@ export class AsyncSsh2Client {
     // }
     return new Promise((resolve, reject) => {
       this.logger.info(`执行命令：[${this.connConf.host}][exec]: \n` + script);
-      // pty 必须为false， 否则返回值会带上 所有输出，影响返回结果判断， 比如 root#: xxxx
-      // 当使用keyboard-interactive 登录时，需要pty
-      this.conn.exec(script, { pty: this.connConf.pty ?? false, env: opts.env }, (err: Error, stream: any) => {
+      // pty 伪终端，window下的输出会带上conhost.exe之类的多余的字符串，影响返回结果判断
+      // linux下 当使用keyboard-interactive 登录时，需要pty
+      const pty = !this.connConf.windows //linux下开启伪终端，windows下不开启
+      this.conn.exec(script, { pty, env: opts.env }, (err: Error, stream: any) => {
         if (err) {
           reject(err);
           return;

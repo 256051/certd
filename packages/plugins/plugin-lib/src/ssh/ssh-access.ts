@@ -63,16 +63,15 @@ export class SshAccess extends BaseAccess {
   })
   passphrase!: string;
 
-  @AccessInput({
-    title: "伪终端",
-    helper: "如果登录报错：all authentication methods failed，可以尝试开启伪终端模式进行keyboard-interactive方式登录",
-    value:false,
-    component: {
-      name: "a-switch",
-      vModel: "checked",
-    },
-  })
-  pty = false;
+  // @AccessInput({
+  //   title: "伪终端",
+  //   helper: "如果登录报错：all authentication methods failed，可以尝试开启伪终端模式进行keyboard-interactive方式登录",
+  //   component: {
+  //     name: "a-switch",
+  //     vModel: "checked",
+  //   },
+  // })
+  // pty!: boolean;
 
   @AccessInput({
     title: "socks代理",
