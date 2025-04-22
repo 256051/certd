@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.33.7](https://github.com/certd/certd/compare/v1.33.6...v1.33.7) (2025-04-22)
+
+### Performance Improvements
+
+* 支持51dns ([96a0900](https://github.com/certd/certd/commit/96a0900edc95dcfd9acccf9d13592f12f5a09b3d))
+
 ## [1.33.6](https://github.com/certd/certd/compare/v1.33.5...v1.33.6) (2025-04-20)
 
 **Note:** Version bump only for package @certd/basic

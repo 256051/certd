@@ -28,7 +28,7 @@ export class VolcengineClient {
 
     service.ImportCertificate = async (body: { certName: string, cert: any }) => {
       const { certName, cert } = body;
-      const res =  await service.request({
+      const res = await service.request({
         action: "ImportCertificate",
         method: "POST",
         body: {
@@ -40,7 +40,7 @@ export class VolcengineClient {
           }
         }
       });
-      return res.Result.InstanceId || res.Result.RepeatId
+      return res.Result.InstanceId || res.Result.RepeatId;
     };
     return service;
   }
@@ -55,6 +55,33 @@ export class VolcengineClient {
     service.setAccessKeyId(this.opts.access.accessKeyId);
     service.setSecretKey(this.opts.access.secretAccessKey);
     service.setRegion(opts.region);
+
+    return service;
+  }
+
+  async getLiveService() {
+    const CommonService = await this.getServiceCls();
+
+    const service = new CommonService({
+      serviceName: "live",
+      defaultVersion: "2023-01-01"
+    });
+    service.setAccessKeyId(this.opts.access.accessKeyId);
+    service.setSecretKey(this.opts.access.secretAccessKey);
+    service.setRegion("cn-north-1");
+
+    return service;
+  }
+
+  async getVodService(opts?: { version?: string }) {
+    const CommonService = await this.getServiceCls();
+
+    const service = new CommonService({
+      serviceName: "vod",
+      defaultVersion: opts?.version || "2021-01-01"
+    });
+    service.setAccessKeyId(this.opts.access.accessKeyId);
+    service.setSecretKey(this.opts.access.secretAccessKey);
 
     return service;
   }

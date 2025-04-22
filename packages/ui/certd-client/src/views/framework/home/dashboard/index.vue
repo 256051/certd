@@ -103,16 +103,20 @@
         <a-row :gutter="10">
           <a-col v-for="item of pluginGroups.groups.all.plugins" :key="item.name" class="plugin-item-col" :xl="4" :md="6" :xs="24">
             <a-card>
-              <a-tooltip :title="item.desc" class="flex-between overflow-hidden">
+              <a-tooltip class="flex-between overflow-hidden">
+                <template #title>
+                  <div>{{ item.title }}</div>
+                  <div>{{ item.desc }}</div>
+                </template>
                 <div class="plugin-item pointer">
                   <div class="icon">
                     <fs-icon :icon="item.icon" class="font-size-16 color-blue" />
                   </div>
-                  <div class="text">
+                  <div class="text flex-1 ellipsis">
                     <div class="title">{{ item.title }}</div>
                   </div>
                 </div>
-                <div class="flex-o"><vip-button v-if="item.needPlus" mode="icon" class="" /></div>
+                <div class="flex-o ml-1"><vip-button v-if="item.needPlus" mode="icon" class="" /></div>
               </a-tooltip>
             </a-card>
           </a-col>
@@ -288,12 +292,17 @@ function openUpgradeUrl() {
   .plugin-list {
     margin: 0 20px;
 
+    .ant-card .ant-card-body {
+      padding: 16px;
+    }
     .plugin-item-col {
       margin-bottom: 10px;
       .plugin-item {
         display: flex;
         justify-items: center;
         line-height: 20px;
+        overflow: hidden;
+        flex: 1;
         .icon {
           display: flex;
           justify-items: center;

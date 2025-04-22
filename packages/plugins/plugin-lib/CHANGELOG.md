@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.33.7](https://github.com/certd/certd/compare/v1.33.6...v1.33.7) (2025-04-22)
+
+### Performance Improvements
+
+* ssh PTY模式登录设置 ([8385bcc](https://github.com/certd/certd/commit/8385bcc2d7f2411a07748bb5c53f9eaf4d38d7cc))
+* ssh伪终端模式优化，windows下不开启 ([42dfe93](https://github.com/certd/certd/commit/42dfe936b773b7bdd82ca3378363252ffffd7b71))
+
 ## [1.33.6](https://github.com/certd/certd/compare/v1.33.5...v1.33.6) (2025-04-20)
 
 **Note:** Version bump only for package @certd/plugin-lib
