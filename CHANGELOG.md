@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.33.7](https://github.com/certd/certd/compare/v1.33.6...v1.33.7) (2025-04-22)
+
+### Performance Improvements
+
+* 添加部署证书至火山 Live ([abea80e](https://github.com/certd/certd/commit/abea80e3ab9b1672aebe1c5d5e856693b29931a8))
+* 优化首页插件列表展示 ([9b8f60b](https://github.com/certd/certd/commit/9b8f60b64b5f9a3db7dfa9b3dcbd9201984358d0))
+* 证书申请支持51dns ([8638fc9](https://github.com/certd/certd/commit/8638fc91ff34fccaf12ff9874fd3fa9d2a8c18b7))
+* 支持51dns ([96a0900](https://github.com/certd/certd/commit/96a0900edc95dcfd9acccf9d13592f12f5a09b3d))
+* ssh PTY模式登录设置 ([8385bcc](https://github.com/certd/certd/commit/8385bcc2d7f2411a07748bb5c53f9eaf4d38d7cc))
+* ssh伪终端模式优化，windows下不开启 ([42dfe93](https://github.com/certd/certd/commit/42dfe936b773b7bdd82ca3378363252ffffd7b71))
+
 ## [1.33.6](https://github.com/certd/certd/compare/v1.33.5...v1.33.6) (2025-04-20)
 
 ### Bug Fixes
