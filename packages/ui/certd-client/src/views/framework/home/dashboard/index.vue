@@ -182,7 +182,7 @@ const userInfo: ComputedRef<UserInfoRes> = computed(() => {
   return userStore.getUserInfo;
 });
 const now = computed(() => {
-  const serverTime = settingStore.app.deltaTime + Date.now();
+  const serverTime = Date.now() - settingStore.app.deltaTime;
   return dayjs(serverTime).format("YYYY-MM-DD HH:mm:ss");
 });
 
