@@ -46,3 +46,5 @@ export *  from './axios.js'
 export * from './logger.js'
 export * from './verify.js'
 export * from './error.js'
+
+export * from './util.js'

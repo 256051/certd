@@ -1,6 +1,8 @@
 import { IDomainParser, ISubDomainsGetter } from "./api";
 //@ts-ignore
 import psl from "psl";
+import { resolveDomainBySoaRecord } from "@certd/acme-client";
+import { logger, utils } from "@certd/basic";
 
 export class DomainParser implements IDomainParser {
   subDomainsGetter: ISubDomainsGetter;
@@ -17,16 +19,38 @@ export class DomainParser implements IDomainParser {
   }
 
   async parse(fullDomain: string) {
-    const subDomains = await this.subDomainsGetter.getSubDomains();
-    if (subDomains && subDomains.length > 0) {
-      for (const subDomain of subDomains) {
-        if (fullDomain.endsWith(subDomain)) {
-          //找到子域名托管
-          return subDomain;
-        }
+    logger.info(`查找主域名:${fullDomain}`);
+    const cacheKey = `domain_parse:${fullDomain}`;
+    const value = utils.cache.get(cacheKey);
+    if (value) {
+      logger.info(`从缓存获取到主域名:${fullDomain}->${value}`);
+      return value;
+    }
+    try {
+      const mainDomain = await resolveDomainBySoaRecord(fullDomain);
+      if (mainDomain) {
+        utils.cache.set(cacheKey, mainDomain, {
+          ttl: 2 * 60 * 1000,
+        });
+        logger.info(`获取到主域名:${fullDomain}->${mainDomain}`);
+        return mainDomain;
       }
+    } catch (e) {
+      logger.error("从SOA获取主域名失败", e.message);
     }
 
-    return this.parseDomain(fullDomain);
+    // const subDomains = await this.subDomainsGetter.getSubDomains();
+    // if (subDomains && subDomains.length > 0) {
+    //   for (const subDomain of subDomains) {
+    //     if (fullDomain.endsWith(subDomain)) {
+    //       //找到子域名托管
+    //       return subDomain;
+    //     }
+    //   }
+    // }
+
+    const res = this.parseDomain(fullDomain);
+    logger.info(`从psl获取主域名:${fullDomain}->${res}`);
+    return res;
   }
 }

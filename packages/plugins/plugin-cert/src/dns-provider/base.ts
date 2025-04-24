@@ -8,6 +8,10 @@ export abstract class AbstractDnsProvider<T = any> implements IDnsProvider<T> {
   http!: HttpClient;
   logger!: ILogger;
 
+  usePunyCode(): boolean {
+    return false;
+  }
+
   setCtx(ctx: DnsProviderContext) {
     this.ctx = ctx;
     this.logger = ctx.logger;

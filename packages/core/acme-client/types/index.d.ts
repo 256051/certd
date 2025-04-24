@@ -205,3 +205,5 @@ export function setLogger(fn: (message: any, ...args: any[]) => void): void;
 export function walkTxtRecord(record: any): Promise<string[]>;
 
 export const CancelError: typeof CancelError;
+
+export function resolveDomainBySoaRecord(domain: string): Promise<string>;
