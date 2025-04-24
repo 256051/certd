@@ -1,14 +1,15 @@
-import { IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
+import {IsTaskPlugin, pluginGroups, RunStrategy, TaskInput} from '@certd/pipeline';
 import fs from 'fs';
 import path from 'path';
 import dayjs from 'dayjs';
-import { AbstractPlusTaskPlugin } from '@certd/plugin-plus';
+import {AbstractPlusTaskPlugin} from '@certd/plugin-plus';
 import JSZip from 'jszip';
 import * as os from 'node:os';
-import { SshAccess, SshClient } from '@certd/plugin-lib';
+import {SshAccess, SshClient} from '@certd/plugin-lib';
 
 const defaultBackupDir = 'certd_backup';
 const defaultFilePrefix = 'db-backup';
+
 @IsTaskPlugin({
   name: 'DBBackupPlugin',
   title: '数据库备份',
@@ -30,8 +31,9 @@ export class DBBackupPlugin extends AbstractPlusTaskPlugin {
     component: {
       name: 'a-select',
       options: [
-        { label: '本地复制', value: 'local' },
-        { label: 'ssh上传', value: 'ssh' },
+        {label: '本地复制', value: 'local'},
+        {label: 'ssh上传', value: 'ssh'},
+        {label: 'oss上传', value: 'oss'},
       ],
       placeholder: '',
     },
@@ -56,6 +58,51 @@ export class DBBackupPlugin extends AbstractPlusTaskPlugin {
     required: true,
   })
   sshAccessId!: number;
+
+
+  @TaskInput({
+    title: 'OSS类型',
+    component: {
+      name: 'a-input',
+      options: [
+        {value: "aliyun", label: "阿里云OSS"},
+        {value: "s3", label: "MinIO/S3"},
+        {value: "qiniu", label: "七牛云"},
+        {value: "tencent", label: "腾讯云COS"}
+      ]
+    },
+    mergeScript: `
+      return {
+         show:ctx.compute(({form})=>{
+          return form.backupMode === 'oss';
+        })
+      }
+    `,
+    required: true,
+  })
+  ossType!: string;
+
+  @TaskInput({
+    title: 'OSS授权',
+    component: {
+      name: 'access-selector',
+    },
+    mergeScript: `
+      return {
+        show:ctx.compute(({form})=>{
+          return form.backupMode === 'ssh';
+        }),
+        component:{
+          type: ctx.compute(({form})=>{
+            return form.ossType;
+          }),
+        }
+      }
+    `,
+    required: true,
+  })
+  ossAccessId!: number;
+
 
   @TaskInput({
     title: '备份保存目录',
@@ -104,7 +151,9 @@ export class DBBackupPlugin extends AbstractPlusTaskPlugin {
   })
   retainDays!: number;
 
-  async onInstance() {}
+  async onInstance() {
+  }
+
   async execute(): Promise<void> {
     this.logger.info('开始备份数据库');
 
@@ -118,7 +167,7 @@ export class DBBackupPlugin extends AbstractPlusTaskPlugin {
     const dbZipFilename = `${dbTmpFilename}.zip`;
     const tempDir = path.resolve(os.tmpdir(), 'certd_backup');
     if (!fs.existsSync(tempDir)) {
-      await fs.promises.mkdir(tempDir, { recursive: true });
+      await fs.promises.mkdir(tempDir, {recursive: true});
     }
     const dbTmpPath = path.resolve(tempDir, dbTmpFilename);
     const dbZipPath = path.resolve(tempDir, dbZipFilename);
@@ -129,14 +178,14 @@ export class DBBackupPlugin extends AbstractPlusTaskPlugin {
     const zip = new JSZip();
     const stream = fs.createReadStream(dbTmpPath);
     // 使用流的方式添加文件内容
-    zip.file(dbTmpFilename, stream, { binary: true, compression: 'DEFLATE' });
+    zip.file(dbTmpFilename, stream, {binary: true, compression: 'DEFLATE'});
 
     const uploadDir = path.resolve('data', 'upload');
     if (this.withUpload && fs.existsSync(uploadDir)) {
       zip.folder(uploadDir);
     }
 
-    const content = await zip.generateAsync({ type: 'nodebuffer' });
+    const content = await zip.generateAsync({type: 'nodebuffer'});
 
     await fs.promises.writeFile(dbZipPath, content);
     this.logger.info(`数据库文件压缩完成:${dbZipPath}`);
@@ -164,7 +213,7 @@ export class DBBackupPlugin extends AbstractPlusTaskPlugin {
     }
     const dir = path.dirname(backupPath);
     if (!fs.existsSync(dir)) {
-      await fs.promises.mkdir(dir, { recursive: true });
+      await fs.promises.mkdir(dir, {recursive: true});
     }
     backupPath = path.resolve(backupPath);
     await fs.promises.copyFile(dbPath, backupPath);
@@ -195,7 +244,7 @@ export class DBBackupPlugin extends AbstractPlusTaskPlugin {
     this.logger.info('备份目录：', backupPath);
     await sshClient.uploadFiles({
       connectConf: access,
-      transports: [{ localPath: dbPath, remotePath: backupPath }],
+      transports: [{localPath: dbPath, remotePath: backupPath}],
       mkdirs: true,
     });
     this.logger.info('备份文件上传完成');
@@ -224,4 +273,5 @@ export class DBBackupPlugin extends AbstractPlusTaskPlugin {
     // TODO
   }
 }
+
 new DBBackupPlugin();
