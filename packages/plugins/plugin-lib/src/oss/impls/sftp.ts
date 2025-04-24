@@ -1,10 +1,19 @@
-import { BaseHttpChallengeUploader } from "../api.js";
-import { SshAccess, SshClient } from "@certd/plugin-lib";
+import { BaseOssClient, OssClientRemoveByOpts, OssFileItem } from "../api.js";
 import path from "path";
 import os from "os";
 import fs from "fs";
+import { SftpAccess, SshAccess, SshClient } from "../../ssh/index.js";
 
-export class SshHttpChallengeUploader extends BaseHttpChallengeUploader<SshAccess> {
+export default class SftpOssClientImpl extends BaseOssClient<SftpAccess> {
+  download(fileName: string, savePath: string): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+  removeBy(removeByOpts: OssClientRemoveByOpts): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+  listDir(dir: string): Promise<OssFileItem[]> {
+    throw new Error("Method not implemented.");
+  }
   async upload(filePath: string, fileContent: Buffer) {
     const tmpFilePath = path.join(os.tmpdir(), "cert", "http", filePath);
 
@@ -15,11 +24,12 @@ export class SshHttpChallengeUploader extends BaseHttpChallengeUploader<SshAcces
     }
     fs.writeFileSync(tmpFilePath, fileContent);
 
+    const access = await this.ctx.accessService.getById<SshAccess>(this.access.sshAccess);
     const key = this.rootDir + filePath;
     try {
       const client = new SshClient(this.logger);
       await client.uploadFiles({
-        connectConf: this.access,
+        connectConf: access,
         mkdirs: true,
         transports: [
           {
@@ -27,6 +37,9 @@ export class SshHttpChallengeUploader extends BaseHttpChallengeUploader<SshAcces
             remotePath: key,
           },
         ],
+        opts: {
+          mode: this.access?.fileMode ?? undefined,
+        },
       });
     } finally {
       // Remove temp file
@@ -35,10 +48,11 @@ export class SshHttpChallengeUploader extends BaseHttpChallengeUploader<SshAcces
   }
 
   async remove(filePath: string) {
+    const access = await this.ctx.accessService.getById<SshAccess>(this.access.sshAccess);
     const client = new SshClient(this.logger);
     const key = this.rootDir + filePath;
     await client.removeFiles({
-      connectConf: this.access,
+      connectConf: access,
       files: [key],
     });
   }

@@ -75,6 +75,7 @@ const uploaderTypeDict = dict({
     { label: "阿里云OSS", value: "alioss" },
     { label: "腾讯云COS", value: "tencentcos" },
     { label: "七牛OSS", value: "qiniuoss" },
+    { label: "S3/Minio", value: "s3" },
     { label: "SSH(已废弃，请选择SFTP方式)", value: "ssh", disabled: true },
   ],
 });

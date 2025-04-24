@@ -1,11 +1,11 @@
-import {IsTaskPlugin, pluginGroups, RunStrategy, TaskInput} from '@certd/pipeline';
-import fs from 'fs';
-import path from 'path';
-import dayjs from 'dayjs';
-import {AbstractPlusTaskPlugin} from '@certd/plugin-plus';
-import JSZip from 'jszip';
-import * as os from 'node:os';
-import {SshAccess, SshClient} from '@certd/plugin-lib';
+import { IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from "@certd/pipeline";
+import fs from "fs";
+import path from "path";
+import dayjs from "dayjs";
+import { AbstractPlusTaskPlugin } from "@certd/plugin-plus";
+import JSZip from "jszip";
+import * as os from "node:os";
+import { OssClientContext, ossClientFactory, OssClientRemoveByOpts, SshAccess, SshClient } from "@certd/plugin-lib";
 
 const defaultBackupDir = 'certd_backup';
 const defaultFilePrefix = 'db-backup';
@@ -63,12 +63,14 @@ export class DBBackupPlugin extends AbstractPlusTaskPlugin {
   @TaskInput({
     title: 'OSS类型',
     component: {
-      name: 'a-input',
+      name: 'a-select',
       options: [
-        {value: "aliyun", label: "阿里云OSS"},
+        {value: "alioss", label: "阿里云OSS"},
         {value: "s3", label: "MinIO/S3"},
-        {value: "qiniu", label: "七牛云"},
-        {value: "tencent", label: "腾讯云COS"}
+        {value: "qiniuoss", label: "七牛云"},
+        {value: "tencentcos", label: "腾讯云COS"},
+        {value: "ftp", label: "Ftp"},
+        {value: "sftp", label: "Sftp"},
       ]
     },
     mergeScript: `
@@ -90,7 +92,7 @@ export class DBBackupPlugin extends AbstractPlusTaskPlugin {
     mergeScript: `
       return {
         show:ctx.compute(({form})=>{
-          return form.backupMode === 'ssh';
+          return form.backupMode === 'oss';
         }),
         component:{
           type: ctx.compute(({form})=>{
@@ -270,7 +272,38 @@ export class DBBackupPlugin extends AbstractPlusTaskPlugin {
   }
 
   private async ossBackup(dbPath: string, backupDir: string, backupPath: string) {
-    // TODO
+    if (!this.ossAccessId) {
+        throw new Error('未配置ossAccessId');
+    }
+    const access = await this.getAccess(this.ossAccessId);
+    const ossType = this.ossType
+
+    const ctx: OssClientContext = {
+      logger: this.logger,
+      utils: this.ctx.utils,
+      accessService:this.accessService
+    }
+
+    this.logger.info(`开始备份文件到:${ossType}`);
+    const client = await  ossClientFactory.createOssClientByType(ossType, {
+      access,
+      ctx,
+    })
+
+    await client.upload(backupPath, dbPath);
+
+    if (this.retainDays > 0) {
+      // 删除过期备份
+      this.logger.info('开始删除过期备份文件');
+      const removeByOpts: OssClientRemoveByOpts = {
+        dir: backupDir,
+        beforeDays: this.retainDays,
+      };
+      await client.removeBy(removeByOpts);
+      this.logger.info('删除过期备份文件完成');
+    }else{
+      this.logger.info('已禁止删除过期文件');
+    }
   }
 }
 

@@ -44,4 +44,14 @@ export class FtpClient {
     this.logger.info(`开始删除文件${filePath}`);
     await this.client.remove(filePath, true);
   }
+
+  async listDir(dir: string): Promise<any[]> {
+    this.logger.info(`开始列出目录${dir}`);
+    return await this.client.list(dir);
+  }
+
+  async download(filePath: string, savePath: string): Promise<void> {
+    this.logger.info(`开始下载文件${filePath} -> ${savePath}`);
+    await this.client.downloadTo(savePath, filePath);
+  }
 }

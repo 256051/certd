@@ -1,16 +1,17 @@
-import { BaseHttpChallengeUploader } from "../api.js";
-import { FtpAccess, FtpClient } from "@certd/plugin-lib";
+import { BaseOssClient } from "../api.js";
 import path from "path";
 import os from "os";
 import fs from "fs";
+import { FtpAccess, FtpClient } from "../../ftp/index.js";
 
-export class FtpHttpChallengeUploader extends BaseHttpChallengeUploader<FtpAccess> {
+export default class FtpOssClientImpl extends BaseOssClient<FtpAccess> {
+  async download(fileName: string, savePath: string) {}
+  async listDir(dir: string) {
+    return [];
+  }
   async upload(filePath: string, fileContent: Buffer) {
-    const client = new FtpClient({
-      access: this.access,
-      logger: this.logger,
-    });
-    await client.connect(async (client) => {
+    const client = this.getFtpClient();
+    await client.connect(async client => {
       const tmpFilePath = path.join(os.tmpdir(), "cert", "http", filePath);
       const dir = path.dirname(tmpFilePath);
       if (!fs.existsSync(dir)) {
@@ -19,7 +20,7 @@ export class FtpHttpChallengeUploader extends BaseHttpChallengeUploader<FtpAcces
       fs.writeFileSync(tmpFilePath, fileContent);
       try {
         // Write file to temp path
-        const path = this.rootDir + filePath;
+        const path = this.join(this.rootDir, filePath);
         await client.upload(path, tmpFilePath);
       } finally {
         // Remove temp file
@@ -28,13 +29,17 @@ export class FtpHttpChallengeUploader extends BaseHttpChallengeUploader<FtpAcces
     });
   }
 
-  async remove(filePath: string) {
-    const client = new FtpClient({
+  private getFtpClient() {
+    return new FtpClient({
       access: this.access,
       logger: this.logger,
     });
-    await client.connect(async (client) => {
-      const path = this.rootDir + filePath;
+  }
+
+  async remove(filePath: string) {
+    const client = this.getFtpClient();
+    await client.connect(async client => {
+      const path = this.join(this.rootDir, filePath);
       await client.client.remove(path);
     });
   }

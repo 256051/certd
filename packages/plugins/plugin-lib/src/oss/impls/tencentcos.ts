@@ -1,7 +1,16 @@
-import { BaseHttpChallengeUploader } from "../api.js";
-import { TencentAccess, TencentCosAccess, TencentCosClient } from "@certd/plugin-lib";
+import { TencentAccess, TencentCosAccess, TencentCosClient } from "../../tencent/index.js";
+import { BaseOssClient, OssClientRemoveByOpts, OssFileItem } from "../api.js";
 
-export class TencentCosHttpChallengeUploader extends BaseHttpChallengeUploader<TencentCosAccess> {
+export default class TencentOssClientImpl extends BaseOssClient<TencentCosAccess> {
+  download(fileName: string, savePath: string): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+  removeBy(removeByOpts: OssClientRemoveByOpts): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+  listDir(dir: string): Promise<OssFileItem[]> {
+    throw new Error("Method not implemented.");
+  }
   async upload(filePath: string, fileContent: Buffer) {
     const access = await this.ctx.accessService.getById<TencentAccess>(this.access.accessId);
     const client = new TencentCosClient({

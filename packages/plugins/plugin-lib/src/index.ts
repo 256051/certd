@@ -5,3 +5,4 @@ export * from "./ftp/index.js";
 export * from "./tencent/index.js";
 export * from "./qiniu/index.js";
 export * from "./ctyun/index.js";
+export * from "./oss/index.js";

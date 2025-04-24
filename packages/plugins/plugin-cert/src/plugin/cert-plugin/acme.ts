@@ -6,8 +6,8 @@ import { Challenge } from "@certd/acme-client/types/rfc8555";
 import { IContext } from "@certd/pipeline";
 import { ILogger, utils } from "@certd/basic";
 import { IDnsProvider, IDomainParser } from "../../dns-provider/index.js";
-import { HttpChallengeUploader } from "./uploads/api.js";
 import punycode from "node:punycode";
+import { IOssClient } from "@certd/plugin-lib";
 export type CnameVerifyPlan = {
   type?: string;
   domain: string;
@@ -18,7 +18,7 @@ export type CnameVerifyPlan = {
 export type HttpVerifyPlan = {
   type: string;
   domain: string;
-  httpUploader: HttpChallengeUploader;
+  httpUploader: IOssClient;
 };
 
 export type DomainVerifyPlan = {
@@ -35,7 +35,7 @@ export type DomainsVerifyPlan = {
 export type Providers = {
   dnsProvider?: IDnsProvider;
   domainsVerifyPlan?: DomainsVerifyPlan;
-  httpUploader?: HttpChallengeUploader;
+  httpUploader?: IOssClient;
 };
 
 export type CertInfo = {
@@ -184,7 +184,7 @@ export class AcmeService {
       return authz.challenges.find((c: any) => c.type === type);
     };
 
-    const doHttpVerify = async (challenge: any, httpUploader: HttpChallengeUploader) => {
+    const doHttpVerify = async (challenge: any, httpUploader: IOssClient) => {
       const keyAuthorization = await keyAuthorizationGetter(challenge);
       this.logger.info("http校验");
       const filePath = `.well-known/acme-challenge/${challenge.token}`;
@@ -287,7 +287,7 @@ export class AcmeService {
    * @returns {Promise}
    */
 
-  async challengeRemoveFn(authz: any, challenge: any, keyAuthorization: string, recordReq: any, recordRes: any, dnsProvider?: IDnsProvider, httpUploader?: HttpChallengeUploader) {
+  async challengeRemoveFn(authz: any, challenge: any, keyAuthorization: string, recordReq: any, recordRes: any, dnsProvider?: IDnsProvider, httpUploader?: IOssClient) {
     this.logger.info("执行清理");
 
     /* http-01 */
