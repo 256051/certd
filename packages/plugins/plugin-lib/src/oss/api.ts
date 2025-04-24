@@ -9,7 +9,6 @@ export type OssClientRemoveByOpts = {
 };
 
 export type OssFileItem = {
-  name: string;
   path: string;
   size: number;
   //毫秒时间戳

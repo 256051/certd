@@ -1,5 +1,6 @@
 import { TencentAccess } from "../access.js";
 import { ILogger } from "@certd/basic";
+import fs from "fs";
 
 export class TencentCosClient {
   access: TencentAccess;
@@ -62,6 +63,49 @@ export class TencentCosClient {
             return;
           }
           resolve(data);
+        }
+      );
+    });
+  }
+
+  async downloadFile(key: string, savePath: string) {
+    const cos = await this.getCosClient();
+    const writeStream = fs.createWriteStream(savePath);
+    return new Promise((resolve, reject) => {
+      cos.getObject(
+        {
+          Bucket: this.bucket,
+          Region: this.region,
+          Key: key,
+          Output: writeStream,
+        },
+        function (err, data) {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(data);
+        }
+      );
+    });
+  }
+
+  async listDir(dirKey: string) {
+    const cos = await this.getCosClient();
+    return new Promise((resolve, reject) => {
+      cos.getBucket(
+        {
+          Bucket: this.bucket,
+          Region: this.region,
+          Prefix: dirKey,
+          MaxKeys: 1000,
+        },
+        function (err, data) {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(data.Contents);
         }
       );
     });

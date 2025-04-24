@@ -27,7 +27,7 @@ export class OssClientFactory {
       throw new Error(`暂不支持此文件上传方式: ${type}`);
     }
   }
-  async createOssClientByType(type: string, opts: { rootDir: string; access: any; ctx: OssClientContext }) {
+  async createOssClientByType(type: string, opts: { rootDir?: string; access: any; ctx: OssClientContext }) {
     const cls = await this.getClassByType(type);
     if (cls) {
       // @ts-ignore
