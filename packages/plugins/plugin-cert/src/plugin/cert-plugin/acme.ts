@@ -35,7 +35,6 @@ export type DomainsVerifyPlan = {
 export type Providers = {
   dnsProvider?: IDnsProvider;
   domainsVerifyPlan?: DomainsVerifyPlan;
-  httpUploader?: IOssClient;
 };
 
 export type CertInfo = {
@@ -323,7 +322,7 @@ export class AcmeService {
     isTest?: boolean;
     privateKeyType?: string;
   }): Promise<CertInfo> {
-    const { email, isTest, csrInfo, dnsProvider, domainsVerifyPlan, httpUploader } = options;
+    const { email, isTest, csrInfo, dnsProvider, domainsVerifyPlan } = options;
     const client: acme.Client = await this.getAcmeClient(email, isTest);
 
     let domains = options.domains;
@@ -370,14 +369,13 @@ export class AcmeService {
       privateKey
     );
 
-    if (dnsProvider == null && domainsVerifyPlan == null && httpUploader == null) {
-      throw new Error("dnsProvider 、 domainsVerifyPlan 、 httpUploader不能都为空");
+    if (dnsProvider == null && domainsVerifyPlan == null) {
+      throw new Error("dnsProvider 、 domainsVerifyPlan不能都为空");
     }
 
     const providers: Providers = {
       dnsProvider,
       domainsVerifyPlan,
-      httpUploader,
     };
     /* 自动申请证书 */
     const crt = await client.auto({
@@ -392,7 +390,7 @@ export class AcmeService {
       ): Promise<{ recordReq?: any; recordRes?: any; dnsProvider?: any; challenge: Challenge; keyAuthorization: string }> => {
         return await this.challengeCreateFn(authz, keyAuthorizationGetter, providers);
       },
-      challengeRemoveFn: async (authz: acme.Authorization, challenge: Challenge, keyAuthorization: string, recordReq: any, recordRes: any, dnsProvider: IDnsProvider): Promise<any> => {
+      challengeRemoveFn: async (authz: acme.Authorization, challenge: Challenge, keyAuthorization: string, recordReq: any, recordRes: any, dnsProvider: IDnsProvider, httpUploader: IOssClient): Promise<any> => {
         return await this.challengeRemoveFn(authz, challenge, keyAuthorization, recordReq, recordRes, dnsProvider, httpUploader);
       },
       signal: this.options.signal,

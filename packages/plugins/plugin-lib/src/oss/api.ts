@@ -18,7 +18,7 @@ export type OssFileItem = {
 
 export type IOssClient = {
   upload: (fileName: string, fileContent: Buffer) => Promise<void>;
-  remove: (fileName: string) => Promise<void>;
+  remove: (fileName: string, opts?: { joinRootDir?: boolean }) => Promise<void>;
 
   download: (fileName: string, savePath: string) => Promise<void>;
 

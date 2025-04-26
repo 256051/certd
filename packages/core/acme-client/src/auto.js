@@ -117,12 +117,12 @@ export default async (client, userOpts) => {
 
         log(`[auto] [${d}] Trigger challengeCreateFn()`);
         try {
-            const { recordReq, recordRes, dnsProvider, challenge, keyAuthorization } = await opts.challengeCreateFn(authz, keyAuthorizationGetter);
+            const { recordReq, recordRes, dnsProvider, challenge, keyAuthorization ,httpUploader} = await opts.challengeCreateFn(authz, keyAuthorizationGetter);
             clearTasks.push(async () => {
                 /* Trigger challengeRemoveFn(), suppress errors */
                 log(`[auto] [${d}] Trigger challengeRemoveFn()`);
                 try {
-                    await opts.challengeRemoveFn(authz, challenge, keyAuthorization, recordReq, recordRes, dnsProvider);
+                    await opts.challengeRemoveFn(authz, challenge, keyAuthorization, recordReq, recordRes, dnsProvider,httpUploader);
                 } catch (e) {
                     log(`[auto] [${d}] challengeRemoveFn threw error: ${e.message}`);
                 }
