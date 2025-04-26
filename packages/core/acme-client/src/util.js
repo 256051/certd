@@ -340,5 +340,6 @@ export {
     formatResponseError,
     getAuthoritativeDnsResolver,
     retrieveTlsAlpnCertificate,
+    resolveDomainBySoaRecord
 };
 

@@ -9,8 +9,8 @@ import { CertReader } from "./cert-reader.js";
 import { CertApplyBasePlugin } from "./base.js";
 import { GoogleClient } from "../../libs/google.js";
 import { EabAccess } from "../../access";
-import { httpChallengeUploaderFactory } from "./uploads/factory.js";
 import { DomainParser } from "../../dns-provider/domain-parser.js";
+import { ossClientFactory } from "@certd/plugin-lib";
 export * from "./base.js";
 export type { CertInfo };
 export * from "./cert-reader.js";
@@ -115,6 +115,7 @@ HTTP文件验证：不支持泛域名，需要配置网站文件上传`,
   })
   dnsProviderType!: string;
 
+  // dns解析授权类型,勿删
   dnsProviderAccessType!: string;
 
   @TaskInput({
@@ -446,7 +447,7 @@ HTTP文件验证：不支持泛域名，需要配置网站文件上传`,
             rootDir = rootDir + "/";
           }
           this.logger.info("上传方式", httpRecord.httpUploaderType);
-          const httpUploader = await httpChallengeUploaderFactory.createUploaderByType(httpRecord.httpUploaderType, {
+          const httpUploader = await ossClientFactory.createOssClientByType(httpRecord.httpUploaderType, {
             access,
             rootDir: rootDir,
             ctx: httpUploaderContext,

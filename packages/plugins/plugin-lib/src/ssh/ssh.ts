@@ -136,6 +136,20 @@ export class AsyncSsh2Client {
     });
   }
 
+  async listDir(options: { sftp: any; remotePath: string }) {
+    const { sftp, remotePath } = options;
+    return new Promise((resolve, reject) => {
+      this.logger.info(`listDir：${remotePath}`);
+      sftp.readdir(remotePath, (err: Error, list: any) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(list);
+      });
+    });
+  }
+
   async unlink(options: { sftp: any; remotePath: string }) {
     const { sftp, remotePath } = options;
     return new Promise((resolve, reject) => {
@@ -283,6 +297,28 @@ export class AsyncSsh2Client {
     }
     return proxy;
   }
+
+  async download(param: { remotePath: string; savePath: string; sftp: any }) {
+    return new Promise((resolve, reject) => {
+      const { remotePath, savePath, sftp } = param;
+      sftp.fastGet(
+        remotePath,
+        savePath,
+        {
+          step: (transferred: any, chunk: any, total: any) => {
+            this.logger.info(`${transferred} / ${total}`);
+          },
+        },
+        (err: any) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve({});
+          }
+        }
+      );
+    });
+  }
 }
 
 export class SshClient {
@@ -329,16 +365,16 @@ export class SshClient {
           }
         }
 
-        if (options.uploadType === "sftp") {
-          const sftp = await conn.getSftp();
-          for (const transport of transports) {
-            await conn.fastPut({ sftp, ...transport, opts });
-          }
-        } else {
+        if (options.uploadType === "scp") {
           //scp
           for (const transport of transports) {
             await this.scpUpload({ conn, ...transport, opts });
             await new Promise(resolve => setTimeout(resolve, 1000));
+          }
+        } else {
+          const sftp = await conn.getSftp();
+          for (const transport of transports) {
+            await conn.fastPut({ sftp, ...transport, opts });
           }
         }
 
@@ -359,25 +395,29 @@ export class SshClient {
             if (err) {
               return reject(err);
             }
-            // 准备 SCP 协议头
-            const fileStats = fs.statSync(localPath);
-            const fileName = path.basename(localPath);
+            try {
+              // 准备 SCP 协议头
+              const fileStats = fs.statSync(localPath);
+              const fileName = path.basename(localPath);
 
-            // SCP 协议格式：C[权限] [文件大小] [文件名]\n
-            stream.write(`C0644 ${fileStats.size} ${fileName}\n`);
+              // SCP 协议格式：C[权限] [文件大小] [文件名]\n
+              stream.write(`C0644 ${fileStats.size} ${fileName}\n`);
 
-            // 通过管道传输文件
-            fs.createReadStream(localPath)
-              .on("error", e => {
-                this.logger.info("read stream error", e);
-                reject(e);
-              })
-              .pipe(stream)
-              .on("finish", async () => {
-                this.logger.info(`上传完成：${localPath} => ${remotePath}`);
-                resolve(true);
-              })
-              .on("error", reject);
+              // 通过管道传输文件
+              fs.createReadStream(localPath)
+                .on("error", e => {
+                  this.logger.info("read stream error", e);
+                  reject(e);
+                })
+                .pipe(stream)
+                .on("finish", async () => {
+                  this.logger.info(`上传完成：${localPath} => ${remotePath}`);
+                  resolve(true);
+                })
+                .on("error", reject);
+            } catch (e) {
+              reject(e);
+            }
           }
         );
       } catch (e) {
@@ -525,5 +565,32 @@ export class SshClient {
     } finally {
       conn.end();
     }
+  }
+
+  async listDir(param: { connectConf: any; dir: string }) {
+    return await this._call<any>({
+      connectConf: param.connectConf,
+      callable: async (conn: AsyncSsh2Client) => {
+        const sftp = await conn.getSftp();
+        return await conn.listDir({
+          sftp,
+          remotePath: param.dir,
+        });
+      },
+    });
+  }
+
+  async download(param: { connectConf: any; filePath: string; savePath: string }) {
+    return await this._call<any>({
+      connectConf: param.connectConf,
+      callable: async (conn: AsyncSsh2Client) => {
+        const sftp = await conn.getSftp();
+        return await conn.download({
+          sftp,
+          remotePath: param.filePath,
+          savePath: param.savePath,
+        });
+      },
+    });
   }
 }

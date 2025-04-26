@@ -1,30 +1,33 @@
-import { HttpChallengeUploadContext } from "./api";
+import { OssClientContext } from "./api";
 
-export class HttpChallengeUploaderFactory {
+export class OssClientFactory {
   async getClassByType(type: string) {
     if (type === "alioss") {
       const module = await import("./impls/alioss.js");
-      return module.AliossHttpChallengeUploader;
+      return module.default;
     } else if (type === "ssh") {
       const module = await import("./impls/ssh.js");
-      return module.SshHttpChallengeUploader;
+      return module.default;
     } else if (type === "sftp") {
       const module = await import("./impls/sftp.js");
-      return module.SftpHttpChallengeUploader;
+      return module.default;
     } else if (type === "ftp") {
       const module = await import("./impls/ftp.js");
-      return module.FtpHttpChallengeUploader;
+      return module.default;
     } else if (type === "tencentcos") {
       const module = await import("./impls/tencentcos.js");
-      return module.TencentCosHttpChallengeUploader;
+      return module.default;
     } else if (type === "qiniuoss") {
       const module = await import("./impls/qiniuoss.js");
-      return module.QiniuOssHttpChallengeUploader;
+      return module.default;
+    } else if (type === "s3") {
+      const module = await import("./impls/s3.js");
+      return module.default;
     } else {
       throw new Error(`暂不支持此文件上传方式: ${type}`);
     }
   }
-  async createUploaderByType(type: string, opts: { rootDir: string; access: any; ctx: HttpChallengeUploadContext }) {
+  async createOssClientByType(type: string, opts: { rootDir?: string; access: any; ctx: OssClientContext }) {
     const cls = await this.getClassByType(type);
     if (cls) {
       // @ts-ignore
@@ -35,4 +38,4 @@ export class HttpChallengeUploaderFactory {
   }
 }
 
-export const httpChallengeUploaderFactory = new HttpChallengeUploaderFactory();
+export const ossClientFactory = new OssClientFactory();

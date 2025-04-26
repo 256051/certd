@@ -1,4 +1,4 @@
-import { AliyunAccess } from "../access";
+import { AliyunAccess } from "../access/index.js";
 
 export class AliossClient {
   access: AliyunAccess;
@@ -52,7 +52,7 @@ export class AliossClient {
     }
   }
 
-  async uploadFile(filePath: string, content: Buffer) {
+  async uploadFile(filePath: string, content: Buffer | string) {
     await this.init();
     return await this.client.put(filePath, content);
   }
@@ -60,5 +60,24 @@ export class AliossClient {
   async removeFile(filePath: string) {
     await this.init();
     return await this.client.delete(filePath);
+  }
+
+  async downloadFile(key: string, savePath: string) {
+    await this.init();
+    return await this.client.get(key, savePath);
+  }
+
+  async listDir(dirKey: string) {
+    await this.init();
+    const res = await this.client.listV2({
+      prefix: dirKey,
+      // max-keys: 100,
+      // continuation-token: "token",
+      // delimiter: "/",
+      // marker: "marker",
+      // encoding-type: "url",
+    });
+
+    return res.objects;
   }
 }

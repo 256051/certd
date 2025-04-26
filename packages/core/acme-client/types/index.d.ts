@@ -59,7 +59,7 @@ export interface ClientExternalAccountBindingOptions {
 export interface ClientAutoOptions {
     csr: CsrBuffer | CsrString;
     challengeCreateFn: (authz: Authorization, keyAuthorization: (challenge:rfc8555.Challenge)=>Promise<string>) => Promise<{recordReq?:any,recordRes?:any,dnsProvider?:any,challenge: rfc8555.Challenge,keyAuthorization:string}>;
-    challengeRemoveFn: (authz: Authorization, challenge: rfc8555.Challenge, keyAuthorization: string,recordReq:any, recordRes:any,dnsProvider:any) => Promise<any>;
+    challengeRemoveFn: (authz: Authorization, challenge: rfc8555.Challenge, keyAuthorization: string,recordReq:any, recordRes:any,dnsProvider:any,httpUploader:any) => Promise<any>;
     email?: string;
     termsOfServiceAgreed?: boolean;
     skipChallengeVerification?: boolean;
@@ -205,3 +205,5 @@ export function setLogger(fn: (message: any, ...args: any[]) => void): void;
 export function walkTxtRecord(record: any): Promise<string[]>;
 
 export const CancelError: typeof CancelError;
+
+export function resolveDomainBySoaRecord(domain: string): Promise<string>;

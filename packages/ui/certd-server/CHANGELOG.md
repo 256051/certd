@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.33.8](https://github.com/certd/certd/compare/v1.33.7...v1.33.8) (2025-04-26)
+
+### Performance Improvements
+
+* 数据库备份支持oss ([308d460](https://github.com/certd/certd/commit/308d4600efe2002f199c33b4594d3071784e58ea))
+* 支持反向代理增加contextPath路径 ([0088929](https://github.com/certd/certd/commit/0088929622160cc922995de9a563e8061686ff34))
+* 支持中文域名 ([162ebfd](https://github.com/certd/certd/commit/162ebfd4e0c25727efb33952d3bbf7420a02e2c3))
+
 ## [1.33.7](https://github.com/certd/certd/compare/v1.33.6...v1.33.7) (2025-04-22)
 
 ### Performance Improvements

@@ -11,7 +11,7 @@ export class FtpClient {
     this.logger = opts.logger;
   }
 
-  async connect(callback: (client: FtpClient) => Promise<void>) {
+  async connect(callback: (client: FtpClient) => Promise<any>) {
     const ftp = await import("basic-ftp");
     const Client = ftp.Client;
     const client = new Client();
@@ -21,7 +21,7 @@ export class FtpClient {
     this.logger.info("FTP连接成功");
     this.client = client;
     try {
-      await callback(this);
+      return await callback(this);
     } finally {
       if (client) {
         client.close();
@@ -43,5 +43,21 @@ export class FtpClient {
   async remove(filePath: string): Promise<void> {
     this.logger.info(`开始删除文件${filePath}`);
     await this.client.remove(filePath, true);
+  }
+
+  async listDir(dir: string): Promise<any[]> {
+    if (!dir) {
+      return [];
+    }
+    if (!dir.endsWith("/")) {
+      dir = dir + "/";
+    }
+    this.logger.info(`开始列出目录${dir}`);
+    return await this.client.list(dir);
+  }
+
+  async download(filePath: string, savePath: string): Promise<void> {
+    this.logger.info(`开始下载文件${filePath} -> ${savePath}`);
+    await this.client.downloadTo(savePath, filePath);
   }
 }

@@ -6,8 +6,8 @@ import { Challenge } from "@certd/acme-client/types/rfc8555";
 import { IContext } from "@certd/pipeline";
 import { ILogger, utils } from "@certd/basic";
 import { IDnsProvider, IDomainParser } from "../../dns-provider/index.js";
-import { HttpChallengeUploader } from "./uploads/api.js";
-
+import punycode from "node:punycode";
+import { IOssClient } from "@certd/plugin-lib";
 export type CnameVerifyPlan = {
   type?: string;
   domain: string;
@@ -18,7 +18,7 @@ export type CnameVerifyPlan = {
 export type HttpVerifyPlan = {
   type: string;
   domain: string;
-  httpUploader: HttpChallengeUploader;
+  httpUploader: IOssClient;
 };
 
 export type DomainVerifyPlan = {
@@ -35,7 +35,6 @@ export type DomainsVerifyPlan = {
 export type Providers = {
   dnsProvider?: IDnsProvider;
   domainsVerifyPlan?: DomainsVerifyPlan;
-  httpUploader?: HttpChallengeUploader;
 };
 
 export type CertInfo = {
@@ -184,7 +183,7 @@ export class AcmeService {
       return authz.challenges.find((c: any) => c.type === type);
     };
 
-    const doHttpVerify = async (challenge: any, httpUploader: HttpChallengeUploader) => {
+    const doHttpVerify = async (challenge: any, httpUploader: IOssClient) => {
       const keyAuthorization = await keyAuthorizationGetter(challenge);
       this.logger.info("http校验");
       const filePath = `.well-known/acme-challenge/${challenge.token}`;
@@ -203,14 +202,16 @@ export class AcmeService {
       this.logger.info("dns校验");
       const keyAuthorization = await keyAuthorizationGetter(challenge);
 
+      const mainDomain = dnsProvider.usePunyCode() ? domain : punycode.toUnicode(domain);
+      fullRecord = dnsProvider.usePunyCode() ? fullRecord : punycode.toUnicode(fullRecord);
       const recordValue = keyAuthorization;
-      let hostRecord = fullRecord.replace(`${domain}`, "");
+      let hostRecord = fullRecord.replace(`${mainDomain}`, "");
       if (hostRecord.endsWith(".")) {
         hostRecord = hostRecord.substring(0, hostRecord.length - 1);
       }
 
       const recordReq = {
-        domain,
+        domain: mainDomain,
         fullRecord,
         hostRecord,
         type: "TXT",
@@ -286,7 +287,7 @@ export class AcmeService {
    * @returns {Promise}
    */
 
-  async challengeRemoveFn(authz: any, challenge: any, keyAuthorization: string, recordReq: any, recordRes: any, dnsProvider?: IDnsProvider, httpUploader?: HttpChallengeUploader) {
+  async challengeRemoveFn(authz: any, challenge: any, keyAuthorization: string, recordReq: any, recordRes: any, dnsProvider?: IDnsProvider, httpUploader?: IOssClient) {
     this.logger.info("执行清理");
 
     /* http-01 */
@@ -321,8 +322,15 @@ export class AcmeService {
     isTest?: boolean;
     privateKeyType?: string;
   }): Promise<CertInfo> {
-    const { email, isTest, domains, csrInfo, dnsProvider, domainsVerifyPlan, httpUploader } = options;
+    const { email, isTest, csrInfo, dnsProvider, domainsVerifyPlan } = options;
     const client: acme.Client = await this.getAcmeClient(email, isTest);
+
+    let domains = options.domains;
+    const encodingDomains = [];
+    for (const domain of domains) {
+      encodingDomains.push(punycode.toASCII(domain));
+    }
+    domains = encodingDomains;
 
     /* Create CSR */
     const { commonName, altNames } = this.buildCommonNameByDomains(domains);
@@ -361,14 +369,13 @@ export class AcmeService {
       privateKey
     );
 
-    if (dnsProvider == null && domainsVerifyPlan == null && httpUploader == null) {
-      throw new Error("dnsProvider 、 domainsVerifyPlan 、 httpUploader不能都为空");
+    if (dnsProvider == null && domainsVerifyPlan == null) {
+      throw new Error("dnsProvider 、 domainsVerifyPlan不能都为空");
     }
 
     const providers: Providers = {
       dnsProvider,
       domainsVerifyPlan,
-      httpUploader,
     };
     /* 自动申请证书 */
     const crt = await client.auto({
@@ -383,7 +390,7 @@ export class AcmeService {
       ): Promise<{ recordReq?: any; recordRes?: any; dnsProvider?: any; challenge: Challenge; keyAuthorization: string }> => {
         return await this.challengeCreateFn(authz, keyAuthorizationGetter, providers);
       },
-      challengeRemoveFn: async (authz: acme.Authorization, challenge: Challenge, keyAuthorization: string, recordReq: any, recordRes: any, dnsProvider: IDnsProvider): Promise<any> => {
+      challengeRemoveFn: async (authz: acme.Authorization, challenge: Challenge, keyAuthorization: string, recordReq: any, recordRes: any, dnsProvider: IDnsProvider, httpUploader: IOssClient): Promise<any> => {
         return await this.challengeRemoveFn(authz, challenge, keyAuthorization, recordReq, recordRes, dnsProvider, httpUploader);
       },
       signal: this.options.signal,

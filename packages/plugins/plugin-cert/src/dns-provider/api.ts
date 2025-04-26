@@ -35,6 +35,8 @@ export interface IDnsProvider<T = any> {
   createRecord(options: CreateRecordOptions): Promise<T>;
   removeRecord(options: RemoveRecordOptions<T>): Promise<void>;
   setCtx(ctx: DnsProviderContext): void;
+  //中文域名是否需要punycode转码，如果返回True，则使用punycode来添加解析记录，否则使用中文域名添加解析记录
+  usePunyCode(): boolean;
 }
 
 export interface ISubDomainsGetter {
