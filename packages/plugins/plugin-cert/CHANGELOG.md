@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.33.8](https://github.com/certd/certd/compare/v1.33.7...v1.33.8) (2025-04-26)
+
+### Bug Fixes
+
+* 修复http上传方式无法清除记录文件的bug ([72a7b51](https://github.com/certd/certd/commit/72a7b51d479602b2c54c6c3ac8d8a0dcb9664e73))
+
+### Performance Improvements
+
+* 从域名的soa获取主域名，子域名托管无需额外配置 ([a586a92](https://github.com/certd/certd/commit/a586a92d5e32ea846ac37be52a7ad8c328d89966))
+* 数据库备份支持oss ([308d460](https://github.com/certd/certd/commit/308d4600efe2002f199c33b4594d3071784e58ea))
+* 支持阿里云中文域名申请 ([b3468cf](https://github.com/certd/certd/commit/b3468cf7f28228d7c9cf68de6b5a9bbeb67f2c6d))
+* 支持中文域名 ([162ebfd](https://github.com/certd/certd/commit/162ebfd4e0c25727efb33952d3bbf7420a02e2c3))
+
 ## [1.33.7](https://github.com/certd/certd/compare/v1.33.6...v1.33.7) (2025-04-22)
 
 **Note:** Version bump only for package @certd/plugin-cert
