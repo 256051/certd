@@ -8,7 +8,7 @@ import * as os from "node:os";
 import { OssClientContext, ossClientFactory, OssClientRemoveByOpts, SshAccess, SshClient } from "@certd/plugin-lib";
 
 const defaultBackupDir = 'certd_backup';
-const defaultFilePrefix = 'db-backup';
+const defaultFilePrefix = 'db_backup';
 
 @IsTaskPlugin({
   name: 'DBBackupPlugin',
@@ -165,7 +165,7 @@ export class DBBackupPlugin extends AbstractPlusTaskPlugin {
       this.logger.error('数据库文件不存在：', dbPath);
       return;
     }
-    const dbTmpFilename = `${this.filePrefix}.${dayjs().format('YYYYMMDD.HHmmss')}.sqlite`;
+    const dbTmpFilename = `${this.filePrefix}_${dayjs().format('YYYYMMDD_HHmmss')}_sqlite`;
     const dbZipFilename = `${dbTmpFilename}.zip`;
     const tempDir = path.resolve(os.tmpdir(), 'certd_backup');
     if (!fs.existsSync(tempDir)) {

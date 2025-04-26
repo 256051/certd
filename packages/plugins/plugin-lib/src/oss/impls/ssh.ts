@@ -4,6 +4,7 @@ import os from "os";
 import fs from "fs";
 import { SshAccess, SshClient } from "../../ssh/index.js";
 
+//废弃
 export default class SshOssClientImpl extends BaseOssClient<SshAccess> {
   download(fileName: string, savePath: string): Promise<void> {
     throw new Error("Method not implemented.");
@@ -43,12 +44,14 @@ export default class SshOssClientImpl extends BaseOssClient<SshAccess> {
     }
   }
 
-  async remove(filePath: string) {
+  async remove(filePath: string, opts?: { joinRootDir?: boolean }) {
+    if (opts?.joinRootDir !== false) {
+      filePath = this.join(this.rootDir, filePath);
+    }
     const client = new SshClient(this.logger);
-    const key = this.rootDir + filePath;
     await client.removeFiles({
       connectConf: this.access,
-      files: [key],
+      files: [filePath],
     });
   }
 }

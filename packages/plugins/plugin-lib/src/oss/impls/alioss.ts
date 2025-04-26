@@ -37,7 +37,7 @@ export default class AliOssClientImpl extends BaseOssClient<AliossAccess> {
       };
     });
   }
-  async upload(filePath: string, fileContent: Buffer) {
+  async upload(filePath: string, fileContent: Buffer | string) {
     const key = this.join(this.rootDir, filePath);
     this.logger.info(`开始上传文件: ${key}`);
     await this.client.uploadFile(key, fileContent);
@@ -45,8 +45,11 @@ export default class AliOssClientImpl extends BaseOssClient<AliossAccess> {
     this.logger.info(`文件上传成功: ${filePath}`);
   }
 
-  async remove(filePath: string) {
-    const key = this.join(this.rootDir, filePath);
+  async remove(filePath: string, opts?: { joinRootDir?: boolean }) {
+    if (opts?.joinRootDir !== false) {
+      filePath = this.join(this.rootDir, filePath);
+    }
+    const key = filePath;
     // remove file from alioss
     await this.client.removeFile(key);
     this.logger.info(`文件删除成功: ${key}`);

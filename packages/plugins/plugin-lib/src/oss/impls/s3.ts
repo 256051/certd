@@ -79,8 +79,11 @@ export default class S3OssClientImpl extends BaseOssClient<S3Access> {
     this.logger.info(`文件上传成功: ${filePath}`);
   }
 
-  async remove(filePath: string) {
-    const key = path.join(this.rootDir, filePath);
+  async remove(filePath: string, opts?: { joinRootDir?: boolean }) {
+    if (opts?.joinRootDir !== false) {
+      filePath = this.join(this.rootDir, filePath);
+    }
+    const key = filePath;
     // @ts-ignore
     const { DeleteObjectCommand } = await import("@aws-sdk/client-s3");
     await this.client.send(

@@ -52,7 +52,7 @@ export class AliossClient {
     }
   }
 
-  async uploadFile(filePath: string, content: Buffer) {
+  async uploadFile(filePath: string, content: Buffer | string) {
     await this.init();
     return await this.client.put(filePath, content);
   }

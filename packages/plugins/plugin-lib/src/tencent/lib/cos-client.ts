@@ -27,12 +27,16 @@ export class TencentCosClient {
   async uploadFile(key: string, file: Buffer | string) {
     const cos = await this.getCosClient();
     return new Promise((resolve, reject) => {
+      let readableStream = file as any;
+      if (typeof file === "string") {
+        readableStream = fs.createReadStream(file);
+      }
       cos.putObject(
         {
           Bucket: this.bucket /* 必须 */,
           Region: this.region /* 必须 */,
           Key: key /* 必须 */,
-          Body: file, // 上传文件对象
+          Body: readableStream, // 上传文件对象
           onProgress: function (progressData) {
             console.log(JSON.stringify(progressData));
           },

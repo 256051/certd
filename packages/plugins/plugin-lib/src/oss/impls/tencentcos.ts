@@ -38,13 +38,17 @@ export default class TencentOssClientImpl extends BaseOssClient<TencentCosAccess
       };
     });
   }
-  async upload(filePath: string, fileContent: Buffer) {
+  async upload(filePath: string, fileContent: Buffer | string) {
     const key = this.join(this.rootDir, filePath);
     await this.client.uploadFile(key, fileContent);
+    this.logger.info(`文件上传成功: ${filePath}`);
   }
 
-  async remove(filePath: string) {
-    const key = this.join(this.rootDir, filePath);
-    await this.client.removeFile(key);
+  async remove(filePath: string, opts?: { joinRootDir?: boolean }) {
+    if (opts?.joinRootDir !== false) {
+      filePath = this.join(this.rootDir, filePath);
+    }
+    await this.client.removeFile(filePath);
+    this.logger.info(`文件删除成功: ${filePath}`);
   }
 }

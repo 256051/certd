@@ -9,6 +9,7 @@ export type OssClientRemoveByOpts = {
 };
 
 export type OssFileItem = {
+  //文件全路径
   path: string;
   size: number;
   //毫秒时间戳
@@ -71,17 +72,18 @@ export abstract class BaseOssClient<A> implements IOssClient {
     // do nothing
   }
 
-  abstract remove(fileName: string): Promise<void>;
+  abstract remove(fileName: string, opts?: { joinRootDir?: boolean }): Promise<void>;
   abstract upload(fileName: string, fileContent: Buffer): Promise<void>;
   abstract download(fileName: string, savePath: string): Promise<void>;
   abstract listDir(dir: string): Promise<OssFileItem[]>;
 
   async removeBy(removeByOpts: OssClientRemoveByOpts): Promise<void> {
     const list = await this.listDir(removeByOpts.dir);
+    // removeByOpts.beforeDays = 0;
     const beforeDate = dayjs().subtract(removeByOpts.beforeDays, "day");
     for (const item of list) {
       if (item.lastModified && item.lastModified < beforeDate.valueOf()) {
-        await this.remove(item.path);
+        await this.remove(item.path, { joinRootDir: false });
       }
     }
   }

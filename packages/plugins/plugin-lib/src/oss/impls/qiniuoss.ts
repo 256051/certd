@@ -29,19 +29,22 @@ export default class QiniuOssClientImpl extends BaseOssClient<QiniuOssAccess> {
     const res = await this.client.listDir(this.access.bucket, path);
     return res.items.map(item => {
       return {
-        path: item.name,
+        path: item.key,
         size: item.fsize,
-        lastModified: item.putTime,
+        //ns ，纳秒，去掉低4位 为毫秒
+        lastModified: Math.floor(item.putTime / 10000),
       };
     });
   }
-  async upload(filePath: string, fileContent: Buffer) {
+  async upload(filePath: string, fileContent: Buffer | string) {
     const path = this.join(this.rootDir, filePath);
     await this.client.uploadFile(this.access.bucket, path, fileContent);
   }
 
-  async remove(filePath: string) {
-    const path = this.join(this.rootDir, filePath);
-    await this.client.removeFile(this.access.bucket, path);
+  async remove(filePath: string, opts?: { joinRootDir?: boolean }) {
+    if (opts?.joinRootDir !== false) {
+      filePath = this.join(this.rootDir, filePath);
+    }
+    await this.client.removeFile(this.access.bucket, filePath);
   }
 }
