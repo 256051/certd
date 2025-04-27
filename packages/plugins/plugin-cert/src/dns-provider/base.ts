@@ -32,7 +32,7 @@ export abstract class AbstractDnsProvider<T = any> implements IDnsProvider<T> {
 export async function createDnsProvider(opts: { dnsProviderType: string; context: DnsProviderContext }): Promise<IDnsProvider> {
   const { dnsProviderType, context } = opts;
   const dnsProviderPlugin = dnsProviderRegistry.get(dnsProviderType);
-  const DnsProviderClass = dnsProviderPlugin.target;
+  const DnsProviderClass = await dnsProviderPlugin.target();
   const dnsProviderDefine = dnsProviderPlugin.define as DnsProviderDefine;
   if (dnsProviderDefine.deprecated) {
     context.logger.warn(dnsProviderDefine.deprecated);
