@@ -9,7 +9,7 @@ import { env } from "/@/utils/util.env";
 import { updatePreferences } from "/@/vben/preferences";
 import { useTitle } from "@vueuse/core";
 import { utils } from "/@/utils";
-import { cloneDeep } from "lodash-es";
+import { cloneDeep, merge } from "lodash-es";
 
 export interface SettingState {
   sysPublic?: SysPublicSetting;
@@ -31,6 +31,21 @@ export interface SettingState {
     version?: string;
     time?: number;
     deltaTime?: number;
+  };
+  productInfo: {
+    notice?: string;
+    plus: {
+      name: string;
+      price: number;
+      price3: number;
+      tooltip?: string;
+    };
+    comm: {
+      name: string;
+      price: number;
+      price3: number;
+      tooltip?: string;
+    };
   };
 }
 
@@ -79,6 +94,19 @@ export const useSettingStore = defineStore({
       version: "",
       time: 0,
       deltaTime: 0,
+    },
+    productInfo: {
+      notice: "",
+      plus: {
+        name: "专业版",
+        price: 29.9,
+        price3: 89.9,
+      },
+      comm: {
+        name: "商业版",
+        price: 399,
+        price3: 899,
+      },
     },
   }),
   getters: {
@@ -227,6 +255,14 @@ export const useSettingStore = defineStore({
         }
       }
     },
+    async loadProductInfo() {
+      try {
+        const productInfo = await basicApi.getProductInfo();
+        merge(this.productInfo, productInfo);
+      } catch (e) {
+        console.error(e);
+      }
+    },
     async init() {
       await this.loadSysSettings();
     },
@@ -235,6 +271,7 @@ export const useSettingStore = defineStore({
         return;
       }
       await this.init();
+      this.loadProductInfo();
       this.inited = true;
     },
   },

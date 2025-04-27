@@ -27,7 +27,7 @@ const props = withDefaults(
     mode?: "comm" | "button" | "nav" | "icon";
   }>(),
   {
-    mode: "button"
+    mode: "button",
   }
 );
 type Text = {
@@ -40,57 +40,57 @@ const text = computed<Text>(() => {
     isComm: {
       comm: {
         name: `${vipLabel}已开通`,
-        title: "到期时间：" + expireTime.value
+        title: "到期时间：" + expireTime.value,
       },
       button: {
         name: `${vipLabel}已开通`,
-        title: "到期时间：" + expireTime.value
+        title: "到期时间：" + expireTime.value,
       },
       icon: {
         name: "",
-        title: `${vipLabel}已开通`
+        title: `${vipLabel}已开通`,
       },
       nav: {
         name: `${vipLabel}`,
-        title: "到期时间：" + expireTime.value
-      }
+        title: "到期时间：" + expireTime.value,
+      },
     },
     isPlus: {
       comm: {
         name: "商业版功能",
-        title: "升级商业版，获取商业授权"
+        title: "升级商业版，获取商业授权",
       },
       button: {
         name: `${vipLabel}已开通`,
-        title: "到期时间：" + expireTime.value
+        title: "到期时间：" + expireTime.value,
       },
       icon: {
         name: "",
-        title: `${vipLabel}已开通`
+        title: `${vipLabel}已开通`,
       },
       nav: {
         name: `${vipLabel}`,
-        title: "到期时间：" + expireTime.value
-      }
+        title: "到期时间：" + expireTime.value,
+      },
     },
     free: {
       comm: {
         name: "商业版功能",
-        title: "升级商业版，获取商业授权"
+        title: "升级商业版，获取商业授权",
       },
       button: {
         name: "专业版功能",
-        title: "升级专业版，享受更多VIP特权"
+        title: "升级专业版，享受更多VIP特权",
       },
       icon: {
         name: "",
-        title: "专业版功能"
+        title: "专业版功能",
       },
       nav: {
         name: "基础版",
-        title: "升级专业版，享受更多VIP特权"
-      }
-    }
+        title: "升级专业版，享受更多VIP特权",
+      },
+    },
   };
   if (settingStore.isComm) {
     return map.isComm[props.mode];
@@ -119,7 +119,7 @@ const expiredDays = computed(() => {
 
 const formState = reactive({
   code: "",
-  inviteCode: ""
+  inviteCode: "",
 });
 
 const router = useRouter();
@@ -143,10 +143,10 @@ async function doActive() {
             content: "绑定账号后，可以避免License丢失，强烈建议绑定",
             onOk() {
               router.push("/sys/account");
-            }
+            },
           });
         }
-      }
+      },
     });
   }
 }
@@ -183,7 +183,7 @@ function openTrialModal() {
           <div>点击确认，即可获取7天专业版试用</div>
         </div>
       );
-    }
+    },
   });
 }
 
@@ -208,7 +208,7 @@ function openStarModal() {
           <img class="ml-5" src="https://img.shields.io/github/stars/certd/certd?logo=github" />
         </div>
       );
-    }
+    },
   });
 }
 
@@ -226,13 +226,14 @@ function openUpgrade() {
     title = "续期专业版/升级商业版";
   }
 
+  const productInfo = settingStore.productInfo;
   const vipTypeDefine = {
     free: {
       title: "基础版",
       desc: "社区免费版",
       type: "free",
       icon: "lucide:package-open",
-      privilege: ["证书申请无限制", "域名数量无限制", "证书流水线数量无限制", "常用的主机、云平台、cdn等部署插件", "邮件、webhook通知方式"]
+      privilege: ["证书申请无限制", "域名数量无限制", "证书流水线数量无限制", "常用的主机、云平台、cdn等部署插件", "邮件、webhook通知方式"],
     },
     plus: {
       title: "专业版",
@@ -243,10 +244,12 @@ function openUpgrade() {
         title: "点击获取7天试用",
         click: () => {
           openStarModal();
-        }
+        },
       },
       icon: "stash:thumb-up",
-      price: 29.9,
+      price: productInfo.plus.price,
+      price3: `¥${productInfo.plus.price3}/3年`,
+      tooltip: productInfo.plus.tooltip,
       get() {
         return (
           <a-tooltip title="爱发电赞助“VIP会员”后获取一年期专业版激活码，开源需要您的支持">
@@ -255,7 +258,7 @@ function openUpgrade() {
             </a-button>
           </a-tooltip>
         );
-      }
+      },
     },
     comm: {
       title: "商业版",
@@ -263,11 +266,13 @@ function openUpgrade() {
       type: "comm",
       icon: "vaadin:handshake",
       privilege: ["拥有专业版所有特权", "允许商用，可修改logo、标题", "数据统计", "插件管理", "多用户无限制", "支持用户支付"],
-      price: 399,
+      price: productInfo.comm.price,
+      price3: `¥${productInfo.comm.price3}/3年`,
+      tooltip: productInfo.comm.tooltip,
       get() {
-        return <a-button size="small">请联系作者获取</a-button>;
-      }
-    }
+        return <a-button size="small">请联系作者获取试用</a-button>;
+      },
+    },
   };
 
   const modalRef = modal.confirm({
@@ -321,9 +326,12 @@ function openUpgrade() {
               <div class="footer flex-between flex-vc">
                 <div class="price-show">
                   {item.price && (
-                    <span>
-                      <span class="price-text">¥{item.price}</span>
-                      /年
+                    <span class="flex">
+                      <span class="-text">¥{item.price}</span>
+                      <span>/年</span>
+                      <a-tooltip class="ml-5" title={item.price3}>
+                        <fs-icon class="pointer color-red" icon="ic:outline-discount"></fs-icon>
+                      </a-tooltip>
                     </span>
                   )}
                   {!item.price && (
@@ -340,6 +348,11 @@ function openUpgrade() {
       }
       return (
         <div class="mt-10 mb-10 vip-active-modal">
+          {productInfo.notice && (
+            <div class="mb-10">
+              <a-alert type="error" message={productInfo.notice}></a-alert>
+            </div>
+          )}
           <div class="vip-type-vs">
             <a-row gutter={20}>{slots}</a-row>
           </div>
@@ -365,7 +378,7 @@ function openUpgrade() {
           </div>
         </div>
       );
-    }
+    },
   });
 }
 onMounted(() => {

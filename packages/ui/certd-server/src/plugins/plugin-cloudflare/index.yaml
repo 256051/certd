@@ -1,6 +1,0 @@
-name: cloudflare
-title: cloudflare
-desc: cloudflare dns provider
-icon: simple-icons:cloudflare
-accessType: cloudflare
-pluginType: dnsProvider

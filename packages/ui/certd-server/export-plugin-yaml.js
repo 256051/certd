@@ -93,5 +93,6 @@ for (const key in modules) {
     }
   }
 }
+process.exit();
 
 process.exit()
