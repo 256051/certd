@@ -1,16 +1,18 @@
-import { Inject, Provide, Scope, ScopeEnum } from "@midwayjs/core";
-import { BaseService, PageReq } from "@certd/lib-server";
-import { PluginEntity } from "../entity/plugin.js";
-import { InjectEntityModel } from "@midwayjs/typeorm";
-import { Repository } from "typeorm";
-import { isComm } from "@certd/plus-core";
-import { BuiltInPluginService } from "../../pipeline/service/builtin-plugin-service.js";
-import { merge } from "lodash-es";
-import { accessRegistry, pluginRegistry } from "@certd/pipeline";
-import { dnsProviderRegistry } from "@certd/plugin-cert";
-import { logger } from "@certd/basic";
+import {Inject, Provide, Scope, ScopeEnum} from "@midwayjs/core";
+import {BaseService, PageReq} from "@certd/lib-server";
+import {PluginEntity} from "../entity/plugin.js";
+import {InjectEntityModel} from "@midwayjs/typeorm";
+import {Repository} from "typeorm";
+import {isComm} from "@certd/plus-core";
+import {BuiltInPluginService} from "../../pipeline/service/builtin-plugin-service.js";
+import {merge} from "lodash-es";
+import {accessRegistry, notificationRegistry, pluginRegistry} from "@certd/pipeline";
+import {dnsProviderRegistry} from "@certd/plugin-cert";
+import {logger} from "@certd/basic";
 import yaml from "js-yaml";
-import { getDefaultAccessPlugin, getDefaultDeployPlugin, getDefaultDnsPlugin } from "./default-plugin.js";
+import {getDefaultAccessPlugin, getDefaultDeployPlugin, getDefaultDnsPlugin} from "./default-plugin.js";
+import fs from "fs";
+import path from "path";
 
 export type PluginImportReq = {
   content: string,
@@ -18,7 +20,7 @@ export type PluginImportReq = {
 };
 
 @Provide()
-@Scope(ScopeEnum.Request, { allowDowngrade: true })
+@Scope(ScopeEnum.Request, {allowDowngrade: true})
 export class PluginService extends BaseService<PluginEntity> {
   @InjectEntityModel(PluginEntity)
   repository: Repository<PluginEntity>;
@@ -136,13 +138,13 @@ export class PluginService extends BaseService<PluginEntity> {
   }
 
   async setDisabled(opts: { id?: number; name?: string; type: string; disabled: boolean }) {
-    const { id, name, type, disabled } = opts;
+    const {id, name, type, disabled} = opts;
     if (!type) {
       throw new Error("参数错误: type 不能为空");
     }
     if (id > 0) {
       //update
-      await this.repository.update({ id }, { disabled });
+      await this.repository.update({id}, {disabled});
       return;
     }
 
@@ -215,11 +217,19 @@ export class PluginService extends BaseService<PluginEntity> {
   async compile(code: string) {
     const ts = await import("typescript");
     return ts.transpileModule(code, {
-      compilerOptions: { module: ts.ModuleKind.ESNext }
+      compilerOptions: {module: ts.ModuleKind.ESNext}
     }).outputText;
   }
 
-  async getPluginTarget(pluginName: string) {
+
+  private async getPluginClassFromFile(item: any) {
+    const scriptFilePath = item.scriptFilePath;
+    const res =  await import((`${scriptFilePath}`))
+    const classNames = Object.keys(res)
+    return res[classNames[0]]
+  }
+
+  async getPluginClassFromDb(pluginName: string) {
     //获取插件类实例对象
     let author = undefined;
     let name = "";
@@ -245,7 +255,7 @@ export class PluginService extends BaseService<PluginEntity> {
         // const script = await this.compile(plugin.content);
         const script = plugin.content;
         const getPluginClass = new AsyncFunction(script);
-        return await getPluginClass({ logger: logger });
+        return await getPluginClass({logger: logger});
       } catch (e) {
         logger.error("编译插件失败:", e);
         throw e;
@@ -272,8 +282,21 @@ export class PluginService extends BaseService<PluginEntity> {
     }
   }
 
+  async registerFromLocal(localDir: string) {
+    //scan path
+    const files = fs.readdirSync(localDir);
+    for (const file of files) {
+      if (!file.endsWith(".yaml")) {
+        continue;
+      }
+      const item = yaml.load(fs.readFileSync(path.join(localDir, file), "utf8"));
+
+      await this.registerPlugin(item);
+    }
+  }
+
   async registerPlugin(plugin: PluginEntity) {
-    const metadata = yaml.load(plugin.metadata);
+    const metadata = plugin.metadata ? yaml.load(plugin.metadata) : {};
     const item = {
       ...plugin,
       ...metadata
@@ -290,6 +313,8 @@ export class PluginService extends BaseService<PluginEntity> {
       registry = pluginRegistry;
     } else if (item.pluginType === "dnsProvider") {
       registry = dnsProviderRegistry;
+    } else if (item.pluginType === "notification") {
+      registry = notificationRegistry;
     } else {
       logger.warn(`插件${item.name}类型错误:${item.pluginType}`);
       return;
@@ -298,7 +323,11 @@ export class PluginService extends BaseService<PluginEntity> {
     registry.register(item.name, {
       define: item,
       target: async () => {
-        return await this.getPluginTarget(item.name);
+        if (item.type === "builtIn") {
+          return await this.getPluginClassFromFile(item);
+        } else {
+          return await this.getPluginClassFromDb(item.name);
+        }
       }
     });
   }
@@ -372,11 +401,13 @@ export class PluginService extends BaseService<PluginEntity> {
       await this.update(pluginEntity);
     } else {
       //add
-      const { id } = await this.add(pluginEntity);
+      const {id} = await this.add(pluginEntity);
       pluginEntity.id = id;
     }
     return {
       id: pluginEntity.id
     };
   }
+
+
 }

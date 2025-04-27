@@ -5,6 +5,7 @@ import fs from 'fs'
 import { pathToFileURL } from "node:url";
 import path from 'path'
 import * as yaml from "js-yaml";
+import {AbstractTaskPlugin, BaseAccess, BaseNotification} from "@certd/pipeline";
 function scanDir(dir) {
   const files = fs.readdirSync(dir);
   const result = [];
@@ -29,7 +30,9 @@ export default async function loadModules(dir) {
   const files = scanDir(dir);
   const modules = {}
   for (const file of files) {
-
+    if(file === "dist/plugins/index.js" || file === "dist\\plugins\\index.js"){
+      continue
+    }
     try {
       // 转换为 file:// URL（Windows 必需）
       const moduleUrl = pathToFileURL(file).href
@@ -44,37 +47,51 @@ export default async function loadModules(dir) {
   return modules;
 }
 
+function isPrototypeOf(value,cls){
+  return cls.prototype.isPrototypeOf(value.prototype)
+}
+
 const modules = await loadModules('./dist/plugins');
 
+fs.rmSync("./metadata", { recursive: true });
+fs.mkdirSync("./metadata", { recursive: true });
 for (const key in modules) {
   console.log(key)
   const module = modules[key]
   const entry = Object.entries(module)
   for (const [name, value] of entry) {
-    if(key.includes("deploy-to-live")){
-      console.log("live",value)
-    }
     //如果有define属性
     if(value.define){
       //那么就是插件
       let location = key.substring(4)
       location = location.substring(0, location.length - 3)
+      location = location.replaceAll("\\","/")
+      location += ".js"
+      location = `../../..${location}` // 从modules/plugin/plugin-service 加载 ../../plugins目录下的文件
 
       const pluginDefine = {
         ...value.define
       }
+      pluginDefine.type = "builtIn"
       if(pluginDefine.accessType){
         pluginDefine.pluginType = "dnsProvider"
-      }else if(pluginDefine.group){
+      }else if(isPrototypeOf(value,AbstractTaskPlugin)){
         pluginDefine.pluginType = "deploy"
-      }else{
+      }else if(isPrototypeOf(value,BaseNotification)){
+        pluginDefine.pluginType = "notification"
+      }else if(isPrototypeOf(value,BaseAccess)){
         pluginDefine.pluginType = "access"
+      }else{
+        console.log(`[warning] 未知的插件类型：${pluginDefine.name}`)
       }
       delete pluginDefine.autowire
-      const filePath = path.join(`./src/${location}`+".yaml")
+      const filePath = path.join(`./metadata/${pluginDefine.pluginType}_${pluginDefine.name}.yaml`)
 
+      pluginDefine.scriptFilePath = location
       const data  = yaml.dump(pluginDefine)
       fs.writeFileSync(filePath,data ,'utf8')
     }
   }
 }
+
+process.exit()
