@@ -1,0 +1,22 @@
+name: 51dns
+title: 51dns授权
+icon: arcticons:dns-changer-3
+desc: ''
+input:
+  username:
+    title: 用户名
+    component:
+      placeholder: 用户名或手机号
+    required: true
+    encrypt: false
+  password:
+    title: 登录密码
+    component:
+      name: a-input-password
+      vModel: value
+      placeholder: 密码
+    required: true
+    encrypt: true
+type: builtIn
+pluginType: access
+scriptFilePath: ../../../plugins/plugin-51dns/index.js
