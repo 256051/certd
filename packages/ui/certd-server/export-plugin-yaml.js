@@ -84,7 +84,6 @@ for (const key in modules) {
       }else{
         console.log(`[warning] 未知的插件类型：${pluginDefine.name}`)
       }
-      delete pluginDefine.autowire
       const filePath = path.join(`./metadata/${pluginDefine.pluginType}_${pluginDefine.name}.yaml`)
 
       pluginDefine.scriptFilePath = location

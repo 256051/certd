@@ -39,8 +39,6 @@ export async function createDnsProvider(opts: { dnsProviderType: string; context
   }
   // @ts-ignore
   const dnsProvider: IDnsProvider = new DnsProviderClass();
-
-  Decorator.inject(dnsProviderDefine.autowire, dnsProvider, context);
   dnsProvider.setCtx(context);
   await dnsProvider.onInstance();
   return dnsProvider;
