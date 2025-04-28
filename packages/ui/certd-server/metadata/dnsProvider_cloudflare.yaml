@@ -1,0 +1,8 @@
+name: cloudflare
+title: cloudflare
+desc: cloudflare dns provider
+icon: simple-icons:cloudflare
+accessType: cloudflare
+type: builtIn
+pluginType: dnsProvider
+scriptFilePath: ../../../plugins/plugin-cloudflare/index.js

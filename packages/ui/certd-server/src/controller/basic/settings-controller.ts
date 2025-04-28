@@ -1,4 +1,4 @@
-import { Config, Controller, Get, Inject, Provide } from '@midwayjs/core';
+import { Config, Controller, Get, Inject, Provide } from "@midwayjs/core";
 import {
   BaseController,
   Constants,
@@ -8,24 +8,25 @@ import {
   SysSettingsService,
   SysSiteEnv,
   SysSiteInfo,
-  SysSuiteSetting,
-} from '@certd/lib-server';
-import { AppKey, getPlusInfo, isComm } from '@certd/plus-core';
-import { cloneDeep } from 'lodash-es';
-import {getVersion} from "../../utils/version.js";
+  SysSuiteSetting
+} from "@certd/lib-server";
+import { AppKey, getPlusInfo, isComm } from "@certd/plus-core";
+import { cloneDeep } from "lodash-es";
+import { getVersion } from "../../utils/version.js";
+import { http } from "@certd/basic";
 
 /**
  */
 @Provide()
-@Controller('/api/basic/settings')
+@Controller("/api/basic/settings")
 export class BasicSettingsController extends BaseController {
   @Inject()
   sysSettingsService: SysSettingsService;
-  @Config('account.server.baseUrl')
+  @Config("account.server.baseUrl")
   accountServerBaseUrl: any;
 
-  @Config('agent')
-  agentConfig: SysSiteEnv['agent'];
+  @Config("agent")
+  agentConfig: SysSiteEnv["agent"];
 
   public async getSysPublic() {
     return await this.sysSettingsService.getSetting(SysPublicSettings);
@@ -52,13 +53,13 @@ export class BasicSettingsController extends BaseController {
     }
     const setting = await this.sysSettingsService.getSetting<SysSuiteSetting>(SysSuiteSetting);
     return {
-      enabled: setting.enabled,
+      enabled: setting.enabled
     };
   }
 
   public async getSiteEnv() {
     const env: SysSiteEnv = {
-      agent: this.agentConfig,
+      agent: this.agentConfig
     };
     return env;
   }
@@ -70,7 +71,16 @@ export class BasicSettingsController extends BaseController {
     return copy;
   }
 
-  @Get('/all', { summary: Constants.per.guest })
+  @Get("/productInfo", { summary: Constants.per.guest })
+  async getProductInfo() {
+    const info = await http.request({
+      url: "https://app.handfree.work/certd/info.json"
+    });
+    return this.ok(info);
+
+  }
+
+  @Get("/all", { summary: Constants.per.guest })
   async getAllSettings() {
     const sysPublic = await this.getSysPublic();
     const installInfo = await this.getInstallInfo();
@@ -82,8 +92,7 @@ export class BasicSettingsController extends BaseController {
     const plusInfo = await this.plusInfo();
     const headerMenus = await this.getHeaderMenus();
     const suiteSetting = await this.getSuiteSetting();
-
-    const version = await getVersion()
+    const version = await getVersion();
     return this.ok({
       sysPublic,
       installInfo,
@@ -92,10 +101,10 @@ export class BasicSettingsController extends BaseController {
       plusInfo,
       headerMenus,
       suiteSetting,
-      app:{
+      app: {
         time: new Date().getTime(),
-        version,
-      }
+        version
+      },
     });
   }
 }

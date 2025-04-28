@@ -1,0 +1,8 @@
+name: 51dns
+title: 51dns
+desc: 51DNS
+icon: arcticons:dns-changer-3
+accessType: 51dns
+type: builtIn
+pluginType: dnsProvider
+scriptFilePath: ../../../plugins/plugin-51dns/index.js
