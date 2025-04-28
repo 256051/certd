@@ -1,6 +1,5 @@
 import { CreateRecordOptions, DnsProviderContext, DnsProviderDefine, IDnsProvider, RemoveRecordOptions } from "./api.js";
 import { dnsProviderRegistry } from "./registry.js";
-import { Decorator } from "@certd/pipeline";
 import { HttpClient, ILogger } from "@certd/basic";
 
 export abstract class AbstractDnsProvider<T = any> implements IDnsProvider<T> {

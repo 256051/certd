@@ -1,11 +1,11 @@
 // 扫描目录，列出文件，然后加载为模块
 
-import { join } from 'path';
-import fs from 'fs'
+import path, { join } from "path";
+import fs from "fs";
 import { pathToFileURL } from "node:url";
-import path from 'path'
 import * as yaml from "js-yaml";
-import {AbstractTaskPlugin, BaseAccess, BaseNotification} from "@certd/pipeline";
+import { AbstractTaskPlugin, BaseAccess, BaseNotification } from "@certd/pipeline";
+
 function scanDir(dir) {
   const files = fs.readdirSync(dir);
   const result = [];
@@ -92,4 +92,7 @@ for (const key in modules) {
     }
   }
 }
-process.exit();
+// import why from 'why-is-node-running'
+// setTimeout(() => why(), 100); // 延迟打印原因
+
+process.exit(-1)

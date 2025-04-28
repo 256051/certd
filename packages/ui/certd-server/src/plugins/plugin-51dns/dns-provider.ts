@@ -16,6 +16,7 @@ export type Dns51Record = {
   icon: 'arcticons:dns-changer-3',
   // 这里是对应的 cloudflare的access类型名称
   accessType: '51dns',
+  order:999,
 })
 export class Dns51DnsProvider extends AbstractDnsProvider<Dns51Record> {
   access!: Dns51Access;

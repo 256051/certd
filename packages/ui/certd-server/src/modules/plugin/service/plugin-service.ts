@@ -297,7 +297,7 @@ export class PluginService extends BaseService<PluginEntity> {
     }
     //排序
     list = list.sort((a, b) => {
-      return a.order??10 - b.order ??10;
+      return (a.order??10) - (b.order ??10);
     });
 
     for (const item of list) {

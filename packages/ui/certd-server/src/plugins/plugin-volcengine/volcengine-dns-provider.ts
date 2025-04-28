@@ -16,7 +16,7 @@ export class VolcengineDnsProvider extends AbstractDnsProvider {
 
 
   async onInstance() {
-    this.access = this.ctx.access
+    this.access = this.ctx.access as VolcengineAccess
     this.client = new VolcengineDnsClient({
       access: this.access,
       logger: this.logger,
