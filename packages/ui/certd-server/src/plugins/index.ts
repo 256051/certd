@@ -19,3 +19,4 @@ export * from './plugin-upyun/index.js';
 export * from './plugin-volcengine/index.js'
 export * from './plugin-jdcloud/index.js'
 export * from './plugin-51dns/index.js'
+export * from './plugin-notification/index.js'
