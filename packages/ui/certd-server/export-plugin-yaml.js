@@ -95,4 +95,4 @@ for (const key in modules) {
 // import why from 'why-is-node-running'
 // setTimeout(() => why(), 100); // 延迟打印原因
 
-process.exit(-1)
+process.exit()
