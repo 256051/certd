@@ -51,7 +51,8 @@
         "lint": "eslint .",
         "lint-types": "tsd",
         "prepublishOnly": "npm run build-docs",
-        "test": "mocha -t 60000 \"test/setup.js\" \"test/**/*.spec.js\""
+        "test": "mocha -t 60000 \"test/setup.js\" \"test/**/*.spec.js\"",
+        "pub": "npm publish"
     },
     "repository": {
         "type": "git",
@@ -68,5 +69,5 @@
     "bugs": {
         "url": "https://github.com/publishlab/node-acme-client/issues"
     },
-    "gitHead": "9749fc817d3cfd435e8cb3f2f86edc81d69e2310"
+    "gitHead": "6c74148c277432f91014bf1eebd824e7423c6f4b"
 }

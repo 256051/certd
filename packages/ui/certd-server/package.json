@@ -28,7 +28,8 @@
     "heap": "cross-env NODE_ENV=local clinic heapprofiler    --  node ./bootstrap.js",
     "flame": "clinic flame   -- node ./bootstrap.js",
     "tsc": "tsc --skipLibCheck",
-    "slimming": "node ./slimming.js"
+    "slimming": "node ./slimming.js",
+    "pub": "echo 1"
   },
   "dependencies": {
     "@alicloud/fc20230330": "^4.1.7",

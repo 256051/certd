@@ -19,7 +19,8 @@
     "upgrade": "yarn upgrade-interactive --latest",
     "tsc": "vue-tsc --noEmit --skipLibCheck",
     "circle:check": "pnpm dependency-cruise --validate --output-type err-html -f dependency-report.html src",
-    "afterPubPush": "git add . && git commit -m \"build: publish success\" && git push"
+    "afterPubPush": "git add . && git commit -m \"build: publish success\" && git push",
+    "pub": "echo 1"
   },
   "author": "greper",
   "license": "AGPL-3.0",
