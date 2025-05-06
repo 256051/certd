@@ -290,6 +290,17 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
   })
   maxCheckRetryCount = 20;
 
+  @TaskInput({
+    title: "等待解析生效时长",
+    value: 30,
+    component: {
+      name: "a-input-number",
+      vModel: "value",
+    },
+    helper: "等待解析生效时长（秒）",
+  })
+  waitDnsDiffuseTime = 30;
+
   acme!: AcmeService;
 
   eab!: EabAccess;
@@ -341,6 +352,7 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
       signal: this.ctx.signal,
       maxCheckRetryCount: this.maxCheckRetryCount,
       domainParser,
+      waitDnsDiffuseTime: this.waitDnsDiffuseTime,
     });
   }
 
