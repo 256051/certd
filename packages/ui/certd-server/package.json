@@ -22,6 +22,7 @@
     "ci": "npm run cov",
     "build": "mwtsc --cleanOutDir --skipLibCheck",
     "export-metadata": "node export-plugin-yaml.js",
+    "export-md": "node export-plugin-md.js",
     "dev-build": "echo 1",
     "build-on-docker": "node ./before-build.js && npm run build",
     "up-mw-deps": "npx midway-version -u -w",

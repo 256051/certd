@@ -88,7 +88,6 @@ export default defineConfig({
                     text: "特性",
                     items: [
                         {text: "CNAME代理校验", link: "/guide/feature/cname/index.md"},
-                        {text: "插件列表", link: "/guide/plugins.md"},
                         {text: "多数据库支持", link: "/guide/install/database.md"},
                         {text: "开放接口", link: "/guide/open/index.md"},
                         {
@@ -98,7 +97,13 @@ export default defineConfig({
                                 {text: "安全生产建议", link: "/guide/feature/safe/suggest"},
                             ]
                         },
-
+                        {text: "插件列表", items:[
+                              {text: "授权提供商", link: "/guide/plugins/access"},
+                              {text: "DNS提供商", link: "/guide/plugins/dns-provider"},
+                              {text: "任务插件", link: "/guide/plugins/deploy"},
+                              {text: "通知插件", link: "/guide/plugins/notification"},
+                            ]
+                        },
                     ]
                 },
                 {
