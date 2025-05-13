@@ -17,3 +17,21 @@ services:
 #      - 8.8.8.8       # 谷歌公共dns
 #      - 8.8.4.4
 ```
+
+
+## 2. 连接IPv6超时
+docker-compose 需要放开IPv6网络的配置
+```yaml
+services:
+  certd:
+    networks:
+      - ip6net
+#    ↓↓↓↓ -------------------------------------------------------------- 启用ipv6网络，还需要把上面networks的注释放开
+networks:
+  ip6net:
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: 2001:db8::/64
+
+```
