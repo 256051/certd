@@ -74,8 +74,12 @@ const tokenTheme = computed(() => {
 // settingStore.init();
 
 const chatBox = ref();
-onMounted(async () => {
-  // await util.sleep(5000);
-  // await chatBox.value.openChat({ q: "hello" });
-});
+// onMounted(async () => {
+//   await util.sleep(2000);
+//   await chatBox.value.openChat({ q: "hello" });
+// });
+const openChat = (q: string) => {
+  chatBox.value.openChat({ q });
+};
+provide("fn:ai.open", openChat);
 </script>
