@@ -18,6 +18,14 @@ services:
 #      - 8.8.4.4
 ```
 
+如果仍然有问题,按如下步骤检查是否能够ping通域名
+```shell
+docker exec -it certd /bin/sh
+ping www.baidu.com
+ping gg.px.certd.handfree.work
+ping app.handfree.work
+```
+
 
 ## 2. 连接IPv6超时
 docker-compose 需要放开IPv6网络的配置
@@ -44,3 +52,16 @@ networks:
 ## 4. 没有服务器配置文件，请检查是否开启了外网映射！
 宝塔网站证书部署报错：`Error: 没有服务器配置文件，请检查是否开启了外网映射！`    
 解决方案：先手动在宝塔网站中设置一次证书    
+
+
+## 5. 如何查看容器日志
+```shell
+docker logs -f --tail 200 certd
+```
+
+
+
+
+
+
+
