@@ -254,6 +254,9 @@ export class PluginService extends BaseService<PluginEntity> {
         }).constructor;
         // const script = await this.compile(plugin.content);
         const script = plugin.content;
+        const {MaoyunClient} = await import("@certd/plugin-plus")
+        const a :any ={}
+        new MaoyunClient(a)
         const getPluginClass = new AsyncFunction(script);
         return await getPluginClass({logger: logger});
       } catch (e) {
