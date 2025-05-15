@@ -26,6 +26,12 @@ ping gg.px.certd.handfree.work
 ping app.handfree.work
 ```
 
+如果您是宝塔部署的
+可以试试将容器网络加入brige网络，看是否解决问题
+![img.png](images/baota-net.png)
+
+如果还是不行，请联系我们
+
 
 ## 2. 连接IPv6超时
 docker-compose 需要放开IPv6网络的配置
