@@ -209,6 +209,10 @@ export function createAxiosService({ logger }: { logger: Logger }) {
         logger.error("AggregateError", error);
       }
       const err = new HttpError(error);
+      if (error.response?.config?.logParams === false) {
+        delete err.request?.params;
+        delete err.request?.data;
+      }
       return Promise.reject(err);
     }
   );
