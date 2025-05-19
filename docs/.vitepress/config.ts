@@ -139,7 +139,6 @@ export default defineConfig({
                         {text: "捐赠", link: "/guide/donate/"},
                         {text: "开源协议", link: "/guide/license/"},
                         {text: "我的其他开源项目", link: "/guide/link/"},
-
                     ]
                 }
             ],
