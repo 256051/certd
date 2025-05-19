@@ -91,14 +91,14 @@ export default defineConfig({
                         {text: "多数据库支持", link: "/guide/install/database.md"},
                         {text: "开放接口", link: "/guide/open/index.md"},
                         {
-                            text: "站点安全",  link: "/guide/feature/safe"
+                            text: "站点安全",  link: "/guide/feature/safe/"
                         },
                         {
                             text: "插件列表", items: [
-                                {text: "授权提供商", link: "/guide/plugins/access"},
-                                {text: "DNS提供商", link: "/guide/plugins/dns-provider"},
-                                {text: "任务插件", link: "/guide/plugins/deploy"},
-                                {text: "通知插件", link: "/guide/plugins/notification"},
+                                {text: "授权提供商", link: "/guide/plugins/access.md"},
+                                {text: "DNS提供商", link: "/guide/plugins/dns-provider.md"},
+                                {text: "任务插件", link: "/guide/plugins/deploy.md"},
+                                {text: "通知插件", link: "/guide/plugins/notification.md"},
                             ]
                         },
                     ]
@@ -106,7 +106,7 @@ export default defineConfig({
                 {
                     text: "常见问题",
                     items: [
-                        {text: "QA", link: "/guide/qa/use"},
+                        {text: "QA", link: "/guide/qa/use.md"},
                         {text: "常见报错处理", link: "/guide/qa/"},
                         {text: "群晖证书部署", link: "/guide/use/synology/"},
                         {text: "腾讯云密钥获取", link: "/guide/use/tencent/"},
@@ -139,7 +139,6 @@ export default defineConfig({
                         {text: "捐赠", link: "/guide/donate/"},
                         {text: "开源协议", link: "/guide/license/"},
                         {text: "我的其他开源项目", link: "/guide/link/"},
-
                     ]
                 }
             ],
