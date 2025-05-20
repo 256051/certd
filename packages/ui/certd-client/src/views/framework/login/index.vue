@@ -54,7 +54,7 @@
     <a-form v-else ref="twoFactorFormRef" class="user-layout-login" :model="twoFactor" v-bind="layout">
       <div class="mb-10 flex flex-center">请打开您的Authenticator APP，获取动态验证码。</div>
       <a-form-item name="verifyCode">
-        <a-input ref="verifyCodeInputRef" v-model:value="twoFactor.verifyCode" placeholder="请输入动态验证码" allow-clear>
+        <a-input ref="verifyCodeInputRef" v-model:value="twoFactor.verifyCode" placeholder="请输入动态验证码" allow-clear @keydown.enter="handleTwoFactorSubmit">
           <template #prefix>
             <fs-icon icon="ion:lock-closed-outline"></fs-icon>
           </template>
