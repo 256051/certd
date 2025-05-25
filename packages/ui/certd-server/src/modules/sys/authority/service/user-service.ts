@@ -151,6 +151,9 @@ export class UserService extends BaseService<UserEntity> {
 
   async buildPlainPassword(rawPassword: string) {
     const setting: SysInstallInfo = await this.sysSettingsService.getSetting(SysInstallInfo);
+    if (!setting.siteId) {
+      throw new CommonException('站点ID还未初始化');
+    }
     const prefixSiteId = setting.siteId.substring(1, 5);
     return rawPassword + prefixSiteId;
   }
