@@ -81,6 +81,10 @@ export abstract class CertApplyBasePlugin extends CertApplyBaseConvertPlugin {
     }
   }
 
+  getCheckChangeInputKeys() {
+    //插件哪些字段参与校验是否需要更新
+    return ["domains", "sslProvider", "privateKeyType", "dnsProviderType", "pfxPassword"];
+  }
   /**
    * 是否更新证书
    */
@@ -91,7 +95,7 @@ export abstract class CertApplyBasePlugin extends CertApplyBaseConvertPlugin {
     //   return null;
     // }
 
-    const checkInputChanges = ["domains", "sslProvider", "privateKeyType", "dnsProviderType", "pfxPassword"];
+    const checkInputChanges = this.getCheckChangeInputKeys();
     const oldInput = JSON.stringify(pick(this.lastStatus?.input, checkInputChanges));
     const thisInput = JSON.stringify(pick(this, checkInputChanges));
     const inputChanged = oldInput !== thisInput;
