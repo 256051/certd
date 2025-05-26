@@ -1,5 +1,4 @@
 import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput, TaskOutput } from "@certd/pipeline";
-import dayjs from "dayjs";
 import { CertApplyPluginNames, CertReader } from "@certd/plugin-cert";
 import { TencentAccess, TencentSslClient } from "@certd/plugin-lib";
 
@@ -65,51 +64,11 @@ export class UploadCertToTencent extends AbstractTaskPlugin {
       cert: this.cert,
     });
 
-    this.logger.info('证书上传成功：tencentCertId=', tencentCertId);
-
-    this.tencentCertId = ret.CertificateId;
+    this.tencentCertId = tencentCertId;
   }
 
-  appendTimeSuffix(name: string) {
-    if (name == null) {
-      name = 'certd';
-    }
-    return name + '-' + dayjs().format('YYYYMMDD-HHmmss');
-  }
 
-  getClient(accessProvider: any) {
-    const SslClient = this.Client;
 
-    const clientConfig = {
-      credential: {
-        secretId: accessProvider.secretId,
-        secretKey: accessProvider.secretKey,
-      },
-      region: '',
-      profile: {
-        httpProfile: {
-          endpoint: 'ssl.tencentcloudapi.com',
-        },
-      },
-    };
-
-    return new SslClient(clientConfig);
-  }
-
-  // async rollback({ input }) {
-  //   const { accessId } = input;
-  //   const accessProvider = await this.getAccess(accessId);
-  //   const client = this.getClient(accessProvider);
-  //
-  //   const { tencentCertId } = context;
-  //   const params = {
-  //     CertificateId: tencentCertId,
-  //   };
-  //   const ret = await client.DeleteCertificate(params);
-  //   this.checkRet(ret);
-  //   this.logger.info("证书删除成功：DeleteResult=", ret.DeleteResult);
-  //   delete context.tencentCertId;
-  // }
   checkRet(ret: any) {
     if (!ret || ret.Error) {
       throw new Error('执行失败：' + ret.Error.Code + ',' + ret.Error.Message);
