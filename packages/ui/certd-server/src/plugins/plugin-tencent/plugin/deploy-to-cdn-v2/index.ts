@@ -1,6 +1,6 @@
 import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
-import { CertInfo } from '@certd/plugin-cert';
-import { createRemoteSelectInputDefine } from '@certd/plugin-lib';
+import { CertInfo ,CertReader} from '@certd/plugin-cert';
+import { createCertDomainGetterInputDefine, createRemoteSelectInputDefine } from "@certd/plugin-lib";
 import { TencentAccess, TencentSslClient } from '@certd/plugin-lib';
 import { CertApplyPluginNames} from '@certd/plugin-cert';
 @IsTaskPlugin({
@@ -16,26 +16,6 @@ import { CertApplyPluginNames} from '@certd/plugin-cert';
   },
 })
 export class TencentDeployCertToCDNv2 extends AbstractTaskPlugin {
-  @TaskInput({
-    title: 'Access提供者',
-    helper: 'access 授权',
-    component: {
-      name: 'access-selector',
-      type: 'tencent',
-    },
-    required: true,
-  })
-  accessId!: string;
-
-  @TaskInput(
-    createRemoteSelectInputDefine({
-      title: 'CDN域名',
-      helper: '请选择域名或输入域名',
-      typeName: 'TencentDeployCertToCDNv2',
-      action: TencentDeployCertToCDNv2.prototype.onGetDomainList.name,
-    })
-  )
-  domains!: string | string[];
 
   @TaskInput({
     title: '域名证书',
@@ -48,7 +28,34 @@ export class TencentDeployCertToCDNv2 extends AbstractTaskPlugin {
   })
   cert!: CertInfo | string;
 
+  @TaskInput(createCertDomainGetterInputDefine({ props: { required: false } }))
+  certDomains!: string[];
+
+  @TaskInput({
+    title: 'Access提供者',
+    helper: 'access 授权',
+    component: {
+      name: 'access-selector',
+      type: 'tencent',
+    },
+    required: true,
+  })
+  accessId!: string;
+
+
+  @TaskInput(
+    createRemoteSelectInputDefine({
+      title: 'CDN域名',
+      helper: '请选择域名或输入域名',
+      typeName: 'TencentDeployCertToCDNv2',
+      action: TencentDeployCertToCDNv2.prototype.onGetDomainList.name,
+    })
+  )
+  domains!: string | string[];
+
+
   async onInstance() {}
+
 
   async execute(): Promise<void> {
     const access = await this.getAccess<TencentAccess>(this.accessId);
@@ -59,8 +66,9 @@ export class TencentDeployCertToCDNv2 extends AbstractTaskPlugin {
 
     let tencentCertId = this.cert as string;
     if (typeof this.cert !== 'string') {
+      const certReader = new CertReader(this.cert);
       tencentCertId = await sslClient.uploadToTencent({
-        certName: this.appendTimeSuffix('certd'),
+        certName: certReader.buildCertName(),
         cert: this.cert,
       });
     }
@@ -108,11 +116,13 @@ export class TencentDeployCertToCDNv2 extends AbstractTaskPlugin {
       Limit: 1000,
     });
     this.checkRet(res);
-    return res.Domains.map((item: any) => {
+    const options = res.Domains.map((item: any) => {
       return {
         label: item.Domain,
         value: item.Domain,
+        domain: item.Domain
       };
     });
+    return  this.ctx.utils.options.buildGroupOptions(options, this.certDomains);
   }
 }

@@ -1,8 +1,14 @@
 import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
 import dayjs from 'dayjs';
-import { AliyunAccess, AliyunClient, createCertDomainGetterInputDefine } from '@certd/plugin-lib';
+import {
+  AliyunAccess,
+  AliyunClient,
+  createCertDomainGetterInputDefine,
+  createRemoteSelectInputDefine
+} from "@certd/plugin-lib";
 import { CertInfo } from '@certd/plugin-cert';
 import { CertApplyPluginNames} from '@certd/plugin-cert';
+import { optionsUtils } from "@certd/basic/dist/utils/util.options.js";
 @IsTaskPlugin({
   name: 'DeployCertToAliyunDCDN',
   title: '阿里云-部署证书至DCDN',
@@ -41,12 +47,6 @@ export class DeployCertToAliyunDCDN extends AbstractTaskPlugin {
   })
   accessId!: string;
 
-  @TaskInput({
-    title: 'DCDN加速域名',
-    helper: '你在阿里云上配置的CDN加速域名，比如:certd.docmirror.cn',
-    required: true,
-  })
-  domainName!: string;
 
   @TaskInput({
     title: '证书名称',
@@ -54,13 +54,37 @@ export class DeployCertToAliyunDCDN extends AbstractTaskPlugin {
   })
   certName!: string;
 
+
+  @TaskInput(
+    createRemoteSelectInputDefine({
+      title: 'DCDN加速域名',
+      helper: '你在阿里云上配置的DCDN加速域名，比如:certd.docmirror.cn',
+      action: DeployCertToAliyunDCDN.prototype.onGetDomainList.name,
+      watches: ['certDomains', 'accessId'],
+      required: true,
+    })
+  )
+  domainName!: string | string[];
+
+
   async onInstance() {}
   async execute(): Promise<void> {
     this.logger.info('开始部署证书到阿里云DCDN');
+    if(!this.domainName){
+      throw new Error('您还未选择DCDN域名');
+    }
     const access = (await this.getAccess(this.accessId)) as AliyunAccess;
     const client = await this.getClient(access);
-    const params = await this.buildParams();
-    await this.doRequest(client, params);
+    if(typeof this.domainName  === 'string'){
+      this.domainName = [this.domainName];
+    }
+    for (const domainName of this.domainName ) {
+      this.logger.info(`[${this.domainName}]开始部署`)
+      const params = await this.buildParams(domainName);
+      await this.doRequest(client, params);
+      this.logger.info(`[${this.domainName}]部署成功`)
+    }
+
     this.logger.info('部署完成');
   }
 
@@ -75,14 +99,14 @@ export class DeployCertToAliyunDCDN extends AbstractTaskPlugin {
     return client;
   }
 
-  async buildParams() {
+  async buildParams(domainName:string) {
     const CertName = (this.certName ?? 'certd') + '-' + dayjs().format('YYYYMMDDHHmmss');
 
     if (typeof this.cert !== 'object') {
       const certId = this.cert;
       this.logger.info('使用已上传的证书:', certId);
       return {
-        DomainName: this.domainName,
+        DomainName: domainName,
         SSLProtocol: 'on',
         CertType: 'cas',
         CertName: CertName,
@@ -93,7 +117,7 @@ export class DeployCertToAliyunDCDN extends AbstractTaskPlugin {
     this.logger.info('上传证书:', CertName);
     const cert: any = this.cert;
     return {
-      DomainName: this.domainName,
+      DomainName: domainName,
       SSLProtocol: 'on',
       CertName: CertName,
       CertType: 'upload',
@@ -116,6 +140,41 @@ export class DeployCertToAliyunDCDN extends AbstractTaskPlugin {
     if (ret.Code != null) {
       throw new Error('执行失败：' + ret.Message);
     }
+  }
+
+
+  async onGetDomainList(data: any) {
+    if (!this.accessId) {
+      throw new Error('请选择Access授权');
+    }
+    const access = await this.getAccess<AliyunAccess>(this.accessId);
+
+    const client = await this.getClient(access);
+
+    const params = {
+      // 'DomainName': 'aaa',
+      PageSize: 500,
+    };
+
+    const requestOption = {
+      method: 'POST',
+      formatParams: false,
+    };
+
+    const res = await client.request('DescribeDcdnUserDomains', params, requestOption);
+    this.checkRet(res);
+    const pageData = res?.Domains?.PageData;
+    if (!pageData || pageData.length === 0) {
+      throw new Error('找不到CDN域名，您可以手动输入');
+    }
+    const options = pageData.map((item: any) => {
+      return {
+        value: item.DomainName,
+        label: item.DomainName,
+        domain: item.DomainName,
+      };
+    });
+    return optionsUtils.buildGroupOptions(options, this.certDomains);
   }
 }
 new DeployCertToAliyunDCDN();

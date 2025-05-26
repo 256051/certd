@@ -186,7 +186,7 @@ export class FarcdnAccess extends BaseAccess {
     if (res.code === "200") {
       return res.data;
     }
-    throw new Error(res.message);
+    throw new Error(res.message || res);
   }
 }
 
