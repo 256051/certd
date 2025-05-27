@@ -14,6 +14,7 @@ import { CertInfo, CertReader } from "@certd/plugin-cert";
 export class FarcdnAccess extends BaseAccess {
   @AccessInput({
     title: "接口地址",
+    value:"https://open.farcdn.net/api/source",
     component: {
       placeholder: "https://open.farcdn.net/api/source",
       name: "a-input",
@@ -79,21 +80,16 @@ export class FarcdnAccess extends BaseAccess {
   testRequest = true;
 
   async onTestRequest() {
-    try{
-      const data = await this.findSSLCertConfig(2106);
-      if (data) {
-        return "ok";
-      }
-    }catch (e) {
-      if(e.message.indexOf("11111111")>-1){
-        return "ok";
-      }
-      throw e;
-    }
-
-    throw "测试失败，未知错误";
+      await this.getSSLCertList({size:1});
+      return "ok"
   }
 
+  async getSSLCertList(req:{offset?:number,size?:number}){
+    return await this.doRequest({
+      url: "/getSSLCertList",
+      data: req
+    });
+  }
 
   async findSSLCertConfig(sslCertId: number) {
     /**
@@ -120,7 +116,7 @@ export class FarcdnAccess extends BaseAccess {
       sslCertId,
     };
     const res= await this.doRequest({
-      url: "/api/source/findSSLCertConfig",
+      url: "/findSSLCertConfig",
       data: params
     });
     this.ctx.logger.info(`找到证书${sslCertId}: name=${res.name},domain=${res.commonNames},dnsNames=${res.dnsNames}`);
@@ -186,7 +182,7 @@ export class FarcdnAccess extends BaseAccess {
       logData:true,
     });
 
-    if (res.code === "200") {
+    if (res.code === 200) {
       return res.data;
     }
     throw new Error(res.message || res);

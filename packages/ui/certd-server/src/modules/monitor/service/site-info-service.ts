@@ -94,7 +94,7 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
       await this.update({
         id: site.id,
         checkStatus: 'checking',
-        lastCheckTime: dayjs,
+        lastCheckTime: dayjs().valueOf(),
       });
       const res = await siteTester.test({
         host: site.domain,

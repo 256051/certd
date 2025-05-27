@@ -1,17 +1,15 @@
 // @ts-ignore
 import { useI18n } from "vue-i18n";
 import { AddReq, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
-import { siteInfoApi } from "./api";
+import { siteIpApi } from "./api";
 import dayjs from "dayjs";
-import { notification } from "ant-design-vue";
+import { Modal, notification } from "ant-design-vue";
 import { useSettingStore } from "/@/store/settings";
-import { mySuiteApi } from "/@/views/certd/suite/mine/api";
-import { mitter } from "/@/utils/util.mitt";
-import { useSiteIpMonitor } from "./ip/use";
 
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const { t } = useI18n();
-  const api = siteInfoApi;
+  const api = siteIpApi;
+
   const { crudBinding } = crudExpose;
   const pageRequest = async (query: UserPageQuery): Promise<UserPageRes> => {
     return await api.GetList(query);
@@ -19,6 +17,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
   const editRequest = async (req: EditReq) => {
     const { form, row } = req;
     form.id = row.id;
+    form.siteId = context.props.siteId;
     const res = await api.UpdateObj(form);
     return res;
   };
@@ -42,8 +41,6 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
       { label: "异常", value: "error", color: "red" },
     ],
   });
-
-  const { openSiteIpMonitorDialog } = useSiteIpMonitor();
   return {
     crudOptions: {
       request: {
@@ -71,30 +68,23 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         buttons: {
           add: {
             async click() {
-              if (!settingsStore.isPlus) {
-                //非plus
-                if (crudBinding.value.data.length >= 1) {
-                  notification.error({
-                    message: "基础版只能添加一个监控站点，请赞助升级专业版",
-                  });
-                  mitter.emit("openVipModal");
-                  return;
-                }
-              }
-
-              //检查是否监控站点数量超出限制
-              if (settingsStore.isComm && settingsStore.suiteSetting.enabled) {
-                //检查数量是否超限
-                const suiteDetail = await mySuiteApi.SuiteDetailGet();
-                const max = suiteDetail.monitorCount.max;
-                if (max != -1 && max <= suiteDetail.monitorCount.used) {
-                  notification.error({
-                    message: `对不起，您最多只能创建条${max}监控记录，请购买或升级套餐`,
-                  });
-                  return;
-                }
-              }
               await crudExpose.openAdd({});
+            },
+          },
+          load: {
+            text: "同步IP",
+            async click() {
+              Modal.confirm({
+                title: "同步IP",
+                content: "确定要同步IP吗？",
+                onOk: async () => {
+                  await api.DoSync(context.props.siteId);
+                  await crudExpose.doRefresh();
+                  notification.success({
+                    message: "同步完成",
+                  });
+                },
+              });
             },
           },
         },
@@ -119,18 +109,6 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
               });
             },
           },
-          ipMonitor: {
-            order: 0,
-            type: "link",
-            text: null,
-            tooltip: {
-              title: "IP管理",
-            },
-            icon: "entypo:address",
-            click: async ({ row }) => {
-              openSiteIpMonitorDialog({ siteId: row.id });
-            },
-          },
         },
       },
       columns: {
@@ -149,68 +127,23 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             show: false,
           },
         },
-        name: {
-          title: "站点名称",
+        ipAddress: {
+          title: "IP",
           search: {
             show: true,
           },
           type: "text",
           form: {
-            rules: [{ required: true, message: "请输入站点名称" }],
+            rules: [{ required: true, message: "请输入IP" }],
           },
           column: {
             width: 160,
           },
         },
-        domain: {
-          title: "网站域名",
-          search: {
-            show: true,
-          },
-          type: "text",
-          form: {
-            rules: [
-              { required: true, message: "请输入域名" },
-              //@ts-ignore
-              { type: "domains", message: "请输入正确的域名" },
-            ],
-          },
-          column: {
-            width: 230,
-            sorter: true,
-            cellRender({ value, row }) {
-              const url = `https://${value}:${row.httpsPort}`;
-              return (
-                <a-tooltip title={value} placement="left">
-                  <fs-copyable modelValue={value}>
-                    <a target="_blank" href={url}>
-                      {value}:{row.httpsPort}
-                    </a>
-                  </fs-copyable>
-                </a-tooltip>
-              );
-            },
-          },
-        },
-        httpsPort: {
-          title: "HTTPS端口",
-          search: {
-            show: false,
-          },
-          type: "number",
-          form: {
-            value: 443,
-            rules: [{ required: true, message: "请输入端口" }],
-          },
-          column: {
-            width: 100,
-            show: false,
-          },
-        },
         certDomains: {
           title: "证书域名",
           search: {
-            show: true,
+            show: false,
           },
           type: "text",
           form: {
@@ -305,6 +238,27 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             width: 155,
           },
         },
+        from: {
+          title: "来源",
+          search: {
+            show: false,
+          },
+          type: "dict-switch",
+          dict: dict({
+            data: [
+              { label: "同步", value: "sync", color: "green" },
+              { label: "手动", value: "manual", color: "blue" },
+            ],
+          }),
+          form: {
+            value: false,
+          },
+          column: {
+            width: 100,
+            sorter: true,
+            align: "center",
+          },
+        },
         disabled: {
           title: "禁用启用",
           search: {
@@ -319,42 +273,6 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           }),
           form: {
             value: false,
-          },
-          column: {
-            width: 100,
-            sorter: true,
-            align: "center",
-          },
-        },
-        ipCheck: {
-          title: "检查IP",
-          search: {
-            show: false,
-          },
-          type: "dict-switch",
-          dict: dict({
-            data: [
-              { label: "启用", value: false, color: "green" },
-              { label: "禁用", value: true, color: "red" },
-            ],
-          }),
-          form: {
-            value: false,
-          },
-          column: {
-            width: 100,
-            sorter: true,
-            align: "center",
-          },
-        },
-        ipCount: {
-          title: "IP数量",
-          search: {
-            show: false,
-          },
-          type: "text",
-          form: {
-            show: false,
           },
           column: {
             width: 100,
@@ -385,47 +303,19 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             },
           },
         },
-        // error: {
-        //   title: "错误信息",
-        //   search: {
-        //     show: false
-        //   },
-        //   type: "text",
-        //   form: {
-        //     show: false
-        //   },
-        //   column: {
-        //     width: 200,
-        //     sorter: true,
-        //     cellRender({ value }) {
-        //       return <a-tooltip title={value}>{value}</a-tooltip>;
-        //     }
-        //   }
-        // },
-        pipelineId: {
-          title: "关联流水线id",
+        remark: {
+          title: "备注",
           search: {
             show: false,
           },
-          form: { show: false },
-          type: "number",
+          type: "text",
+          form: {
+            show: false,
+          },
           column: {
             width: 200,
             sorter: true,
-            show: false,
-          },
-        },
-        certInfoId: {
-          title: "证书id",
-          search: {
-            show: false,
-          },
-          type: "number",
-          form: { show: false },
-          column: {
-            width: 100,
-            sorter: true,
-            show: false,
+            tooltip: true,
           },
         },
       },

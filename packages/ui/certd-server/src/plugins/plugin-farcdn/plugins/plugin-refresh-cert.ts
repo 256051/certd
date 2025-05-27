@@ -1,4 +1,4 @@
-import { IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from "@certd/pipeline";
+import { IsTaskPlugin, PageReq, pluginGroups, RunStrategy, TaskInput } from "@certd/pipeline";
 import { CertApplyPluginNames, CertInfo } from "@certd/plugin-cert";
 import { createCertDomainGetterInputDefine, createRemoteSelectInputDefine } from "@certd/plugin-lib";
 import { FarcdnAccess } from "../access.js";
@@ -8,6 +8,7 @@ import { AbstractPlusTaskPlugin } from "@certd/plugin-plus";
   //命名规范，插件类型+功能（就是目录plugin-demo中的demo），大写字母开头，驼峰命名
   name: "FarcdnRefreshCert",
   title: "farcdn-更新证书",
+  desc:"www.farcdn.net",
   icon: "svg:icon-lucky",
   //插件分组
   group: pluginGroups.cdn.key,
@@ -77,28 +78,31 @@ export class FarcdnRefreshCert extends AbstractPlusTaskPlugin {
     this.logger.info("部署完成");
   }
 
-  async onGetCertList() {
-    throw new Error("暂无查询证书列表接口，您需要手动输入证书id");
-    // const access = await this.getAccess<FarcdnAccess>(this.accessId);
+  async onGetCertList(data:PageReq = {}) {
+    const access = await this.getAccess<FarcdnAccess>(this.accessId);
 
-    // const res = await access.doRequest({
-    //   url: "/SSLCertService/listSSLCerts",
-    //   data: { size: 1000 },
-    //   method: "POST"
-    // });
-    // const list = JSON.parse(this.ctx.utils.hash.base64Decode(res.sslCertsJSON));
-    // if (!list || list.length === 0) {
-    //   throw new Error("没有找到证书，请先在控制台上传一次证书且关联网站");
-    // }
-    //
-    // const options = list.map((item: any) => {
-    //   return {
-    //     label: `${item.name}<${item.id}-${item.dnsNames[0]}>`,
-    //     value: item.id,
-    //     domain: item.dnsNames
-    //   };
-    // });
-    // return this.ctx.utils.options.buildGroupOptions(options, this.certDomains);
+    const res = await access.getSSLCertList({
+      offset: data.offset?? 0,
+      size: data.limit?? 100,
+    });
+    const list = res.list
+    if (!list || list.length === 0) {
+      throw new Error("没有找到证书，请先在控制台上传一次证书且关联网站");
+    }
+
+    const options = list.map((item: any) => {
+      return {
+        label: `${item.name}<${item.id}>`,
+        value: item.id,
+        domain: item.dnsNames
+      };
+    });
+    return {
+      list:this.ctx.utils.options.buildGroupOptions(options, this.certDomains),
+      total:res.total,
+      offset: res.offset,
+      limit:res.size
+    }
   }
 }
 
