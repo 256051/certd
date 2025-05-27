@@ -49,24 +49,22 @@ export class SiteTester {
       req
     );
 
-    const agentOptions:any = {}
     if (req.ipAddress) {
       //使用固定的ip
       const ipAddress = req.ipAddress;
-      agentOptions.lookup = (hostname: string, options: any, callback: any) => {
+      options.lookup = (hostname: string, options: any, callback: any) => {
         //判断ip是v4 还是v6
-        console.log("options",options)
-        console.log("ipaddress",ipAddress)
+        console.log("options", options);
+        console.log("ipaddress", ipAddress);
         if (ipAddress.indexOf(":") > -1) {
-          callback(null, [ipAddress], 6);
+          callback(null, ipAddress, 6);
         } else {
-          callback(null, [ipAddress], 4);
+          callback(null, ipAddress, 4);
         }
       };
-      options.lookup = agentOptions.lookup;
     }
 
-    options.agent = new https.Agent({ keepAlive: false, ...agentOptions });
+    options.agent = new https.Agent({ keepAlive: false });
 
     // 创建 HTTPS 请求
     const requestPromise = safePromise((resolve, reject) => {
