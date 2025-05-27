@@ -102,11 +102,11 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
           return form.challengeType === 'dns' 
       }),
       component:{
-        on:{
-          selectedChange({form,$event}){
-            form.dnsProviderAccessType = $event.accessType
+        onSelectedChange: ctx.compute(({form})=>{
+          return ($event)=>{
+           form.dnsProviderAccessType = $event.accessType
           }
-        }
+        })
       }
     }
     `,

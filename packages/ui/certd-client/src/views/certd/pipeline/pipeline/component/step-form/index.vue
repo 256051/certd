@@ -208,7 +208,6 @@ function useStepForm() {
   const stepOpen = (step: any, emit: any) => {
     callback.value = emit;
     currentStep.value = merge({ input: {}, strategy: {} }, step);
-
     if (step.type) {
       changeCurrentPlugin(currentStep.value);
     }
