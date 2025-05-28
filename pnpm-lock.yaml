@@ -682,6 +682,9 @@ importers:
 
   packages/plugins/plugin-lib:
     dependencies:
+      '@alicloud/credentials':
+        specifier: ^2.4.3
+        version: 2.4.3
       '@alicloud/openapi-client':
         specifier: ^0.4.14
         version: 0.4.14

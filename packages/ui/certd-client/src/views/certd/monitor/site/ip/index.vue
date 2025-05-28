@@ -9,7 +9,7 @@ import { onActivated, onMounted, ref, Ref } from "vue";
 import { useFs } from "@fast-crud/fast-crud";
 import createCrudOptions from "./crud";
 import { siteIpApi } from "./api";
-import { Modal, notification } from "ant-design-vue";
+
 defineOptions({
   name: "SiteIpCertMonitor",
 });

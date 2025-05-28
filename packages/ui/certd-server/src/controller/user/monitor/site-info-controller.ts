@@ -62,7 +62,10 @@ export class SiteInfoController extends CrudController<SiteInfoService> {
   async add(@Body(ALL) bean: any) {
     bean.userId = this.getUserId();
     const res = await this.service.add(bean);
-    this.service.check(res.id, true, 0);
+    const entity = await this.service.info(res.id);
+    if (entity.disabled) {
+      this.service.check(entity.id, true, 0);
+    }
     return this.ok(res);
   }
 
@@ -71,7 +74,10 @@ export class SiteInfoController extends CrudController<SiteInfoService> {
     await this.service.checkUserId(bean.id, this.getUserId());
     delete bean.userId;
     await this.service.update(bean);
-    this.service.check(bean.id, true, 0);
+    const entity = await this.service.info(bean.id);
+    if (entity.disabled) {
+      this.service.check(entity.id, true, 0);
+    }
     return this.ok();
   }
   @Post('/info', { summary: Constants.per.authOnly })
@@ -110,6 +116,16 @@ export class SiteInfoController extends CrudController<SiteInfoService> {
     return this.ok();
   }
 
+  @Post('/disabledChange', { summary: Constants.per.authOnly })
+  async disabledChange(@Body(ALL) bean: any) {
+    const userId = this.getUserId();
+    await this.service.checkUserId(bean.id, userId)
+    await this.service.disabledChange({
+      id: bean.id,
+      disabled: bean.disabled
+    });
+    return this.ok();
+  }
 
   @Post("/setting/get", { summary: Constants.per.authOnly })
   async get() {

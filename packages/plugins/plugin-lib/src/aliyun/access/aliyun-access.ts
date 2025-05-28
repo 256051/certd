@@ -32,9 +32,15 @@ export class AliyunClientV2 {
       return this.client;
     }
     const $OpenApi = await import("@alicloud/openapi-client");
-    const config = new $OpenApi.Config({
+    const Credential = await import("@alicloud/credentials");
+    //@ts-ignore
+    const credential = new Credential.default.default({
       accessKeyId: this.access.accessKeyId,
       accessKeySecret: this.access.accessKeySecret,
+      type: "access_key",
+    });
+    const config = new $OpenApi.Config({
+      credential,
     });
     // Endpoint 请参考 https://api.aliyun.com/product/FC
     // config.endpoint = `esa.${this.regionId}.aliyuncs.com`;

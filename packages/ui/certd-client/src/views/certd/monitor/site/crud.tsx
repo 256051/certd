@@ -360,6 +360,16 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             width: 100,
             sorter: true,
             align: "center",
+            component: {
+              name: "fs-dict-switch",
+              vModel: "checked",
+              on: {
+                async change({ row, $event }) {
+                  await api.DisabledChange(row.id, $event);
+                  await crudExpose.doRefresh();
+                },
+              },
+            },
           },
         },
         ipCheck: {
@@ -367,8 +377,8 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           type: "dict-switch",
           dict: dict({
             data: [
-              { label: "启用", value: false, color: "green" },
-              { label: "禁用", value: true, color: "gray" },
+              { label: "启用", value: true, color: "green" },
+              { label: "禁用", value: false, color: "gray" },
             ],
           }),
           form: {
@@ -380,7 +390,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             width: 100,
             conditionalRender: false,
             component: {
-              name: "a-switch",
+              name: "fs-dict-switch",
               vModel: "checked",
               on: {
                 change({ row, $event }) {

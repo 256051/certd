@@ -45,8 +45,10 @@ export class SiteInfoController extends CrudController<SiteIpService> {
     bean.from = "manual"
     const res = await this.service.add(bean);
     const siteEntity = await this.siteInfoService.info(bean.siteId);
-    const {domain,  httpsPort} = siteEntity;
-    this.service.check(res.id,domain,  httpsPort);
+    if(!siteEntity.disabled){
+      const {domain,  httpsPort} = siteEntity;
+      this.service.check(res.id,domain,  httpsPort);
+    }
     return this.ok(res);
   }
 
@@ -56,8 +58,10 @@ export class SiteInfoController extends CrudController<SiteIpService> {
     delete bean.userId;
     await this.service.update(bean);
     const siteEntity = await this.siteInfoService.info(bean.siteId);
-    const {domain,  httpsPort} = siteEntity;
-    this.service.check(bean.id,domain,  httpsPort);
+    if(!siteEntity.disabled){
+      const {domain,  httpsPort} = siteEntity;
+      this.service.check(siteEntity.id,domain,  httpsPort);
+    }
     return this.ok();
   }
   @Post('/info', { summary: Constants.per.authOnly })

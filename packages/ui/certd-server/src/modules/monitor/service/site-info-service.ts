@@ -311,4 +311,14 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
     }
   }
 
+  async disabledChange(req: { disabled: any; id: any }) {
+    await this.update({
+      id: req.id,
+      disabled: req.disabled,
+    });
+    if(!req.disabled){
+      const site = await this.info(req.id);
+      await this.doCheck(site)
+    }
+  }
 }

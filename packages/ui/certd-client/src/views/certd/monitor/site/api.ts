@@ -56,6 +56,16 @@ export const siteInfoApi = {
     });
   },
 
+  async DisabledChange(id: number, disabled: boolean) {
+    return await request({
+      url: apiPrefix + "/disabledChange",
+      method: "post",
+      data: {
+        id,
+        disabled,
+      },
+    });
+  },
   async IpCheckChange(id: number, ipCheck: boolean) {
     return await request({
       url: apiPrefix + "/ipCheckChange",
