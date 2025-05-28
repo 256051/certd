@@ -12,12 +12,15 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 
   const { crudBinding } = crudExpose;
   const pageRequest = async (query: UserPageQuery): Promise<UserPageRes> => {
+    if (!query.query) {
+      query.query = {};
+    }
+    query.query.siteId = context.props.siteId;
     return await api.GetList(query);
   };
   const editRequest = async (req: EditReq) => {
     const { form, row } = req;
     form.id = row.id;
-    form.siteId = context.props.siteId;
     const res = await api.UpdateObj(form);
     return res;
   };
@@ -73,6 +76,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           },
           load: {
             text: "同步IP",
+            type: "primary",
             async click() {
               Modal.confirm({
                 title: "同步IP",
@@ -82,6 +86,23 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
                   await crudExpose.doRefresh();
                   notification.success({
                     message: "同步完成",
+                  });
+                },
+              });
+            },
+          },
+          checkAll: {
+            text: "检查全部",
+            type: "primary",
+            click: () => {
+              Modal.confirm({
+                title: "确认",
+                content: "确认触发检查全部IP站点的证书吗?",
+                onOk: async () => {
+                  await siteIpApi.CheckAll(context.props.siteId);
+                  notification.success({
+                    message: "检查任务已提交",
+                    description: "请稍后刷新页面查看结果",
                   });
                 },
               });
@@ -105,7 +126,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
               await api.DoCheck(row.id);
               await crudExpose.doRefresh();
               notification.success({
-                message: "检查完成",
+                message: "检查任务已提交",
               });
             },
           },
@@ -152,7 +173,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           column: {
             width: 200,
             sorter: true,
-            show: true,
+            show: false,
             cellRender({ value }) {
               return (
                 <a-tooltip title={value} placement="left">
@@ -173,6 +194,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           },
           column: {
             width: 200,
+            show: false,
             sorter: true,
             cellRender({ value }) {
               return <a-tooltip title={value}>{value}</a-tooltip>;
@@ -221,6 +243,29 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
               const color = leftDays < 20 ? "red" : "#389e0d";
               const percent = (leftDays / 90) * 100;
               return <a-progress title={expireDate + "过期"} percent={percent} strokeColor={color} format={(percent: number) => `${leftDays}天`} />;
+            },
+          },
+        },
+        checkStatus: {
+          title: "检查状态",
+          search: {
+            show: false,
+          },
+          type: "dict-select",
+          dict: checkStatusDict,
+          form: {
+            show: false,
+          },
+          column: {
+            width: 100,
+            align: "center",
+            sorter: true,
+            cellRender({ value, row, key }) {
+              return (
+                <a-tooltip title={row.error}>
+                  <fs-values-format v-model={value} dict={checkStatusDict}></fs-values-format>
+                </a-tooltip>
+              );
             },
           },
         },
@@ -278,29 +323,6 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             width: 100,
             sorter: true,
             align: "center",
-          },
-        },
-        checkStatus: {
-          title: "检查状态",
-          search: {
-            show: false,
-          },
-          type: "dict-select",
-          dict: checkStatusDict,
-          form: {
-            show: false,
-          },
-          column: {
-            width: 100,
-            align: "center",
-            sorter: true,
-            cellRender({ value, row, key }) {
-              return (
-                <a-tooltip title={row.error}>
-                  <fs-values-format v-model={value} dict={checkStatusDict}></fs-values-format>
-                </a-tooltip>
-              );
-            },
           },
         },
         remark: {

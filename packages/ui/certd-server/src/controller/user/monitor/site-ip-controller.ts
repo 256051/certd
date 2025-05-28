@@ -44,7 +44,9 @@ export class SiteInfoController extends CrudController<SiteIpService> {
     bean.userId = this.getUserId();
     bean.from = "manual"
     const res = await this.service.add(bean);
-    this.service.check(res.id);
+    const siteEntity = await this.siteInfoService.info(bean.siteId);
+    const {domain,  httpsPort} = siteEntity;
+    this.service.check(res.id,domain,  httpsPort);
     return this.ok(res);
   }
 
@@ -53,7 +55,9 @@ export class SiteInfoController extends CrudController<SiteIpService> {
     await this.service.checkUserId(bean.id, this.getUserId());
     delete bean.userId;
     await this.service.update(bean);
-    this.service.check(bean.id);
+    const siteEntity = await this.siteInfoService.info(bean.siteId);
+    const {domain,  httpsPort} = siteEntity;
+    this.service.check(bean.id,domain,  httpsPort);
     return this.ok();
   }
   @Post('/info', { summary: Constants.per.authOnly })
@@ -71,7 +75,11 @@ export class SiteInfoController extends CrudController<SiteIpService> {
   @Post('/check', { summary: Constants.per.authOnly })
   async check(@Body('id') id: number) {
     await this.service.checkUserId(id, this.getUserId());
-    this.service.check(id);
+    const entity = await this.service.info(id);
+    const siteEntity = await this.siteInfoService.info(entity.siteId);
+    const domain = siteEntity.domain;
+    const port = siteEntity.httpsPort;
+    this.service.check(id,domain,port);
     return this.ok();
   }
 
@@ -79,7 +87,8 @@ export class SiteInfoController extends CrudController<SiteIpService> {
   async checkAll(@Body('siteId') siteId: number) {
     const userId = this.getUserId();
     await this.siteInfoService.checkUserId(siteId, userId);
-    await this.service.checkAll(siteId);
+    const siteEntity = await this.siteInfoService.info(siteId);
+    await this.service.checkAll(siteEntity);
     return this.ok();
   }
 
@@ -93,5 +102,6 @@ export class SiteInfoController extends CrudController<SiteIpService> {
     await this.service.sync(entity);
     return this.ok();
   }
+
 
 }

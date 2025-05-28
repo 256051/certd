@@ -32,23 +32,23 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         pageRequest,
         addRequest,
         editRequest,
-        delRequest
+        delRequest,
       },
       form: {
         labelCol: {
           //固定label宽度
           span: null,
           style: {
-            width: "145px"
-          }
-        }
+            width: "145px",
+          },
+        },
       },
       rowHandle: {
-        width: 200
+        width: 200,
       },
       columns: {
-        ...commonColumnsDefine
-      }
-    }
+        ...commonColumnsDefine,
+      },
+    },
   };
 }

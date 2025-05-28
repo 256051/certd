@@ -1,9 +1,9 @@
 // @ts-ignore
 import { useI18n } from "vue-i18n";
-import { AddReq, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
+import { AddReq, ColumnCompositionProps, compute, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
 import { siteInfoApi } from "./api";
 import dayjs from "dayjs";
-import { notification } from "ant-design-vue";
+import { Modal, notification } from "ant-design-vue";
 import { useSettingStore } from "/@/store/settings";
 import { mySuiteApi } from "/@/views/certd/suite/mine/api";
 import { mitter } from "/@/utils/util.mitt";
@@ -119,10 +119,13 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
               });
             },
           },
-          ipMonitor: {
-            order: 0,
+          ipCheck: {
+            order: 10,
             type: "link",
             text: null,
+            show: compute(({ row }) => {
+              return row.ipCheck === true;
+            }),
             tooltip: {
               title: "IP管理",
             },
@@ -327,26 +330,46 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           },
         },
         ipCheck: {
-          title: "检查IP",
-          search: {
-            show: false,
-          },
+          title: "开启IP检查",
           type: "dict-switch",
           dict: dict({
             data: [
               { label: "启用", value: false, color: "green" },
-              { label: "禁用", value: true, color: "red" },
+              { label: "禁用", value: true, color: "gray" },
             ],
           }),
           form: {
             value: false,
+            rules: [{ required: true, message: "请选择" }],
           },
           column: {
-            width: 100,
-            sorter: true,
             align: "center",
+            width: 100,
+            conditionalRender: false,
+            component: {
+              name: "a-switch",
+              vModel: "checked",
+              on: {
+                change({ row, $event }) {
+                  Modal.confirm({
+                    title: "提示",
+                    content: `确定${$event ? "开启" : "关闭"}IP检查？`,
+                    onOk: async () => {
+                      await api.IpCheckChange(row.id, $event);
+                      await crudExpose.doRefresh();
+                      if ($event) {
+                        openSiteIpMonitorDialog({ siteId: row.id });
+                      }
+                    },
+                    onCancel: async () => {
+                      await crudExpose.doRefresh();
+                    },
+                  });
+                },
+              },
+            },
           },
-        },
+        } as ColumnCompositionProps,
         ipCount: {
           title: "IP数量",
           search: {

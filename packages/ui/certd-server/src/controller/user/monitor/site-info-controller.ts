@@ -4,6 +4,7 @@ import { AuthService } from "../../../modules/sys/authority/service/auth-service
 import { SiteInfoService } from "../../../modules/monitor/service/site-info-service.js";
 import { UserSiteMonitorSetting } from "../../../modules/mine/service/models.js";
 import { merge } from "lodash-es";
+import {SiteIpService} from "../../../modules/monitor/service/site-ip-service.js";
 
 /**
  */
@@ -14,6 +15,8 @@ export class SiteInfoController extends CrudController<SiteInfoService> {
   service: SiteInfoService;
   @Inject()
   authService: AuthService;
+  @Inject()
+  siteIpService: SiteIpService;
 
   getService(): SiteInfoService {
     return this.service;
@@ -96,7 +99,16 @@ export class SiteInfoController extends CrudController<SiteInfoService> {
     await this.service.checkAllByUsers(userId);
     return this.ok();
   }
-
+  @Post('/ipCheckChange', { summary: Constants.per.authOnly })
+  async ipCheckChange(@Body(ALL) bean: any) {
+    const userId = this.getUserId();
+    await this.service.checkUserId(bean.id, userId)
+    await this.service.ipCheckChange({
+      id: bean.id,
+      ipCheck: bean.ipCheck
+    });
+    return this.ok();
+  }
 
 
   @Post("/setting/get", { summary: Constants.per.authOnly })

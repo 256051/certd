@@ -1,18 +1,17 @@
-import { Inject, Provide, Scope, ScopeEnum } from "@midwayjs/core";
-import { BaseService, SysSettingsService } from "@certd/lib-server";
-import { InjectEntityModel } from "@midwayjs/typeorm";
-import { Repository } from "typeorm";
-import { SiteInfoEntity } from "../entity/site-info.js";
-import { NotificationService } from "../../pipeline/service/notification-service.js";
-import { UserSuiteService } from "@certd/commercial-core";
-import { UserSettingsService } from "../../mine/service/user-settings-service.js";
-import { SiteIpEntity } from "../entity/site-ip.js";
+import {Inject, Provide, Scope, ScopeEnum} from "@midwayjs/core";
+import {BaseService, SysSettingsService} from "@certd/lib-server";
+import {InjectEntityModel} from "@midwayjs/typeorm";
+import {Repository} from "typeorm";
+import {SiteInfoEntity} from "../entity/site-info.js";
+import {NotificationService} from "../../pipeline/service/notification-service.js";
+import {UserSuiteService} from "@certd/commercial-core";
+import {UserSettingsService} from "../../mine/service/user-settings-service.js";
+import {SiteIpEntity} from "../entity/site-ip.js";
 import dns from "dns";
-import { logger, safePromise } from "@certd/basic";
+import {logger, safePromise} from "@certd/basic";
 import dayjs from "dayjs";
-import { siteTester } from "./site-tester.js";
-import { PeerCertificate } from "tls";
-import { SiteInfoService } from "./site-info-service.js";
+import {siteTester} from "./site-tester.js";
+import {PeerCertificate} from "tls";
 
 @Provide()
 @Scope(ScopeEnum.Request, { allowDowngrade: true })
@@ -31,9 +30,6 @@ export class SiteIpService extends BaseService<SiteIpEntity> {
 
   @Inject()
   userSettingsService: UserSettingsService;
-  @Inject()
-  siteInfoService: SiteInfoService;
-
 
   //@ts-ignore
   getRepository() {
@@ -83,22 +79,17 @@ export class SiteIpService extends BaseService<SiteIpEntity> {
       });
     }
 
-    await this.checkAll(entity.id);
+    await this.checkAll(entity);
 
   }
 
-  async check(ipId: number, domain?: string, port?: number) {
+  async check(ipId: number, domain: string, port: number) {
     if(!ipId){
       return
     }
     const entity = await this.info(ipId);
     if (!entity) {
       return;
-    }
-    if (domain == null || port == null){
-      const siteEntity = await this.siteInfoService.info(entity.siteId);
-      domain = siteEntity.domain;
-      port = siteEntity.httpsPort;
     }
     try {
       await this.update({
@@ -151,8 +142,8 @@ export class SiteIpService extends BaseService<SiteIpEntity> {
     }
   }
 
-  async checkAll(siteId: number) {
-    const siteInfo = await this.siteInfoService.info(siteId);
+  async checkAll(siteInfo: SiteInfoEntity) {
+    const siteId = siteInfo.id;
     const ips = await this.repository.find({
       where: {
         siteId: siteId
@@ -162,13 +153,14 @@ export class SiteIpService extends BaseService<SiteIpEntity> {
     const port = siteInfo.httpsPort;
     const promiseList = [];
     for (const ip of ips) {
-      promiseList.push(async () => {
+      const func = async () => {
         try {
           await this.check(ip.id, domain, port);
         } catch (e) {
           logger.error("check site ip error", e);
         }
-      });
+      }
+      promiseList.push(func());
     }
     Promise.all(promiseList);
   }

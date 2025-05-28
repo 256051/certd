@@ -52,16 +52,12 @@ export class SiteTester {
     if (req.ipAddress) {
       //使用固定的ip
       const ipAddress = req.ipAddress;
-      options.lookup = (hostname: string, options: any, callback: any) => {
-        //判断ip是v4 还是v6
-        console.log("options", options);
-        console.log("ipaddress", ipAddress);
-        if (ipAddress.indexOf(":") > -1) {
-          callback(null, ipAddress, 6);
-        } else {
-          callback(null, ipAddress, 4);
-        }
-      };
+      options.headers={
+        host: options.host,
+        //sni
+        servername: options.host
+      }
+      options.host = ipAddress;
     }
 
     options.agent = new https.Agent({ keepAlive: false });

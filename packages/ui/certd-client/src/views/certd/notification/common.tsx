@@ -15,13 +15,13 @@ export function notificationProvide(api: any) {
 
 export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
   const notificationTypeDictRef = dict({
-    url: "/pi/notification/getTypeDict"
+    url: "/pi/notification/getTypeDict",
   });
   const defaultPluginConfig = {
     component: {
       name: "a-input",
-      vModel: "value"
-    }
+      vModel: "value",
+    },
   };
 
   function buildDefineFields(define: any, form: any, mode: string) {
@@ -38,7 +38,7 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
       const key = "body." + mapKey;
       const field = {
         ...value,
-        key
+        key,
       };
       const column = merge({ title: key }, defaultPluginConfig, field);
       //eval
@@ -69,29 +69,29 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
       key: "id",
       type: "number",
       column: {
-        width: 100
+        width: 100,
       },
       form: {
-        show: false
-      }
+        show: false,
+      },
     },
     type: {
       title: "通知类型",
       type: "dict-select",
       dict: notificationTypeDictRef,
       search: {
-        show: false
+        show: false,
       },
       column: {
         width: 200,
         component: {
-          color: "auto"
-        }
+          color: "auto",
+        },
       },
       editForm: {
         component: {
-          disabled: false
-        }
+          disabled: false,
+        },
       },
       form: {
         component: {
@@ -108,7 +108,7 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
                 {item.needPlus && <fs-icon icon={"mingcute:vip-1-line"} className={"color-plus"}></fs-icon>}
               </span>
             );
-          }
+          },
         },
         rules: [{ required: true, message: "请选择通知类型" }],
         valueChange: {
@@ -133,7 +133,7 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
               form.name = define.title;
             }
             buildDefineFields(define, form, mode);
-          }
+          },
         },
         helper: computed(() => {
           const define = currentDefine.value;
@@ -141,22 +141,22 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
             return "";
           }
           return define.desc;
-        })
-      }
+        }),
+      },
     } as ColumnCompositionProps,
     name: {
       title: "通知名称",
       search: {
-        show: true
+        show: true,
       },
       type: ["text"],
       form: {
         rules: [{ required: true, message: "请填写名称" }],
-        helper: "随便填，当多个相同类型的通知时，便于区分"
+        helper: "随便填，当多个相同类型的通知时，便于区分",
       },
       column: {
-        width: 200
-      }
+        width: 200,
+      },
     },
     isDefault: {
       title: "是否默认",
@@ -164,13 +164,13 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
       dict: dict({
         data: [
           { label: "是", value: true, color: "success" },
-          { label: "否", value: false, color: "default" }
-        ]
+          { label: "否", value: false, color: "default" },
+        ],
       }),
       form: {
         value: false,
         rules: [{ required: true, message: "请选择是否默认" }],
-        order: 999
+        order: 999,
       },
       column: {
         align: "center",
@@ -192,12 +192,12 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
                 },
                 onCancel: async () => {
                   await crudExpose.doRefresh();
-                }
+                },
               });
-            }
-          }
-        }
-      }
+            },
+          },
+        },
+      },
     } as ColumnCompositionProps,
     test: {
       title: "测试",
@@ -207,16 +207,16 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
         }),
         component: {
           name: "api-test",
-          action: "TestRequest"
+          action: "TestRequest",
         },
         order: 990,
         col: {
-          span: 24
-        }
+          span: 24,
+        },
       },
       column: {
-        show: false
-      }
+        show: false,
+      },
     },
     setting: {
       column: { show: false },
@@ -235,8 +235,8 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
         valueResolve({ form }) {
           const setting = form.body;
           form.setting = JSON.stringify(setting);
-        }
-      }
-    } as ColumnCompositionProps
+        },
+      },
+    } as ColumnCompositionProps,
   };
 }

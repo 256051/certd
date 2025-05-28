@@ -55,4 +55,15 @@ export const siteInfoApi = {
       method: "post",
     });
   },
+
+  async IpCheckChange(id: number, ipCheck: boolean) {
+    return await request({
+      url: apiPrefix + "/ipCheckChange",
+      method: "post",
+      data: {
+        id,
+        ipCheck,
+      },
+    });
+  },
 };

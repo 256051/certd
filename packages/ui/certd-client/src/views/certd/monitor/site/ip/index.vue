@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onActivated, onMounted } from "vue";
+import { onActivated, onMounted, ref, Ref } from "vue";
 import { useFs } from "@fast-crud/fast-crud";
 import createCrudOptions from "./crud";
 import { siteIpApi } from "./api";
@@ -22,19 +22,11 @@ const { crudBinding, crudRef, crudExpose } = useFs({
     props,
   },
 });
-function checkAll() {
-  Modal.confirm({
-    title: "确认",
-    content: "确认触发检查全部站点证书吗?",
-    onOk: async () => {
-      await siteIpApi.CheckAll();
-      notification.success({
-        message: "检查任务已提交",
-        description: "请稍后刷新页面查看结果",
-      });
-    },
-  });
-}
+
+const siteInfoRef: Ref<any> = ref({});
+onMounted(async () => {
+  siteInfoRef.value = await siteIpApi.GetObj(props.siteId);
+});
 
 // 页面打开后获取列表数据
 onMounted(() => {

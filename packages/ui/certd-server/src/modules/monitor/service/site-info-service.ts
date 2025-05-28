@@ -12,6 +12,7 @@ import { isComm, isPlus } from '@certd/plus-core';
 import { UserSuiteService } from '@certd/commercial-core';
 import { UserSettingsService } from "../../mine/service/user-settings-service.js";
 import {  UserSiteMonitorSetting } from "../../mine/service/models.js";
+import {SiteIpService} from "./site-ip-service.js";
 
 @Provide()
 @Scope(ScopeEnum.Request, { allowDowngrade: true })
@@ -31,6 +32,8 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
   @Inject()
   userSettingsService: UserSettingsService;
 
+  @Inject()
+  siteIpService: SiteIpService;
 
   //@ts-ignore
   getRepository() {
@@ -128,6 +131,13 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
       };
 
       await this.update(updateData);
+
+
+      //检查ip
+      if( site.ipCheck){
+        await this.siteIpService.checkAll(site)
+      }
+
       if (!notify) {
         return;
       }
@@ -156,7 +166,7 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
   }
 
   /**
-   * 检查，但不发邮件
+   * 检查
    * @param id
    * @param notify
    * @param retryTimes
@@ -249,5 +259,17 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
 
   async saveSetting(userId: number, bean: UserSiteMonitorSetting) {
     await this.userSettingsService.saveSetting(userId, bean);
+  }
+
+  async ipCheckChange(req: {id: any; ipCheck: any}) {
+
+    await this.update({
+      id: req.id,
+      ipCheck: req.ipCheck,
+    });
+    if(req.ipCheck){
+      const site = await this.info(req.id);
+      await this.siteIpService.sync(site)
+    }
   }
 }
