@@ -68,8 +68,12 @@ export class SiteInfoController extends CrudController<SiteIpService> {
 
   @Post('/delete', { summary: Constants.per.authOnly })
   async delete(@Query('id') id: number) {
+    const entity = await this.service.info(id);
     await this.service.checkUserId(id, this.getUserId());
-    return await super.delete(id);
+
+    const res = await super.delete(id);
+    await this.service.updateIpCount(entity.siteId)
+    return res
   }
 
   @Post('/check', { summary: Constants.per.authOnly })

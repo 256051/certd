@@ -18,6 +18,8 @@ import {PeerCertificate} from "tls";
 export class SiteIpService extends BaseService<SiteIpEntity> {
   @InjectEntityModel(SiteIpEntity)
   repository: Repository<SiteIpEntity>;
+  @InjectEntityModel(SiteInfoEntity)
+  siteInfoRepository: Repository<SiteInfoEntity>;
 
   @Inject()
   notificationService: NotificationService;
@@ -36,13 +38,16 @@ export class SiteIpService extends BaseService<SiteIpEntity> {
     return this.repository;
   }
 
-  async add(data: SiteInfoEntity) {
+  async add(data: SiteIpEntity) {
     if (!data.userId) {
       throw new Error("userId is required");
     }
     data.disabled = false;
-    return await super.add(data);
+    const res= await super.add(data);
+    await this.updateIpCount(data.siteId)
+    return res
   }
+
 
   async update(data: any) {
     if (!data.id) {
@@ -80,7 +85,7 @@ export class SiteIpService extends BaseService<SiteIpEntity> {
     }
 
     await this.checkAll(entity);
-
+    await this.updateIpCount(entity.id)
   }
 
   async check(ipId: number, domain: string, port: number) {
@@ -131,6 +136,8 @@ export class SiteIpService extends BaseService<SiteIpEntity> {
 
       await this.update(updateData);
 
+      return updateData
+
     } catch (e) {
       logger.error("check site ip error", e);
       await this.update({
@@ -139,10 +146,15 @@ export class SiteIpService extends BaseService<SiteIpEntity> {
         lastCheckTime: dayjs().valueOf(),
         error: e.message
       });
+      return {
+        id: entity.id,
+        ipAddress: entity.ipAddress,
+        error: e.message
+      }
     }
   }
 
-  async checkAll(siteInfo: SiteInfoEntity) {
+  async checkAll(siteInfo: SiteInfoEntity,onFinish?: (e: any) => void) {
     const siteId = siteInfo.id;
     const ips = await this.repository.find({
       where: {
@@ -152,17 +164,28 @@ export class SiteIpService extends BaseService<SiteIpEntity> {
     const domain = siteInfo.domain;
     const port = siteInfo.httpsPort;
     const promiseList = [];
-    for (const ip of ips) {
+    for (const item of ips) {
       const func = async () => {
         try {
-          await this.check(ip.id, domain, port);
+          return await this.check(item.id, domain, port);
         } catch (e) {
-          logger.error("check site ip error", e);
+          logger.error("check site item error", e);
+          return {
+            ...item,
+            error:e.message
+          }
         }
       }
       promiseList.push(func());
     }
-    Promise.all(promiseList);
+    Promise.all(promiseList).then((res)=>{
+      const finished = res.filter(item=>{
+        return item
+      })
+      if (finished.length > 0) {
+        onFinish && onFinish(finished)
+      }
+    })
   }
 
   async getAllIpsFromDomain(domain: string) {
@@ -191,5 +214,22 @@ export class SiteIpService extends BaseService<SiteIpEntity> {
     return Promise.all([getFromV4, getFromV6]).then(res => {
       return [...res[0], ...res[1]];
     });
+  }
+
+
+  async updateIpCount(siteId:number){
+    const count = await this.repository.count({
+      where:{
+        siteId
+      }
+    })
+    await this.siteInfoRepository.update({
+      //where
+        id:siteId,
+    },
+      {
+        //update
+      ipCount:count
+    })
   }
 }

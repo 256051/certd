@@ -136,6 +136,10 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           },
         },
       },
+      tabs: {
+        name: "disabled",
+        show: true,
+      },
       columns: {
         id: {
           title: "ID",
@@ -210,6 +214,34 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             show: false,
           },
         },
+        certInfo: {
+          title: "证书信息",
+          type: "text",
+          form: { show: false },
+          column: {
+            width: 200,
+            sorter: false,
+            show: true,
+            conditionalRender: false,
+            cellRender({ value, row }) {
+              const slots = {
+                content() {
+                  return (
+                    <div>
+                      <div>证书颁发机构：{row.certProvider}</div>
+                      <div>证书域名：{row.certDomains}</div>
+                    </div>
+                  );
+                },
+              };
+              return (
+                <a-popover placement="left" v-slots={slots} overlayStyle={{ maxWidth: "30%" }}>
+                  {row.certDomains}
+                </a-popover>
+              );
+            },
+          },
+        },
         certDomains: {
           title: "证书域名",
           search: {
@@ -222,7 +254,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           column: {
             width: 200,
             sorter: true,
-            show: true,
+            show: false,
             cellRender({ value }) {
               return (
                 <a-tooltip title={value} placement="left">
@@ -244,6 +276,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           column: {
             width: 200,
             sorter: true,
+            show: false,
             cellRender({ value }) {
               return <a-tooltip title={value}>{value}</a-tooltip>;
             },

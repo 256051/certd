@@ -13,6 +13,7 @@ import { UserSuiteService } from '@certd/commercial-core';
 import { UserSettingsService } from "../../mine/service/user-settings-service.js";
 import {  UserSiteMonitorSetting } from "../../mine/service/models.js";
 import {SiteIpService} from "./site-ip-service.js";
+import {SiteIpEntity} from "../entity/site-ip.js";
 
 @Provide()
 @Scope(ScopeEnum.Request, { allowDowngrade: true })
@@ -134,9 +135,7 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
 
 
       //检查ip
-      if( site.ipCheck){
-        await this.siteIpService.checkAll(site)
-      }
+      await this.checkAllIp(site)
 
       if (!notify) {
         return;
@@ -165,6 +164,43 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
     }
   }
 
+  async checkAllIp(site:SiteInfoEntity){
+    if( !site.ipCheck){
+      return;
+    }
+    const certExpiresTime = site.certExpiresTime;
+    const onFinished = async (list:SiteIpEntity[])=>{
+      let errorCount = 0
+      let errorMessage = ""
+      for (const item of list) {
+        errorCount++
+        if(item.error){
+          errorMessage += `${item.ipAddress}：${item.error}； \n`
+        }else if(item.certExpiresTime!==certExpiresTime){
+          errorMessage += `${item.ipAddress}：与主站证书过期时间不一致； \n`
+        }else{
+          errorCount--
+        }
+      }
+      if (errorCount<=0){
+        return
+      }
+      await this.update({
+        id: site.id,
+        checkStatus: 'error',
+        error: errorMessage,
+        ipErrorCount: errorCount,
+      })
+      try {
+        site = await this.info(site.id)
+        await this.sendCheckErrorNotify(site,true);
+      } catch (e) {
+        logger.error('send notify error', e);
+      }
+    }
+    await this.siteIpService.checkAll(site,onFinished)
+  }
+
   /**
    * 检查
    * @param id
@@ -179,7 +215,7 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
     return await this.doCheck(site, notify, retryTimes);
   }
 
-  async sendCheckErrorNotify(site: SiteInfoEntity) {
+  async sendCheckErrorNotify(site: SiteInfoEntity,fromIpCheck=false) {
     const url = await this.notificationService.getBindUrl('#/certd/monitor/site');
     // 发邮件
     await this.notificationService.send(
@@ -188,8 +224,9 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
         logger: logger,
         body: {
           url,
-          title: `站点证书检查出错<${site.name}>`,
+          title: `站点证书${fromIpCheck?"(IP)":""}检查出错<${site.name}>`,
           content: `站点名称： ${site.name} \n站点域名： ${site.domain} \n错误信息：${site.error}`,
+          errorMessage: site.error,
         },
       },
       site.userId
@@ -227,6 +264,7 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
             title: `站点证书已过期${-validDays}天<${site.name}>`,
             content,
             url,
+            errorMessage: "站点证书已过期"
           },
         },
         site.userId
@@ -272,4 +310,5 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
       await this.siteIpService.sync(site)
     }
   }
+
 }
