@@ -20,7 +20,7 @@
           </template>
           <v-nodes :vnodes="menu" />
 
-          <div v-if="pager" class="pager text-center p-5">
+          <div v-if="pager === true" class="pager text-center p-5">
             <a-pagination v-model:current="pagerRef.current" simple :total="pagerRef.total" :page-size="pagerRef.limit" />
           </div>
         </template>

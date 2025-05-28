@@ -173,6 +173,9 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
       let errorCount = 0
       let errorMessage = ""
       for (const item of list) {
+        if (!item) {
+          continue;
+        }
         errorCount++
         if(item.error){
           errorMessage += `${item.ipAddress}：${item.error}； \n`

@@ -180,7 +180,7 @@ export class SiteIpService extends BaseService<SiteIpEntity> {
     }
     Promise.all(promiseList).then((res)=>{
       const finished = res.filter(item=>{
-        return item
+        return item!=null
       })
       if (finished.length > 0) {
         onFinish && onFinish(finished)

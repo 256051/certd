@@ -51,7 +51,7 @@ export function createRemoteSelectInputDefine(opts?: {
   const watches = opts?.watches || [];
   const helper = opts?.helper || "请选择";
   const search = opts?.search ?? false;
-  const pager = opts?.pager ?? true;
+  const pager = opts?.pager ?? false;
   let mode = "tags";
   if (opts.multi === false) {
     mode = undefined;
