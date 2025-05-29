@@ -116,6 +116,6 @@ export async function getProductInfo(): Promise<any> {
   return await request({
     url: "/basic/settings/productInfo",
     method: "get",
-    silent: true,
+    showErrorNotify: false,
   });
 }
