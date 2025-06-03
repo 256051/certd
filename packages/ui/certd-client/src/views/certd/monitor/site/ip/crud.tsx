@@ -155,6 +155,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             show: true,
           },
           type: "text",
+          helper: "也支持填写CNAME域名",
           form: {
             rules: [{ required: true, message: "请输入IP" }],
           },

@@ -44,46 +44,46 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             props: {
               multiple: true,
               crossPage: true,
-              selectedRowKeys
-            }
-          }
-        }
+              selectedRowKeys,
+            },
+          },
+        },
       },
       request: {
         pageRequest,
         addRequest,
         editRequest,
-        delRequest
+        delRequest,
       },
       actionbar: {
         buttons: {
           add: {
-            show: false
-          }
-        }
+            show: false,
+          },
+        },
       },
       search: {
         formItem: {
           labelCol: {
             style: {
               // width: "100px"
-            }
+            },
           },
           wrapperCol: {
             style: {
-              width: "50%"
-            }
-          }
-        }
+              width: "50%",
+            },
+          },
+        },
       },
       rowHandle: {
         minWidth: 200,
         fixed: "right",
         buttons: {
           edit: {
-            show: false
-          }
-        }
+            show: false,
+          },
+        },
       },
       columns: {
         id: {
@@ -91,11 +91,11 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           key: "id",
           type: "number",
           column: {
-            width: 100
+            width: 100,
           },
           form: {
-            show: false
-          }
+            show: false,
+          },
         },
         userId: {
           title: "用户Id",
@@ -103,69 +103,69 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           search: {
             show: computed(() => {
               return userStore.isAdmin && settingStore.sysPublic.managerOtherUserPipeline;
-            })
+            }),
           },
           form: {
-            show: false
+            show: false,
           },
           column: {
             show: computed(() => {
               return userStore.isAdmin && settingStore.sysPublic.managerOtherUserPipeline;
             }),
-            width: 100
-          }
+            width: 100,
+          },
         },
         pipelineId: {
           title: "流水线Id",
           type: "number",
           search: {
-            show: true
+            show: true,
           },
           form: {
-            show: false
+            show: false,
           },
           column: {
-            width: 100
-          }
+            width: 100,
+          },
         },
         pipelineTitle: {
           title: "流水线名称",
           type: "text",
           search: {
-            show: true
+            show: true,
           },
           column: {
             width: 300,
+            tooltip: true,
+            ellipsis: true,
             cellRender: ({ row, value }) => {
-              return (
-                <router-link to={{ path: "/certd/pipeline/detail", query: { id: row.pipelineId, editMode: false, historyId: row.id } }}>{value}</router-link>
-              );
-            }
-          }
+              return <router-link to={{ path: "/certd/pipeline/detail", query: { id: row.pipelineId, editMode: false, historyId: row.id } }}>{value}</router-link>;
+            },
+          },
         },
         createTime: {
           title: "创建时间",
           type: "datetime",
           form: {
-            show: false
+            show: false,
           },
           column: {
             sorter: true,
             width: 160,
-            align: "center"
-          }
+            align: "center",
+          },
         },
         updateTime: {
           title: "更新时间",
           type: "datetime",
           form: {
-            show: false
+            show: false,
           },
           column: {
-            show: true
-          }
-        }
-      }
-    }
+            show: true,
+          },
+        },
+      },
+    },
   };
 }

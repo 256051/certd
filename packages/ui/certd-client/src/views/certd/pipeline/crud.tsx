@@ -345,14 +345,12 @@ export default function ({ crudExpose, context: { groupDictRef, selectedRowKeys 
           },
           column: {
             width: 350,
+            // tooltip: true,
+            ellipsis: true,
             sorter: true,
-            component: {
-              on: {
-                // 注意：必须要on前缀
-                onClick({ row }) {
-                  router.push({ path: "/certd/pipeline/detail", query: { id: row.id, editMode: "false" } });
-                },
-              },
+            showTitle: true,
+            cellRender: ({ row, value }) => {
+              return <router-link to={{ path: "/certd/pipeline/detail", query: { id: row.id, editMode: false } }}>{value}</router-link>;
             },
           },
         },
