@@ -152,6 +152,16 @@ export abstract class AbstractTaskPlugin implements ITaskPlugin {
     this.logger = ctx.logger;
     this.accessService = ctx.accessService;
     this.http = ctx.http;
+    // 将证书加入secret
+    // @ts-ignore
+    if (this.cert && this.cert.crt && this.cert.key) {
+      //有证书
+      // @ts-ignore
+      const cert: any = this.cert;
+      this.registerSecret(cert.crt);
+      this.registerSecret(cert.key);
+      this.registerSecret(cert.one);
+    }
   }
 
   async getAccess<T = any>(accessId: string | number, isCommon = false) {
@@ -184,6 +194,14 @@ export abstract class AbstractTaskPlugin implements ITaskPlugin {
     }
 
     return res as T;
+  }
+
+  registerSecret(value: string) {
+    // @ts-ignore
+    if (this.logger?.addSecret) {
+      // @ts-ignore
+      this.logger.addSecret(value);
+    }
   }
 
   randomFileId() {

@@ -165,10 +165,16 @@ export class AsyncSsh2Client {
     });
   }
 
+  /**
+   *
+   * @param script
+   * @param opts {withStdErr 返回{stdOut,stdErr}}
+   */
   async exec(
     script: string,
     opts: {
       throwOnStdErr?: boolean;
+      withStdErr?: boolean;
       env?: any;
     } = {}
   ): Promise<string> {
@@ -193,6 +199,7 @@ export class AsyncSsh2Client {
           return;
         }
         let data = "";
+        let stdErr = "";
         let hasErrorLog = false;
         stream
           .on("close", (code: any, signal: any) => {
@@ -205,7 +212,15 @@ export class AsyncSsh2Client {
             }
 
             if (code === 0) {
-              resolve(data);
+              if (opts.withStdErr === true) {
+                //@ts-ignore
+                resolve({
+                  stdErr,
+                  stdOut: data,
+                });
+              } else {
+                resolve(data);
+              }
             } else {
               reject(new Error(data));
             }
@@ -221,7 +236,7 @@ export class AsyncSsh2Client {
           })
           .stderr.on("data", (ret: Buffer) => {
             const err = this.convert(iconv, ret);
-            data += err;
+            stdErr += err;
             hasErrorLog = true;
             this.logger.error(`[${this.connConf.host}][error]: ` + err.trimEnd());
           });
@@ -323,9 +338,6 @@ export class AsyncSsh2Client {
 
 export class SshClient {
   logger: ILogger;
-  constructor(logger: ILogger) {
-    this.logger = logger;
-  }
   /**
    *
    * @param connectConf
@@ -381,6 +393,9 @@ export class SshClient {
         this.logger.info("文件全部上传成功");
       },
     });
+  }
+  constructor(logger: ILogger) {
+    this.logger = logger;
   }
 
   async scpUpload(options: { conn: any; localPath: string; remotePath: string; opts?: { mode?: string } }) {

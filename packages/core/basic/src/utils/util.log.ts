@@ -56,8 +56,15 @@ export function buildLogger(write: (text: string) => void) {
         if (item == null) {
           continue;
         }
-        //换成同长度的*号， item可能有多行
-        text = text.replaceAll(item, "*".repeat(item.length));
+        if (item.includes(text)) {
+          //整个包含
+          text = "*".repeat(text.length);
+          continue;
+        }
+        if (text.includes(item)) {
+          //换成同长度的*号， item可能有多行
+          text = text.replaceAll(item, "*".repeat(item.length));
+        }
       }
       write(text);
     },
