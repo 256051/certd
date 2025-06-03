@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.34.10](https://github.com/certd/certd/compare/v1.34.9...v1.34.10) (2025-06-03)
+
+### Performance Improvements
+
+* 支持部署到飞牛OS ([ddfd0fb](https://github.com/certd/certd/commit/ddfd0fb81d6638352920261065f1ab8e27bdd564))
+
 ## [1.34.9](https://github.com/certd/certd/compare/v1.34.8...v1.34.9) (2025-05-30)
 
 **Note:** Version bump only for package @certd/plugin-lib

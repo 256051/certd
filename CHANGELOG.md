@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.34.10](https://github.com/certd/certd/compare/v1.34.9...v1.34.10) (2025-06-03)
+
+### Bug Fixes
+
+* **flexcdn:** fix cert upload and skipSslVerify required ([c48da5d](https://github.com/certd/certd/commit/c48da5dea7f0f0cdeae643b106b4a678acc3b14b))
+
+### Performance Improvements
+
+* 阿里云CLB支持部署到扩展域名 ([0e8339c](https://github.com/certd/certd/commit/0e8339c70190890d449099e1d26e5ed06ff135fb))
+* 优化流水线名称过长时的显示 ([6a0cc1b](https://github.com/certd/certd/commit/6a0cc1b1f3ad508f9e4093b3b682b163f12389eb))
+* 支持部署到飞牛OS ([ddfd0fb](https://github.com/certd/certd/commit/ddfd0fb81d6638352920261065f1ab8e27bdd564))
+* 支持日志写入文件 ([37edbf5](https://github.com/certd/certd/commit/37edbf5824d6aaae68ea1ef7259c6f739d418d2c))
+
 ## [1.34.9](https://github.com/certd/certd/compare/v1.34.8...v1.34.9) (2025-05-30)
 
 ### Bug Fixes
