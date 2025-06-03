@@ -111,6 +111,11 @@ function install(app: App, options: any = {}) {
               columnSizeSaver.clear();
             },
           },
+          buttons: {
+            export: {
+              show: false,
+            },
+          },
         },
         rowHandle: {
           fixed: "right",
