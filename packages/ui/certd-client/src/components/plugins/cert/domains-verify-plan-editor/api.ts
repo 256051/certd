@@ -8,6 +8,7 @@ export type CnameRecord = {
   status?: string;
   hostRecord?: string;
   recordValue?: string;
+  error?: string;
 };
 
 export type DomainGroupItem = {
