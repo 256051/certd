@@ -3,6 +3,7 @@ import { AddReq, compute, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, 
 import { useUserStore } from "/@/store/user";
 import { Modal, notification } from "ant-design-vue";
 import dayjs from "dayjs";
+import { useSettingStore } from "/@/store/settings";
 
 export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const pageRequest = async (query: UserPageQuery): Promise<UserPageRes> => {
@@ -22,6 +23,10 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
 
   const userStore = useUserStore();
 
+  const settingStore = useSettingStore();
+  const userValidTimeEnabled = compute(() => {
+    return settingStore.sysPublic.userValidTimeEnabled === true;
+  });
   return {
     crudOptions: {
       request: {
@@ -213,20 +218,28 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
         },
         validTime: {
           title: "有效期",
-          type: ["date", "time-humanize"],
+          type: "date",
+          form: {
+            show: userValidTimeEnabled,
+          },
           column: {
             align: "center",
             sorter: true,
             width: 100,
-            component: {
-              title: compute(({ row }) => {
-                return dayjs(row.validTime).format("YYYY-MM-DD");
-              }),
-              useFormatGreater: 30000000000,
-              options: {
-                largest: 1,
-                units: ["y", "d", "h"],
-              },
+            show: userValidTimeEnabled,
+            cellRender({ value }) {
+              if (value == null || value === 0) {
+                return "";
+              }
+              if (value < dayjs().valueOf()) {
+                return <a-tag color={"red"}>已过期</a-tag>;
+              }
+              const date = dayjs(value).format("YYYY-MM-DD");
+              return (
+                <a-tag color={"green"} title={date}>
+                  <fs-time-humanize modelValue={value} options={{ largest: 1, units: ["y", "d", "h"] }} useFormatGreater={30000000000} />
+                </a-tag>
+              );
             },
           },
           valueBuilder({ value, row, key }) {

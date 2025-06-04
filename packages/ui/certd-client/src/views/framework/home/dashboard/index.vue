@@ -35,6 +35,10 @@
                 <a-divider type="vertical" />
                 <suite-card class="m-0"></suite-card>
               </template>
+              <template v-if="settingsStore.isPlus && settingsStore.sysPublic.userValidTimeEnabled === true && userInfo.validTime">
+                <a-divider type="vertical" />
+                <valid-time-format class="flex-o" prefix="账户有效期：" :model-value="userInfo.validTime" />
+              </template>
             </div>
           </div>
         </div>

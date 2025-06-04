@@ -16,6 +16,7 @@ export class SysPublicSettings extends BaseSettings {
   static __access__ = 'public';
 
   registerEnabled = false;
+  userValidTimeEnabled?:boolean = false;
   passwordLoginEnabled = true;
   usernameRegisterEnabled = true;
   mobileRegisterEnabled = false;

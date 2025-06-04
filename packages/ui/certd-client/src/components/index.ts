@@ -15,6 +15,7 @@ import PemInput from "./pem-input.vue";
 import { defineAsyncComponent } from "vue";
 import NotificationSelector from "../views/certd/notification/notification-selector/index.vue";
 import EmailSelector from "./email-selector/index.vue";
+import ValidTimeFormat from "./valid-time-format.vue";
 export default {
   install(app: any) {
     app.component(
@@ -27,6 +28,7 @@ export default {
     app.component("TextEditable", TextEditable);
     app.component("FileInput", FileInput);
     app.component("PemInput", PemInput);
+    app.component("ValidTimeFormat", ValidTimeFormat);
     // app.component("CodeEditor", CodeEditor);
 
     app.component("CronLight", CronLight);
