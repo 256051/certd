@@ -1,7 +1,8 @@
 import * as api from "./api";
-import { AddReq, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
+import { AddReq, compute, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
 import { useUserStore } from "/@/store/user";
 import { Modal, notification } from "ant-design-vue";
+import dayjs from "dayjs";
 
 export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const pageRequest = async (query: UserPageQuery): Promise<UserPageRes> => {
@@ -208,6 +209,35 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
             align: "center",
             sorter: true,
             width: 100,
+          },
+        },
+        validTime: {
+          title: "有效期",
+          type: ["date", "time-humanize"],
+          column: {
+            align: "center",
+            sorter: true,
+            width: 100,
+            component: {
+              title: compute(({ row }) => {
+                return dayjs(row.validTime).format("YYYY-MM-DD");
+              }),
+              useFormatGreater: 30000000000,
+              options: {
+                largest: 1,
+                units: ["y", "d", "h"],
+              },
+            },
+          },
+          valueBuilder({ value, row, key }) {
+            if (value != null) {
+              row[key] = dayjs(value);
+            }
+          },
+          valueResolve({ value, row, key }) {
+            if (value != null) {
+              row[key] = value.valueOf();
+            }
           },
         },
         remark: {
