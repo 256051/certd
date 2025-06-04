@@ -233,13 +233,13 @@ function openUpgrade() {
       desc: "社区免费版",
       type: "free",
       icon: "lucide:package-open",
-      privilege: ["证书申请无限制", "域名数量无限制", "证书流水线数量无限制", "常用的主机、云平台、cdn等部署插件", "邮件、webhook通知方式"],
+      privilege: ["证书申请无限制", "域名数量无限制", "证书流水线数量无限制", "常用的主机、云平台、cdn、宝塔、1Panel等部署插件", "邮件、webhook通知方式"],
     },
     plus: {
       title: "专业版",
       desc: "开源需要您的赞助支持",
       type: "plus",
-      privilege: ["可加VIP群，您的需求将优先实现", "站点证书监控无限制", "更多通知方式", "插件全开放，更多强大的部署插件，宝塔、群晖、1Panel等"],
+      privilege: ["可加VIP群，您的需求将优先实现", "站点证书监控无限制", "更多通知方式", "插件全开放，群辉等更多插件"],
       trial: {
         title: "点击获取7天试用",
         click: () => {
