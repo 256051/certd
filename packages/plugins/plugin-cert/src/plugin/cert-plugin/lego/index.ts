@@ -80,16 +80,28 @@ export class CertApplyLegoPlugin extends CertApplyBasePlugin {
   legoEabAccessId!: number;
 
   @TaskInput({
-    title: "自定义LEGO参数",
+    title: "自定义LEGO全局参数",
     component: {
       name: "a-input",
       vModel: "value",
       placeholder: "--dns-timeout 30",
     },
-    helper: "额外的lego命令行参数，参考文档：https://go-acme.github.io/lego/usage/cli/options/",
+    helper: "额外的lego全局命令行参数，参考文档：https://go-acme.github.io/lego/usage/cli/options/",
     maybeNeed: true,
   })
   customArgs = "";
+
+  @TaskInput({
+    title: "自定义LEGO签名参数",
+    component: {
+      name: "a-input",
+      vModel: "value",
+      placeholder: "--no-bundle",
+    },
+    helper: "额外的lego签名命令行参数，参考文档：https://go-acme.github.io/lego/usage/cli/options/",
+    maybeNeed: true,
+  })
+  customCommandOptions = "";
 
   @TaskInput({
     title: "加密算法",
@@ -205,7 +217,7 @@ export class CertApplyLegoPlugin extends CertApplyBasePlugin {
     if (this.acmeServer) {
       serverArgs = ` --server ${this.acmeServer}`;
     }
-    const cmds = [`${legoPath} -a --email "${this.email}" --dns ${this.dnsType} ${keyType} ${domainArgs} ${serverArgs} ${eabArgs} ${savePathArgs}  ${this.customArgs || ""} run`];
+    const cmds = [`${legoPath} -a --email "${this.email}" --dns ${this.dnsType} ${keyType} ${domainArgs} ${serverArgs} ${eabArgs} ${savePathArgs} ${this.customArgs || ""} run ${this.customCommandOptions || ""}`];
 
     await this.ctx.utils.sp.spawn({
       cmd: cmds,
