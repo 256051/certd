@@ -65,7 +65,7 @@ export class ProxmoxAccess extends BaseAccess {
       placeholder: 'realm',
     },
     required: true,
-    encrypt: true,
+    encrypt: false,
   })
   realm = '';
 }
