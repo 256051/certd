@@ -9,7 +9,7 @@
     "debug": "vite --mode debug --open",
     "debug:pm": "vite --mode debugpm",
     "debug:force": "vite --force --mode debug",
-    "build": "cross-env NODE_OPTIONS=--max-old-space-size=32768 vite build ",
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=40960 vite build ",
     "dev-build": "echo 1",
     "test:unit": "vitest",
     "serve": "vite preview",
