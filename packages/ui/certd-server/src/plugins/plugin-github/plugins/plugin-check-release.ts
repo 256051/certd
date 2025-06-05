@@ -78,6 +78,9 @@ export class GithubCheckRelease extends AbstractTaskPlugin {
     this.lastVersion = res.tag_name;
 
     const body = res.body.replaceAll("* ","- ")
+    if (this.notificationIds == null){
+      this.notificationIds = [0]
+    }
     //发送通知
     for (const notificationId of this.notificationIds) {
       await this.ctx.notificationService.send({
