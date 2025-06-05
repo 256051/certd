@@ -30,6 +30,7 @@ export type PlusInfo = {
 };
 export type SysPublicSetting = {
   registerEnabled?: boolean;
+  userValidTimeEnabled?: boolean;
   usernameRegisterEnabled?: boolean;
   mobileRegisterEnabled?: boolean;
   emailRegisterEnabled?: boolean;

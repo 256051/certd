@@ -1,6 +1,6 @@
 {
   "name": "@certd/jdcloud",
-  "version": "1.34.10",
+  "version": "1.34.11",
   "description": "jdcloud openApi sdk",
   "main": "./dist/bundle.js",
   "module": "./dist/bundle.js",
@@ -61,5 +61,5 @@
       "fetch"
     ]
   },
-  "gitHead": "a4b6580247efabe948507c771a177d4f75670bc2"
+  "gitHead": "ab3a3156f24d7fc70f8a907c5f6fc754413a89d6"
 }

@@ -27,6 +27,8 @@ export interface UserInfoRes {
   avatar?: string;
   roleIds: number[];
   isWeak?: boolean;
+  validTime?: number;
+  status?: number;
 }
 
 export interface LoginRes {

@@ -93,7 +93,7 @@ export class ProxmoxUploadCert extends AbstractPlusTaskPlugin {
 
   async getClient() {
     const access: ProxmoxAccess = await this.getAccess<ProxmoxAccess>(this.accessId);
-    const pve = await import('@corsinvest/cv4pve-api-javascript');
+    const pve = await import('@certd/cv4pve-api-javascript');
     const client = new pve.PveClient(access.host, access.port);
     const login = await client.login(access.username, access.password, access.realm || 'pam');
     if (!login) {

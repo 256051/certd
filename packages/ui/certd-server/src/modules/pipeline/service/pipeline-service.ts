@@ -233,17 +233,18 @@ export class PipelineService extends BaseService<PipelineEntity> {
           throw new NeedSuiteException(`对不起，您最多只能添加${userSuite.domainCount.max}个域名，请购买或升级套餐`);
         }
       }
-    }
-
-    const userId = bean.userId;
-    const userIsAdmin = await this.userService.isAdmin(userId);
-    if (!userIsAdmin) {
-      //非管理员用户，限制pipeline数量
-      const count = await this.repository.count({ where: { userId } });
-      const sysPublic = await this.sysSettingsService.getSetting<SysPublicSettings>(SysPublicSettings);
-      const limitUserPipelineCount = sysPublic.limitUserPipelineCount;
-      if (limitUserPipelineCount && limitUserPipelineCount > 0 && count >= limitUserPipelineCount) {
-        throw new NeedVIPException(`普通用户最多只能创建${limitUserPipelineCount}条流水线`);
+    }else{
+      //非商业版校验用户最大流水线数量
+      const userId = bean.userId;
+      const userIsAdmin = await this.userService.isAdmin(userId);
+      if (!userIsAdmin) {
+        //非管理员用户，限制pipeline数量
+        const count = await this.repository.count({ where: { userId } });
+        const sysPublic = await this.sysSettingsService.getSetting<SysPublicSettings>(SysPublicSettings);
+        const limitUserPipelineCount = sysPublic.limitUserPipelineCount;
+        if (limitUserPipelineCount && limitUserPipelineCount > 0 && count >= limitUserPipelineCount) {
+          throw new NeedVIPException(`普通用户最多只能创建${limitUserPipelineCount}条流水线`);
+        }
       }
     }
   }
@@ -329,6 +330,7 @@ export class PipelineService extends BaseService<PipelineEntity> {
     if (isComm()) {
       await this.checkHasDeployCount(id, entity.userId);
     }
+    await this.checkUserStatus(entity.userId)
     this.cron.register({
       name: `pipeline.${id}.trigger.once`,
       cron: null,
@@ -446,6 +448,13 @@ export class PipelineService extends BaseService<PipelineEntity> {
     if (isComm()) {
       suite = await this.checkHasDeployCount(id, entity.userId);
     }
+    try{
+      await this.checkUserStatus(entity.userId)
+    }catch (e) {
+      logger.info(e.message)
+      return
+    }
+
 
     const pipeline = JSON.parse(entity.content);
     if (!pipeline.id) {
@@ -745,5 +754,25 @@ export class PipelineService extends BaseService<PipelineEntity> {
   }
 
 
-
+  private async checkUserStatus(userId: number) {
+    const userEntity = await this.userService.info(userId);
+    if(userEntity == null){
+      throw new Error('用户不存在');
+    }
+    if(userEntity.status === 0){
+      const message = `账户${userId}已被禁用，禁止运行流水线`
+      throw new Error(message)
+    }
+    const sysPublic = await this.sysSettingsService.getPublicSettings()
+    if(isPlus() && sysPublic.userValidTimeEnabled === true){
+      //校验用户有效期是否设置
+      if(userEntity.validTime!= null && userEntity.validTime > 0){
+        if(userEntity.validTime < new Date().getTime()){
+          //用户已过期
+          const message = `账户${userId}已过有效期，禁止运行流水线`
+          throw new Error(message)
+        }
+      }
+    }
+  }
 }

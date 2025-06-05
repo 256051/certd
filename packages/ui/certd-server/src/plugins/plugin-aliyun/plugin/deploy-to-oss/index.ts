@@ -7,7 +7,7 @@ import { CertApplyPluginNames} from '@certd/plugin-cert';
   title: '阿里云-部署证书至OSS',
   icon: 'svg:icon-aliyun',
   group: pluginGroups.aliyun.key,
-  desc: '自动部署域名证书至阿里云OSS',
+  desc: '部署域名证书至阿里云OSS自定义域名，不是上传到阿里云oss',
   default: {
     strategy: {
       runStrategy: RunStrategy.SkipWhenSucceed,

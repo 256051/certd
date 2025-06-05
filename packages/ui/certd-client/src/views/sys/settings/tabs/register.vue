@@ -11,6 +11,13 @@
       <a-form-item label="开启自助注册" :name="['public', 'registerEnabled']">
         <a-switch v-model:checked="formState.public.registerEnabled" />
       </a-form-item>
+      <a-form-item label="开启用户有效期" :name="['public', 'userValidTimeEnabled']">
+        <div class="flex-o">
+          <a-switch v-model:checked="formState.public.userValidTimeEnabled" :disabled="!settingsStore.isPlus" />
+          <vip-button class="ml-5" mode="button"></vip-button>
+        </div>
+        <div class="helper">有效期内用户可正常使用，失效后流水线将被停用</div>
+      </a-form-item>
       <template v-if="formState.public.registerEnabled">
         <a-form-item label="开启用户名注册" :name="['public', 'usernameRegisterEnabled']">
           <a-switch v-model:checked="formState.public.usernameRegisterEnabled" />
@@ -153,6 +160,14 @@ async function loadSysSettings() {
   merge(formState, data);
   if (data?.private.sms?.type) {
     await loadTypeDefine(data.private.sms.type);
+  }
+  if (!settingsStore.isPlus) {
+    formState.public.userValidTimeEnabled = false;
+    formState.public.emailRegisterEnabled = false;
+  }
+
+  if (!settingsStore.isComm) {
+    formState.public.smsLoginEnabled = false;
   }
 }
 
