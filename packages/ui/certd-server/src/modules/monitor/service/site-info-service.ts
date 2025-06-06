@@ -1,22 +1,22 @@
-import { Inject, Provide, Scope, ScopeEnum } from "@midwayjs/core";
-import { BaseService, NeedSuiteException, NeedVIPException, SysSettingsService } from "@certd/lib-server";
-import { InjectEntityModel } from "@midwayjs/typeorm";
-import { Repository } from "typeorm";
-import { SiteInfoEntity } from "../entity/site-info.js";
-import { siteTester } from "./site-tester.js";
+import {Inject, Provide, Scope, ScopeEnum} from "@midwayjs/core";
+import {BaseService, NeedSuiteException, NeedVIPException, SysSettingsService} from "@certd/lib-server";
+import {InjectEntityModel} from "@midwayjs/typeorm";
+import {Repository} from "typeorm";
+import {SiteInfoEntity} from "../entity/site-info.js";
+import {siteTester} from "./site-tester.js";
 import dayjs from "dayjs";
-import { logger, utils } from "@certd/basic";
-import { PeerCertificate } from "tls";
-import { NotificationService } from "../../pipeline/service/notification-service.js";
-import { isComm, isPlus } from "@certd/plus-core";
-import { UserSuiteService } from "@certd/commercial-core";
-import { UserSettingsService } from "../../mine/service/user-settings-service.js";
-import { UserSiteMonitorSetting } from "../../mine/service/models.js";
-import { SiteIpService } from "./site-ip-service.js";
-import { SiteIpEntity } from "../entity/site-ip.js";
+import {logger, utils} from "@certd/basic";
+import {PeerCertificate} from "tls";
+import {NotificationService} from "../../pipeline/service/notification-service.js";
+import {isComm, isPlus} from "@certd/plus-core";
+import {UserSuiteService} from "@certd/commercial-core";
+import {UserSettingsService} from "../../mine/service/user-settings-service.js";
+import {UserSiteMonitorSetting} from "../../mine/service/models.js";
+import {SiteIpService} from "./site-ip-service.js";
+import {SiteIpEntity} from "../entity/site-ip.js";
 
 @Provide()
-@Scope(ScopeEnum.Request, { allowDowngrade: true })
+@Scope(ScopeEnum.Request, {allowDowngrade: true})
 export class SiteInfoService extends BaseService<SiteInfoEntity> {
   @InjectEntityModel(SiteInfoEntity)
   repository: Repository<SiteInfoEntity>;
@@ -70,7 +70,7 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
       }
     });
     if (found) {
-      return { id: found.id };
+      return {id: found.id};
     }
 
     return await super.add(data);
@@ -89,7 +89,7 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
       throw new Error("userId is required");
     }
     return await this.repository.count({
-      where: { userId }
+      where: {userId}
     });
   }
 
@@ -141,7 +141,7 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
       };
 
       if (site.ipCheck) {
-       delete updateData.checkStatus
+        delete updateData.checkStatus
       }
       await this.update(updateData);
 
@@ -239,9 +239,11 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
 
   async sendCheckErrorNotify(site: SiteInfoEntity, fromIpCheck = false) {
     const url = await this.notificationService.getBindUrl("#/certd/monitor/site");
+    const setting = await this.userSettingsService.getSetting<UserSiteMonitorSetting>(site.userId, UserSiteMonitorSetting)
     // 发邮件
     await this.notificationService.send(
       {
+        id: setting?.notificationId,
         useDefault: true,
         logger: logger,
         body: {
@@ -262,11 +264,13 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
     const expires = site.certExpiresTime;
     const validDays = dayjs(expires).diff(dayjs(), "day");
     const url = await this.notificationService.getBindUrl("#/certd/monitor/site");
+    const setting = await this.userSettingsService.getSetting<UserSiteMonitorSetting>(site.userId, UserSiteMonitorSetting)
     const content = `站点名称： ${site.name} \n站点域名： ${site.domain} \n证书域名： ${site.certDomains} \n颁发机构： ${site.certProvider} \n过期时间： ${dayjs(site.certExpiresTime).format("YYYY-MM-DD")} \n`;
     if (validDays >= 0 && validDays < tipDays) {
       // 发通知
       await this.notificationService.send(
         {
+          id: setting?.notificationId,
           useDefault: true,
           logger: logger,
           body: {
@@ -281,6 +285,7 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
       //发过期通知
       await this.notificationService.send(
         {
+          id: setting?.notificationId,
           useDefault: true,
           logger: logger,
           body: {
@@ -300,7 +305,7 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
       throw new Error("userId is required");
     }
     const sites = await this.repository.find({
-      where: { userId }
+      where: {userId}
     });
     this.checkList(sites);
   }
