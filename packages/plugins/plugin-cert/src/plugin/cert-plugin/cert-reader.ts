@@ -89,7 +89,10 @@ export class CertReader {
 
   getAllDomains() {
     const { detail } = this.getCrtDetail();
-    const domains = [detail.domains.commonName];
+    const domains = [];
+    if (detail.domains?.commonName) {
+      domains.push(detail.domains.commonName);
+    }
     domains.push(...detail.domains.altNames);
     //去重
     return uniq(domains);
@@ -102,12 +105,23 @@ export class CertReader {
 
   static getMainDomain(crt: string) {
     const { detail } = CertReader.readCertDetail(crt);
-    return detail.domains.commonName;
+    return CertReader.getMainDomainFromDetail(detail);
   }
 
   getMainDomain() {
     const { detail } = this.getCrtDetail();
-    return detail.domains.commonName;
+    return CertReader.getMainDomainFromDetail(detail);
+  }
+
+  static getMainDomainFromDetail(detail: CertificateInfo) {
+    let domain = detail?.domains?.commonName;
+    if (domain == null) {
+      domain = detail?.domains?.altNames?.[0];
+    }
+    if (domain == null) {
+      domain = "unknown";
+    }
+    return domain;
   }
 
   saveToFile(type: "crt" | "key" | "pfx" | "der" | "oc" | "one" | "ic" | "jks", filepath?: string) {
@@ -179,8 +193,7 @@ export class CertReader {
   }
 
   buildCertFileName(suffix: string, applyTime: any, prefix = "cert") {
-    const detail = this.getCrtDetail();
-    let domain = detail.detail.domains.commonName;
+    let domain = this.getMainDomain();
     domain = domain.replaceAll(".", "_").replaceAll("*", "_");
     const timeStr = dayjs(applyTime).format("YYYYMMDDHHmmss");
     return `${prefix}_${domain}_${timeStr}.${suffix}`;
@@ -188,7 +201,7 @@ export class CertReader {
 
   buildCertName() {
     let domain = this.getMainDomain();
-    domain = domain.replaceAll("*", "_").replaceAll("*", "_");
+    domain = domain.replaceAll(".", "_").replaceAll("*", "_");
     return `${domain}_${dayjs().format("YYYYMMDDHHmmssSSS")}`;
   }
 }
