@@ -154,4 +154,5 @@ export class SiteInfoController extends CrudController<SiteInfoService> {
     await this.service.saveSetting(userId, setting);
     return this.ok({});
   }
+
 }

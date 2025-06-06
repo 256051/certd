@@ -1,17 +1,7 @@
 <template>
   <div class="cron-editor">
     <div class="flex-o">
-      <cron-light
-        :disabled="disabled"
-        :readonly="readonly"
-        :period="period"
-        class="flex-o cron-ant"
-        locale="zh-CN"
-        format="quartz"
-        :model-value="modelValue"
-        @update:model-value="onUpdate"
-        @error="onError"
-      />
+      <cron-light :disabled="disabled" :readonly="readonly" :period="period" class="flex-o cron-ant" locale="zh-CN" format="quartz" :model-value="modelValue" @update:model-value="onUpdate" @error="onError" />
     </div>
     <div class="mt-5 flex">
       <a-input :disabled="true" :readonly="readonly" :value="modelValue" @change="onChange"></a-input>
@@ -27,12 +17,13 @@ import parser from "cron-parser";
 import { computed, ref } from "vue";
 import dayjs from "dayjs";
 defineOptions({
-  name: "CronEditor"
+  name: "CronEditor",
 });
 const props = defineProps<{
   modelValue?: string;
   disabled?: boolean;
   readonly?: boolean;
+  allowEveryMin?: boolean;
 }>();
 
 const period = ref<string>("");
@@ -58,9 +49,12 @@ const onUpdate = (value: string) => {
   if (arr[0] === "*") {
     arr[0] = "0";
   }
-  if (arr[1] === "*") {
-    arr[1] = "0";
+  if (!props.allowEveryMin) {
+    if (arr[1] === "*") {
+      arr[1] = "0";
+    }
   }
+
   value = arr.join(" ");
 
   emit("update:modelValue", value);

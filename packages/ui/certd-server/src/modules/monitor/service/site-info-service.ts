@@ -14,6 +14,7 @@ import {UserSettingsService} from "../../mine/service/user-settings-service.js";
 import {UserSiteMonitorSetting} from "../../mine/service/models.js";
 import {SiteIpService} from "./site-ip-service.js";
 import {SiteIpEntity} from "../entity/site-ip.js";
+import {Cron} from "../../cron/cron.js";
 
 @Provide()
 @Scope(ScopeEnum.Request, {allowDowngrade: true})
@@ -35,6 +36,10 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
 
   @Inject()
   siteIpService: SiteIpService;
+
+
+  @Inject()
+  cron: Cron;
 
   //@ts-ignore
   getRepository() {
@@ -307,15 +312,34 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
     const sites = await this.repository.find({
       where: {userId}
     });
-    this.checkList(sites);
+    this.checkList(sites,false);
   }
 
-  async checkList(sites: SiteInfoEntity[]) {
+  async checkList(sites: SiteInfoEntity[],isCommon: boolean) {
+    const cache = {}
+    const getFromCache = async (userId: number) =>{
+      if (cache[userId]) {
+        return cache[userId];
+      }
+      const setting =  await this.userSettingsService.getSetting<UserSiteMonitorSetting>(userId, UserSiteMonitorSetting)
+      cache[userId] = setting
+      return setting;
+    }
     for (const site of sites) {
-      this.doCheck(site).catch(e => {
+      let retryTimes = 3;
+      const setting = await getFromCache(site.userId)
+      if (isCommon) {
+        //公共的检查，排除有设置cron的用户
+        if  (setting?.cron) {
+          //设置了cron，跳过公共检查
+          continue;
+        }
+        retryTimes = setting.retryTimes
+      }
+      this.doCheck(site,true,retryTimes).catch(e => {
         logger.error(`检查站点证书失败，${site.domain}`, e.message);
       });
-      await utils.sleep(200);
+      await utils.sleep(100);
     }
   }
 
@@ -325,6 +349,12 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
 
   async saveSetting(userId: number, bean: UserSiteMonitorSetting) {
     await this.userSettingsService.saveSetting(userId, bean);
+    if(bean.cron){
+      //注册job
+      await this.registerSiteMonitorJob(userId);
+    }else{
+      this.clearSiteMonitorJob(userId);
+    }
   }
 
   async ipCheckChange(req: { id: any; ipCheck: any }) {
@@ -400,5 +430,68 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
       // await this.checkAllByUsers(req.userId);
     };
     await batchAdd(list);
+  }
+
+  clearSiteMonitorJob(userId: number) {
+    this.cron.remove(`siteMonitor-${userId}`);
+  }
+
+  async registerSiteMonitorJob(userId?: number) {
+
+    if(!userId){
+      //注册公共job
+      logger.info(`注册站点证书检查定时任务`)
+      this.cron.register({
+        name: 'siteMonitor',
+        cron: '0 0 0 * * *',
+        job:async ()=>{
+          await this.triggerJobOnce()
+        },
+      });
+      logger.info(`注册站点证书检查定时任务完成`)
+    }else{
+      const setting = await this.userSettingsService.getSetting<UserSiteMonitorSetting>(userId, UserSiteMonitorSetting);
+      if (!setting.cron) {
+        return;
+      }
+      //注册个人的
+      this.cron.register({
+        name: `siteMonitor-${userId}`,
+        cron: setting.cron,
+        job: () => this.triggerJobOnce(userId),
+      });
+    }
+
+  }
+
+  async triggerJobOnce(userId?:number) {
+    logger.info(`站点证书检查开始执行[${userId??'所有用户'}]`);
+    const query:any = { disabled: false };
+    if(userId){
+      query.userId = userId;
+      //判断是否已关闭
+      const setting = await this.userSettingsService.getSetting<UserSiteMonitorSetting>(userId, UserSiteMonitorSetting);
+      if (!setting.cron) {
+        return;
+      }
+    }
+    let offset = 0;
+    const limit = 50;
+    while (true) {
+      const res = await this.page({
+        query: query,
+        page: { offset, limit },
+      });
+      const { records } = res;
+
+      if (records.length === 0) {
+        break;
+      }
+      offset += records.length;
+      const isCommon = !userId;
+      await this.checkList(records,isCommon);
+    }
+
+    logger.info(`站点证书检查完成[${userId??'所有用户'}]`);
   }
 }

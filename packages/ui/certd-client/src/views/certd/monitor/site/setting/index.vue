@@ -11,6 +11,19 @@
           </div>
           <div class="helper">设置通知渠道</div>
         </a-form-item>
+        <a-form-item label="重试次数" :name="['retryTimes']">
+          <div class="flex">
+            <a-input-number v-model:value="formState.retryTimes" />
+          </div>
+          <div class="helper">监控请求重试次数</div>
+        </a-form-item>
+        <a-form-item label="监控定时设置" :name="['cron']">
+          <div class="flex">
+            <cron-editor v-model="formState.cron" :disabled="!settingsStore.isPlus" :allow-every-min="userStore.isAdmin" />
+            <vip-button class="ml-5" mode="button"></vip-button>
+          </div>
+          <div class="helper">定时触发监控</div>
+        </a-form-item>
         <a-form-item label=" " :colon="false" :wrapper-col="{ span: 16 }">
           <loading-button type="primary" html-type="button" :click="doSave">保存</loading-button>
         </a-form-item>
@@ -27,8 +40,10 @@ import { notification } from "ant-design-vue";
 import { merge } from "lodash-es";
 import { useSettingStore } from "/src/store/settings";
 import NotificationSelector from "/@/views/certd/notification/notification-selector/index.vue";
+import { useUserStore } from "/@/store/user";
 
 const settingsStore = useSettingStore();
+const userStore = useUserStore();
 defineOptions({
   name: "UserSecurity",
 });

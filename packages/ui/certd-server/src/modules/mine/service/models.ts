@@ -25,6 +25,8 @@ export class UserSiteMonitorSetting extends BaseSettings {
   static __key__ = "user.site.monitor";
 
   notificationId?:number= 0;
+  cron?:string = undefined;
+  retryTimes?:number = 3;
 }
 
 export class UserEmailSetting extends BaseSettings {

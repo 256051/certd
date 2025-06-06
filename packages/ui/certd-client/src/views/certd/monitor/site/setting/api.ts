@@ -3,6 +3,8 @@ import { request } from "/src/api/service";
 const apiPrefix = "/monitor/site/setting";
 export type UserSiteMonitorSetting = {
   notificationId?: number;
+  retryTimes?: number;
+  cron?: string;
 };
 
 export async function SiteMonitorSettingsGet() {
