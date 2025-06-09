@@ -79,7 +79,9 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
                 return (
                   <div>
                     如果您不理解什么是子域托管，可以参考文档
-                    <a href={"https://help.aliyun.com/zh/dns/subdomain-management"}>子域管理</a>
+                    <a href={"https://help.aliyun.com/zh/dns/subdomain-management"} target={"_blank"}>
+                      子域管理
+                    </a>
                   </div>
                 );
               },
