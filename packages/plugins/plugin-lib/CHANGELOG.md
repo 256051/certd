@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.35.2](https://github.com/certd/certd/compare/v1.35.1...v1.35.2) (2025-06-09)
+
+### Bug Fixes
+
+* 修复阿里云新加坡clb无法部署证书的bug ([3e84e11](https://github.com/certd/certd/commit/3e84e116e863b54c6b4d7db160af372dacc5857f))
+
+### Performance Improvements
+
+* 优化阿里云nlb支持部署扩展证书 ([9cbdfda](https://github.com/certd/certd/commit/9cbdfda829b231733d54c66c5024d46e6fc11af3))
+
 ## [1.35.1](https://github.com/certd/certd/compare/v1.35.0...v1.35.1) (2025-06-07)
 
 ### Performance Improvements

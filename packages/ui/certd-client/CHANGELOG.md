@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.35.2](https://github.com/certd/certd/compare/v1.35.1...v1.35.2) (2025-06-09)
+
+### Performance Improvements
+
+* 子域名托管帮助链接优化为打开新窗口 ([7c0cdd1](https://github.com/certd/certd/commit/7c0cdd169e2f943e703e433677f2f437d4aa02ee))
+* history增加触发类型显示 ([7f6070c](https://github.com/certd/certd/commit/7f6070c960ed7bf02add5ab36436de6573f2f1fa))
+
 ## [1.35.1](https://github.com/certd/certd/compare/v1.35.0...v1.35.1) (2025-06-07)
 
 ### Performance Improvements
