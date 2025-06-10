@@ -335,21 +335,21 @@ function install(app: App, options: any = {}) {
     },
   });
 
-  // registerMergeColumnPlugin({
-  //   name: "reset-values-format-colors",
-  //   order: 10,
-  //   handle: (columnProps: ColumnCompositionProps) => {
-  //     // 你可以在此处做你自己的处理
-  //     // 比如你可以定义一个readonly的公共属性，处理该字段只读，不能编辑
-  //     if (columnProps.column?.component?.name === "fs-values-format") {
-  //       // 合并column配置
-  //       if (!columnProps.column.component.autoColors) {
-  //         columnProps.column.component.autoColors = ["pink", "green", "cyan", "blue", "purple", "volcano", "lime", "geekblue", "#2db7f5", "#87d068", "#108ee9"];
-  //       }
-  //     }
-  //     return columnProps;
-  //   },
-  // });
+  registerMergeColumnPlugin({
+    name: "reset-values-format-colors",
+    order: 10,
+    handle: (columnProps: ColumnCompositionProps) => {
+      // 你可以在此处做你自己的处理
+      // 比如你可以定义一个readonly的公共属性，处理该字段只读，不能编辑
+      if (columnProps.column?.component?.name === "fs-values-format") {
+        // 合并column配置
+        if (!columnProps.column.component.autoColors) {
+          columnProps.column.component.autoColors = ["green", "cyan", "blue", "purple", "geekblue"];
+        }
+      }
+      return columnProps;
+    },
+  });
 }
 
 export default {
