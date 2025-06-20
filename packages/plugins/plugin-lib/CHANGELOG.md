@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.35.5](https://github.com/certd/certd/compare/v1.35.4...v1.35.5) (2025-06-20)
+
+### Bug Fixes
+
+* 腾讯云授权支持设置是否国际站，部署到EO插件支持国际站 ([5cd3968](https://github.com/certd/certd/commit/5cd3968929acef333cf30d3b20cf21cea6c82c5f))
+
 ## [1.35.4](https://github.com/certd/certd/compare/v1.35.3...v1.35.4) (2025-06-13)
 
 ### Performance Improvements
