@@ -89,6 +89,7 @@ export class DeployCertToTencentEO extends AbstractTaskPlugin {
   getClient(accessProvider: TencentAccess) {
     const TeoClient = this.Client;
 
+    const endpoint = accessProvider.isIntl()?"teo.intl.tencentcloudapi.com": "teo.tencentcloudapi.com";
     const clientConfig = {
       credential: {
         secretId: accessProvider.secretId,
@@ -97,7 +98,7 @@ export class DeployCertToTencentEO extends AbstractTaskPlugin {
       region: '',
       profile: {
         httpProfile: {
-          endpoint: 'teo.tencentcloudapi.com',
+          endpoint,
         },
       },
     };
