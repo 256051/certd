@@ -24,4 +24,29 @@ export class TencentAccess extends BaseAccess {
     rules: [{ required: true, message: "该项必填" }],
   })
   secretKey = "";
+
+  @AccessInput({
+    title: "站点类型",
+    value: "cn",
+    component: {
+      name: "a-select",
+      options: [
+        {
+          label: "国内站",
+          value: "cn",
+        },
+        {
+          label: "国际站",
+          value: "intl",
+        },
+      ],
+    },
+    encrypt: false,
+    rules: [{ required: true, message: "该项必填" }],
+  })
+  accountType: string;
+
+  isIntl() {
+    return this.accountType === "intl";
+  }
 }

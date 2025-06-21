@@ -452,12 +452,12 @@ export class Executor {
         continue;
       }
 
-      if (notification.type === "email") {
+      if (notification.type === "email" && notification.options?.receivers) {
         try {
           await this.options.emailService?.send({
             subject,
             content,
-            receivers: notification.options.receivers,
+            receivers: notification.options?.receivers,
           });
         } catch (e) {
           logger.error("send email error", e);
