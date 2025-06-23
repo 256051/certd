@@ -29,7 +29,7 @@ export class PipelineEntity {
   @Column({ comment: '启用/禁用', nullable: true, default: false })
   disabled: boolean;
 
-  // cert_apply: 证书申请；cert_upload: 证书上传; backup: 备份; custom:自定义;
+  // cert_apply: 证书申请；cert_upload: 证书上传; backup: 备份; custom:自定义; template: 模板
   @Column({ comment: '类型', nullable: true, default: 'cert' })
   type: string;
 

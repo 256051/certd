@@ -53,6 +53,13 @@ export class PipelineController extends CrudController<PipelineService> {
     return this.ok(pageRet);
   }
 
+  @Post('/getSimpleByIds', { summary: Constants.per.authOnly })
+  async getSimpleById(@Body(ALL) body) {
+    const ret = await this.getService().getSimplePipelines(body.ids,this.getUserId() );
+    return this.ok(ret);
+  }
+
+
   @Post('/add', { summary: Constants.per.authOnly })
   async add(@Body(ALL) bean: PipelineEntity) {
     bean.userId = this.getUserId();

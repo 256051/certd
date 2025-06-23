@@ -1,48 +1,74 @@
 <template>
-  <div class="page-template-edit">
-    <div class="base"></div>
-    <div class="props flex p-10">
-      <div class="task-list w-50%">
-        <div class="block-title">原始任务参数</div>
-        <a-collapse>
-          <a-collapse-panel v-for="step of steps" class="step-item" :header="step.title">
-            <div class="step-inputs flex flex-wrap">
-              <div v-for="(input, key) of step.input" :key="key" class="hover:bg-gray-100 p-5 w-full xl:w-[50%]">
-                <div class="flex flex-between" :title="input.define.helper">
-                  <div class="flex flex-1 overflow-hidden mr-5">
-                    <span style="min-width: 140px" class="bas">
-                      <a-tag color="green">{{ input.define.title }}</a-tag>
-                    </span>
-                    <span :title="input.value" class="ellipsis flex-1 text-nowrap">= {{ input.value }}</span>
-                  </div>
-                  <fs-button v-if="!templateProps.input?.[key]" size="small" type="primary" icon="ion:add" title="添加为模版变量" @click="addToProps(step.id, key, input)"></fs-button>
-                  <fs-button v-else size="small" danger icon="ion:close" title="删除模版变量" @click="removeToProps(step.id, key)" />
-                </div>
-              </div>
-            </div>
-          </a-collapse-panel>
-        </a-collapse>
+  <fs-page>
+    <template #header>
+      <div class="title flex flex-1">
+        <fs-button class="back" icon="ion:chevron-back-outline" @click="goBack"></fs-button>
+        <text-editable v-if="detail?.template" v-model="detail.template.title" class="ml-10" :hover-show="false"></text-editable>
       </div>
 
-      <div class="template-props w-50%">
-        <div class="block-title">模版变量</div>
-        <div class="p-10">
-          <fs-form v-bind="templateFormOptions"></fs-form>
+      <div class="more flex items-center flex-1 justify-end">
+        <loading-button type="primary" @click="doSave">保存</loading-button>
+      </div>
+    </template>
+    <div class="page-template-edit">
+      <div class="base"></div>
+      <div class="props flex p-10">
+        <div class="task-list w-50%">
+          <div class="block-title">
+            原始任务参数
+            <div class="helper">点击加号，将字段作为模版变量</div>
+          </div>
+          <a-collapse v-model:active-key="activeKey">
+            <a-collapse-panel v-for="(step, stepId) in steps" :key="stepId" class="step-item" :header="step.title">
+              <div class="step-inputs flex flex-wrap">
+                <div v-for="(input, key) of step.input" :key="key" class="hover:bg-gray-100 p-5 w-full xl:w-[50%]">
+                  <div class="flex flex-between" :title="input.define.helper">
+                    <div class="flex flex-1 overflow-hidden mr-5">
+                      <span style="min-width: 140px" class="bas">
+                        <a-tag color="green">{{ input.define.title }}</a-tag>
+                      </span>
+                      <span :title="input.value" class="ellipsis flex-1 text-nowrap">= {{ input.value }}</span>
+                    </div>
+                    <fs-button v-if="!templateProps.input[stepId + '.' + key]" size="small" type="primary" icon="ion:add" title="添加为模版变量" @click="addToProps(step.id, key)"></fs-button>
+                    <fs-button v-else size="small" danger icon="ion:close" title="删除模版变量" @click="removeToProps(step.id, key)" />
+                  </div>
+                </div>
+              </div>
+            </a-collapse-panel>
+          </a-collapse>
+        </div>
+
+        <div class="template-props w-50%">
+          <div class="block-title">
+            模版变量
+            <div class="helper">根据模版创建流水线时，只需要输入以下这些字段，其他字段将使用左侧的值</div>
+          </div>
+          <div class="p-10">
+            <!--          <fs-form v-bind="templateFormOptions"></fs-form>-->
+            <template-form :input="templateProps.input" :pipeline="detail?.pipeline"></template-form>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </fs-page>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, Ref } from "vue";
-import { useRoute } from "vue-router";
+import { computed, nextTick, onMounted, ref, Ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { templateApi } from "./api";
-import { eachSteps } from "../utils";
 import { usePluginStore } from "/@/store/plugin";
+import { useStepHelper } from "./utils";
+import TemplateForm from "./form.vue";
 
 const route = useRoute();
 const templateId = route.query.templateId as string;
+
+const router = useRouter();
+
+function goBack() {
+  router.back();
+}
 
 type TemplateDetail = {
   template: any;
@@ -55,81 +81,50 @@ const detail: Ref<TemplateDetail> = ref();
 async function getTemplateDetail() {
   const res = await templateApi.GetDetail(parseInt(templateId));
   detail.value = res;
-  templateProps.value = JSON.parse(res.template.content ?? "{}");
+  templateProps.value = JSON.parse(res.template.content ?? "{input:{}}");
 }
 
 const pluginStore = usePluginStore();
 
+const activeKey = ref([]);
 onMounted(async () => {
   await pluginStore.init();
   await getTemplateDetail();
+  nextTick(() => {
+    const keys = Object.keys(steps.value);
+    if (keys.length > 0) {
+      activeKey.value = [keys[0]];
+    }
+  });
 });
 
+const { getStepsMap } = useStepHelper(pluginStore);
 const steps = computed(() => {
   if (!detail.value) {
-    return [];
+    return {};
   }
 
-  const list: any[] = [];
-  eachSteps(detail.value.pipeline, (step: any) => {
-    const plugin = pluginStore.getPluginDefineSync(step.type);
-    if (!plugin) {
-      return;
-    }
-
-    const inputs: any = {};
-    for (const key in plugin.input) {
-      const input: any = plugin.input[key];
-      if (input.template === false || input.component?.name === "output-selector") {
-        continue;
-      }
-      inputs[key] = {
-        value: step.input[key],
-        define: plugin.input[key],
-      };
-    }
-    list.push({
-      id: step.id,
-      title: step.title,
-      type: step.type,
-      input: inputs,
-    });
-  });
-
-  return list;
+  return getStepsMap(detail.value.pipeline);
 });
 
-const templateFormOptions = computed(() => {
-  const columns: any = {};
-  for (const key in templateProps.value.input) {
-    const input = templateProps.value.input[key];
-    columns[key] = {
-      title: input.define.title,
-      type: "text",
-      value: input.value,
-      ...input.define,
-    };
-  }
-  return {
-    columns,
-    labelCol: {
-      style: {
-        width: "120px",
-      },
-    },
-  };
-});
-
-function addToProps(stepId: string, key: any, input: { value: any; define: any }) {
+function addToProps(stepId: string, key: any) {
   if (!templateProps.value.input) {
     templateProps.value.input = {};
   }
-  inputKey = stepId + "." + key;
-  templateProps.value.input[inputKey] = input;
+  const inputKey = stepId + "." + key;
+  templateProps.value.input[inputKey] = true;
 }
 
 function removeToProps(stepId: string, key: any) {
-  inputKey = stepId + "." + key;
+  const inputKey = stepId + "." + key;
   delete templateProps.value.input[inputKey];
+}
+
+async function doSave() {
+  await templateApi.UpdateObj({
+    id: detail.value.template.id,
+    title: detail.value.template.title,
+    content: JSON.stringify(templateProps.value),
+  });
 }
 </script>

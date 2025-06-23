@@ -17,7 +17,6 @@ import { useCertViewer } from "/@/views/certd/pipeline/use";
 
 export default function ({ crudExpose, context: { groupDictRef, selectedRowKeys } }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const router = useRouter();
-  const { t } = useI18n();
   const lastResRef = ref();
 
   const { openAddCertdPipelineDialog } = useCertPipelineCreator();
@@ -481,6 +480,7 @@ export default function ({ crudExpose, context: { groupDictRef, selectedRowKeys 
               { value: "cert", label: "证书申请" },
               { value: "cert_upload", label: "证书上传" },
               { value: "custom", label: "自定义" },
+              { value: "template", label: "模版" },
             ],
           }),
           form: {

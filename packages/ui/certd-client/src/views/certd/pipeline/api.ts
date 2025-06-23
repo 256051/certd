@@ -12,6 +12,16 @@ export async function GetList(query: any) {
   });
 }
 
+export async function GetSimpleByIds(ids: any) {
+  return await request({
+    url: apiPrefix + "/getSimpleByIds",
+    method: "post",
+    data: {
+      ids,
+    },
+  });
+}
+
 export async function AddObj(obj: any) {
   return await request({
     url: apiPrefix + "/add",
@@ -100,7 +110,6 @@ export async function BatchUpdateNotificaiton(pipelineIds: number[], notificatio
   });
 }
 
-
 export async function BatchDelete(pipelineIds: number[]): Promise<void> {
   return await request({
     url: apiPrefix + "/batchDelete",
@@ -115,8 +124,6 @@ export async function BatchRerun(pipelineIds: number[]): Promise<void> {
     data: { ids: pipelineIds },
   });
 }
-
-
 
 export async function GetFiles(pipelineId: number) {
   return await request({

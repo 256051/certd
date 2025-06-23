@@ -33,12 +33,23 @@ export const certdResources = [
         },
       },
       {
+        title: "执行历史记录",
+        name: "PipelineHistory",
+        path: "/certd/history",
+        component: "/certd/history/index.vue",
+        meta: {
+          icon: "ion:timer-outline",
+          keepAlive: true,
+        },
+      },
+      {
         title: "流水线模版",
         name: "PipelineTemplate",
         path: "/certd/pipeline/template",
         component: "/certd/pipeline/template/index.vue",
         meta: {
           isMenu: true,
+          icon: "ion:duplicate-outline",
         },
       },
       {
@@ -48,16 +59,6 @@ export const certdResources = [
         component: "/certd/pipeline/template/edit.vue",
         meta: {
           isMenu: false,
-        },
-      },
-      {
-        title: "执行历史记录",
-        name: "PipelineHistory",
-        path: "/certd/history",
-        component: "/certd/history/index.vue",
-        meta: {
-          icon: "ion:timer-outline",
-          keepAlive: true,
         },
       },
       {

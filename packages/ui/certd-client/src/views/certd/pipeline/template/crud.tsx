@@ -1,10 +1,9 @@
-// @ts-ignore
-import { useI18n } from "vue-i18n";
-import { AddReq, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, EditReq, useFormWrapper, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
+import { AddReq, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, useFormWrapper, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
 import { templateApi } from "./api";
 import { useRouter } from "vue-router";
 import { useModal } from "/@/use/use-modal";
-
+import createCrudOptionsPipeline from "../crud";
+import * as pipelineApi from "../api";
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const api = templateApi;
   const pageRequest = async (query: UserPageQuery): Promise<UserPageRes> => {
@@ -66,6 +65,10 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
       rowHandle: {
         // width: 100,
         fixed: "right",
+        buttons: {
+          edit: { show: false },
+          copy: { show: false },
+        },
       },
       columns: {
         id: {
@@ -94,17 +97,50 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           column: {
             width: 200,
             sorter: true,
+            cellRender({ row, value }) {
+              return <router-link to={{ path: "/certd/pipeline/template/edit", query: { templateId: row.id } }}>{value}</router-link>;
+            },
           },
         },
         pipelineId: {
           title: "流水线ID",
-          type: "text",
-          search: {
-            show: true,
+          type: "table-select",
+          search: { show: true },
+          dict: dict({
+            value: "id",
+            label: "title",
+            //重要，根据value懒加载数据
+            getNodesByValues: async (values: any[]) => {
+              return await pipelineApi.GetSimpleByIds(values);
+            },
+          }),
+          editForm: {
+            show: false,
           },
-          column: {
-            width: 200,
-            sorter: true,
+          form: {
+            component: {
+              valuesFormat: {
+                labelFormatter: (item: any) => {
+                  return `${item.id}.${item.title}`;
+                },
+              },
+              select: {
+                placeholder: "点击选择",
+              },
+              showSelect: false,
+              createCrudOptions: createCrudOptionsPipeline,
+              crudOptionsOverride: {
+                actionbar: {
+                  show: false,
+                },
+                toolbar: {
+                  show: false,
+                },
+                tabs: {
+                  name: "type",
+                },
+              },
+            },
           },
         },
       },
