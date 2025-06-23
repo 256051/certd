@@ -19,3 +19,12 @@ header中传入x-certd-token即可调用开放接口
 
 ## SDK
 待开发
+
+## 客户端工具
+
+### SSL-Assistant
+`SSL Assistant` 是一个基于 Go 语言开发的跨平台证书部署管理助手。    
+支持自动扫描主机`Nginx`配置，然后从Certd拉取证书并部署。     
+在不想暴露ssh主机密码情况下，该工具非常好用。
+
+开源地址： https://github.com/Youngxj/SSL-Assistant
