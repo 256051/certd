@@ -182,7 +182,7 @@ export class UploadCertToHostPlugin extends AbstractTaskPlugin {
 
   @TaskInput({
     title: '上传方式',
-    helper: '选择上传方式，sftp或者scp',
+    helper: '支持sftp或者scp\n需要有写入权限，如果没有，须先将证书上传到有权限的目录，再通过后置命令复制到目标路径',
     value:"sftp",
     component: {
       name: 'a-select',
@@ -207,14 +207,27 @@ export class UploadCertToHostPlugin extends AbstractTaskPlugin {
   mkdirs = true;
 
   @TaskInput({
-    title: 'shell脚本命令',
+    title: '前置命令',
     component: {
       name: 'a-textarea',
       vModel: 'value',
-      rows: 6,
+      rows: 3,
+      placeholder: 'mkdir /app/ssl',
+    },
+    helper: '上传前执行脚本命令，做上传前的准备工作',
+    required: false,
+  })
+  scriptPre!: string;
+
+  @TaskInput({
+    title: '后置命令',
+    component: {
+      name: 'a-textarea',
+      vModel: 'value',
+      rows: 5,
       placeholder: 'systemctl restart nginx ',
     },
-    helper: '上传后执行脚本命令,让证书生效（比如重启nginx），不填则不执行\n注意：如果目标主机是windows，且终端是cmd，系统会自动将多行命令通过“&&”连接成一行',
+    helper: '上传后执行脚本命令，让证书生效（比如重启nginx），不填则不执行\n注意：sudo需要配置免密\n注意：如果目标主机是windows，且终端是cmd，系统会自动将多行命令通过“&&”连接成一行',
     required: false,
   })
   script!: string;
@@ -271,6 +284,40 @@ export class UploadCertToHostPlugin extends AbstractTaskPlugin {
     const { cert, accessId } = this;
     let { crtPath, keyPath, icPath, pfxPath, derPath, jksPath, onePath } = this;
     const certReader = new CertReader(cert);
+
+    const executeCmd = async ( script:string)=> {
+      if (script && script?.trim()) {
+        const connectConf: SshAccess = await this.getAccess(accessId);
+        const sshClient = new SshClient(this.logger);
+        this.logger.info('执行脚本命令');
+
+        //环境变量
+        const env = {};
+        if (this.injectEnv) {
+          const domains = certReader.getAllDomains();
+          for (let i = 0; i < domains.length; i++) {
+            env[`CERT_DOMAIN_${i}`] = domains[i];
+          }
+          //环境变量必须是string
+          env['CERT_EXPIRES'] = "" + dayjs(certReader.getCrtDetail().expires).unix();
+
+          env['HOST_CRT_PATH'] = this.hostCrtPath || '';
+          env['HOST_KEY_PATH'] = this.hostKeyPath || '';
+          env['HOST_IC_PATH'] = this.hostIcPath || '';
+          env['HOST_PFX_PATH'] = this.hostPfxPath || '';
+          env['HOST_DER_PATH'] = this.hostDerPath || '';
+          env['HOST_JKS_PATH'] = this.hostJksPath || '';
+          env['HOST_ONE_PATH'] = this.hostOnePath || '';
+        }
+
+        const scripts = script.split('\n');
+        await sshClient.exec({
+          connectConf,
+          script: scripts,
+          env,
+        });
+      }
+    }
 
     const handle = async (opts: CertReaderHandleContext) => {
       const { tmpCrtPath, tmpKeyPath, tmpDerPath, tmpJksPath, tmpPfxPath, tmpIcPath, tmpOnePath } = opts;
@@ -365,42 +412,17 @@ export class UploadCertToHostPlugin extends AbstractTaskPlugin {
       this.hostOnePath = onePath;
     };
 
+    //执行前置命令
+    await executeCmd(this.scriptPre);
+
+    //上传文件
     await certReader.readCertFile({
       logger: this.logger,
       handle,
     });
 
-    if (this.script && this.script?.trim()) {
-      const connectConf: SshAccess = await this.getAccess(accessId);
-      const sshClient = new SshClient(this.logger);
-      this.logger.info('执行脚本命令');
-
-      //环境变量
-      const env = {};
-      if (this.injectEnv) {
-        const domains = certReader.getAllDomains();
-        for (let i = 0; i < domains.length; i++) {
-          env[`CERT_DOMAIN_${i}`] = domains[i];
-        }
-        //环境变量必须是string
-        env['CERT_EXPIRES'] = ""+dayjs(certReader.getCrtDetail().expires).unix();
-
-        env['HOST_CRT_PATH'] = this.hostCrtPath || '';
-        env['HOST_KEY_PATH'] = this.hostKeyPath || '';
-        env['HOST_IC_PATH'] = this.hostIcPath || '';
-        env['HOST_PFX_PATH'] = this.hostPfxPath || '';
-        env['HOST_DER_PATH'] = this.hostDerPath || '';
-        env['HOST_JKS_PATH'] = this.hostJksPath || '';
-        env['HOST_ONE_PATH'] = this.hostOnePath || '';
-      }
-
-      const scripts = this.script.split('\n');
-      await sshClient.exec({
-        connectConf,
-        script: scripts,
-        env,
-      });
-    }
+    //执行后置命令
+    await executeCmd(this.script);
   }
 }
 
