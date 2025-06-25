@@ -3,7 +3,7 @@
 		class="pi-trigger-form" @after-open-change="triggerDrawerOnAfterVisibleChange">
 		<template #title>
 			<div>
-				编辑触发器
+				{{ t("certd.editTrigger") }}
 				<a-button v-if="mode === 'edit'" @click="triggerDelete()">
 					<template #icon>
 						<DeleteOutlined />
@@ -16,27 +16,28 @@
 				<a-form ref="triggerFormRef" class="trigger-form" :model="currentTrigger" :label-col="labelCol"
 					:wrapper-col="wrapperCol">
 					<fs-form-item v-model="currentTrigger.title" :item="{
-						title: '触发器名称',
+						title: t('certd.triggerName'),
 						key: 'title',
 						component: {
 							name: 'a-input',
 							vModel: 'value',
 							disabled: !editMode,
 						},
-						rules: [{ required: true, message: '此项必填' }],
+						rules: [{ required: true, message: t('certd.requiredField') }],
 					}" />
 
+
 					<fs-form-item v-model="currentTrigger.type" :item="{
-						title: '类型',
+						title: t('certd.type'),
 						key: 'type',
 						value: 'timer',
 						component: {
 							name: 'a-select',
 							vModel: 'value',
 							disabled: !editMode,
-							options: [{ value: 'timer', label: '定时' }],
+							options: [{ value: 'timer', label: t('certd.schedule') }],
 						},
-						rules: [{ required: true, message: '此项必填' }],
+						rules: [{ required: true, message: t('certd.requiredField') }],
 					}" />
 
 					<fs-form-item v-model="currentTrigger.props.cron" :item="{
@@ -93,10 +94,11 @@ export default {
 					{
 						type: "string",
 						required: true,
-						message: "请输入名称",
+						message: t("certd.enterName"),
 					},
 				],
 			});
+
 
 			const triggerDrawerShow = () => {
 				triggerDrawerVisible.value = true;
@@ -118,9 +120,10 @@ export default {
 
 			const triggerAdd = emit => {
 				mode.value = "add";
-				const trigger = { id: nanoid(), title: "定时触发", type: "timer", props: {} };
+				const trigger = { id: nanoid(), title: t("certd.timerTrigger"), type: "timer", props: {} };
 				triggerOpen(trigger, emit);
 			};
+
 
 			const triggerEdit = (trigger, emit) => {
 				mode.value = "edit";
@@ -147,14 +150,15 @@ export default {
 
 			const triggerDelete = () => {
 				Modal.confirm({
-					title: "确认",
-					content: `确定要删除此触发器吗？`,
+					title: t("certd.confirm"),
+					content: t("certd.confirmDeleteTrigger"),
 					async onOk() {
 						callback.value("delete");
 						triggerDrawerClose();
 					},
 				});
 			};
+
 
 			const blankFn = () => {
 				return {};
