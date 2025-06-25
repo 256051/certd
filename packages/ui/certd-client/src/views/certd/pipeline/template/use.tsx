@@ -42,11 +42,11 @@ export function useTemplate() {
     const randomMin = Math.floor(Math.random() * 60);
     const templateFormRef = ref();
 
-    async function onSubmit(opts: { form: any }) {
+    async function doSubmit(opts: { form: any }) {
       const form = opts.form;
       await templateFormRef.value.validate();
 
-      const tempInputs = templateFormRef.value.getFormData();
+      const tempInputs = templateFormRef.value.getForm();
 
       let newPipeline = cloneDeep(pipeline);
       newPipeline = fillPipelineByDefaultForm(newPipeline, form);
@@ -64,9 +64,11 @@ export function useTemplate() {
         }
       }
 
+      const title = form.title;
+      newPipeline.title = title;
       const groupId = form.groupId;
-      const { id } = await templateApi.CreatePipelineByTemplate({
-        title: form.title,
+      await templateApi.CreatePipelineByTemplate({
+        title,
         content: JSON.stringify(newPipeline),
         keepHistoryCount: 30,
         groupId,
@@ -76,7 +78,7 @@ export function useTemplate() {
 
     const crudOptions = {
       form: {
-        onSubmit,
+        doSubmit,
         wrapper: {
           title: `从模版<${detail.template.title}>创建流水线`,
           width: 1100,
@@ -92,6 +94,16 @@ export function useTemplate() {
         },
       },
       columns: {
+        title: {
+          title: "流水线标题",
+          type: "text",
+          form: {
+            component: {
+              placeholder: "请输入流水线标题",
+            },
+            rules: [{ required: true, message: "请输入流水线标题" }],
+          },
+        },
         triggerCron: {
           title: "定时触发",
           type: "text",
@@ -133,7 +145,7 @@ export function useTemplate() {
               name: GroupSelector,
               vModel: "modelValue",
             },
-            order: 9999,
+            order: 99,
           },
         },
       },
