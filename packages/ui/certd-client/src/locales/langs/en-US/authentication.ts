@@ -77,4 +77,8 @@ export default {
 	newPasswordNotSameOld: "The new password cannot be the same as the old password",
 	enterPasswordAgain: "Please enter the password again",
 	passwordsNotMatch: "The two passwords do not match!",
+	avatar: "Avatar",
+	nickName: "Nickname",
+	phoneNumber: "Phone Number",
+	changePassword: "Change Password",
 }

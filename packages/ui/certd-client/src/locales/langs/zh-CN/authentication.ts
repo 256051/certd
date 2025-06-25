@@ -78,4 +78,8 @@ export default {
 	newPasswordNotSameOld: "新密码不能和旧密码相同",
 	enterPasswordAgain: "请再次输入密码",
 	passwordsNotMatch: "两次输入密码不一致!",
+	avatar: "头像",
+	nickName: "昵称",
+	phoneNumber: "手机号",
+	changePassword: "修改密码",
 }
