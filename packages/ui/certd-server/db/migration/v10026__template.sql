@@ -13,3 +13,6 @@ CREATE TABLE "pi_template"
 
 CREATE INDEX "index_template_user_id" ON "pi_template" ("user_id");
 CREATE INDEX "index_template_pipeline_id" ON "pi_template" ("pipeline_id");
+
+ALTER TABLE pi_pipeline ADD COLUMN "template_id" integer DEFAULT 0;
+CREATE INDEX "index_pipeline_template_id" ON "pi_pipeline" ("template_id");

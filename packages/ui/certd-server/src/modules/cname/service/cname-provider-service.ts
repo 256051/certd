@@ -52,6 +52,7 @@ export class CnameProviderService extends BaseService<CnameProviderEntity> {
     }
   }
 
+  //@ts-ignore
   async delete(ids: any) {
     if (!ids) {
       return;

@@ -7,18 +7,33 @@
       </div>
 
       <div class="more flex items-center flex-1 justify-end">
-        <loading-button type="primary" @click="doSave">保存</loading-button>
+        <loading-button type="primary" @click="doSave">保存模版</loading-button>
+        <loading-button class="ml-10" type="primary" @click="useTemplateCreate">使用模版</loading-button>
+        <loading-button class="ml-10" type="primary" danger @click="doDelete">删除模版</loading-button>
       </div>
     </template>
     <div class="page-template-edit">
       <div class="base"></div>
       <div class="props flex p-10">
         <div class="task-list w-50%">
-          <div class="block-title">
-            原始任务参数
-            <div class="helper">点击加号，将字段作为模版变量</div>
+          <div class="block-title flex flex-between">
+            <div>
+              模版流水线参数
+              <div class="helper">点击加号，将字段作为模版变量</div>
+            </div>
+            <div class="more">
+              <router-link
+                v-if="detail?.template?.pipelineId > 0"
+                :to="{
+                  path: '/certd/pipeline/detail',
+                  query: { id: detail?.template?.pipelineId, editMode: true },
+                }"
+              >
+                修改模版流水线
+              </router-link>
+            </div>
           </div>
-          <a-collapse v-model:active-key="activeKey">
+          <a-collapse v-if="detail?.template?.pipelineId > 0" v-model:active-key="activeKey">
             <a-collapse-panel v-for="(step, stepId) in steps" :key="stepId" class="step-item" :header="step.title">
               <div class="step-inputs flex flex-wrap">
                 <div v-for="(input, key) of step.input" :key="key" class="hover:bg-gray-100 p-5 w-full xl:w-[50%]">
@@ -36,6 +51,17 @@
               </div>
             </a-collapse-panel>
           </a-collapse>
+
+          <div v-else-if="detail?.template?.pipelineId === 0">
+            <div class="p-20 flex flex-col flex-center text-sm">
+              <div class="mb-10">还未绑定模版流水线</div>
+              <div>
+                <a-button type="primary" @click="bindPipelineByCreate">创建新流水线作为模版</a-button>
+                或
+                <a-button type="primary" @click="bindPipelineByCopy">从已有流水线复制</a-button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="template-props w-50%">
@@ -60,7 +86,9 @@ import { templateApi } from "./api";
 import { usePluginStore } from "/@/store/plugin";
 import { useStepHelper } from "./utils";
 import TemplateForm from "./form.vue";
-
+import { Modal, notification } from "ant-design-vue";
+import { useTabbarStore } from "/@/vben/stores";
+import { useTemplate } from "./use";
 const route = useRoute();
 const templateId = route.query.templateId as string;
 
@@ -79,6 +107,9 @@ const templateProps: Ref = ref({
 });
 const detail: Ref<TemplateDetail> = ref();
 async function getTemplateDetail() {
+  if (!templateId) {
+    return;
+  }
   const res = await templateApi.GetDetail(parseInt(templateId));
   detail.value = res;
   templateProps.value = JSON.parse(res.template.content ?? "{input:{}}");
@@ -100,7 +131,7 @@ onMounted(async () => {
 
 const { getStepsMap } = useStepHelper(pluginStore);
 const steps = computed(() => {
-  if (!detail.value) {
+  if (!detail.value || !detail.value.pipeline) {
     return {};
   }
 
@@ -126,5 +157,36 @@ async function doSave() {
     title: detail.value.template.title,
     content: JSON.stringify(templateProps.value),
   });
+  notification.success({
+    message: "保存成功",
+  });
+}
+
+const tabbar = useTabbarStore();
+async function doDelete() {
+  Modal.confirm({
+    title: "确定删除模版？",
+    content: "删除后，该模版流水线将不能再使用",
+    onOk() {
+      templateApi.DelObj(detail.value.template.id);
+      notification.success({
+        message: "删除成功",
+      });
+      tabbar.closeTab({ fullPath: route.fullPath } as any, router);
+    },
+  });
+}
+
+async function bindPipelineByCreate() {
+  //
+  // openAddCertdPipelineDialog({ templateId: detail.value.template.id });
+}
+
+async function bindPipelineByCopy() {}
+
+const { openCreateFromTemplateDialog } = useTemplate();
+
+async function useTemplateCreate() {
+  openCreateFromTemplateDialog({ templateId: detail.value.template.id });
 }
 </script>

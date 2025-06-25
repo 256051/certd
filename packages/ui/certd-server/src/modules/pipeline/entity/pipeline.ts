@@ -37,6 +37,9 @@ export class PipelineEntity {
   @Column({ comment: '来源', nullable: true, default: '' })
   from: string;
 
+  @Column({ name:"template_id", comment: '是否模版', nullable: true, default: '' })
+  templateId: number;
+
   @Column({
     name: 'last_history_time',
     comment: '最后一次执行时间',

@@ -1,5 +1,5 @@
 <template>
-  <a-form ref="templateFormRef" class="template-form" :model="templateForm" :label-col="labelCol" :wrapper-col="wrapperCol">
+  <a-form ref="templateFormRef" class="template-form w-full" :model="templateForm" :label-col="labelCol" :wrapper-col="wrapperCol">
     <template v-for="(item, key) in templateFormColumns" :key="key">
       <fs-form-item v-if="item.show !== false" :model-value="get(templateForm, key)" :item="item" :get-context-fn="getScopeFunc(key)" @update:model-value="set(templateForm, key, $event)" />
     </template>
@@ -28,7 +28,12 @@ const steps = computed(() => {
   return getStepsMap(props.pipeline);
 });
 
-const labelCol = ref({ span: 6 });
+const labelCol = ref({
+  span: null,
+  style: {
+    width: "145px",
+  },
+});
 const wrapperCol = ref({ span: 16 });
 const templateForm: any = reactive({});
 const templateFormColumns = computed(() => {

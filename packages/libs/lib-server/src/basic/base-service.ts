@@ -84,6 +84,7 @@ export abstract class BaseService<T> {
       ...where,
     });
     await this.modifyAfter(idArr);
+    return ids
   }
 
   resolveIdArr(ids: string | any[]) {

@@ -7,6 +7,7 @@ import {
   createCertDomainGetterInputDefine,
   createRemoteSelectInputDefine
 } from "@certd/plugin-lib";
+import {PageReq} from "@certd/lib-server";
 
 @IsTaskPlugin({
   name: 'AliyunDeployCertToWaf',
@@ -168,7 +169,7 @@ export class AliyunDeployCertToWaf extends AbstractTaskPlugin {
     }
   }
 
-  async onGetCnameList(data: any) {
+  async onGetCnameList(data: PageReq) {
     if (!this.accessId) {
       throw new Error('请选择Access授权');
     }

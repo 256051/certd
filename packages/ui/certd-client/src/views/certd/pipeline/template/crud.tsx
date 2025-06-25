@@ -37,6 +37,11 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         editRequest,
         delRequest,
       },
+      addForm: {
+        onSuccess: ({ res }) => {
+          router.push({ path: "/certd/pipeline/template/edit", query: { templateId: res.id, editMode: "true" } });
+        },
+      },
       form: {
         labelCol: {
           //固定label宽度
@@ -95,7 +100,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             show: true,
           },
           column: {
-            width: 200,
+            width: 400,
             sorter: true,
             cellRender({ row, value }) {
               return <router-link to={{ path: "/certd/pipeline/template/edit", query: { templateId: row.id } }}>{value}</router-link>;
@@ -117,8 +122,12 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           editForm: {
             show: false,
           },
-          form: {
+          column: {
             show: false,
+          },
+          form: {
+            show: true,
+            helper: "复制该流水线配置作为模版来源",
             component: {
               valuesFormat: {
                 labelFormatter: (item: any) => {

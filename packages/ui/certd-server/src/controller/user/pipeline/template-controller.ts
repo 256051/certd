@@ -59,8 +59,8 @@ export class TemplateController extends CrudController<TemplateService> {
 
   @Post('/delete', { summary: Constants.per.authOnly })
   async delete(@Query('id') id: number) {
-    await this.service.checkUserId(id, this.getUserId());
-    return super.delete(id);
+    await this.service.batchDelete([id], this.getUserId());
+    return this.ok({});
   }
 
   @Post('/batchDelete', { summary: Constants.per.authOnly })

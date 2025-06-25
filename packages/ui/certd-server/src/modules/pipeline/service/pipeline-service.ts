@@ -46,6 +46,7 @@ import {UserSuiteEntity, UserSuiteService} from "@certd/commercial-core";
 import {CertInfoService} from "../../monitor/service/cert-info-service.js";
 import {TaskServiceBuilder} from "./task-service-getter.js";
 import {nanoid} from "nanoid";
+import {set} from "lodash-es";
 
 const runningTasks: Map<string | number, Executor> = new Map();
 
@@ -117,6 +118,8 @@ export class PipelineService extends BaseService<PipelineEntity> {
   }
 
   async page(pageReq: PageReq<PipelineEntity>) {
+    //模版流水线不要被查询出来
+    set(pageReq,"query.templateId",0)
     const result = await super.page(pageReq);
     await this.fillLastVars(result.records);
 
@@ -281,6 +284,7 @@ export class PipelineService extends BaseService<PipelineEntity> {
       },
       where: {
         disabled: false,
+        templateId: 0,
       },
     });
     const ids = idEntityList.map(item => {
@@ -385,7 +389,8 @@ export class PipelineService extends BaseService<PipelineEntity> {
     }
   }
 
-  async delete(id: any) {
+  //@ts-ignore
+  async delete(id:any) {
     await this.clearTriggers(id);
     //TODO 删除storage
     // const storage = new DbStorage(pipeline.userId, this.storageService);

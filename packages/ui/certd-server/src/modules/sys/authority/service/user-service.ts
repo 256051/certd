@@ -253,6 +253,7 @@ export class UserService extends BaseService<UserEntity> {
     await this.update(param);
   }
 
+  //@ts-ignore
   async delete(ids: any) {
     if (typeof ids === 'string') {
       ids = ids.split(',');

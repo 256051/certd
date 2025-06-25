@@ -129,6 +129,7 @@ export class RoleService extends BaseService<RoleEntity> {
     return permissionSet;
   }
 
+  //@ts-ignore
   async delete(id: any) {
     const idArr = this.resolveIdArr(id);
     //@ts-ignore
