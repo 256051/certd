@@ -8,10 +8,69 @@ import { ref } from "vue";
 import { fillPipelineByDefaultForm } from "/@/views/certd/pipeline/certd-form/use";
 import { cloneDeep } from "lodash-es";
 
+export function createExtraColumns() {
+  const groupDictRef = dict({
+    url: "/pi/pipeline/group/all",
+    value: "id",
+    label: "name",
+  });
+  const randomHour = Math.floor(Math.random() * 6);
+  const randomMin = Math.floor(Math.random() * 60);
+  return {
+    triggerCron: {
+      title: "定时触发",
+      type: "text",
+      form: {
+        value: `0 ${randomMin} ${randomHour} * * *`,
+        component: {
+          name: "cron-editor",
+          vModel: "modelValue",
+          placeholder: "0 0 4 * * *",
+        },
+        col: {
+          span: 24,
+        },
+        helper: "点击上面的按钮，选择每天几点定时执行。\n建议设置为每天触发一次，证书未到期之前任务会跳过，不会重复执行",
+        order: 100,
+      },
+    },
+    notification: {
+      title: "失败通知",
+      type: "text",
+      form: {
+        value: 0,
+        component: {
+          name: NotificationSelector,
+          vModel: "modelValue",
+          on: {
+            selectedChange(opts: any) {
+              opts.form.notificationTarget = opts.$event;
+            },
+          },
+        },
+        order: 101,
+        helper: "任务执行失败实时提醒",
+      },
+    },
+    groupId: {
+      title: "流水线分组",
+      type: "dict-select",
+      dict: groupDictRef,
+      form: {
+        component: {
+          name: GroupSelector,
+          vModel: "modelValue",
+        },
+        order: 999,
+      },
+    },
+  };
+}
+
 export function useTemplate() {
   const { openCrudFormDialog } = useFormWrapper();
 
-  async function openCreateFromTemplateDialog(req: { templateId?: number }) {
+  async function openCreateFromTemplateDialog(req: { templateId?: number; onCreated?: (ctx: any) => void }) {
     //检查是否流水线数量超出限制
     await checkPipelineLimit();
     const detail = await templateApi.GetDetail(req.templateId);
@@ -24,12 +83,6 @@ export function useTemplate() {
     const templateProps = JSON.parse(detail.template.content || "{}");
     const pipeline = detail.pipeline;
 
-    const groupDictRef = dict({
-      url: "/pi/pipeline/group/all",
-      value: "id",
-      label: "name",
-    });
-
     const wrapperRef = ref();
     function getFormData() {
       if (!wrapperRef.value) {
@@ -38,8 +91,6 @@ export function useTemplate() {
       return wrapperRef.value.getFormData();
     }
 
-    const randomHour = Math.floor(Math.random() * 6);
-    const randomMin = Math.floor(Math.random() * 60);
     const templateFormRef = ref();
 
     async function doSubmit(opts: { form: any }) {
@@ -67,13 +118,16 @@ export function useTemplate() {
       const title = form.title;
       newPipeline.title = title;
       const groupId = form.groupId;
-      await templateApi.CreatePipelineByTemplate({
+      const { id } = await templateApi.CreatePipelineByTemplate({
         title,
         content: JSON.stringify(newPipeline),
         keepHistoryCount: 30,
         groupId,
         templateId: detail.template.id,
       });
+      if (req.onCreated) {
+        req.onCreated({ id });
+      }
     }
 
     const crudOptions = {
@@ -104,50 +158,7 @@ export function useTemplate() {
             rules: [{ required: true, message: "请输入流水线标题" }],
           },
         },
-        triggerCron: {
-          title: "定时触发",
-          type: "text",
-          form: {
-            value: `0 ${randomMin} ${randomHour} * * *`,
-            component: {
-              name: "cron-editor",
-              vModel: "modelValue",
-              placeholder: "0 0 4 * * *",
-            },
-            helper: "点击上面的按钮，选择每天几点定时执行。\n建议设置为每天触发一次，证书未到期之前任务会跳过，不会重复执行",
-            order: 100,
-          },
-        },
-        notification: {
-          title: "失败通知",
-          type: "text",
-          form: {
-            value: 0,
-            component: {
-              name: NotificationSelector,
-              vModel: "modelValue",
-              on: {
-                selectedChange(opts: any) {
-                  opts.form.notificationTarget = opts.$event;
-                },
-              },
-            },
-            order: 101,
-            helper: "任务执行失败实时提醒",
-          },
-        },
-        groupId: {
-          title: "流水线分组",
-          type: "dict-select",
-          dict: groupDictRef,
-          form: {
-            component: {
-              name: GroupSelector,
-              vModel: "modelValue",
-            },
-            order: 99,
-          },
-        },
+        ...createExtraColumns(),
       },
     };
 

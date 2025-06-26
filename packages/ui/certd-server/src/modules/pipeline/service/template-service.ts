@@ -48,10 +48,10 @@ export class TemplateService extends BaseService<TemplateEntity> {
       newPipeline.title = template.title + "模版流水线"
       newPipeline.templateId = template.id
       newPipeline.isTemplate = true
+      newPipeline.userId = template.userId
 
       const pipelineJson: Pipeline = JSON.parse(newPipeline.content)
       delete pipelineJson.triggers
-      pipelineJson.id = template.id
       pipelineJson.userId = template.userId
       pipelineJson.title = newPipeline.title
       newPipeline.content = JSON.stringify(pipelineJson)
@@ -121,6 +121,8 @@ export class TemplateService extends BaseService<TemplateEntity> {
     }
 
     await this.pipelineService.save(newPipeline)
+
+    return newPipeline
   }
 }
 

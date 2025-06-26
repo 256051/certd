@@ -8,7 +8,7 @@ export const EVENT_CERT_APPLY_SUCCESS = "CertApply.success";
 
 export abstract class CertApplyBaseConvertPlugin extends AbstractTaskPlugin {
   @TaskInput({
-    title: "域名",
+    title: "证书域名",
     component: {
       name: "a-select",
       vModel: "value",

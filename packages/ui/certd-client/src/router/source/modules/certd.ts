@@ -62,6 +62,15 @@ export const certdResources = [
         },
       },
       {
+        title: "流水线模版批量创建",
+        name: "PipelineTemplateImport",
+        path: "/certd/pipeline/template/import",
+        component: "/certd/pipeline/template/import/index.vue",
+        meta: {
+          isMenu: false,
+        },
+      },
+      {
         title: "证书仓库",
         name: "CertStore",
         path: "/certd/monitor/cert",

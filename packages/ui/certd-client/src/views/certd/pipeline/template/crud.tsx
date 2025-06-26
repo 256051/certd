@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import { useModal } from "/@/use/use-modal";
 import createCrudOptionsPipeline from "../crud";
 import * as pipelineApi from "../api";
+import { useTemplate } from "/@/views/certd/pipeline/template/use";
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const api = templateApi;
   const pageRequest = async (query: UserPageQuery): Promise<UserPageRes> => {
@@ -29,6 +30,9 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
   const router = useRouter();
 
   const model = useModal();
+
+  const { openCreateFromTemplateDialog } = useTemplate();
+
   return {
     crudOptions: {
       request: {
@@ -73,6 +77,27 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         buttons: {
           edit: { show: false },
           copy: { show: false },
+          use: {
+            text: null,
+            title: "使用此模版创建流水线",
+            icon: "ion:duplicate-outline",
+            click({ row }) {
+              openCreateFromTemplateDialog({
+                templateId: row.id,
+                onCreated: ({ id }) => {
+                  router.push({ path: "/certd/pipeline/detail", query: { id, editMode: true } });
+                },
+              });
+            },
+          },
+          import: {
+            text: null,
+            title: "批量导入创建",
+            icon: "ion:duplicate",
+            click({ row }) {
+              router.push({ path: "/certd/pipeline/template/import", query: { templateId: row.id } });
+            },
+          },
         },
       },
       columns: {

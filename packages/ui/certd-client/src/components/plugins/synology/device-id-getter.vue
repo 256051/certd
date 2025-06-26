@@ -27,7 +27,9 @@ const attrs = useAttrs();
 
 const otpCodeRef = ref("");
 const getScope: any = inject("get:scope");
-const getPluginType: any = inject("get:plugin:type");
+const getPluginType: any = inject("get:plugin:type", () => {
+  return "access";
+});
 
 async function loginWithOTPCode(otpCode: string) {
   const { form } = getScope();

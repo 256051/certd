@@ -27,7 +27,9 @@ const emit = defineEmits<{
 }>();
 
 const getScope: any = inject("get:scope");
-const getPluginType: any = inject("get:plugin:type");
+const getPluginType: any = inject("get:plugin:type", () => {
+  return "plugin";
+});
 
 const attrs = useAttrs();
 

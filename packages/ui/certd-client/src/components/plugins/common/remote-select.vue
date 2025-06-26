@@ -69,9 +69,15 @@ const emit = defineEmits<{
 
 const attrs = useAttrs();
 
-const getCurrentPluginDefine: any = inject("getCurrentPluginDefine");
-const getScope: any = inject("get:scope");
-const getPluginType: any = inject("get:plugin:type");
+const getCurrentPluginDefine: any = inject("getCurrentPluginDefine", () => {
+  return {};
+});
+const getScope: any = inject("get:scope", () => {
+  return {};
+});
+const getPluginType: any = inject("get:plugin:type", () => {
+  return "plugin";
+});
 
 const searchKeyRef = ref("");
 const optionsRef = ref([]);
@@ -96,7 +102,7 @@ const getOptions = async () => {
   }
   const pluginType = getPluginType();
   const { form } = getScope();
-  const input = pluginType === "plugin" ? form.input : form;
+  const input = (pluginType === "plugin" ? form?.input : form) || {};
 
   for (let key in define.input) {
     const inWatches = props.watches.includes(key);
@@ -186,7 +192,7 @@ watch(
   () => {
     const pluginType = getPluginType();
     const { form, key } = getScope();
-    const input = pluginType === "plugin" ? form.input : form;
+    const input = (pluginType === "plugin" ? form?.input : form) || {};
     const watches = {};
     for (const key of props.watches) {
       watches[key] = input[key];
@@ -198,10 +204,11 @@ watch(
   },
   async (value, oldValue) => {
     const { form } = value;
-    const oldForm = oldValue.form;
+    const oldForm: any = oldValue?.form;
     let changed = oldForm == null || optionsRef.value.length == 0;
     for (const key of props.watches) {
-      if (form[key] != oldForm[key]) {
+      //@ts-ignore
+      if (oldForm && form[key] != oldForm[key]) {
         changed = true;
         break;
       }

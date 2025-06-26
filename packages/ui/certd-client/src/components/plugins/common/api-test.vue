@@ -19,7 +19,9 @@ defineOptions({
 });
 
 const getScope: any = inject("get:scope");
-const getPluginType: any = inject("get:plugin:type");
+const getPluginType: any = inject("get:plugin:type", () => {
+  return "access";
+});
 const formItemContext = Form.useInjectFormItemContext();
 const props = defineProps<{} & ComponentPropsType>();
 
