@@ -42,18 +42,18 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
 				fixed: "right",
 				buttons: {
 					unlock: {
-						title: "解除登录锁定",
+						title: t("certd.unlockLogin"),
 						text: null,
 						type: "link",
 						icon: "ion:lock-open-outline",
 						click: async ({ row }) => {
 							Modal.confirm({
-								title: "提示",
-								content: "确定要解除该用户的登录锁定吗？",
+								title: t("certd.notice"),
+								content: t("certd.confirmUnlock"),
 								onOk: async () => {
 									await api.Unlock(row.id);
 									notification.success({
-										message: "解除成功",
+										message: t("certd.unlockSuccess"),
 									});
 								},
 							});
@@ -78,7 +78,7 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
 					},
 				},
 				createTime: {
-					title: "创建时间",
+					title: t("certd.createTime"),
 					type: "datetime",
 					form: { show: false }, // 表单配置
 					column: {
@@ -96,13 +96,13 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
 				//   }
 				// },
 				username: {
-					title: "用户名",
+					title: t("certd.username"),
 					type: "text",
 					search: { show: true }, // 开启查询
 					form: {
 						rules: [
-							{ required: true, message: "请输入用户名" },
-							{ max: 50, message: "最大50个字符" },
+							{ required: true, message: t("certd.enterUsername") },
+							{ max: 50, message: t("certd.max50Chars") },
 						],
 					},
 					editForm: { component: { disabled: false } },
@@ -112,18 +112,18 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
 					},
 				},
 				password: {
-					title: "密码",
+					title: t("certd.password"),
 					type: "text",
 					key: "password",
 					column: {
 						show: false,
 					},
 					form: {
-						rules: [{ max: 50, message: "最大50个字符" }],
+						rules: [{ max: 50, message: t("certd.max50Chars") }],
 						component: {
 							showPassword: true,
 						},
-						helper: "填写则修改密码",
+						helper: t("certd.modifyPasswordIfFilled"),
 					},
 				},
 				nickName: {
@@ -138,11 +138,11 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
 					},
 				},
 				email: {
-					title: "邮箱",
+					title: t("certd.emaila"),
 					type: "text",
 					search: { show: true }, // 开启查询
 					form: {
-						rules: [{ max: 50, message: "最大50个字符" }],
+						rules: [{ max: 50, message: t("certd.max50Chars") }],
 					},
 					column: {
 						sorter: true,
@@ -150,11 +150,11 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
 					},
 				},
 				mobile: {
-					title: "手机号",
+					title: t("certd.mobile"),
 					type: "text",
 					search: { show: true }, // 开启查询
 					form: {
-						rules: [{ max: 50, message: "最大50个字符" }],
+						rules: [{ max: 50, message: t("certd.max50Chars") }],
 					},
 					column: {
 						sorter: true,
@@ -162,12 +162,11 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
 					},
 				},
 				avatar: {
-					title: "头像",
+					title: t("certd.avatar"),
 					type: "cropper-uploader",
 					column: {
 						width: 70,
 						component: {
-							//设置高度，修复操作列错位的问题
 							style: {
 								height: "30px",
 								width: "auto",
@@ -205,12 +204,12 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
 					},
 				},
 				status: {
-					title: "状态",
+					title: t("certd.status"),
 					type: "dict-switch",
 					dict: dict({
 						data: [
-							{ label: "启用", value: 1, color: "green" },
-							{ label: "禁用", value: 0, color: "red" },
+							{ label: t("certd.enabled"), value: 1, color: "green" },
+							{ label: t("certd.disabled"), value: 0, color: "red" },
 						],
 					}),
 					column: {
@@ -220,7 +219,7 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
 					},
 				},
 				validTime: {
-					title: "有效期",
+					title: t("certd.validTime"),
 					type: "date",
 					form: {
 						show: userValidTimeEnabled,
@@ -235,7 +234,7 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
 								return "";
 							}
 							if (value < dayjs().valueOf()) {
-								return <a-tag color={"red"}>已过期</a-tag>;
+								return <a-tag color={"red"}>{t("certd.expired")}</a-tag>;
 							}
 							const date = dayjs(value).format("YYYY-MM-DD");
 							return (
@@ -257,17 +256,17 @@ export default function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOpti
 					},
 				},
 				remark: {
-					title: "备注",
+					title: t("certd.remark"),
 					type: "text",
 					column: {
 						sorter: true,
 					},
 					form: {
-						rules: [{ max: 100, message: "最大100个字符" }],
+						rules: [{ max: 100, message: t("certd.max100Chars") }],
 					},
 				},
 				roles: {
-					title: "角色",
+					title: t("certd.roles"),
 					type: "dict-select",
 					dict: dict({
 						url: "/sys/authority/role/list",

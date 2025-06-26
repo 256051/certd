@@ -82,7 +82,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 				show: true,
 				buttons: {
 					add: {
-						text: "上传自定义证书",
+						text: t('certd.uploadCustomCert'),
 						type: "primary",
 						show: false,
 						async click() {
@@ -150,15 +150,15 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 					},
 				},
 				fromType: {
-					title: "来源",
+					title: t('certd.sourcee'),
 					search: {
 						show: true,
 					},
 					type: "dict-select",
 					dict: dict({
 						data: [
-							{ label: "流水线", value: "pipeline" },
-							{ label: "手动上传", value: "upload" },
+							{ label: t('certd.sourcePipeline'), value: "pipeline" },
+							{ label: t('certd.sourceManualUpload'), value: "upload" },
 						],
 					}),
 					form: {
@@ -179,13 +179,13 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 					},
 				},
 				domains: {
-					title: "域名",
+					title: t('certd.domains'),
 					search: {
 						show: true,
 					},
 					type: "text",
 					form: {
-						rules: [{ required: true, message: "请输入域名" }],
+						rules: [{ required: true, message: t('certd.enterDomain') }],
 					},
 					column: {
 						width: 450,
@@ -197,7 +197,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 					},
 				},
 				domainCount: {
-					title: "域名数量",
+					title: t('certd.domainCount'),
 					type: "number",
 					form: {
 						show: false,
@@ -209,7 +209,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 					},
 				},
 				expiresLeft: {
-					title: "有效天数",
+					title: t('certd.validDays'),
 					search: {
 						show: false,
 					},
@@ -229,12 +229,12 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 							const leftDays = dayjs(value).diff(dayjs(), "day");
 							const color = leftDays < 20 ? "red" : "#389e0d";
 							const percent = (leftDays / 90) * 100;
-							return <a-progress title={expireDate + "过期"} percent={percent} strokeColor={color} format={(percent: number) => `${leftDays}天`} />;
+							return <a-progress title={expireDate + t('certd.expires')} percent={percent} strokeColor={color} format={(percent: number) => `${leftDays}${t('certd.days')}`} />;
 						},
 					},
 				},
 				expiresTime: {
-					title: "过期时间",
+					title: t('certd.expireTime'),
 					search: {
 						show: false,
 					},
@@ -247,7 +247,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 					},
 				},
 				certProvider: {
-					title: "证书颁发机构",
+					title: t('certd.certIssuer'),
 					search: {
 						show: false,
 					},
@@ -260,7 +260,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 					},
 				},
 				applyTime: {
-					title: "申请时间",
+					title: t('certd.applyTime'),
 					search: {
 						show: false,
 					},
@@ -273,7 +273,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 					},
 				},
 				"pipeline.title": {
-					title: "关联流水线",
+					title: t('certd.relatedPipeline'),
 					search: { show: false },
 					type: "link",
 					form: {
@@ -291,6 +291,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 						},
 					},
 				},
+
 			},
 		},
 	};
