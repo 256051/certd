@@ -10,7 +10,7 @@ import { updatePreferences } from "/@/vben/preferences";
 import { useTitle } from "@vueuse/core";
 import { utils } from "/@/utils";
 import { cloneDeep, merge } from "lodash-es";
-
+import { useI18n } from "/src/locales";
 export interface SettingState {
   sysPublic?: SysPublicSetting;
   installInfo?: {
@@ -129,10 +129,11 @@ export const useSettingStore = defineStore({
       return this.isComm || this.isAgent;
     },
     vipLabel(): string {
+      const { t } = useI18n();
       const vipLabelMap: any = {
-        free: "基础版",
-        plus: "专业版",
-        comm: "商业版",
+        free: t("vip.label.free"),
+        plus: t("vip.label.plus"),
+        comm: t("vip.label.comm"),
       };
       return vipLabelMap[this.plusInfo?.vipType || "free"];
     },

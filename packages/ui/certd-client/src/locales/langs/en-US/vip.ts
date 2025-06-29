@@ -1,4 +1,9 @@
 export default {
+  label: {
+    comm: "Business Edition",
+    plus: "Professional Edition",
+    free: "Basic Edition",
+  },
   comm: {
     name: "{vipLabel} Activated",
     title: "Expires on: {expire}",

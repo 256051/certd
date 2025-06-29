@@ -1,9 +1,12 @@
 <template>
   <fs-page>
     <template #header>
-      <div class="title">
+      <div class="title flex items-center">
         流水线模版
-        <span class="sub">可根据模版批量创建流水线</span>
+        <span class="ml-10 sub flex items-center">
+          <span>可根据模版批量创建流水线 </span>
+          <vip-button class="ml-10" mode="button" />
+        </span>
       </div>
     </template>
     <fs-crud ref="crudRef" v-bind="crudBinding"> </fs-crud>

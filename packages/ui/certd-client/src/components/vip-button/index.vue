@@ -287,7 +287,7 @@ function openUpgrade() {
     },
     maskClosable: true,
     okText: t("vip.activate"),
-    width: 1000,
+    width: 1100,
     content: () => {
       let activationCodeGetWay = (
         <span>
@@ -419,7 +419,7 @@ onMounted(() => {
     padding: 10px;
     border: 1px solid #eee;
     border-radius: 5px;
-    height: 250px;
+    height: 275px;
 
     //background-color: rgba(250, 237, 167, 0.79);
     &.current {

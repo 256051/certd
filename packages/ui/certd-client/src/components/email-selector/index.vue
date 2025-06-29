@@ -65,7 +65,6 @@ async function addItem() {
     return;
   }
 
-  debugger;
   if (emails.value.find(item => item.value === email)) {
     notification.warning({
       message: "此邮箱已存在",

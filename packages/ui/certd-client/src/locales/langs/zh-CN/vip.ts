@@ -1,4 +1,9 @@
 export default {
+  label: {
+    comm: "商业版",
+    plus: "专业版",
+    free: "基础版",
+  },
   comm: {
     name: "{vipLabel}已开通",
     title: "到期时间：{expire}",
