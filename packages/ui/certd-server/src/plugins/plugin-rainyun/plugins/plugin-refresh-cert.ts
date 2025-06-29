@@ -81,11 +81,11 @@ export class RainyunRefreshCert extends AbstractTaskPlugin {
   async onGetCertList(req: PageSearch = {}) {
     const access = await this.getAccess<RainyunAccess>(this.accessId);
 
-    const offset = req.offset ?? 0;
-    const limit = req.limit ?? 100;
+    const pageNo = req.pageNo ?? 1;
+    const pageSize = req.pageSize ?? 100;
     const res = await access.getCertList({
-      offset,
-      limit
+      pageNo,
+      pageSize
     });
     const total = res.total;
     const list = res.list;
@@ -103,8 +103,8 @@ export class RainyunRefreshCert extends AbstractTaskPlugin {
     return {
       list: this.ctx.utils.options.buildGroupOptions(options, this.certDomains),
       total: total,
-      offset: offset,
-      limit: limit
+      pageNo: pageNo,
+      pageSize: pageSize
     };
   }
 }

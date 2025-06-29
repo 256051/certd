@@ -1,4 +1,4 @@
-import { AbstractTaskPlugin, IsTaskPlugin, PageSearch, pluginGroups, RunStrategy, TaskInput } from "@certd/pipeline";
+import { AbstractTaskPlugin, IsTaskPlugin, Pager, PageSearch, pluginGroups, RunStrategy, TaskInput } from "@certd/pipeline";
 import { CertApplyPluginNames, CertInfo } from "@certd/plugin-cert";
 import { createCertDomainGetterInputDefine, createRemoteSelectInputDefine } from "@certd/plugin-lib";
 import { FarcdnAccess } from "../access.js";
@@ -81,9 +81,10 @@ export class FarcdnRefreshCert extends AbstractTaskPlugin {
   async onGetCertList(data:PageSearch = {}) {
     const access = await this.getAccess<FarcdnAccess>(this.accessId);
 
+    const pager = new Pager(data);
     const res = await access.getSSLCertList({
-      offset: data.offset?? 0,
-      size: data.limit?? 100,
+      offset: pager.getOffset(),
+      size: pager.pageSize,
     });
     const list = res.list
     if (!list || list.length === 0) {
@@ -100,8 +101,8 @@ export class FarcdnRefreshCert extends AbstractTaskPlugin {
     return {
       list:this.ctx.utils.options.buildGroupOptions(options, this.certDomains),
       total:res.total,
-      offset: res.offset,
-      limit:res.size
+      pageNo: pager.pageNo,
+      pageSize: pager.pageSize
     }
   }
 }

@@ -21,7 +21,7 @@
           <v-nodes :vnodes="menu" />
 
           <div v-if="pager === true" class="pager text-center p-5">
-            <a-pagination v-model:current="pagerRef.current" simple :total="pagerRef.total" :page-size="pagerRef.limit" />
+            <a-pagination v-model:current="pagerRef.pageNo" simple :total="pagerRef.total" :page-size="pagerRef.pageSize" @change="onPageChange" />
           </div>
         </template>
       </a-select>
@@ -119,9 +119,8 @@ const getOptions = async () => {
   message.value = "";
   hasError.value = false;
   loading.value = true;
-  optionsRef.value = [];
-
-  const offset = (pagerRef.value.current - 1) * (pagerRef.value.limit ?? 100);
+  const pageNo = pagerRef.value.pageNo;
+  const pageSize = pagerRef.value.pageSize;
   try {
     const res = await doRequest(
       {
@@ -131,8 +130,8 @@ const getOptions = async () => {
         input,
         data: {
           searchKey: props.search ? searchKeyRef.value : "",
-          offset: offset,
-          limit: pagerRef.value.limit,
+          pageNo,
+          pageSize,
         },
       },
       {
@@ -150,17 +149,15 @@ const getOptions = async () => {
     optionsRef.value = list;
     pagerRef.value.total = list.length;
     if (props.pager) {
-      if (res.offset != null) {
-        pagerRef.value.offset = res.offset ?? 0;
+      if (res.pageNo != null) {
+        pagerRef.value.pageNo = res.pageNo ?? 1;
       }
-      if (res.limit != null) {
-        pagerRef.value.limit = res.limit ?? 100;
+      if (res.pageSize != null) {
+        pagerRef.value.pageSize = res.pageSize ?? 100;
       }
       if (res.total != null) {
         pagerRef.value.total = res.total ?? list.length;
       }
-      const { offset, limit } = pagerRef.value;
-      pagerRef.value.current = offset % limit === 0 ? offset / limit + 1 : offset / limit;
     }
 
     return res;
@@ -184,7 +181,7 @@ async function refreshOptions() {
 }
 
 async function doSearch() {
-  pagerRef.value.current = 1;
+  pagerRef.value.pageNo = 1;
   await refreshOptions();
 }
 
@@ -222,6 +219,10 @@ watch(
     immediate: true,
   }
 );
+
+async function onPageChange(current: any) {
+  await refreshOptions();
+}
 </script>
 
 <style lang="less"></style>

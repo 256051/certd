@@ -75,20 +75,16 @@ export class RainyunAccess extends BaseAccess {
   }
 
 
-  async getCertList(req:{offset?:number,limit?:number,query?:string}){
-    const size = req.limit ?? 20;
-    const offset = req.offset ?? 0;
-    let page = Math.floor(offset / size);
-    if(offset % size === 0 ){
-      page++
-    }
+  async getCertList(req:{pageNo?:number,pageSize?:number,query?:string}){
+    const pageNo = req.pageNo ?? 1;
+    const pageSize = req.pageSize ?? 20;
     const options ={
       columnFilters: {
         Domain: req.query??""
       },
       sort:[],
-      page: page,
-      perPage: size,
+      page: pageNo,
+      perPage: pageSize,
 
     }
     const res = await this.doRequest({
@@ -99,8 +95,8 @@ export class RainyunAccess extends BaseAccess {
     return {
       total: res.TotalRecords,
       list: res.Records || [],
-      limit: size,
-      offset: offset
+      pageNo: pageNo,
+      pageSize: pageSize
     }
   }
 

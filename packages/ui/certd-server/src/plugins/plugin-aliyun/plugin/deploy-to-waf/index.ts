@@ -183,8 +183,8 @@ export class AliyunDeployCertToWaf extends AbstractTaskPlugin {
     const params:any = {
       RegionId: this.regionId,
       InstanceId: instanceId,
-      PageSize: pager.limit,
-      PageNumber: pager.getPageNo(),
+      PageSize: pager.pageSize,
+      PageNumber: pager.pageNo,
     };
     if (data.searchKey){
       params.Domain = data.searchKey
@@ -206,11 +206,13 @@ export class AliyunDeployCertToWaf extends AbstractTaskPlugin {
     });
     const list= this.ctx.utils.options.buildGroupOptions(options, this.certDomains);
 
+    // const list = [{value:"1",label:"1"},{value:"2",label:"2"}]
+    // const total = 120
     return {
       list,
       total: total,
-      offset: pager.offset,
-      limit: pager.limit
+      pageNo: pager.pageNo,
+      pageSize: pager.pageSize
     };
   }
 }
