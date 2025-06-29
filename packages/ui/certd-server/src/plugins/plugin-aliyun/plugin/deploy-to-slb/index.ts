@@ -1,4 +1,4 @@
-import {AbstractTaskPlugin, IsTaskPlugin, PageReq, pluginGroups, RunStrategy, TaskInput} from '@certd/pipeline';
+import {AbstractTaskPlugin, IsTaskPlugin, PageSearch, pluginGroups, RunStrategy, TaskInput} from '@certd/pipeline';
 import {CertInfo} from '@certd/plugin-cert';
 import {
   AliyunAccess,
@@ -347,7 +347,7 @@ export class AliyunDeployCertToSLB extends AbstractTaskPlugin {
     });
   }
 
-  async onGetExtensionDomainList(data: PageReq) {
+  async onGetExtensionDomainList(data: PageSearch) {
     if (!this.accessId) {
       throw new Error('请先选择Access授权');
     }

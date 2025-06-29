@@ -38,9 +38,9 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 
   const checkStatusDict = dict({
     data: [
-      { label: t("checkStatus.success"), value: "ok", color: "green" },
-      { label: t("checkStatus.checking"), value: "checking", color: "blue" },
-      { label: t("checkStatus.error"), value: "error", color: "red" },
+      { label: t("certd.checkStatus.success"), value: "ok", color: "green" },
+      { label: t("certd.checkStatus.checking"), value: "checking", color: "blue" },
+      { label: t("certd.checkStatus.error"), value: "error", color: "red" },
     ],
   });
 

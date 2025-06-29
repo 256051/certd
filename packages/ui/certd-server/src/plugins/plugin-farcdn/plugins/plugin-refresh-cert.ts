@@ -1,4 +1,4 @@
-import { AbstractTaskPlugin, IsTaskPlugin, PageReq, pluginGroups, RunStrategy, TaskInput } from "@certd/pipeline";
+import { AbstractTaskPlugin, IsTaskPlugin, PageSearch, pluginGroups, RunStrategy, TaskInput } from "@certd/pipeline";
 import { CertApplyPluginNames, CertInfo } from "@certd/plugin-cert";
 import { createCertDomainGetterInputDefine, createRemoteSelectInputDefine } from "@certd/plugin-lib";
 import { FarcdnAccess } from "../access.js";
@@ -78,7 +78,7 @@ export class FarcdnRefreshCert extends AbstractTaskPlugin {
     this.logger.info("部署完成");
   }
 
-  async onGetCertList(data:PageReq = {}) {
+  async onGetCertList(data:PageSearch = {}) {
     const access = await this.getAccess<FarcdnAccess>(this.accessId);
 
     const res = await access.getSSLCertList({

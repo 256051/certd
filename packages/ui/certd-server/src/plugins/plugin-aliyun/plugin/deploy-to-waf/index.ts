@@ -1,4 +1,4 @@
-import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from "@certd/pipeline";
+import { AbstractTaskPlugin, IsTaskPlugin, Pager,PageSearch, pluginGroups, RunStrategy, TaskInput } from "@certd/pipeline";
 import { CertApplyPluginNames, CertInfo, CertReader } from "@certd/plugin-cert";
 import {
   AliyunAccess,
@@ -7,7 +7,6 @@ import {
   createCertDomainGetterInputDefine,
   createRemoteSelectInputDefine
 } from "@certd/plugin-lib";
-import {PageReq} from "@certd/lib-server";
 
 @IsTaskPlugin({
   name: 'AliyunDeployCertToWaf',
@@ -83,9 +82,10 @@ export class AliyunDeployCertToWaf extends AbstractTaskPlugin {
     createRemoteSelectInputDefine({
       title: 'CNAME站点',
       helper: '请选择要部署证书的CNAME站点',
-      typeName: 'AliyunDeployCertToWaf',
       action: AliyunDeployCertToWaf.prototype.onGetCnameList.name,
       watches: ['accessId', 'regionId'],
+      pager:true,
+      search:true,
     })
   )
   cnameDomains!: string[];
@@ -169,19 +169,26 @@ export class AliyunDeployCertToWaf extends AbstractTaskPlugin {
     }
   }
 
-  async onGetCnameList(data: PageReq) {
+  async onGetCnameList(data: PageSearch) {
     if (!this.accessId) {
       throw new Error('请选择Access授权');
     }
     const access = await this.getAccess<AliyunAccess>(this.accessId);
     const client = await this.getWafClient(access);
 
+
+    const pager = new Pager(data)
+
     const instanceId = await this.getInstanceId(client);
-    const params = {
+    const params:any = {
       RegionId: this.regionId,
       InstanceId: instanceId,
-      PageSize: 50,
+      PageSize: pager.limit,
+      PageNumber: pager.getPageNo(),
     };
+    if (data.searchKey){
+      params.Domain = data.searchKey
+    }
 
     const res = await client.request('DescribeDomains', params);
     if (!res?.Domains || res?.Domains.length === 0) {
