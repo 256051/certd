@@ -5,6 +5,7 @@ export type UserSiteMonitorSetting = {
   notificationId?: number;
   retryTimes?: number;
   cron?: string;
+  dnsServer?: string[];
 };
 
 export async function SiteMonitorSettingsGet() {

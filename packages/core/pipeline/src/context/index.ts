@@ -11,6 +11,7 @@ export type PageSearch = {
   // sortOrder?: "asc" | "desc";
 };
 
+
 export type PageRes = {
   pageNo?: number;
   pageSize?: number;

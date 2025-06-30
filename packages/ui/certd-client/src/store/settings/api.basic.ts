@@ -43,6 +43,8 @@ export type SysPublicSetting = {
   mpsNo?: string;
   robots?: boolean;
   aiChatEnabled?: boolean;
+
+  showRunStrategy?: boolean;
 };
 export type SuiteSetting = {
   enabled?: boolean;

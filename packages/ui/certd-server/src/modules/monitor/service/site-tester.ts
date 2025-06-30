@@ -2,6 +2,7 @@ import { logger, safePromise, utils } from "@certd/basic";
 import { merge } from "lodash-es";
 import https from "https";
 import { PeerCertificate } from "tls";
+import { TCPClient } from "dns2";
 
 export type SiteTestReq = {
   host: string; // 只用域名部分
@@ -9,6 +10,8 @@ export type SiteTestReq = {
   method?: string;
   retryTimes?: number;
   ipAddress?: string;
+
+  dnsServer?: string[];
 };
 
 export type SiteTestRes = {
@@ -18,7 +21,7 @@ export type SiteTestRes = {
 export class SiteTester {
   async test(req: SiteTestReq): Promise<SiteTestRes> {
     logger.info("测试站点:", JSON.stringify(req));
-    const maxRetryTimes = req.retryTimes==null ? 3 : req.retryTimes;
+    const maxRetryTimes = req.retryTimes == null ? 3 : req.retryTimes;
     let tryCount = 0;
     let result: SiteTestRes = {};
     while (true) {
@@ -52,13 +55,41 @@ export class SiteTester {
     if (req.ipAddress) {
       //使用固定的ip
       const ipAddress = req.ipAddress;
-      options.headers={
+      options.headers = {
         host: options.host,
         //sni
         servername: options.host
-      }
+      };
       options.host = ipAddress;
     }
+
+    let dnsClients = [];
+    if (req.dnsServer && req.dnsServer.length > 0) {
+      for (let dns of req.dnsServer) {
+        const dnsClient = TCPClient({ dns });
+        dnsClients.push(dnsClient);
+      }
+    }
+
+    // async function customLookup(hostname, options, callback) {
+    //   for (let client of dnsClients) {
+    //     try {
+    //       const result = await client.resolve(hostname, options);
+    //       return callback(null, result);
+    //     } catch (e) {
+    //       this.logger.error(e);
+    //     }
+    //   }
+    //   try {
+    //     // 使用自定义DNS解析
+    //     const response = await dnsClients
+    //     const address = response.answers[0].address;
+    //     callback(null, address, 4);
+    //   } catch (err) {
+    //     // 解析失败时回退到系统DNS
+    //     require('dns').lookup(hostname, options, callback);
+    //   }
+    // }
 
     options.agent = new https.Agent({ keepAlive: false });
 

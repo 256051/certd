@@ -100,7 +100,7 @@
               <fs-form-item v-if="item.show !== false" v-model="currentStep.input[key]" :item="item" :get-context-fn="getScopeFunc" />
             </template>
 
-            <fs-form-item v-if="currentPlugin.showRunStrategy" v-model="currentStep.strategy.runStrategy" :item="runStrategyProps" :get-context-fn="getScopeFunc" />
+            <fs-form-item v-if="settingStore.sysPublic.showRunStrategy || currentPlugin.showRunStrategy" v-model="currentStep.strategy.runStrategy" :item="runStrategyProps" :get-context-fn="getScopeFunc" />
           </a-form>
         </div>
         <template #footer>
@@ -142,6 +142,8 @@ const pluginStore = usePluginStore();
 function transformDesc(desc: string = "") {
   return utils.transformLink(desc);
 }
+
+const settingStore = useSettingStore();
 
 /**
  *  step drawer

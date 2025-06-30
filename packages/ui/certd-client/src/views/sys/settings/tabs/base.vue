@@ -37,6 +37,11 @@
         <div class="helper">{{ t("certd.dualStackNetworkHelper") }}</div>
       </a-form-item>
 
+      <a-form-item :label="t('certd.sys.setting.showRunStrategy')" :name="['public', 'showRunStrategy']">
+        <a-switch v-model:checked="formState.public.showRunStrategy" />
+        <div class="helper">{{ t("certd.sys.setting.showRunStrategyHelper") }}</div>
+      </a-form-item>
+
       <a-form-item :label="t('certd.enableCommonCnameService')" :name="['private', 'commonCnameEnabled']">
         <a-switch v-model:checked="formState.private.commonCnameEnabled" />
         <div class="helper" v-html="t('certd.commonCnameHelper')"></div>
