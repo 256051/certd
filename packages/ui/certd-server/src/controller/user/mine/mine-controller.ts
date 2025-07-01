@@ -32,4 +32,15 @@ export class MineController extends BaseController {
     await this.userService.changePassword(userId, body);
     return this.ok({});
   }
+
+  @Post('/updateProfile', { summary: Constants.per.authOnly })
+  public async updateProfile(@Body(ALL) body: any) {
+    const userId = this.getUserId();
+  
+    await this.userService.updateProfile(userId, {
+      avatar: body.avatar,
+      nickName: body.nickName,
+    });
+    return this.ok({});
+  }
 }

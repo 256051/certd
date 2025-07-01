@@ -19,4 +19,5 @@ export default {
   create: "新增",
   yes: "是",
   no: "否",
+  handle: "操作",
 };

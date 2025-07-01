@@ -81,4 +81,5 @@ export default {
   nickName: "Nickname",
   phoneNumber: "Phone Number",
   changePassword: "Change Password",
+  updateProfile: "Update Profile",
 };

@@ -19,4 +19,5 @@ export default {
   create: "Create",
   yes: "Yes",
   no: "No",
+  handle: "Handle",
 };

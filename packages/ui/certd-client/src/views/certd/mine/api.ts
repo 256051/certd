@@ -14,3 +14,11 @@ export async function changePassword(form: any) {
     data: form,
   });
 }
+
+export async function UpdateProfile(form: any) {
+  return await request({
+    url: "/mine/updateProfile",
+    method: "POST",
+    data: form,
+  });
+}

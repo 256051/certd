@@ -23,6 +23,7 @@ export const AdminRoleId = 1
 @Provide()
 @Scope(ScopeEnum.Request, { allowDowngrade: true })
 export class UserService extends BaseService<UserEntity> {
+ 
   @InjectEntityModel(UserEntity)
   repository: Repository<UserEntity>;
   @Inject()
@@ -334,5 +335,15 @@ export class UserService extends BaseService<UserEntity> {
           updateTime: 'DESC',
         },
       })
+  }
+
+  async updateProfile(userId: any, body: any) {
+
+    await this.update({
+      id: userId,
+      ...body,
+    })
+
+
   }
 }

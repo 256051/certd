@@ -82,4 +82,5 @@ export default {
   nickName: "昵称",
   phoneNumber: "手机号",
   changePassword: "修改密码",
+  updateProfile: "修改个人信息",
 };
