@@ -225,7 +225,7 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
         logger.error("send notify error", e);
       }
     };
-    await this.siteIpService.checkAll(site, retryTimes,onFinished);
+    await this.siteIpService.syncAndCheck(site, retryTimes,onFinished);
   }
 
   /**

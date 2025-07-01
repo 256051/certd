@@ -59,33 +59,58 @@ export class SiteIpService extends BaseService<SiteIpEntity> {
 
 
 
-  async sync(entity: SiteInfoEntity) {
+  async sync(entity: SiteInfoEntity,check:boolean = true) {
 
     const domain = entity.domain;
     //从域名解析中获取所有ip
     const ips = await this.getAllIpsFromDomain(domain);
     if (ips.length === 0 ) {
-      throw new Error(`没有发现${domain}的IP`)
+      logger.warn(`没有发现${domain}的IP`)
+      return 
     }
-    //删除所有的ip
-    await this.repository.delete({
-      siteId: entity.id,
-      from: "sync"
-    });
 
-    //添加新的ip
-    for (const ip of ips) {
-      await this.repository.save({
-        ipAddress: ip,
-        userId: entity.userId,
+    const oldIps = await this.repository.find({
+     where:{
+       siteId: entity.id,
+       from:"sync"
+     }
+    })
+
+    let hasChanged = true
+    if (oldIps.length === ips.length ){
+      //检查是否有变化
+        const oldIpList = oldIps.map(ip=>ip.ipAddress).sort().join(",")
+        const newIpList = ips.filter(ip=>!oldIpList.includes(ip)).sort().join(",")
+        if(oldIpList === newIpList){
+          //无变化
+          hasChanged = false
+        }
+    }
+    
+    if(hasChanged){
+      logger.info(`发现${domain}的IP变化，需要更新，旧IP:${oldIps.map(ip=>ip.ipAddress).join(",")}，新IP:${ips.join(",")}`)
+      //有变化需要更新
+      //删除所有的ip
+      await this.repository.delete({
         siteId: entity.id,
-        from: "sync",
-        disabled:false,
+        from: "sync"
       });
-    }
 
-    await this.checkAll(entity);
-    await this.updateIpCount(entity.id)
+      //添加新的ip
+      for (const ip of ips) {
+        await this.repository.save({
+          ipAddress: ip,
+          userId: entity.userId,
+          siteId: entity.id,
+          from: "sync",
+          disabled:false,
+        });
+        await this.updateIpCount(entity.id)
+      }
+    }
+    if (check){
+      await this.checkAll(entity);
+    }
   }
 
   async check(ipId: number, domain: string, port: number,retryTimes = null) {
@@ -277,5 +302,10 @@ export class SiteIpService extends BaseService<SiteIpEntity> {
       // await this.checkAllByUsers(req.userId);
     };
     await batchAdd(list);
+  }
+
+  async syncAndCheck(siteEntity:SiteInfoEntity,retryTimes = null,onFinish?: (e: any) => void){
+    await this.sync(siteEntity,false);
+    await this.checkAll(siteEntity,retryTimes,onFinish);
   }
 }

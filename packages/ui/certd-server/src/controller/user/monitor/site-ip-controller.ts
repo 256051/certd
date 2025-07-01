@@ -96,7 +96,7 @@ export class SiteInfoController extends CrudController<SiteIpService> {
     const userId = this.getUserId();
     await this.siteInfoService.checkUserId(siteId, userId);
     const siteEntity = await this.siteInfoService.info(siteId);
-    await this.service.checkAll(siteEntity);
+    await this.service.syncAndCheck(siteEntity);
     return this.ok();
   }
 
