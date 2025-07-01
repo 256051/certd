@@ -21,14 +21,14 @@ const changePasswordButtonRef = ref();
 onMounted(() => {
   if (userStore.getUserInfo.isWeak === true) {
     Modal.info({
-      title: t("passwordForm.title"),
-      content: t("passwordForm.weakPasswordWarning"),
+      title: t("authentication.title"),
+      content: t("authentication.weakPasswordWarning"),
       onOk: () => {
         changePasswordButtonRef.value.open({
           password: "123456",
         });
       },
-      okText: t("passwordForm.changeNow"),
+      okText: t("authentication.changeNow"),
     });
   }
 });

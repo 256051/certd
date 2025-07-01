@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.36.0](https://github.com/certd/certd/compare/v1.35.5...v1.36.0) (2025-07-01)
+
+### Performance Improvements
+
+* 阿里云waf cname站点选择支持翻页及域名查询 ([4cf9858](https://github.com/certd/certd/commit/4cf98584dacc5999752732f136246647a2f1f07d))
+* 支持选择运行策略设置 ([60f055f](https://github.com/certd/certd/commit/60f055f293ce237c21cd9050333dad9609eceac1))
+
 ## [1.35.5](https://github.com/certd/certd/compare/v1.35.4...v1.35.5) (2025-06-20)
 
 ### Performance Improvements

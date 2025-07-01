@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.36.0](https://github.com/certd/certd/compare/v1.35.5...v1.36.0) (2025-07-01)
+
+### Performance Improvements
+
+* 模版导入流水线 ([dcc8c56](https://github.com/certd/certd/commit/dcc8c569693432579709ce63656665a76bcf9a44))
+
 ## [1.35.5](https://github.com/certd/certd/compare/v1.35.4...v1.35.5) (2025-06-20)
 
 **Note:** Version bump only for package @certd/plugin-cert
