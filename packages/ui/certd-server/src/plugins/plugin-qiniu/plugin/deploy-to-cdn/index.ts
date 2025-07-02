@@ -5,10 +5,10 @@ import { optionsUtils } from '@certd/basic/dist/utils/util.options.js';
 import { CertApplyPluginNames} from '@certd/plugin-cert';
 @IsTaskPlugin({
   name: 'QiniuDeployCertToCDN',
-  title: '七牛云-部署证书至CDN',
+  title: '七牛云-部署证书至CDN/DCDN',
   icon: 'svg:icon-qiniuyun',
   group: pluginGroups.qiniu.key,
-  desc: '自动部署域名证书至七牛云CDN',
+  desc: '自动部署域名证书至七牛云CDN、DCDN',
   default: {
     strategy: {
       runStrategy: RunStrategy.SkipWhenSucceed,
