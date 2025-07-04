@@ -1,11 +1,12 @@
 import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from "@certd/pipeline";
-import { CertApplyPluginNames, CertInfo } from "@certd/plugin-cert";
+import { CertApplyPluginNames, CertInfo, CertReader } from "@certd/plugin-cert";
 import {
   createCertDomainGetterInputDefine,
   createRemoteSelectInputDefine,
   SshAccess,
   SshClient
 } from "@certd/plugin-lib";
+import path from "node:path";
 
 @IsTaskPlugin({
   //命名规范，插件类型+功能（就是目录plugin-demo中的demo），大写字母开头，驼峰命名
@@ -75,6 +76,9 @@ export class FnOSDeployToNAS extends AbstractTaskPlugin {
     //复制证书
     const list = await this.doGetCertList()
 
+    const certReader = new CertReader(this.cert);
+    const expiresAt = certReader.expires;
+    const validFrom = certReader.detail.notBefore.getTime()
     for (const target of this.certList) {
       this.logger.info(`----------- 准备部署：${target}`);
       let found = false
@@ -83,6 +87,7 @@ export class FnOSDeployToNAS extends AbstractTaskPlugin {
           this.logger.info(`----------- 找到证书,开始部署：${item.sum},${item.domain}`)
           const certPath = item.certificate;
           const keyPath = item.privateKey;
+          const certDir = path.dirname(keyPath)
           const cmd = `
 sudo tee ${certPath} > /dev/null <<'EOF'
 ${this.cert.crt}
@@ -90,6 +95,11 @@ EOF
 sudo tee ${keyPath} > /dev/null <<'EOF'
 ${this.cert.key}
 EOF
+
+sudo chmod 0755 "${certDir}/" -R
+
+sudo -u postgres psql -d trim_connect -c "UPDATE cert SET  valid_to=${expiresAt},valid_from=${validFrom} WHERE private_key='${item.privateKey}'"
+
 `
           const res = await client.exec({
           connectConf: access,
@@ -113,9 +123,9 @@ EOF
 
     const restartCmd= `
 echo "正在重启相关服务..."
-systemctl restart webdav.service
-systemctl restart smbftpd.service
-systemctl restart trim_nginx.service
+sudo systemctl restart webdav.service
+sudo systemctl restart smbftpd.service
+sudo systemctl restart trim_nginx.service
 echo "服务重启完成！"
 `
     await client.exec({
