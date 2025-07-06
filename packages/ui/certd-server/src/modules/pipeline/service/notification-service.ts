@@ -1,12 +1,19 @@
 import { Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
-import { BaseService, SysInstallInfo, SysSettingsService, SysSiteInfo, ValidateException } from '@certd/lib-server';
+import {
+  BaseService,
+  NeedVIPException,
+  SysInstallInfo,
+  SysSettingsService,
+  SysSiteInfo,
+  ValidateException
+} from "@certd/lib-server";
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
 import { NotificationEntity } from '../entity/notification.js';
 import { NotificationInstanceConfig, notificationRegistry, NotificationSendReq, sendNotification } from '@certd/pipeline';
 import { http, utils } from '@certd/basic';
 import { EmailService } from '../../basic/service/email-service.js';
-import { isComm } from '@certd/plus-core';
+import { isComm, isPlus } from '@certd/plus-core';
 
 @Provide()
 @Scope(ScopeEnum.Request, { allowDowngrade: true })
@@ -46,6 +53,7 @@ export class NotificationService extends BaseService<NotificationEntity> {
   }
 
   async add(bean: NotificationEntity) {
+    this.checkNeedPlus(bean.type);
     const res = await super.add(bean);
     if(bean.isDefault){
       await this.setDefault(res.id, bean.userId);
@@ -54,12 +62,26 @@ export class NotificationService extends BaseService<NotificationEntity> {
   }
 
   async update(bean: NotificationEntity) {
+
+    const old = await this.info(bean.id);
+    this.checkNeedPlus(old.type);
+
+    delete bean.userId;
+    delete bean.type
     const res = await super.update(bean);
     if(bean.isDefault){
-      const old = await this.info(bean.id);
       await this.setDefault(bean.id, old.userId);
     }
+
     return res
+  }
+
+   checkNeedPlus(type: string){
+    const define = this.getDefineByType(type)
+     //@ts-ignore
+    if (define.needPlus && !isPlus()) {
+      throw new NeedVIPException("此通知类型为专业版功能，请升级到专业版或以上级别");
+    }
   }
 
   async getById(id: number, userId: number): Promise<NotificationInstanceConfig> {

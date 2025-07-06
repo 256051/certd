@@ -4,7 +4,6 @@ import { FormItemProps, HistoryResult, Pipeline } from "../dt/index.js";
 import { HttpClient, ILogger, utils } from "@certd/basic";
 import * as _ from "lodash-es";
 import { IEmailService } from "../service/index.js";
-import { isPlus } from "@certd/plus-core";
 
 export type NotificationBody = {
   userId?: number;
@@ -81,9 +80,6 @@ export abstract class BaseNotification implements INotification {
   logger!: ILogger;
 
   async doSend(body: NotificationBody) {
-    if (this.define.needPlus && !isPlus()) {
-      body.content = `${body.content}\n\n注意：此通知渠道已调整为专业版功能，后续版本将不再支持发送，请尽快修改或升级为专业版`;
-    }
     return await this.send(body);
   }
   abstract send(body: NotificationBody): Promise<void>;
