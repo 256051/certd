@@ -87,10 +87,13 @@ export class PluginGroups {
     for (const step of steps) {
       const stepDefine = this.get(step.type);
       for (const key in stepDefine?.output) {
+        const inputDefine = stepDefine.output[key];
         options.push({
           value: `step.${step.id}.${key}`,
-          label: `${stepDefine.output[key].title}【from：${step.title}】`,
+          label: `${inputDefine.title}【from：${step.title}】`,
           type: step.type,
+          valueType: inputDefine.type,
+          key: key,
         });
       }
     }

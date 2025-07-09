@@ -67,6 +67,7 @@ export abstract class CertApplyBaseConvertPlugin extends AbstractTaskPlugin {
 
   @TaskOutput({
     title: "域名证书",
+    type: "cert",
   })
   cert?: CertInfo;
 

@@ -1,1 +1,1 @@
-export const CertApplyPluginNames = ["CertApply", "CertApplyLego", "CertApplyUpload"];
+export const CertApplyPluginNames = [":cert:"];

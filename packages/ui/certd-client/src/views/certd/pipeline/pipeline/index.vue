@@ -299,7 +299,7 @@ import { useSettingStore } from "/@/store/settings";
 import { useUserStore } from "/@/store/user";
 import TaskShortcuts from "./component/shortcut/task-shortcuts.vue";
 import { eachSteps, findStep } from "../utils";
-import { PluginGroups } from "/@/store/plugin";
+import { PluginGroups, usePluginStore } from "/@/store/plugin";
 import { getCronNextTimes } from "/@/components/cron-editor/utils";
 import { useCertViewer } from "/@/views/certd/pipeline/use";
 
@@ -494,16 +494,15 @@ export default defineComponent({
       }
     );
 
-    const pluginGroupsRef: Ref<PluginGroups> = ref();
-
+    const pluginStore = usePluginStore();
     const fetchPlugins = async () => {
-      pluginGroupsRef.value = await props.options.getPluginGroups();
+      await pluginStore.init();
     };
     fetchPlugins();
 
     provide("pipeline", pipeline);
     provide("getPluginGroups", () => {
-      return pluginGroupsRef.value;
+      return pluginStore.group;
     });
     provide("currentHistory", currentHistory);
 

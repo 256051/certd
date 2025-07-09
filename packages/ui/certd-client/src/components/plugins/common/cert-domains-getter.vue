@@ -54,8 +54,9 @@ function getDomainFromPipeline(inputKey: string) {
     return;
   }
 
-  if (!CertApplyPluginNames.includes(certStep.type)) {
-    targetStepId = getStepIdFromInputKey(certStep.input?.cert);
+  const firstLevelValue = certStep.input.cert;
+  if (firstLevelValue && typeof firstLevelValue === "string" && firstLevelValue.indexOf(".") > 0) {
+    targetStepId = getStepIdFromInputKey(firstLevelValue);
     certStep = findStepFromPipeline(targetStepId);
     if (!certStep) {
       errorRef.value = "找不到目标步骤，请先选择域名证书";

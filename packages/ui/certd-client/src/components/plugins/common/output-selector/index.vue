@@ -4,6 +4,7 @@
 
 <script lang="ts">
 import { inject, onMounted, Ref, ref, watch } from "vue";
+import { usePluginStore } from "/@/store/plugin";
 
 export default {
   name: "OutputSelector",
@@ -27,10 +28,11 @@ export default {
     const currentStepIndex = inject("currentStepIndex") as Ref<number>;
     const currentTask = inject("currentTask") as Ref<any>;
 
-    const getPluginGroups = inject("getPluginGroups") as any;
-    const pluginGroups = getPluginGroups();
-    function onCreate() {
-      options.value = pluginGroups.getPreStepOutputOptions({
+    const pluginStore = usePluginStore();
+
+    async function onCreate() {
+      await pluginStore.init();
+      options.value = pluginStore.group.getPreStepOutputOptions({
         pipeline: pipeline.value,
         currentStageIndex: currentStageIndex.value,
         currentTaskIndex: currentTaskIndex.value,
@@ -38,11 +40,38 @@ export default {
         currentTask: currentTask.value,
       });
       if (props.from) {
+        let froms = [];
         if (typeof props.from === "string") {
-          options.value = options.value.filter((item: any) => item.type === props.from);
+          froms = [props.from];
         } else {
-          options.value = options.value.filter((item: any) => props.from.includes(item.type));
+          froms = props.from;
         }
+        function match(from: string, item: any) {
+          // pluginType:valueType:keyName
+          if (from.includes(":")) {
+            const [pluginType, valueType, keyName] = from.split(":");
+            if (pluginType && item.type !== pluginType) {
+              return false;
+            }
+            if (valueType && item.valueType !== valueType) {
+              return false;
+            }
+            if (keyName && item.key !== keyName) {
+              return false;
+            }
+            return true;
+          } else {
+            return item.type === from;
+          }
+        }
+        options.value = options.value.filter((item: any) => {
+          for (const from of froms) {
+            if (match(from, item)) {
+              return true;
+            }
+          }
+          return false;
+        });
       }
 
       if (props.modelValue != null) {
@@ -55,18 +84,9 @@ export default {
         ctx.emit("update:modelValue", value);
       }
     }
-    onMounted(() => {
-      onCreate();
+    onMounted(async () => {
+      await onCreate();
     });
-
-    watch(
-      () => {
-        return pluginGroups.value?.map;
-      },
-      () => {
-        onCreate();
-      }
-    );
 
     function onChanged(value: any) {
       ctx.emit("update:modelValue", value);

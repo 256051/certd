@@ -41,7 +41,7 @@ export function getDefaultDeployPlugin() {
   let certApplyNames = ''
   for (const name of CertApplyPluginNames) {
     certApplyNames += `
-        - ${name}`
+        - "${name}"`
   }
   const metadata =`
 input:   # 插件的输入参数

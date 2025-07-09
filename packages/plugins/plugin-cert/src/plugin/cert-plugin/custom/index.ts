@@ -87,6 +87,7 @@ export class CertApplyUploadPlugin extends CertApplyBaseConvertPlugin {
 
   @TaskOutput({
     title: "证书MD5",
+    type: "certMd5",
   })
   certMd5?: string;
 

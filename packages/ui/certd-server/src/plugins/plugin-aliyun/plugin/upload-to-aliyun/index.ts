@@ -26,7 +26,7 @@ const regionDict = [
   title: '阿里云-上传证书到阿里云',
   icon: 'svg:icon-aliyun',
   group: pluginGroups.aliyun.key,
-  desc: '如果不想在阿里云上同一份证书上传多次，可以把此任务作为前置任务，其他阿里云任务证书那一项选择此任务的输出',
+  desc: '上传证书到阿里云数字证书管理服务（CAS），注意：不会部署到任何应用上；如果不想在阿里云上同一份证书上传多次，可以把此任务作为前置任务，其他阿里云任务证书那一项选择此任务的输出',
   default: {
     strategy: {
       runStrategy: RunStrategy.SkipWhenSucceed,
