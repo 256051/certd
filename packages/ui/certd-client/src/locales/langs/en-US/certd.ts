@@ -708,4 +708,14 @@ export default {
       showRunStrategyHelper: "Allow modify the run strategy of the task",
     },
   },
+  domain: {
+    domainManager: "Domain Manager",
+    domain: "Domain",
+    challengeType: "Challenge Type",
+    dnsProviderType: "DNS Provider Type",
+    dnsProviderAccess: "DNS Provider Access",
+    httpUploaderType: "HTTP Uploader Type",
+    httpUploaderAccess: "HTTP Uploader Access",
+    httpUploadRootDir: "HTTP Upload Root Dir",
+  },
 };

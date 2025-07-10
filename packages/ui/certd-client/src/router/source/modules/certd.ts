@@ -117,6 +117,17 @@ export const certdResources = [
             },
           },
           {
+            title: "certd.domain.domainManager",
+            name: "DomainManager",
+            path: "/certd/cert/domain",
+            component: "/certd/cert/domain/index.vue",
+            meta: {
+              icon: "material-symbols:approval-delegation-outline",
+              auth: true,
+              keepAlive: true,
+            },
+          },
+          {
             title: "certd.cnameRecord",
             name: "CnameRecord",
             path: "/certd/cname/record",

@@ -711,4 +711,14 @@ export default {
       showRunStrategyHelper: "任务设置中是否允许选择运行策略",
     },
   },
+  domain: {
+    domainManager: "域名管理",
+    domain: "域名",
+    challengeType: "校验类型",
+    dnsProviderType: "DNS提供商类型",
+    dnsProviderAccess: "DNS提供商授权",
+    httpUploaderType: "上传方式",
+    httpUploaderAccess: "上传授权信息",
+    httpUploadRootDir: "网站根路径",
+  },
 };
