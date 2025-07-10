@@ -291,7 +291,8 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
           body: {
             title: `站点证书即将过期，剩余${validDays}天，<${site.name}>`,
             content,
-            url
+            url,
+            errorMessage: "站点证书即将过期"
           }
         },
         site.userId
