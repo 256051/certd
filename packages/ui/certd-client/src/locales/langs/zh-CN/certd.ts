@@ -720,5 +720,6 @@ export default {
     httpUploaderType: "上传方式",
     httpUploaderAccess: "上传授权信息",
     httpUploadRootDir: "网站根路径",
+    disabled: "禁用/启用",
   },
 };

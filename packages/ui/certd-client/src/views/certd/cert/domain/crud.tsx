@@ -82,17 +82,21 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           search: {
             show: true,
           },
+          form: {
+            required: true,
+          },
           editForm: {
             component: {
-              disabled: true,
+              disabled: false,
             },
           },
         },
         challengeType: {
           title: t("certd.domain.challengeType"),
           type: "dict-select",
+          dict: Dicts.challengeTypeDict,
           form: {
-            show: false,
+            required: true,
           },
         },
         /**
@@ -110,6 +114,10 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             component: {
               name: "DnsProviderSelector",
             },
+            show: compute(({ form }) => {
+              return form.challengeType === "dns";
+            }),
+            required: true,
           },
         },
         dnsProviderAccess: {
@@ -118,16 +126,27 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           form: {
             component: {
               name: "AccessSelector",
+              vModel: "modelValue",
               type: compute(({ form }) => {
                 return form.dnsProviderType;
               }),
             },
+            show: compute(({ form }) => {
+              return form.challengeType === "dns";
+            }),
+            required: true,
           },
         },
         httpUploaderType: {
           title: t("certd.domain.httpUploaderType"),
           type: "dict-text",
           dict: Dicts.uploaderTypeDict,
+          form: {
+            show: compute(({ form }) => {
+              return form.challengeType === "http";
+            }),
+            required: true,
+          },
         },
         httpUploaderAccess: {
           title: t("certd.domain.httpUploaderAccess"),
@@ -136,10 +155,41 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             component: {
               name: "AccessSelector",
             },
+            show: compute(({ form }) => {
+              return form.challengeType === "http";
+            }),
+            required: true,
+          },
+        },
+        httpUploadRootDir: {
+          title: t("certd.domain.httpUploadRootDir"),
+          type: "text",
+          form: {
+            show: compute(({ form }) => {
+              return form.challengeType === "http";
+            }),
+            required: true,
+          },
+        },
+        disabled: {
+          title: t("certd.domain.disabled"),
+          type: "dict-switch",
+          dict: dict({
+            data: [
+              { label: "启用", value: false },
+              { label: "禁用", value: true },
+            ],
+          }),
+          form: {
+            value: false,
+            required: true,
+          },
+          column: {
+            width: 80,
           },
         },
         createTime: {
-          title: t("certd.create_time"),
+          title: t("certd.createTime"),
           type: "datetime",
           form: {
             show: false,
@@ -151,7 +201,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           },
         },
         updateTime: {
-          title: t("certd.update_time"),
+          title: t("certd.updateTime"),
           type: "datetime",
           form: {
             show: false,

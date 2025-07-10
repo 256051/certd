@@ -122,7 +122,7 @@ export const certdResources = [
             path: "/certd/cert/domain",
             component: "/certd/cert/domain/index.vue",
             meta: {
-              icon: "material-symbols:approval-delegation-outline",
+              icon: "ion:globe-outline",
               auth: true,
               keepAlive: true,
             },

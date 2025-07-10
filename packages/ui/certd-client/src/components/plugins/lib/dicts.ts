@@ -7,7 +7,13 @@ export const Dicts = {
       { value: "zerossl", label: "ZeroSSL" },
     ],
   }),
-  challengeTypeDict: dict({ data: [{ value: "dns", label: "DNS校验" }] }),
+  challengeTypeDict: dict({
+    data: [
+      { value: "dns", label: "DNS校验" },
+      { value: "cname", label: "CNAME代理校验" },
+      { value: "http", label: "HTTP校验" },
+    ],
+  }),
   dnsProviderTypeDict: dict({
     url: "pi/dnsProvider/dnsProviderTypeDict",
   }),

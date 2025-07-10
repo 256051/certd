@@ -717,5 +717,6 @@ export default {
     httpUploaderType: "HTTP Uploader Type",
     httpUploaderAccess: "HTTP Uploader Access",
     httpUploadRootDir: "HTTP Upload Root Dir",
+    disabled: "Disabled",
   },
 };
