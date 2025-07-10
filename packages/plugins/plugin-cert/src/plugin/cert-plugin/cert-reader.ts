@@ -204,4 +204,11 @@ export class CertReader {
     domain = domain.replaceAll(".", "_").replaceAll("*", "_");
     return `${domain}_${dayjs().format("YYYYMMDDHHmmssSSS")}`;
   }
+
+  static appendTimeSuffix(name?: string) {
+    if (name == null) {
+      name = "certd";
+    }
+    return name + "_" + dayjs().format("YYYYMMDDHHmmssSSS");
+  }
 }
