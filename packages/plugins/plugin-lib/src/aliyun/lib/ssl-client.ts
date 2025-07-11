@@ -33,8 +33,10 @@ export type CasCertInfo = { certId: number; certName: string; certIdentifier: st
 
 export class AliyunSslClient {
   opts: AliyunSslClientOpts;
+  logger: ILogger;
   constructor(opts: AliyunSslClientOpts) {
     this.opts = opts;
+    this.logger = opts.logger;
   }
 
   checkRet(ret: any) {

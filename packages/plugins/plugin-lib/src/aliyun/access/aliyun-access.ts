@@ -1,6 +1,5 @@
-import { IsAccess, AccessInput, BaseAccess } from "@certd/pipeline";
+import { AccessInput, BaseAccess, IsAccess } from "@certd/pipeline";
 import { ILogger } from "@certd/basic";
-
 export type AliyunClientV2Req = {
   action: string;
   version: string;
