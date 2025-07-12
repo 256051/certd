@@ -5,8 +5,9 @@ import { useRouter } from "vue-router";
 import { AddReq, compute, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
 import { useUserStore } from "/@/store/user";
 import { useSettingStore } from "/@/store/settings";
-import { message } from "ant-design-vue";
 import { Dicts } from "/@/components/plugins/lib/dicts";
+import { createAccessApi } from "/@/views/certd/access/api";
+
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const router = useRouter();
   const { t } = useI18n();
@@ -32,6 +33,21 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
   const selectedRowKeys: Ref<any[]> = ref([]);
   context.selectedRowKeys = selectedRowKeys;
 
+  const accessApi = createAccessApi();
+  const accessDict = dict({
+    value: "id",
+    label: "name",
+    url: "accessDict",
+    async getNodesByValues(ids: number[]) {
+      return await accessApi.GetDictByIds(ids);
+    },
+  });
+
+  const httpUploaderTypeDict = Dicts.uploaderTypeDict;
+
+  const dnsProviderTypeDict = dict({
+    url: "pi/dnsProvider/dnsProviderTypeDict",
+  });
   return {
     crudOptions: {
       settings: {
@@ -90,6 +106,9 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
               disabled: false,
             },
           },
+          column: {
+            sorter: true,
+          },
         },
         challengeType: {
           title: t("certd.domain.challengeType"),
@@ -97,6 +116,9 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           dict: Dicts.challengeTypeDict,
           form: {
             required: true,
+          },
+          column: {
+            sorter: true,
           },
         },
         /**
@@ -109,7 +131,8 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
          */
         dnsProviderType: {
           title: t("certd.domain.dnsProviderType"),
-          type: "text",
+          type: "dict-select",
+          dict: dnsProviderTypeDict,
           form: {
             component: {
               name: "DnsProviderSelector",
@@ -119,10 +142,17 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             }),
             required: true,
           },
+          column: {
+            show: false,
+            component: {
+              color: "auto",
+            },
+          },
         },
         dnsProviderAccess: {
           title: t("certd.domain.dnsProviderAccess"),
-          type: "text",
+          type: "dict-select",
+          dict: accessDict,
           form: {
             component: {
               name: "AccessSelector",
@@ -136,16 +166,28 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             }),
             required: true,
           },
+          column: {
+            show: false,
+            component: {
+              color: "auto",
+            },
+          },
         },
         httpUploaderType: {
           title: t("certd.domain.httpUploaderType"),
-          type: "dict-text",
+          type: "dict-select",
           dict: Dicts.uploaderTypeDict,
           form: {
             show: compute(({ form }) => {
               return form.challengeType === "http";
             }),
             required: true,
+          },
+          column: {
+            show: false,
+            component: {
+              color: "auto",
+            },
           },
         },
         httpUploaderAccess: {
@@ -160,6 +202,12 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             }),
             required: true,
           },
+          column: {
+            show: false,
+            component: {
+              color: "auto",
+            },
+          },
         },
         httpUploadRootDir: {
           title: t("certd.domain.httpUploadRootDir"),
@@ -170,14 +218,47 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             }),
             required: true,
           },
+          column: {
+            show: false,
+            component: {
+              color: "auto",
+            },
+          },
+        },
+        challengeSetting: {
+          title: "校验配置",
+          type: "text",
+          form: { show: false },
+          column: {
+            width: 400,
+            conditionalRender: false,
+            cellRender({ row }) {
+              if (row.challengeType === "dns") {
+                return (
+                  <div class={"flex"}>
+                    <fs-values-format modelValue={row.dnsProviderType} dict={dnsProviderTypeDict} color={"auto"}></fs-values-format>
+                    <fs-values-format class={"ml-5"} modelValue={row.dnsProviderAccess} dict={accessDict} color={"auto"}></fs-values-format>
+                  </div>
+                );
+              } else if (row.challengeType === "http") {
+                return (
+                  <div class={"flex"}>
+                    <fs-values-format modelValue={row.httpUploaderType} dict={httpUploaderTypeDict} color={"auto"}></fs-values-format>
+                    <fs-values-format class={"ml-5"} modelValue={row.httpUploaderAccess} dict={accessDict} color={"auto"}></fs-values-format>
+                    <a-tag class={"ml-5"}>{row.httpUploadRootDir}</a-tag>
+                  </div>
+                );
+              }
+            },
+          },
         },
         disabled: {
           title: t("certd.domain.disabled"),
           type: "dict-switch",
           dict: dict({
             data: [
-              { label: "启用", value: false },
-              { label: "禁用", value: true },
+              { label: "启用", value: false, color: "green" },
+              { label: "禁用", value: true, color: "red" },
             ],
           }),
           form: {
@@ -185,7 +266,8 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             required: true,
           },
           column: {
-            width: 80,
+            width: 100,
+            sorter: true,
           },
         },
         createTime: {

@@ -9,9 +9,9 @@ export const Dicts = {
   }),
   challengeTypeDict: dict({
     data: [
-      { value: "dns", label: "DNS校验" },
-      { value: "cname", label: "CNAME代理校验" },
-      { value: "http", label: "HTTP校验" },
+      { value: "dns", label: "DNS校验", color: "green" },
+      { value: "cname", label: "CNAME代理校验", color: "blue" },
+      { value: "http", label: "HTTP校验", color: "yellow" },
     ],
   }),
   dnsProviderTypeDict: dict({

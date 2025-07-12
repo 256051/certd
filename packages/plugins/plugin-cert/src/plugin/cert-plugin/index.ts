@@ -4,7 +4,7 @@ import { utils } from "@certd/basic";
 import type { CertInfo, CnameVerifyPlan, DomainsVerifyPlan, HttpVerifyPlan, PrivateKeyType, SSLProvider } from "./acme.js";
 import { AcmeService } from "./acme.js";
 import * as _ from "lodash-es";
-import { createDnsProvider, DnsProviderContext, IDnsProvider, ISubDomainsGetter } from "../../dns-provider/index.js";
+import { createDnsProvider, DnsProviderContext, DomainVerifier, IDnsProvider, IDomainVerifierGetter, ISubDomainsGetter } from "../../dns-provider/index.js";
 import { CertReader } from "./cert-reader.js";
 import { CertApplyBasePlugin } from "./base.js";
 import { GoogleClient } from "../../libs/google.js";
@@ -66,6 +66,7 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
         { value: "cname", label: "CNAME代理验证" },
         { value: "http", label: "HTTP文件验证" },
         { value: "dnses", label: "多DNS提供商" },
+        { value: "auto", label: "自动选择" },
       ],
     },
     required: true,
@@ -73,6 +74,7 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
 2.  <b>CNAME代理验证</b>：支持任何注册商的域名，第一次需要手动添加CNAME记录（建议将DNS服务器修改为阿里云/腾讯云的，然后使用DNS直接验证）
 3.  <b>HTTP文件验证</b>：不支持泛域名，需要配置网站文件上传
 4.  <b>多DNS提供商</b>：每个域名可以选择独立的DNS提供商
+5.  <b>自动选择</b>：需要在[域名管理](#/certd/cert/domain)中事先配置好校验方式
 `,
   })
   challengeType!: string;
@@ -408,7 +410,11 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
     let dnsProvider: IDnsProvider = null;
     let domainsVerifyPlan: DomainsVerifyPlan = null;
     if (this.challengeType === "cname" || this.challengeType === "http" || this.challengeType === "dnses") {
-      domainsVerifyPlan = await this.createDomainsVerifyPlan();
+      domainsVerifyPlan = await this.createDomainsVerifyPlan(this.domainsVerifyPlan);
+    }
+    if (this.challengeType === "auto") {
+      const planInput = await this.buildVerifyPlanInputByAuto();
+      domainsVerifyPlan = await this.createDomainsVerifyPlan(planInput);
     } else {
       const dnsProviderType = this.dnsProviderType;
       const access = await this.getAccess(this.dnsProviderAccess);
@@ -451,10 +457,10 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
     });
   }
 
-  async createDomainsVerifyPlan(): Promise<DomainsVerifyPlan> {
+  async createDomainsVerifyPlan(verifyPlanSetting: DomainsVerifyPlanInput): Promise<DomainsVerifyPlan> {
     const plan: DomainsVerifyPlan = {};
-    for (const domain in this.domainsVerifyPlan) {
-      const domainVerifyPlan = this.domainsVerifyPlan[domain];
+    for (const domain in verifyPlanSetting) {
+      const domainVerifyPlan = verifyPlanSetting[domain];
       let dnsProvider = null;
       const cnameVerifyPlan: Record<string, CnameVerifyPlan> = {};
       const httpVerifyPlan: Record<string, HttpVerifyPlan> = {};
@@ -510,6 +516,66 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
       };
     }
     return plan;
+  }
+
+  private async buildVerifyPlanInputByAuto() {
+    //从数据库里面自动选择校验方式
+    // domain list
+    const domainList = new Set<string>();
+    //整理域名
+    for (let domain in this.domains) {
+      domain = domain.replaceAll("*.", "");
+      domainList.add(domain);
+    }
+    const domainVerifierGetter: IDomainVerifierGetter = await this.ctx.serviceGetter.get("DomainVerifierGetter");
+
+    const verifiers = await domainVerifierGetter.getVerifiers([...domainList]);
+
+    const verifyPlanInput: DomainsVerifyPlanInput = {};
+
+    for (const verifier of verifiers) {
+      const domain = verifier.domain;
+      const mainDomain = verifier.mainDomain;
+      let plan = verifyPlanInput[mainDomain];
+      if (!plan) {
+        plan = {
+          domain: mainDomain,
+          type: "cname",
+        };
+        verifyPlanInput[mainDomain] = plan;
+      }
+      if (verifier.challengeType === "cname") {
+        verifyPlanInput[domain] = {
+          type: "cname",
+          domain: domain,
+          cnameVerifyPlan: {
+            [domain]: {
+              id: 0,
+              status: "validate",
+            },
+          },
+        };
+      } else if (verifier.challengeType === "http") {
+        //http
+        const http = verifier.http;
+        verifyPlanInput[domain] = {
+          type: "http",
+          domain: domain,
+          httpVerifyPlan: {
+            [domain]: {
+              domain: domain,
+              httpUploaderType: http.httpUploaderType,
+              httpUploaderAccess: http.httpUploaderAccess,
+              httpUploadRootDir: http.httpUploadRootDir,
+            },
+          },
+        };
+      } else {
+        //dns
+      }
+    }
+
+    return verifyPlanInput;
   }
 }
 
