@@ -382,7 +382,7 @@ export default defineComponent({
       }
       currentHistory.value = history;
       await loadCurrentHistoryDetail();
-      pipeline.value = cloneDeep(history.pipeline);
+      pipeline.value = history.pipeline;
     };
 
     async function loadHistoryList(reload = false) {
