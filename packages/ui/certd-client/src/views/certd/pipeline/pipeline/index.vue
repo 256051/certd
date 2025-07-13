@@ -280,7 +280,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, provide, Ref, ref, watch, computed } from "vue";
+import { computed, defineComponent, onMounted, onUnmounted, provide, ref, Ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import PiTaskForm from "./component/task-form/index.vue";
 import PiTriggerForm from "./component/trigger-form/index.vue";
@@ -288,7 +288,7 @@ import PiNotificationForm from "./component/notification-form/index.vue";
 import PiTaskView from "./component/task-view/index.vue";
 import PiStatusShow from "./component/status-show.vue";
 import VDraggable from "vuedraggable";
-import * as _ from "lodash-es";
+import { cloneDeep, merge, remove } from "lodash-es";
 import { message, Modal, notification } from "ant-design-vue";
 import { nanoid } from "nanoid";
 import { PipelineDetail, PipelineOptions, RunHistory } from "./type";
@@ -299,7 +299,7 @@ import { useSettingStore } from "/@/store/settings";
 import { useUserStore } from "/@/store/user";
 import TaskShortcuts from "./component/shortcut/task-shortcuts.vue";
 import { eachSteps, findStep } from "../utils";
-import { PluginGroups, usePluginStore } from "/@/store/plugin";
+import { usePluginStore } from "/@/store/plugin";
 import { getCronNextTimes } from "/@/components/cron-editor/utils";
 import { useCertViewer } from "/@/views/certd/pipeline/use";
 
@@ -371,18 +371,18 @@ export default defineComponent({
     const loadCurrentHistoryDetail = async () => {
       const detail: RunHistory = await props.options?.getHistoryDetail({ historyId: currentHistory.value.id });
       currentHistory.value.logs = detail.logs;
-      _.merge(currentHistory.value.pipeline, detail.pipeline);
+      merge(currentHistory.value.pipeline, detail.pipeline);
     };
     const changeCurrentHistory = async (history?: RunHistory) => {
       if (!history) {
         //取消历史记录查看模式
         currentHistory.value = null;
-        pipeline.value = currentPipeline.value;
+        pipeline.value = cloneDeep(currentPipeline.value);
         return;
       }
       currentHistory.value = history;
-      pipeline.value = history.pipeline;
       await loadCurrentHistoryDetail();
+      pipeline.value = cloneDeep(history.pipeline);
     };
 
     async function loadHistoryList(reload = false) {
@@ -477,7 +477,7 @@ export default defineComponent({
           return;
         }
         const detail: PipelineDetail = await props.options.getPipelineDetail({ pipelineId: value });
-        currentPipeline.value = _.merge(
+        currentPipeline.value = merge(
           {
             title: "新管道流程",
             stages: [],
@@ -486,6 +486,7 @@ export default defineComponent({
           },
           detail.pipeline
         );
+        debugger;
         pipeline.value = currentPipeline.value;
         await loadHistoryList(true);
       },
@@ -540,7 +541,7 @@ export default defineComponent({
       };
 
       const taskCopy = (stage: any, stageIndex: number, task: any) => {
-        task = _.cloneDeep(task);
+        task = cloneDeep(task);
         task.id = nanoid();
         task.title = task.title + "_copy";
         for (const step of task.steps) {
@@ -560,7 +561,7 @@ export default defineComponent({
             if (type === "delete") {
               stage.tasks.splice(taskIndex, 1);
               if (stage.tasks.length === 0) {
-                _.remove(pipeline.value.stages, (item: Runnable) => {
+                remove(pipeline.value.stages, (item: Runnable) => {
                   return item.id === stage.id;
                 });
               }
@@ -706,6 +707,7 @@ export default defineComponent({
           title: "确认",
           content: `确定要手动触发运行吗？`,
           async onOk() {
+            debugger;
             //@ts-ignore
             await changeCurrentHistory(null);
             await props.options.doTrigger({ pipelineId: pipeline.value.id, stepId: stepId });
@@ -785,10 +787,11 @@ export default defineComponent({
               pipeline.value.version = 0;
             }
             pipeline.value.version++;
+            debugger;
             currentPipeline.value = pipeline.value;
 
             //移除空阶段
-            _.remove(pipeline.value.stages, (item: Stage) => {
+            remove(pipeline.value.stages, (item: Stage) => {
               return item.tasks.length === 0;
             });
 
@@ -802,12 +805,12 @@ export default defineComponent({
         }
       };
       const edit = () => {
-        pipeline.value = _.cloneDeep(currentPipeline.value);
+        pipeline.value = cloneDeep(currentPipeline.value);
         currentHistory.value = null;
         toggleEditMode(true);
       };
       const cancel = () => {
-        pipeline.value = currentPipeline.value;
+        pipeline.value = cloneDeep(currentPipeline.value);
         toggleEditMode(false);
       };
 
