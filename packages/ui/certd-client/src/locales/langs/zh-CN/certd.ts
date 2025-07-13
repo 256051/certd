@@ -717,6 +717,7 @@ export default {
   },
   domain: {
     domainManager: "域名管理",
+    domainDescription: "管理域名的校验方式，用于申请证书时自动选择验证方式",
     domain: "域名",
     challengeType: "校验类型",
     dnsProviderType: "DNS提供商类型",
@@ -725,5 +726,7 @@ export default {
     httpUploaderAccess: "上传授权信息",
     httpUploadRootDir: "网站根路径",
     disabled: "禁用/启用",
+    challengeSetting: "校验配置",
+    gotoCnameTip: "CNAME域名配置请前往CNAME记录页面添加",
   },
 };

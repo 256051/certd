@@ -3,7 +3,9 @@
     <template #header>
       <div class="title">
         {{ t("certd.domain.domainManager") }}
-        <span class="sub"> </span>
+        <span class="sub">
+          {{ t("certd.domain.domainDescription") }}
+        </span>
       </div>
     </template>
     <fs-crud ref="crudRef" v-bind="crudBinding">

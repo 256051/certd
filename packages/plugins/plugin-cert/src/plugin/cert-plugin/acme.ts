@@ -269,11 +269,11 @@ export class AcmeService {
           throw new Error("不支持的校验类型", domainVerifyPlan.type);
         }
       } else {
-        this.logger.info("未找到域名校验计划，使用默认的dnsProvider");
+        this.logger.warn(`未找到域名${fullDomain}的校验计划，使用默认的dnsProvider`);
       }
     }
     if (!dnsProvider) {
-      this.logger.error("dnsProvider不存在，无法申请证书");
+      throw new Error(`域名${fullDomain}没有匹配到任何校验方式，证书申请失败`);
     }
 
     const dnsChallenge = getChallenge("dns-01");

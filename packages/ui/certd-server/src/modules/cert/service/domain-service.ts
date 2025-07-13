@@ -7,6 +7,8 @@ import {SubDomainService} from "../../pipeline/service/sub-domain-service.js";
 import {DomainParser} from "@certd/plugin-cert/dist/dns-provider/domain-parser.js";
 import {DomainVerifiers} from "@certd/plugin-cert";
 import { SubDomainsGetter } from '../../pipeline/service/getter/sub-domain-getter.js';
+import { CnameRecordService } from '../../cname/service/cname-record-service.js';
+import { CnameRecordEntity } from "../../cname/entity/cname-record.js";
 
 
 /**
@@ -22,6 +24,9 @@ export class DomainService extends BaseService<DomainEntity> {
   accessService: AccessService;
   @Inject()
   subDomainService: SubDomainService;
+
+  @Inject()
+  cnameRecordService: CnameRecordService;
 
   //@ts-ignore
   getRepository() {
@@ -96,10 +101,12 @@ export class DomainService extends BaseService<DomainEntity> {
     //去重
     allDomains = [...new Set(allDomains)]
 
+    //从 domain 表中获取配置
     const domainRecords = await this.find({
       where: {
         domain: In(allDomains),
-        userId
+        userId,
+        disabled:false,
       }
     })
 
@@ -107,16 +114,28 @@ export class DomainService extends BaseService<DomainEntity> {
       pre[item.domain] = item
       return pre
     }, {})
-    const cnameMap = domainRecords.filter(item=>item.challengeType === 'cname').reduce((pre, item) => {
-      pre[item.domain] = item
-      return pre
-    }, {})
+
     const httpMap = domainRecords.filter(item=>item.challengeType === 'http').reduce((pre, item) => {
       pre[item.domain] = item
       return pre
     }, {})
 
 
+    //从cname record表中获取配置
+    const cnameRecords = await this.cnameRecordService.find({
+      where: {
+        domain: In(allDomains),
+        userId,
+        status: "valid",
+      }
+    })
+
+    const cnameMap = cnameRecords.reduce((pre, item) => {
+      pre[item.domain] = item
+      return pre
+    }, {})
+
+    //构建域名验证计划
     const domainVerifiers:DomainVerifiers = {}
 
     for (const domain of domains) {
@@ -130,19 +149,21 @@ export class DomainService extends BaseService<DomainEntity> {
           type: 'dns',
           dns: {
             dnsProviderType: dnsRecord.dnsProviderType,
-            dnsProviderAccessId: dnsRecord.dnsProviderAccessId
+            dnsProviderAccessId: dnsRecord.dnsProviderAccess
           }
         }
         continue
       }
-      const cnameRecord = cnameMap[mainDomain]
+      const cnameRecord:CnameRecordEntity = cnameMap[mainDomain]
       if (cnameRecord) {
         domainVerifiers[domain] = {
           domain,
           mainDomain,
           type: 'cname',
           cname: {
-            cnameRecord: cnameRecord.cnameRecord
+            domain: cnameRecord.domain,
+            hostRecord: cnameRecord.hostRecord,
+            recordValue: cnameRecord.recordValue
           }
         }
         continue

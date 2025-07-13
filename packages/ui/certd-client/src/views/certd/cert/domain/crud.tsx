@@ -7,6 +7,7 @@ import { useUserStore } from "/@/store/user";
 import { useSettingStore } from "/@/store/settings";
 import { Dicts } from "/@/components/plugins/lib/dicts";
 import { createAccessApi } from "/@/views/certd/access/api";
+import { Modal } from "ant-design-vue";
 
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const router = useRouter();
@@ -73,12 +74,19 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         delRequest,
       },
       tabs: {
-        name: "status",
+        name: "challengeType",
         show: true,
       },
       rowHandle: {
         minWidth: 200,
         fixed: "right",
+      },
+      form: {
+        beforeSubmit({ form }) {
+          if (form.challengeType === "cname") {
+            throw new Error("CNAME方式请前往CNAME记录页面进行管理");
+          }
+        },
       },
       columns: {
         id: {
@@ -114,11 +122,28 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           title: t("certd.domain.challengeType"),
           type: "dict-select",
           dict: Dicts.challengeTypeDict,
+          search: {
+            show: true,
+          },
           form: {
             required: true,
+            valueChange({ value }) {
+              if (value === "cname") {
+                Modal.confirm({
+                  title: t("certd.domain.gotoCnameTip"),
+                  async onOk() {
+                    router.push({
+                      path: "/certd/cname/record",
+                    });
+                    crudExpose.getFormWrapperRef().close();
+                  },
+                });
+              }
+            },
           },
           column: {
             sorter: true,
+            show: false,
           },
         },
         /**
@@ -196,6 +221,10 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           form: {
             component: {
               name: "AccessSelector",
+              vModel: "modelValue",
+              type: compute(({ form }) => {
+                return form.httpUploaderType;
+              }),
             },
             show: compute(({ form }) => {
               return form.challengeType === "http";
@@ -226,16 +255,17 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           },
         },
         challengeSetting: {
-          title: "校验配置",
+          title: t("certd.domain.challengeSetting"),
           type: "text",
           form: { show: false },
           column: {
-            width: 400,
+            width: 600,
             conditionalRender: false,
             cellRender({ row }) {
               if (row.challengeType === "dns") {
                 return (
                   <div class={"flex"}>
+                    <fs-values-format modelValue={row.challengeType} dict={Dicts.challengeTypeDict} color={"auto"}></fs-values-format>
                     <fs-values-format modelValue={row.dnsProviderType} dict={dnsProviderTypeDict} color={"auto"}></fs-values-format>
                     <fs-values-format class={"ml-5"} modelValue={row.dnsProviderAccess} dict={accessDict} color={"auto"}></fs-values-format>
                   </div>
@@ -243,9 +273,10 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
               } else if (row.challengeType === "http") {
                 return (
                   <div class={"flex"}>
+                    <fs-values-format modelValue={row.challengeType} dict={Dicts.challengeTypeDict} color={"auto"}></fs-values-format>
                     <fs-values-format modelValue={row.httpUploaderType} dict={httpUploaderTypeDict} color={"auto"}></fs-values-format>
                     <fs-values-format class={"ml-5"} modelValue={row.httpUploaderAccess} dict={accessDict} color={"auto"}></fs-values-format>
-                    <a-tag class={"ml-5"}>{row.httpUploadRootDir}</a-tag>
+                    <a-tag class={"ml-5 flex items-center"}>路径：{row.httpUploadRootDir}</a-tag>
                   </div>
                 );
               }
@@ -255,10 +286,11 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         disabled: {
           title: t("certd.domain.disabled"),
           type: "dict-switch",
+          search: { show: true },
           dict: dict({
             data: [
-              { label: "启用", value: false, color: "green" },
-              { label: "禁用", value: true, color: "red" },
+              { label: t("common.enabled"), value: false, color: "green" },
+              { label: t("common.disabled"), value: true, color: "red" },
             ],
           }),
           form: {

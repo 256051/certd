@@ -66,15 +66,15 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
         { value: "cname", label: "CNAME代理验证" },
         { value: "http", label: "HTTP文件验证" },
         { value: "dnses", label: "多DNS提供商" },
-        { value: "auto", label: "自动选择" },
+        { value: "auto", label: "自动匹配" },
       ],
     },
     required: true,
     helper: `1. <b>DNS直接验证</b>：域名dns解析是在阿里云/腾讯云/华为云/CF/NameSilo/西数/火山/dns.la/京东云/51dns的，选它
-2.  <b>CNAME代理验证</b>：支持任何注册商的域名，第一次需要手动添加CNAME记录（建议将DNS服务器修改为阿里云/腾讯云的，然后使用DNS直接验证）
+2.  <b>CNAME代理验证</b>：支持任何注册商的域名，第一次需要手动添加[CNAME记录](#/certd/cname/record)（建议将DNS服务器修改为阿里云/腾讯云的，然后使用DNS直接验证）
 3.  <b>HTTP文件验证</b>：不支持泛域名，需要配置网站文件上传
 4.  <b>多DNS提供商</b>：每个域名可以选择独立的DNS提供商
-5.  <b>自动选择</b>：需要在[域名管理](#/certd/cert/domain)中事先配置好校验方式
+5.  <b>自动匹配</b>：需要在[域名管理](#/certd/cert/domain)中事先配置好校验方式
 `,
   })
   challengeType!: string;
@@ -469,13 +469,13 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
     for (const fullDomain of domains) {
       const domain = fullDomain.replaceAll("*.", "");
       const mainDomain = await domainParser.parse(domain);
-      const planSetting = verifyPlanSetting[mainDomain];
+      const planSetting: DomainVerifyPlanInput = verifyPlanSetting[mainDomain];
       if (planSetting.type === "dns") {
-        await this.createDnsDomainVerifyPlan(planSetting[mainDomain], domain, mainDomain);
+        plan[domain] = await this.createDnsDomainVerifyPlan(planSetting, domain, mainDomain);
       } else if (planSetting.type === "cname") {
-        await this.createCnameDomainVerifyPlan(domain, mainDomain);
+        plan[domain] = await this.createCnameDomainVerifyPlan(domain, mainDomain);
       } else if (planSetting.type === "http") {
-        await this.createHttpDomainVerifyPlan(planSetting.httpVerifyPlan[domain], domain, mainDomain);
+        plan[domain] = await this.createHttpDomainVerifyPlan(planSetting.httpVerifyPlan[domain], domain, mainDomain);
       }
     }
     return plan;
@@ -486,7 +486,7 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
     // domain list
     const domainList = new Set<string>();
     //整理域名
-    for (let domain in this.domains) {
+    for (let domain of domains) {
       domain = domain.replaceAll("*.", "");
       domainList.add(domain);
     }
@@ -563,7 +563,7 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
       domain,
       mainDomain,
       cnameVerifyPlan: {
-        domain,
+        domain: cnameRecord.cnameProvider.domain,
         fullRecord: cnameRecord.recordValue,
         dnsProvider,
       },

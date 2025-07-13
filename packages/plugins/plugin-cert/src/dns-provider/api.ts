@@ -62,12 +62,14 @@ export interface IDomainParser {
 
 export type DnsVerifier = {
   // dns直接校验
-  dnsProviderType: string;
-  dnsProviderAccessId: number;
+  dnsProviderType?: string;
+  dnsProviderAccessId?: number;
 };
 
 export type CnameVerifier = {
-  cnameRecord: string;
+  hostRecord: string;
+  domain: string;
+  recordValue: string;
 };
 
 export type HttpVerifier = {
