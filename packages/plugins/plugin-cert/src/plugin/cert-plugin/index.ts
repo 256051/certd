@@ -470,6 +470,9 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
       const domain = fullDomain.replaceAll("*.", "");
       const mainDomain = await domainParser.parse(domain);
       const planSetting: DomainVerifyPlanInput = verifyPlanSetting[mainDomain];
+      if (planSetting == null) {
+        throw new Error(`没有找到域名（${domain}）的校验计划`);
+      }
       if (planSetting.type === "dns") {
         plan[domain] = await this.createDnsDomainVerifyPlan(planSetting, domain, mainDomain);
       } else if (planSetting.type === "cname") {
@@ -498,6 +501,9 @@ export class CertApplyPlugin extends CertApplyBasePlugin {
 
     for (const domain in verifiers) {
       const verifier = verifiers[domain];
+      if (verifier == null) {
+        throw new Error(`没有找到与该域名（${domain}）匹配的校验方式，请先到‘域名管理’页面添加校验方式`);
+      }
       if (verifier.type === "dns") {
         plan[domain] = await this.createDnsDomainVerifyPlan(verifier.dns, domain, verifier.mainDomain);
       } else if (verifier.type === "cname") {

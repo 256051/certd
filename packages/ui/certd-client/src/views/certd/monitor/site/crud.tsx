@@ -46,6 +46,20 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 
   const { openSiteIpMonitorDialog } = useSiteIpMonitor();
   const { openSiteImportDialog } = useSiteImport();
+
+  function checkAll() {
+    Modal.confirm({
+      title: t("certd.monitor.confirmTitle"), // "确认"
+      content: t("certd.monitor.confirmContent"), // "确认触发检查全部站点证书吗?"
+      onOk: async () => {
+        await siteInfoApi.CheckAll();
+        notification.success({
+          message: t("certd.monitor.checkSubmitted"), // "检查任务已提交"
+          description: t("certd.monitor.pleaseRefresh"), // "请稍后刷新页面查看结果"
+        });
+      },
+    });
+  }
   return {
     id: "siteMonitorCrud",
     crudOptions: {
@@ -112,6 +126,14 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
                   crudExpose.doRefresh();
                 },
               });
+            },
+          },
+          checkAll: {
+            show: true,
+            text: t("certd.monitor.checkAll"),
+            type: "primary",
+            click() {
+              checkAll();
             },
           },
         },
