@@ -7,6 +7,8 @@ import { UserSettingsService } from "../../mine/service/user-settings-service.js
 import { UserEmailSetting } from "../../mine/service/models.js";
 import { PipelineEntity } from "../../pipeline/entity/pipeline.js";
 import { CertInfoService } from "../service/cert-info-service.js";
+import { DomainService } from "../../cert/service/domain-service.js";
+import { DomainVerifierGetter } from "../../pipeline/service/getter/domain-verifier-getter.js";
 
 
 @Provide("CertInfoFacade")
@@ -18,6 +20,9 @@ export class CertInfoFacade  {
 
   @Inject()
   certInfoService: CertInfoService ;
+
+  @Inject()
+  domainService: DomainService
 
   @Inject()
   userSettingsService : UserSettingsService
@@ -62,6 +67,26 @@ export class CertInfoFacade  {
   }
 
   async createAutoPipeline(req:{domains:string[],userId:number}){
+
+    const verifierGetter = new DomainVerifierGetter(req.userId, this.domainService)
+
+    const allDomains = []
+    for (const item of req.domains) {
+      allDomains.push(item.replaceAll("*.",""))
+    }
+    const verifiers = await verifierGetter.getVerifiers(allDomains)
+    for (const item of allDomains) {
+      if (!verifiers[item]){
+        throw new CodeException({
+          ...Constants.res.openDomainNoVerifier,
+          message:`域名${item}没有配置校验方式，请先在域名管理页面配置`,
+          data:{
+            domain:item
+          }
+        });
+      }
+    }
+
     const userEmailSetting = await this.userSettingsService.getSetting<UserEmailSetting>(req.userId,UserEmailSetting)
     if(!userEmailSetting.list){
       throw new CodeException(Constants.res.openEmailNotFound)
