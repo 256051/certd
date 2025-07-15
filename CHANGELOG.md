@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.36.7](https://github.com/certd/certd/compare/v1.36.6...v1.36.7) (2025-07-15)
+
+### Bug Fixes
+
+* 修复流水线列表页报length错误的bug ([9864792](https://github.com/certd/certd/commit/9864792bbfd149e770d6e1ffa809573694f99dd3))
+* 修复流水线页面状态没有刷新的bug ([93e9498](https://github.com/certd/certd/commit/93e9498b410353f504e11e264db62468895d7290))
+* 修复自定义证书检查时间重启之后不生效的bug ([38e867c](https://github.com/certd/certd/commit/38e867c917bbc68bd228bdd8064f3e7358d6413d))
+
+### Performance Improvements
+
+* 支持上传证书到各种对象存储，oss、cos、七牛、s3、minio等 ([1da8617](https://github.com/certd/certd/commit/1da8617a53a675776635bbc3bcb3c6d7dff83e27))
+* 支持邮箱发送证书 ([95332d5](https://github.com/certd/certd/commit/95332d5db96cd54ddab6ab737332417a09169b39))
+
 ## [1.36.6](https://github.com/certd/certd/compare/v1.36.5...v1.36.6) (2025-07-14)
 
 ### Bug Fixes

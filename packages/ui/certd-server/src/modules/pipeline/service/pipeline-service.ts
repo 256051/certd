@@ -128,13 +128,15 @@ export class PipelineService extends BaseService<PipelineEntity> {
       }
       const pipeline = JSON.parse(item.content);
       let stepCount = 0;
-      RunnableCollection.each(pipeline.stages, (runnable: any) => {
-        stepCount++;
-      });
+      if(pipeline.stages){
+        RunnableCollection.each(pipeline.stages, (runnable: any) => {
+          stepCount++;
+        });
+      }
       // @ts-ignore
       item.stepCount = stepCount;
       // @ts-ignore
-      item.triggerCount = pipeline.triggers.length;
+      item.triggerCount = pipeline.triggers?.length;
       delete item.content;
     }
 
