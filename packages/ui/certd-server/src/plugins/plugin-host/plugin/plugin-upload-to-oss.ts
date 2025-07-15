@@ -104,7 +104,7 @@ export class UploadCertToOssPlugin extends AbstractTaskPlugin {
   crtPath!: string;
   @TaskInput({
     title: '私钥保存路径',
-    helper: '原本的私钥保存路径，需要有写入权限，路径要包含私钥文件名，例如：/tmp/cert.key',
+    helper: '路径要包含私钥文件名，例如：/tmp/cert.key',
     component: {
       placeholder: '/root/deploy/nginx/cert.key',
     },
