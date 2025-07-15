@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.36.7](https://github.com/certd/certd/compare/v1.36.6...v1.36.7) (2025-07-15)
+
+### Bug Fixes
+
+* 修复流水线页面状态没有刷新的bug ([93e9498](https://github.com/certd/certd/commit/93e9498b410353f504e11e264db62468895d7290))
+
 ## [1.36.6](https://github.com/certd/certd/compare/v1.36.5...v1.36.6) (2025-07-14)
 
 ### Bug Fixes

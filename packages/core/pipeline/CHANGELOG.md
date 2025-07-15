@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.36.7](https://github.com/certd/certd/compare/v1.36.6...v1.36.7) (2025-07-15)
+
+### Performance Improvements
+
+* 支持邮箱发送证书 ([95332d5](https://github.com/certd/certd/commit/95332d5db96cd54ddab6ab737332417a09169b39))
+
 ## [1.36.6](https://github.com/certd/certd/compare/v1.36.5...v1.36.6) (2025-07-14)
 
 **Note:** Version bump only for package @certd/pipeline
