@@ -95,14 +95,14 @@ export class DeployCertToAliyunOSS extends AbstractTaskPlugin {
     component: {
       name: 'a-select',
       options: [
-        { value: 'cas.aliyuncs.com', label: '中国大陆' },
-        { value: 'cas.ap-southeast-1.aliyuncs.com', label: '新加坡' },
-        { value: 'cas.eu-central-1.aliyuncs.com', label: '德国（法兰克福）' },
+        { value: 'cn-hangzhou', label: '中国大陆' },
+        { value: 'southeast-1', label: '新加坡' },
+        { value: 'eu-central-1', label: '德国（法兰克福）' },
       ],
     },
     required: true,
   })
-  casEndpoint!: string;
+  casRegion!: string;
 
   @TaskInput({
     title: 'Access授权',
@@ -131,10 +131,14 @@ export class DeployCertToAliyunOSS extends AbstractTaskPlugin {
     let certId: any = this.cert;
     let certName: any = this.appendTimeSuffix("certd");
     if (typeof this.cert === "object") {
+      let endpoint = `cas.${this.casRegion}.aliyuncs.com`;
+      if (this.casRegion === "cn-hangzhou"){
+        endpoint = "cas.aliyuncs.com";
+      }
       const sslClient = new AliyunSslClient({
         access,
         logger: this.logger,
-        endpoint: this.casEndpoint
+        endpoint: endpoint
       });
 
       certName = this.buildCertName(CertReader.getMainDomain(this.cert.crt));
@@ -179,7 +183,7 @@ export class DeployCertToAliyunOSS extends AbstractTaskPlugin {
       <Certificate>${this.cert.crt}</Certificate>
 `
     }else{
-      certStr = `<CertId>${this.cert}</CertId>`
+      certStr = `<CertId>${this.cert}-${this.casRegion}</CertId>`
     }
 
     const xml = `
