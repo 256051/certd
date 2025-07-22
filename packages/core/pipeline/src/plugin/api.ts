@@ -165,7 +165,7 @@ export abstract class AbstractTaskPlugin implements ITaskPlugin {
       this.registerSecret(cert.one);
     }
 
-    if (this.ctx.define.onlyAdmin) {
+    if (this.ctx?.define?.onlyAdmin) {
       if (!this.isAdmin()) {
         throw new Error("只有管理员才能运行此任务");
       }
