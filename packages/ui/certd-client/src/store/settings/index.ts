@@ -46,6 +46,10 @@ export interface SettingState {
       price3: number;
       tooltip?: string;
     };
+    app?: {
+      minVersion?: string;
+      minVersionTip?: string;
+    };
   };
 }
 
@@ -106,6 +110,10 @@ export const useSettingStore = defineStore({
         name: "商业版",
         price: 399,
         price3: 899,
+      },
+      app: {
+        minVersion: "",
+        minVersionTip: "",
       },
     },
   }),

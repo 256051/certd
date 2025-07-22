@@ -156,32 +156,48 @@ import * as api from "./api";
 import { useI18n } from "/src/locales";
 const { t } = useI18n();
 import { usePluginStore } from "/@/store/plugin";
+import { notification } from "ant-design-vue";
 defineOptions({
   name: "DashboardUser",
 });
 
 const version = ref(import.meta.env.VITE_APP_VERSION);
 const latestVersion = ref("");
-const hasNewVersion = computed(() => {
-  if (!latestVersion.value) {
+
+function isNewVersion(version: string, latestVersion: string) {
+  if (!latestVersion) {
     return false;
   }
-  if (latestVersion.value === version.value) {
+  if (latestVersion === version) {
     return false;
   }
   //分段比较
-  const current = version.value.split(".");
-  const latest = latestVersion.value.split(".");
+  const current = version.split(".");
+  const latest = latestVersion.split(".");
   for (let i = 0; i < current.length; i++) {
-    if (parseInt(latest[i]) < parseInt(current[i])) {
-      return false;
+    if (parseInt(latest[i]) > parseInt(current[i])) {
+      return true;
     }
   }
-  return true;
+  return false;
+}
+
+const hasNewVersion = computed(() => {
+  return isNewVersion(version.value, latestVersion.value);
 });
 async function loadLatestVersion() {
   latestVersion.value = await api.GetLatestVersion();
   console.log("latestVersion", latestVersion.value);
+
+  const minVersion = settingsStore.productInfo?.app?.minVersion;
+  if (minVersion) {
+    //
+    if (isNewVersion(version.value, minVersion)) {
+      notification.error({
+        message: settingsStore.productInfo?.app?.minVersionTip ?? "版本过低，为了您的数据安全，请尽快升级",
+      });
+    }
+  }
 }
 const settingStore = useSettingStore();
 const siteInfo: Ref<SiteInfo> = computed(() => {
