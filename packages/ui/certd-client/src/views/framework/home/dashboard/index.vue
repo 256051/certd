@@ -29,6 +29,10 @@
                   </a-tag>
                 </a-badge>
                 <a-divider type="vertical" />
+                <a-tag color="blue" class="flex-inline pointer mr-0" @click="openChangeLogUrl()">
+                  {{ t("certd.dashboard.changeLog") }}
+                </a-tag>
+                <a-divider type="vertical" />
                 <vip-button mode="nav" style="font-size: 12px"></vip-button>
               </template>
               <template v-if="settingsStore.isComm">
@@ -254,6 +258,9 @@ onMounted(async () => {
 
 function openUpgradeUrl() {
   window.open("https://certd.docmirror.cn/guide/install/upgrade.html");
+}
+function openChangeLogUrl() {
+  window.open("https://certd.docmirror.cn/guide/changelogs/CHANGELOG.html");
 }
 </script>
 

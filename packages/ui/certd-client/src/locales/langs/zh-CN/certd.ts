@@ -84,6 +84,7 @@ export default {
     runCount: "运行次数",
     expiringCerts: "最快到期证书",
     supportedTasks: "已支持的部署任务总览",
+    changeLog: "更新日志",
   },
   steps: {
     createPipeline: "创建证书流水线",

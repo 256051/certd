@@ -78,6 +78,7 @@ export default {
     runCount: "Run Count",
     expiringCerts: "Soon-to-Expire Certificates",
     supportedTasks: "Overview of Supported Deployment Tasks",
+    changeLog: "Change Log",
   },
   steps: {
     createPipeline: "Create Certificate Pipeline",
