@@ -59,6 +59,7 @@ export type PluginDefine = Registrable & {
       form: any;
     };
   };
+  onlyAdmin?: boolean;
   needPlus?: boolean;
   showRunStrategy?: boolean;
   pluginType?: string; //类型
@@ -85,6 +86,7 @@ export type TaskInstanceContext = {
   runtime: RunHistory;
   //步骤定义
   step: Step;
+  define: PluginDefine;
   //日志
   logger: ILogger;
   //当前步骤输入参数跟上一次执行比较是否有变化
@@ -161,6 +163,12 @@ export abstract class AbstractTaskPlugin implements ITaskPlugin {
       this.registerSecret(cert.crt);
       this.registerSecret(cert.key);
       this.registerSecret(cert.one);
+    }
+
+    if (this.ctx.define.onlyAdmin) {
+      if (!this.isAdmin()) {
+        throw new Error("只有管理员才能运行此任务");
+      }
     }
   }
 
