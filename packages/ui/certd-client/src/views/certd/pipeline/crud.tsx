@@ -14,6 +14,7 @@ import { useCertUpload } from "/@/views/certd/pipeline/cert-upload/use";
 import GroupSelector from "/@/views/certd/pipeline/group/group-selector.vue";
 import { useCertViewer } from "/@/views/certd/pipeline/use";
 import { useI18n } from "/src/locales";
+import { GetDetail, GetObj } from "./api";
 
 export default function ({ crudExpose, context: { groupDictRef, selectedRowKeys } }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const router = useRouter();
@@ -200,7 +201,9 @@ export default function ({ crudExpose, context: { groupDictRef, selectedRowKeys 
               const { ui } = useUi();
               // @ts-ignore
               let row = context[ui.tableColumn.row];
-              row = cloneDeep(row);
+              const info = await GetDetail(row.id);
+              row = info.pipeline;
+              row.content = JSON.parse(row.content);
               row.title = row.title + "_copy";
               await crudExpose.openCopy({
                 row: row,
