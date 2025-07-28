@@ -17,7 +17,7 @@ export function createCertDomainGetterInputDefine(opts?: { certInputKey?: string
           }
         }
         `,
-      template:false,
+      template: false,
       required: true,
     },
     opts?.props
@@ -42,6 +42,7 @@ export function createRemoteSelectInputDefine(opts?: {
   search?: boolean;
   pager?: boolean;
   component?: any;
+  value?: any;
 }) {
   const title = opts?.title || "请选择";
   const certDomainsInputKey = opts?.certDomainsInputKey || "certDomains";
@@ -74,6 +75,7 @@ export function createRemoteSelectInputDefine(opts?: {
       watches: [certDomainsInputKey, accessIdInputKey, ...watches],
       ...opts.component,
     },
+    value: opts.value,
     rules: opts?.rules,
     required: opts.required ?? true,
     mergeScript:
