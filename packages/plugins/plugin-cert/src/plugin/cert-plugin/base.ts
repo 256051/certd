@@ -130,15 +130,6 @@ export abstract class CertApplyBasePlugin extends CertApplyBaseConvertPlugin {
     return null;
   }
 
-  async readLastCert(): Promise<CertReader | undefined> {
-    const cert = this.lastStatus?.status?.output?.cert;
-    if (cert == null) {
-      this.logger.info("没有找到上次的证书");
-      return undefined;
-    }
-    return new CertReader(cert);
-  }
-
   /**
    * 检查是否过期，默认提前35天
    * @param expires

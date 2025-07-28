@@ -100,8 +100,17 @@ export class CertApplyUploadPlugin extends CertApplyBaseConvertPlugin {
   async onInit(): Promise<void> {}
 
   async getCertFromStore() {
-    const certReader = new CertReader(this.uploadCert);
-    if (!certReader.expires && certReader.expires < new Date().getTime()) {
+    let certReader = null;
+    try {
+      this.logger.info("读取上次证书");
+      certReader = await this.readLastCert();
+    } catch (e) {
+      this.logger.warn("读取cert失败：", e);
+    }
+    if (certReader == null) {
+      certReader = new CertReader(this.uploadCert);
+    }
+    if (!certReader.expires || certReader.expires < new Date().getTime()) {
       throw new Error("证书已过期，停止部署，请重新上传证书");
     }
 
