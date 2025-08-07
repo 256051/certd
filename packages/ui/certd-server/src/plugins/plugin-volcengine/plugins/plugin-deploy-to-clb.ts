@@ -122,7 +122,7 @@ export class VolcengineDeployToCLB extends AbstractTaskPlugin {
   @TaskInput(
     createRemoteSelectInputDefine({
       title: "监听器列表",
-      helper: "选择要部署证书的监听器\n需要在监听器中选择证书中心，进行跨服务访问授权",
+      helper: "选择要部署证书的监听器\n<span class='color-blue'>需要在监听器中选择证书中心，进行跨服务访问授权</span>",
       action: VolcengineDeployToCLB.prototype.onGetListenerList.name,
       watches: ["certDomains", "accessId", "regionId"],
       required: true
