@@ -45,8 +45,8 @@ export class SshAccess extends BaseAccess {
     title: "私钥登录",
     helper: "私钥或密码必填一项",
     component: {
-      name: "a-textarea",
-      vModel: "value",
+      name: "pem-input",
+      vModel: "modelValue",
     },
     encrypt: true,
   })
