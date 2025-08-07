@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.36.15](https://github.com/certd/certd/compare/v1.36.14...v1.36.15) (2025-08-07)
+
+### Performance Improvements
+
+* 部署到阿里云支持选择bucket和域名 ([013b9c4](https://github.com/certd/certd/commit/013b9c4c7c2adf485d086123ccea448719577fd4))
+* 支持webhook部署证书 ([cbe0b1c](https://github.com/certd/certd/commit/cbe0b1c5a6538f232e9a63f1693d20d5acf0a306))
+* 注册时支持填写用户名 ([fdcfcc7](https://github.com/certd/certd/commit/fdcfcc77a0db87954e0b026635d3ccdd9bc6cee8))
+
 ## [1.36.14](https://github.com/certd/certd/compare/v1.36.13...v1.36.14) (2025-07-28)
 
 ### Bug Fixes
