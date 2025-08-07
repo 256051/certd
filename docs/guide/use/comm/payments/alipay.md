@@ -4,7 +4,7 @@
 
 
 1. 注册支付宝商家账号
-   * 开通电脑网站支付产品： https://b.alipay.com/page/product-workspace/all-product
+   * 开通电脑网站支付产品(需营业执照)： https://b.alipay.com/page/product-workspace/all-product
    
 
 2. 开放平台，创建应用，获取APPID
