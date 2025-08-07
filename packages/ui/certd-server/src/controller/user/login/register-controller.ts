@@ -40,6 +40,10 @@ export class RegisterController extends BaseController {
       throw new Error('当前站点已禁止自助注册功能');
     }
 
+    if (!body.username && body.username in ["admin","certd"]) {
+      throw new Error('用户名不能为保留字');
+    }
+
     if (body.type === 'username') {
       if (sysPublicSettings.usernameRegisterEnabled === false) {
         throw new Error('当前站点已禁止用户名注册功能');
@@ -47,9 +51,7 @@ export class RegisterController extends BaseController {
       if (!body.username) {
         throw new Error('用户名不能为空');
       }
-      if (body.username in ["admin","certd"]) {
-        throw new Error('用户名不能为保留字');
-      }
+
       await this.codeService.checkCaptcha(body.randomStr, body.imgCode);
       const newUser = await this.userService.register(body.type, {
         username: body.username,
@@ -70,6 +72,7 @@ export class RegisterController extends BaseController {
         throwError: true,
       });
       const newUser = await this.userService.register(body.type, {
+        username: body.username,
         phoneCode: body.phoneCode,
         mobile: body.mobile,
         password: body.password,

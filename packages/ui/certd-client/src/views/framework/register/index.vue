@@ -32,6 +32,13 @@
         </a-tab-pane>
         <a-tab-pane key="email" tab="邮箱注册" :disabled="!settingsStore.sysPublic.emailRegisterEnabled">
           <template v-if="registerType === 'email'">
+            <a-form-item required has-feedback name="username" label="用户名">
+              <a-input v-model:value="formState.username" placeholder="用户名" size="large" autocomplete="off">
+                <template #prefix>
+                  <fs-icon icon="ion:person-outline"></fs-icon>
+                </template>
+              </a-input>
+            </a-form-item>
             <a-form-item required has-feedback name="email" label="邮箱">
               <a-input v-model:value="formState.email" placeholder="邮箱" size="large" autocomplete="off">
                 <template #prefix>
