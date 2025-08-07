@@ -1,7 +1,14 @@
-import { AbstractTaskPlugin, IsTaskPlugin, pluginGroups, RunStrategy, TaskInput } from '@certd/pipeline';
-import {AliyunAccess, AliyunSslClient} from '@certd/plugin-lib';
+import {AbstractTaskPlugin, IsTaskPlugin, Pager, pluginGroups, RunStrategy, TaskInput} from '@certd/pipeline';
+import {
+  AliyunAccess,
+  AliyunSslClient,
+  createCertDomainGetterInputDefine,
+  createRemoteSelectInputDefine
+} from '@certd/plugin-lib';
 import {CertInfo, CertReader} from '@certd/plugin-cert';
 import { CertApplyPluginNames} from '@certd/plugin-cert';
+import {optionsUtils} from "@certd/basic/dist/utils/util.options.js";
+import {isArray} from "lodash-es";
 @IsTaskPlugin({
   name: 'DeployCertToAliyunOSS',
   title: '阿里云-部署证书至OSS',
@@ -15,6 +22,22 @@ import { CertApplyPluginNames} from '@certd/plugin-cert';
   },
 })
 export class DeployCertToAliyunOSS extends AbstractTaskPlugin {
+
+  @TaskInput({
+    title: '域名证书',
+    helper: '请选择前置任务输出的域名证书',
+    component: {
+      name: 'output-selector',
+      from: [...CertApplyPluginNames,"uploadCertToAliyun"],
+    },
+    required: true,
+  })
+  cert!: CertInfo | string;
+
+  @TaskInput(createCertDomainGetterInputDefine({ props: { required: false } }))
+  certDomains!: string[];
+
+
   @TaskInput({
     title: '大区',
     component: {
@@ -72,12 +95,14 @@ export class DeployCertToAliyunOSS extends AbstractTaskPlugin {
   })
   bucket!: string;
 
-  @TaskInput({
+  @TaskInput(createRemoteSelectInputDefine({
     title: '绑定的域名',
     helper: '你在阿里云OSS上绑定的域名，比如:certd.docmirror.cn',
     required: true,
-  })
-  domainName!: string;
+    action: DeployCertToAliyunOSS.prototype.onGetDomainList.name,
+    watches: ['certDomains', 'accessId','bucket'],
+  }))
+  domainName!: string | string[];
 
 
   @TaskInput({
@@ -86,16 +111,7 @@ export class DeployCertToAliyunOSS extends AbstractTaskPlugin {
   })
   certName!: string;
 
-  @TaskInput({
-    title: '域名证书',
-    helper: '请选择前置任务输出的域名证书',
-    component: {
-      name: 'output-selector',
-      from: [...CertApplyPluginNames,"uploadCertToAliyun"],
-    },
-    required: true,
-  })
-  cert!: CertInfo | string;
+
 
   @TaskInput({
     title: '证书服务接入点',
@@ -134,8 +150,50 @@ export class DeployCertToAliyunOSS extends AbstractTaskPlugin {
     await this.getAliyunCertId(access)
     this.logger.info(`bucket: ${this.bucket}, region: ${this.region}, domainName: ${this.domainName}`);
     const client = await this.getClient(access);
-    await this.doRequest(client, {});
+    if (typeof this.domainName === "string"){
+      this.domainName = [this.domainName];
+    }
+    for (const domainName of this.domainName) {
+      this.logger.info("开始部署证书到阿里云oss自定义域名:", domainName)
+      await this.updateCert(domainName,client, {});
+    }
+
     this.logger.info('部署完成');
+  }
+
+
+  async updateCert(domainName:string,client: any, params: any) {
+    params = client._bucketRequestParams('POST', this.bucket, {
+      cname: '',
+      comp: 'add',
+    });
+
+    let certStr =  ""
+    if (typeof this.cert === "object" ){
+      certStr = `
+      <PrivateKey>${this.cert.key}</PrivateKey>
+      <Certificate>${this.cert.crt}</Certificate>
+`
+    }else{
+      certStr = `<CertId>${this.cert}-${this.casRegion}</CertId>`
+    }
+
+    const xml = `
+ <BucketCnameConfiguration>
+  <Cname>
+    <Domain>${domainName}</Domain>
+    <CertificateConfiguration>
+      ${certStr}
+      <Force>true</Force>
+    </CertificateConfiguration>
+  </Cname>
+</BucketCnameConfiguration>`;
+    params.content = xml;
+    params.mime = 'xml';
+    params.successStatuses = [200];
+    const res = await client.request(params);
+    this.checkRet(res);
+    return res;
   }
 
   async getAliyunCertId(access: AliyunAccess) {
@@ -181,8 +239,7 @@ export class DeployCertToAliyunOSS extends AbstractTaskPlugin {
     });
   }
 
-  async onGetBucketList(data: any) {
-    console.log('data', data)
+  async onGetBucketList(data: Pager) {
 
     const access = (await this.getAccess(this.accessId)) as AliyunAccess;
     const client = await this.getClient(access);
@@ -199,43 +256,49 @@ export class DeployCertToAliyunOSS extends AbstractTaskPlugin {
       .map(bucket => ({label: `${bucket.name}<${bucket.region}>`, value: bucket.name}));
   }
 
-  async doRequest(client: any, params: any) {
-    params = client._bucketRequestParams('POST', this.bucket, {
-      cname: '',
-      comp: 'add',
-    });
+  async onGetDomainList(data: any) {
 
-    let certStr =  ""
-    if (typeof this.cert === "object" ){
-      certStr = `
-      <PrivateKey>${this.cert.key}</PrivateKey>
-      <Certificate>${this.cert.crt}</Certificate>
-`
-    }else{
-      certStr = `<CertId>${this.cert}-${this.casRegion}</CertId>`
+    const access = (await this.getAccess(this.accessId)) as AliyunAccess;
+    const client = await this.getClient(access);
+
+    const res  = await this.doListCnameRequest(client,this.bucket)
+    let domains = res.data?.Cname
+    if (domains == null || domains.length === 0){
+      return []
+    }
+    if (!isArray(domains)){
+      domains = [domains]
     }
 
-    const xml = `
- <BucketCnameConfiguration>
-  <Cname>
-    <Domain>${this.domainName}</Domain>
-    <CertificateConfiguration>
-      ${certStr}
-      <Force>true</Force>
-    </CertificateConfiguration>
-  </Cname>
-</BucketCnameConfiguration>`;
-    params.content = xml;
+    const options = domains.map((item: any) => {
+      return {
+        value: item.Domain,
+        label: item.Domain,
+        domain: item.Domain,
+      };
+    });
+    return optionsUtils.buildGroupOptions(options, this.certDomains);
+  }
+
+
+  async doListCnameRequest(client: any,bucket:string) {
+    const params = client._bucketRequestParams('GET', this.bucket, {
+      cname: '',
+      bucket
+    });
     params.mime = 'xml';
     params.successStatuses = [200];
+    params.xmlResponse = true;
     const res = await client.request(params);
     this.checkRet(res);
     return res;
   }
 
+
+
   checkRet(ret: any) {
-    if (ret.Code != null) {
-      throw new Error('执行失败：' + ret.Message);
+    if (ret.Code != null || ret.status!==200) {
+      throw new Error('执行失败：' + ret.Message || ret.data);
     }
   }
 }
