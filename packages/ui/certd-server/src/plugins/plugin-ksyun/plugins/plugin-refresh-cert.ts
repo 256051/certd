@@ -7,7 +7,7 @@ import {
   RunStrategy,
   TaskInput
 } from "@certd/pipeline";
-import {CertApplyPluginNames, CertInfo, CertReader} from "@certd/plugin-cert";
+import {CertApplyPluginNames, CertInfo} from "@certd/plugin-cert";
 import {createCertDomainGetterInputDefine, createRemoteSelectInputDefine} from "@certd/plugin-lib";
 import {KsyunAccess} from "../access.js";
 
