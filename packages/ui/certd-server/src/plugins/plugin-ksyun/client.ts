@@ -36,7 +36,10 @@ export class KsyunClient {
     });
 
     try{
-      return await this.http.request(config)
+      return await this.http.request({
+        ...config,
+        data: opts.data
+      })
     }catch (e) {
       this.logger.error(e.request)
       if (e.response?.data?.Error?.Message){
@@ -349,4 +352,6 @@ export class KsyunClient {
     return `AWS4-HMAC-SHA256 Credential=${this.accessKeyId}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signature}`;
   }
 }
+
+
 
