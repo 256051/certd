@@ -80,6 +80,8 @@ export class TencentDeployCertToCDNv2 extends AbstractTaskPlugin {
       InstanceIdList: this.domains,
     });
 
+    await this.ctx.utils.sleep(3000)
+
     this.logger.info('部署成功', res);
   }
 
