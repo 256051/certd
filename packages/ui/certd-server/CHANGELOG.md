@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.36.17](https://github.com/certd/certd/compare/v1.36.16...v1.36.17) (2025-08-17)
+
+### Bug Fixes
+
+* 修复新部署的无法保存公共eab配置的bug ([d5dee75](https://github.com/certd/certd/commit/d5dee75df3bd635a597436e448b2de1407531f3a))
+
+### Performance Improvements
+
+* 阿里云 FC3.0 不在要求证书加密方式为旧版， 修复支持的协议类型可以正常选择 ([a34db74](https://github.com/certd/certd/commit/a34db7449eff6ad1dda01de673bf85579fa3865a))
+* 部署到腾讯云cdn，每个域名增加3每秒延迟 ([f7d43ad](https://github.com/certd/certd/commit/f7d43ad5af4663d4be369820a80d1fd9817ca4ab))
+
 ## [1.36.16](https://github.com/certd/certd/compare/v1.36.15...v1.36.16) (2025-08-16)
 
 ### Performance Improvements
