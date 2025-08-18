@@ -43,7 +43,7 @@
     "@tailwindcss/typography": "^0.5.16",
     "@tanstack/vue-store": "^0.7.0",
     "@vee-validate/zod": "^4.15.0",
-    "@vue-js-cron/light": "^4.0.5",
+    "@certd/vue-js-cron-light": "^4.0.14",
     "@vue/shared": "^3.5.13",
     "@vueuse/core": "^10.11.0",
     "ant-design-vue": "^4.2.6",

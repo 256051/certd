@@ -49,7 +49,7 @@ importers:
   packages/core/acme-client:
     dependencies:
       '@certd/basic':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../basic
       '@peculiar/x509':
         specifier: ^1.11.0
@@ -210,10 +210,10 @@ importers:
   packages/core/pipeline:
     dependencies:
       '@certd/basic':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../basic
       '@certd/plus-core':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../pro/plus-core
       dayjs:
         specifier: ^1.11.7
@@ -418,7 +418,7 @@ importers:
   packages/libs/lib-k8s:
     dependencies:
       '@certd/basic':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../core/basic
       '@kubernetes/client-node':
         specifier: 0.21.0
@@ -458,16 +458,16 @@ importers:
   packages/libs/lib-server:
     dependencies:
       '@certd/acme-client':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../core/acme-client
       '@certd/basic':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../core/basic
       '@certd/pipeline':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../core/pipeline
       '@certd/plus-core':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../pro/plus-core
       '@midwayjs/cache':
         specifier: ~3.14.0
@@ -610,16 +610,16 @@ importers:
   packages/plugins/plugin-cert:
     dependencies:
       '@certd/acme-client':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../core/acme-client
       '@certd/basic':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../core/basic
       '@certd/pipeline':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../core/pipeline
       '@certd/plugin-lib':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../plugin-lib
       '@google-cloud/publicca':
         specifier: ^1.3.0
@@ -701,10 +701,10 @@ importers:
         specifier: ^3.787.0
         version: 3.810.0(aws-crt@1.26.2)
       '@certd/basic':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../core/basic
       '@certd/pipeline':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../core/pipeline
       '@kubernetes/client-node':
         specifier: 0.21.0
@@ -792,19 +792,19 @@ importers:
   packages/pro/commercial-core:
     dependencies:
       '@certd/basic':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../core/basic
       '@certd/lib-server':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../libs/lib-server
       '@certd/pipeline':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../core/pipeline
       '@certd/plugin-plus':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../plugin-plus
       '@certd/plus-core':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../plus-core
       '@midwayjs/core':
         specifier: ~3.20.3
@@ -889,22 +889,22 @@ importers:
         specifier: ^1.0.2
         version: 1.0.3
       '@certd/basic':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../core/basic
       '@certd/lib-k8s':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../libs/lib-k8s
       '@certd/pipeline':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../core/pipeline
       '@certd/plugin-cert':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../plugins/plugin-cert
       '@certd/plugin-lib':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../plugins/plugin-lib
       '@certd/plus-core':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../plus-core
       ali-oss:
         specifier: ^6.21.0
@@ -1007,7 +1007,7 @@ importers:
   packages/pro/plus-core:
     dependencies:
       '@certd/basic':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../core/basic
       dayjs:
         specifier: ^1.11.7
@@ -1082,6 +1082,9 @@ importers:
       '@aws-sdk/s3-request-presigner':
         specifier: ^3.535.0
         version: 3.810.0
+      '@certd/vue-js-cron-light':
+        specifier: ^4.0.14
+        version: 4.0.14
       '@ctrl/tinycolor':
         specifier: ^4.1.0
         version: 4.1.0
@@ -1121,9 +1124,6 @@ importers:
       '@vee-validate/zod':
         specifier: ^4.15.0
         version: 4.15.0(vue@3.5.14(typescript@5.8.3))(zod@3.24.4)
-      '@vue-js-cron/light':
-        specifier: ^4.0.5
-        version: 4.0.10
       '@vue/shared':
         specifier: ^3.5.13
         version: 3.5.14
@@ -1297,10 +1297,10 @@ importers:
         version: 0.1.3(zod@3.24.4)
     devDependencies:
       '@certd/lib-iframe':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../libs/lib-iframe
       '@certd/pipeline':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../core/pipeline
       '@rollup/plugin-commonjs':
         specifier: ^25.0.7
@@ -1483,46 +1483,46 @@ importers:
         specifier: ^3.705.0
         version: 3.810.0(aws-crt@1.26.2)
       '@certd/acme-client':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../core/acme-client
       '@certd/basic':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../core/basic
       '@certd/commercial-core':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../pro/commercial-core
       '@certd/cv4pve-api-javascript':
         specifier: ^8.4.1
         version: 8.4.1
       '@certd/jdcloud':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../libs/lib-jdcloud
       '@certd/lib-huawei':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../libs/lib-huawei
       '@certd/lib-k8s':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../libs/lib-k8s
       '@certd/lib-server':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../libs/lib-server
       '@certd/midway-flyway-js':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../libs/midway-flyway-js
       '@certd/pipeline':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../core/pipeline
       '@certd/plugin-cert':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../plugins/plugin-cert
       '@certd/plugin-lib':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../plugins/plugin-lib
       '@certd/plugin-plus':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../pro/plugin-plus
       '@certd/plus-core':
-        specifier: ^1.36.15
+        specifier: ^1.36.17
         version: link:../../pro/plus-core
       '@huaweicloud/huaweicloud-sdk-cdn':
         specifier: ^3.1.120
@@ -2768,6 +2768,12 @@ packages:
 
   '@certd/cv4pve-api-javascript@8.4.1':
     resolution: {integrity: sha512-jxlRieJmCA0Z9LnwX6Ra6ZekRGJEu8o8RGYoKU0Jjkhc9jm6ChEbVyfE7Iw49/hlpA+2yaHdAXb46au/afCISg==}
+
+  '@certd/vue-js-cron-core@6.0.3':
+    resolution: {integrity: sha512-kqzoAMhYz9j6FGNWEODRYtt4NpUEUwjpkU89z5WVg2tCtOcI5VhwyUGOd8AxiBCRfd6PtXvzuqw85PaOps9wrQ==}
+
+  '@certd/vue-js-cron-light@4.0.14':
+    resolution: {integrity: sha512-Ebng/VvrN/WpzCMnt0MrsPNgPY3BP6jNYLSUlV5eES6dqWXFpCyIXbNI+qep8fWdn7rNXDW310uUsn3bCPvvEw==}
 
   '@colors/colors@1.5.0':
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
@@ -5161,12 +5167,6 @@ packages:
   '@volcengine/openapi@1.30.1':
     resolution: {integrity: sha512-W8R6+7UIhx06s2kpsJ0KF80IKAiIad71HUKssonMChyI37h5oFnPf6zONcX2ikXc5M8xdOiKFRxoCO8ChEob0g==}
     engines: {node: '>=12'}
-
-  '@vue-js-cron/core@5.4.2':
-    resolution: {integrity: sha512-y5HrgLJ/0JMXUliOdJZQbB+9UHs7+b7/spe8GFt/a1iCM1ILGKxAoTfbeapoSbF9LxDgw9SsXTgdkmMKWum58A==}
-
-  '@vue-js-cron/light@4.0.10':
-    resolution: {integrity: sha512-ri8Or3fOkA5pSAihdTcgqrQKzCIa9QcvfilyAqEfEhkK6bTFxQVqJ9LW6tLiNaepHlU8IE68xBLM/kms67le2g==}
 
   '@vue-macros/common@1.16.1':
     resolution: {integrity: sha512-Pn/AWMTjoMYuquepLZP813BIcq8DTZiNCoaceuNlvaYuOTd8DqBZWc5u0uOMQZMInwME1mdSmmBAcTluiV9Jtg==}
@@ -15453,6 +15453,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@certd/vue-js-cron-core@6.0.3':
+    dependencies:
+      mustache: 4.2.0
+
+  '@certd/vue-js-cron-light@4.0.14':
+    dependencies:
+      '@certd/vue-js-cron-core': 6.0.3
+
   '@colors/colors@1.5.0':
     optional: true
 
@@ -18521,14 +18529,6 @@ snapshots:
     transitivePeerDependencies:
       - buffer
       - supports-color
-
-  '@vue-js-cron/core@5.4.2':
-    dependencies:
-      mustache: 4.2.0
-
-  '@vue-js-cron/light@4.0.10':
-    dependencies:
-      '@vue-js-cron/core': 5.4.2
 
   '@vue-macros/common@1.16.1(vue@3.5.14(typescript@5.8.3))':
     dependencies:
