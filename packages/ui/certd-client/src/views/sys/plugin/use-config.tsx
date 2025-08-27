@@ -5,10 +5,12 @@ import { Modal, notification } from "ant-design-vue";
 import ConfigEditor from "./config-editor.vue";
 import { useModal } from "/@/use/use-modal";
 import { ref } from "vue";
+import { usePluginStore } from "/@/store/plugin";
 export function usePluginConfig() {
   const { openCrudFormDialog } = useFormWrapper();
   const { t } = useI18n();
 
+  const pluginStore = usePluginStore();
   const modal = useModal();
   async function openConfigDialog({ row, crudExpose }) {
     const configEditorRef = ref();
@@ -19,7 +21,7 @@ export function usePluginConfig() {
           form: {
             wrapper: {
               width: "80%",
-              title: "插件元数据配置",
+              title: "插件参数自定义",
               saveRemind: false,
               slots: {
                 "form-body-top": () => {
@@ -44,12 +46,16 @@ export function usePluginConfig() {
                   newForm[key] = value;
                 }
               }
-              return await api.savePluginSetting({
+              const res = await api.savePluginSetting({
                 name: row.name,
                 sysSetting: {
-                  metadata: newForm,
+                  metadata: {
+                    input: newForm,
+                  },
                 },
               });
+              await pluginStore.clear();
+              return res;
             },
           },
         },

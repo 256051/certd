@@ -5,6 +5,7 @@ import { i18n } from "/src/locales/i18n";
 import { cloneDeep } from "lodash-es";
 interface PluginState {
   group?: PluginGroups;
+  originGroup?: PluginGroups;
 }
 
 export type PluginGroup = {
@@ -55,7 +56,7 @@ export class PluginGroups {
       if (this.mergeSetting) {
         for (const plugin of groups[key].plugins) {
           if (plugin.sysSetting) {
-            merge(plugin.input, plugin.sysSetting.metadata);
+            merge(plugin.input, plugin.sysSetting.metadata?.input || {});
           }
         }
       }
@@ -166,6 +167,7 @@ export const usePluginStore = defineStore({
     },
     async clear() {
       this.group = null;
+      this.originGroup = null
     },
     async getList(): Promise<PluginDefine[]> {
       await this.init();

@@ -3,7 +3,7 @@
     <div class="origin-metadata w-100%">
       <div class="block-title">
         自定义插件参数配置
-        <div class="helper">1111</div>
+        <div class="helper">可以设置插件选项的配置，设置配置默认值、修改帮助说明、设置是否显示该字段等</div>
       </div>
       <div class="p-10">
         <div ref="formRef" class="config-form w-full" :label-col="labelCol" :wrapper-col="wrapperCol">
@@ -16,18 +16,18 @@
               </tr>
             </thead>
             <tbody>
-              <template v-for="(item, key) in originInputs" :key="key">
+              <template v-for="item in originInputs" :key="item.key">
                 <template v-for="prop in editableKeys" :key="prop.key">
                   <tr>
                     <td v-if="prop.key === 'value'" class="border-t-2 p-5" rowspan="3" :class="{ 'border-t-2': prop.key === 'value' }">{{ item.title }}</td>
                     <td class="border-t p-5" :class="{ 'border-t-2': prop.key === 'value' }">{{ prop.label }}</td>
                     <td class="border-t p-5" :class="{ 'border-t-2': prop.key === 'value' }">
-                      <rollbackable :value="configForm[key][prop.key]" @set="configForm[key][prop.key] = item[prop.key] ?? null" @clear="delete configForm[key][prop.key]">
+                      <rollbackable :value="configForm[item.key][prop.key]" @set="prop.onSet(item)" @clear="delete configForm[item.key][prop.key]">
                         <template #default>
-                          <fs-render :render-func="prop.defaultRender(key, item)"></fs-render>
+                          <fs-render :render-func="prop.defaultRender(item)"></fs-render>
                         </template>
                         <template #edit>
-                          <fs-render :render-func="prop.editRender(key, item)"></fs-render>
+                          <fs-render :render-func="prop.editRender(item)"></fs-render>
                         </template>
                       </rollbackable>
                     </td>
@@ -73,9 +73,7 @@ function getScope() {
     form: configForm,
   };
 }
-function getScopeFunc() {
-  return getScope;
-}
+
 function getForm() {
   return configForm;
 }
@@ -84,43 +82,52 @@ const editableKeys = ref([
   {
     key: "value",
     label: "默认值",
-    defaultRender(key: string, item: any) {
+    onSet(item: any) {
+      configForm[item.key]["value"] = item.value ?? null;
+    },
+    defaultRender(item: any) {
       return () => {
         return item["value"] ?? "";
       };
     },
-    editRender(key: string, item: any) {
+    editRender(item: any) {
       return () => {
-        return <fs-component-render {...item.component} vModel:modelValue={configForm[key]["value"]} scope={getScope()} />;
+        return <fs-component-render {...item.component} vModel:modelValue={configForm[item.key]["value"]} scope={getScope()} />;
       };
     },
   },
   {
     key: "show",
     label: "是否显示",
-    defaultRender(key: string, item: any) {
+    onSet(item: any) {
+      configForm[item.key]["show"] = item.show ?? true;
+    },
+    defaultRender(item: any) {
       return () => {
         const value = item["show"];
         return value === false ? "不显示" : "显示";
       };
     },
-    editRender(key: string, item: any) {
+    editRender(item: any) {
       return () => {
-        return <a-switch vModel:checked={configForm[key]["show"]} />;
+        return <a-switch vModel:checked={configForm[item.key]["show"]} />;
       };
     },
   },
   {
     key: "helper",
     label: "帮助说明",
-    defaultRender(key: string, item: any) {
+    onSet(item: any) {
+      configForm[item.key]["helper"] = item.helper ?? "";
+    },
+    defaultRender(item: any) {
       return () => {
         return <pre class={"helper"}>{item["helper"]}</pre>;
       };
     },
-    editRender(key: string, item: any) {
+    editRender(item: any) {
       return () => {
-        return <a-textarea rows={5} vModel:value={configForm[key]["helper"]} />;
+        return <a-textarea rows={5} vModel:value={configForm[item.key]["helper"]} />;
       };
     },
   },
@@ -155,7 +162,7 @@ async function loadPluginSetting() {
   const setting = props.plugin.sysSetting;
   if (setting) {
     const settingJson = JSON.parse(setting);
-    merge(configForm, settingJson.metadata);
+    merge(configForm, settingJson.metadata?.input || {});
   }
 }
 
