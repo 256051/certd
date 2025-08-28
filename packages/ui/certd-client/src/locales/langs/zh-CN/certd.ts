@@ -593,6 +593,7 @@ export default {
   commFeature: "商业版功能",
   smsProvider: "短信提供商",
   aliyunSms: "阿里云短信",
+  tencentSms: "腾讯云短信",
   yfySms: "易发云短信",
   smsTest: "短信测试",
   testMobilePlaceholder: "输入测试手机号",

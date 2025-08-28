@@ -587,6 +587,7 @@ export default {
   commFeature: "Commercial feature",
   smsProvider: "SMS provider",
   aliyunSms: "Aliyun SMS",
+  tencentSms: "Tencent SMS",
   yfySms: "YFY SMS",
   smsTest: "SMS test",
   testMobilePlaceholder: "Enter test mobile number",
