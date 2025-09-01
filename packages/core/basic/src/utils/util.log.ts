@@ -1,4 +1,4 @@
-import log4js, { LoggingEvent, Logger } from "log4js";
+import log4js, { LoggingEvent, Logger, Level, CallStack } from "log4js";
 
 const OutputAppender = {
   configure: (config: any, layouts: any, findAppender: any, levels: any) => {
@@ -73,3 +73,66 @@ export function buildLogger(write: (text: string) => void) {
 }
 
 export type ILogger = Logger;
+
+export class PipelineLogger implements ILogger {
+  callStackLinesToSkip: number = 1;
+  readonly category: string = "pipeline";
+  level: Level | string = "info";
+
+  _log(level: Level, data: any): void {}
+
+  addContext(key: string, value: any): void {}
+
+  clearContext(): void {}
+
+  debug(message: any, ...args: any[]): void {
+    if (this.isDebugEnabled()) {
+    }
+  }
+
+  error(message: any, ...args: any[]): void {}
+
+  fatal(message: any, ...args: any[]): void {}
+
+  info(message: any, ...args: any[]): void {}
+
+  trace(message: any, ...args: any[]): void {}
+
+  warn(message: any, ...args: any[]): void {}
+
+  isDebugEnabled(): boolean {
+    return logger.isDebugEnabled();
+  }
+
+  isErrorEnabled(): boolean {
+    return logger.isErrorEnabled();
+  }
+
+  isFatalEnabled(): boolean {
+    return logger.isFatalEnabled();
+  }
+
+  isInfoEnabled(): boolean {
+    return logger.isInfoEnabled();
+  }
+
+  isLevelEnabled(level?: string): boolean {
+    return logger.isLevelEnabled();
+  }
+
+  isTraceEnabled(): boolean {
+    return logger.isTraceEnabled();
+  }
+
+  isWarnEnabled(): boolean {
+    return logger.isWarnEnabled();
+  }
+
+  log(level: Level | string, ...args: any[]): void {}
+
+  mark(message: any, ...args: any[]): void {}
+
+  removeContext(key: string): void {}
+
+  setParseCallStackFunction(parseFunction: (error: Error, linesToSkip: number) => CallStack | undefined): void {}
+}
