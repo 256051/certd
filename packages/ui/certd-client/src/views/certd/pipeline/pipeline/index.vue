@@ -758,7 +758,7 @@ export default defineComponent({
 
         //检查输出的stepid是否存在
         let hasError = false;
-        let errorMessages = [];
+        let errorMessages: any = [];
         let errorIndex = 1;
         eachSteps(pp, (step: any, task: any, stage: any) => {
           if (step.disabled !== true) {
