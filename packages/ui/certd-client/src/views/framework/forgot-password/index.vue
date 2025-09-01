@@ -11,7 +11,7 @@
       @finish="handleFinish"
       @finish-failed="handleFinishFailed"
     >
-      <a-tabs v-model:active-key="forgotPasswordType" :destroyInactiveTabPane="true">
+      <a-tabs v-model:active-key="forgotPasswordType" :destroy-inactive-tab-pane="true">
         <a-tab-pane key="email" tab="邮箱找回">
           <a-form-item has-feedback name="input" label="邮箱">
             <a-input v-model:value="formState.input" placeholder="邮箱" size="large" autocomplete="off">
@@ -21,13 +21,7 @@
             </a-input>
           </a-form-item>
           <a-form-item has-feedback name="validateCode" label="邮件验证码">
-            <email-code
-              v-model:value="formState.validateCode"
-              :img-code="formState.imgCode"
-              :email="formState.input"
-              :random-str="formState.randomStr"
-              verification-type="forgotPassword"
-            />
+            <email-code v-model:value="formState.validateCode" :img-code="formState.imgCode" :email="formState.input" :random-str="formState.randomStr" verification-type="forgotPassword" />
           </a-form-item>
         </a-tab-pane>
         <a-tab-pane key="mobile" tab="手机号找回">
@@ -72,7 +66,7 @@
       <a-form-item>
         <a-button type="primary" size="large" html-type="submit" class="submit-button"> 找回密码</a-button>
 
-        <div class="mt-2">
+        <div v-comm="false" class="mt-2">
           <a href="https://certd.docmirror.cn/guide/use/forgotpasswd/" target="_blank"> 管理员无绑定通信方式或MFA丢失找回 </a>
         </div>
       </a-form-item>
@@ -87,7 +81,7 @@ import EmailCode from "/@/views/framework/register/email-code.vue";
 import SmsCode from "/@/views/framework/login/sms-code.vue";
 import { utils } from "@fast-crud/fast-crud";
 import { useUserStore } from "/@/store/user";
-
+import { useSettingStore } from "/@/store/settings";
 defineOptions({
   name: "ForgotPasswordPage",
 });
@@ -123,6 +117,7 @@ const layout = {
 
 const forgotPasswordType = ref();
 const userStore = useUserStore();
+const settingStore = useSettingStore();
 const formRef = ref();
 const imageCodeRef = ref();
 
