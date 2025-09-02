@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model:open="openRef" class="order-modal" :title="$t('certd.order.confirmTitle')" @ok="orderCreate">
+  <a-modal v-model:open="openRef" class="order-modal" :title="$t('certd.order.confirmTitle')" :width="670" @ok="orderCreate">
     <div v-if="product" class="order-box">
       <div class="flex-o mt-5">
         <span class="label">{{ $t("certd.order.package") }}：</span>{{ product.title }}
