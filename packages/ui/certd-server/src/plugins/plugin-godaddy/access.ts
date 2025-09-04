@@ -8,7 +8,7 @@ import {HttpRequestConfig} from "@certd/basic";
 @IsAccess({
   name: 'godaddy',
   title: 'godaddy授权',
-  icon: 'arcticons:dns-changer-3',
+  icon: 'simple-icons:godaddy',
   desc: '',
 })
 export class GodaddyAccess extends BaseAccess {

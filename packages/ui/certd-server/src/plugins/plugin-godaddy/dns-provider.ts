@@ -14,7 +14,7 @@ export type GodaddyRecord = {
   name: 'godaddy',
   title: 'godaddy',
   desc: 'GoDaddy',
-  icon: 'arcticons:dns-changer-3',
+  icon: 'simple-icons:godaddy',
   // 这里是对应的 cloudflare的access类型名称
   accessType: 'godaddy',
   order:10,
