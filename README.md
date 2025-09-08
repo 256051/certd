@@ -171,7 +171,8 @@ https://afdian.com/a/greper
 | 自动部署插件  | 阿里云CDN、腾讯云、七牛CDN、主机部署、宝塔、1Panel等大部分插件 | 群晖                             |
 | 通知      | 邮件通知、自定义webhook                       | 邮件免配置、企微、钉钉、飞书、anpush、server酱等 |
 
-
+************************
+[![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-red)](https://github.com/sponsors/greper)
 ************************
 
 ## 九、贡献代码
