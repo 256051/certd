@@ -33,12 +33,12 @@ echo "开始构建"
 echo "构建certd-client"
 export NODE_OPTIONS=--max-old-space-size=32768
 cd packages/ui/certd-client
-sudo pnpm run build
+sudo -E pnpm run build
 cp -r dist/* ../certd-server/public
 
 echo "构建certd-server"
 cd ../certd-server
-sudo pnpm run build
+sudo -E pnpm run build
 echo "构建完成"
 echo "启动服务"
 
