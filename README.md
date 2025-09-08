@@ -152,8 +152,10 @@ https://certd.handfree.work/
 
 ## 八、捐赠
 ************************
-支持开源，为爱发电，我已入驻[爱发电](https://afdian.com/a/greper)   /   [![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-red)](https://github.com/sponsors/greper)
-
+Github Sponsor  [![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-red)](https://github.com/sponsors/greper)
+************************
+支持开源，为爱发电，我已入驻爱发电
+https://afdian.com/a/greper
 
 发电权益：
 1. 可加入发电专属群，可以获得作者一对一技术支持
