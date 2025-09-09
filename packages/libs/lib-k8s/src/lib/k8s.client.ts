@@ -85,7 +85,6 @@ export class K8sClient {
   /**
    * 创建Secret
    * @param opts {namespace:default, body:yamlStr}
-   * @returns {Promise<*>}
    */
   async createSecret(opts: { namespace: string; body: V1Secret }) {
     const namespace = opts.namespace || "default";
@@ -121,7 +120,7 @@ export class K8sClient {
           //没有找到，则创建
           const body = merge(
             {
-              type: "type: kubernetes.io/tls",
+              type: "kubernetes.io/tls",
             },
             opts.body
           );
