@@ -714,6 +714,10 @@ export default {
     setting: {
       showRunStrategy: "显示运行策略选择",
       showRunStrategyHelper: "任务设置中是否允许选择运行策略",
+
+      captchaEnabled: "启用验证码",
+      captchaHelper: "登录时是否启用验证码",
+      captchaType: "验证码类型",
     },
   },
   modal: {
@@ -733,5 +737,9 @@ export default {
     disabled: "禁用/启用",
     challengeSetting: "校验配置",
     gotoCnameTip: "CNAME域名配置请前往CNAME记录页面添加",
+  },
+  addonSelector: {
+    select: "选择",
+    placeholder: "请选择",
   },
 };

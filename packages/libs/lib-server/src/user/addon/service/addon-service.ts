@@ -39,6 +39,11 @@ export class AddonService extends BaseService<AddonEntity> {
         throw new ValidateException('您无权查看该Addon配置');
       }
     }
+    if (!param.userId){
+      param.isSystem = true
+    }else{
+      param.isSystem = false
+    }
     delete param._copyFrom
     return await super.add(param);
   }
@@ -65,6 +70,8 @@ export class AddonService extends BaseService<AddonEntity> {
       id: entity.id,
       name: entity.name,
       userId: entity.userId,
+      addonType: entity.addonType,
+      type: entity.type,
     };
   }
 
@@ -197,7 +204,7 @@ export class AddonService extends BaseService<AddonEntity> {
 
    const addonDefine =  this.getDefineByType( type,addonType)
 
-    const defaultConfig = await this.getDefault(userId);
+    const defaultConfig = await this.getDefault(userId,addonType);
     if (defaultConfig) {
       return defaultConfig;
     }

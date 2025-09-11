@@ -1,8 +1,10 @@
-import { ALL, Body, Controller, Inject, Post, Provide } from '@midwayjs/core';
-import { LoginService } from '../../../modules/login/service/login-service.js';
-import { BaseController, Constants, SysPublicSettings, SysSettingsService } from '@certd/lib-server';
-import { CodeService } from '../../../modules/basic/service/code-service.js';
-import { checkComm } from '@certd/plus-core';
+import { ALL, Body, Controller, Inject, Post, Provide } from "@midwayjs/core";
+import { LoginService } from "../../../modules/login/service/login-service.js";
+import { AddonService, BaseController, Constants, SysPublicSettings, SysSettingsService } from "@certd/lib-server";
+import { CodeService } from "../../../modules/basic/service/code-service.js";
+import { checkComm } from "@certd/plus-core";
+import { logger } from "@certd/basic";
+import { ICaptchaAddon } from "../../../plugins/plugin-captcha/api.js";
 
 /**
  */
@@ -16,14 +18,16 @@ export class LoginController extends BaseController {
 
   @Inject()
   sysSettingsService: SysSettingsService;
+  @Inject()
+  addonService: AddonService;
 
   @Post('/login', { summary: Constants.per.guest })
   public async login(
     @Body(ALL)
-    user: any
+    body: any
   ) {
-    await this.loginService.doCaptchaValidate({form:user})
-    const token = await this.loginService.loginByPassword(user);
+    await this.loginService.doCaptchaValidate({form:body.captcha})
+    const token = await this.loginService.loginByPassword(body);
     this.writeTokenCookie(token);
     return this.ok(token);
   }
@@ -78,5 +82,25 @@ export class LoginController extends BaseController {
       maxAge: 0
     });
     return this.ok();
+  }
+
+  @Post('/captcha/getParams', { summary: Constants.per.guest })
+  async getCaptchaParams() {
+
+    const settings = await this.sysSettingsService.getPublicSettings()
+    if (settings.captchaEnabled) {
+      const addonId = settings.captchaAddonId;
+
+      const addon:ICaptchaAddon = await this.addonService.getAddonById(addonId,true,0)
+      if (!addon) {
+        logger.warn('验证码插件还未配置')
+        return this.ok({});
+      }
+
+      const params = await addon.getClientParams()
+      return this.ok(params);
+    }
+
+    return this.ok({});
   }
 }

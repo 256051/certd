@@ -36,6 +36,7 @@ export class SysPublicSettings extends BaseSettings {
   captchaEnabled = false;
   //验证码类型
   captchaType?: string;
+  captchaAddonId?:string;
 }
 
 export class SysPrivateSettings extends BaseSettings {
@@ -49,9 +50,6 @@ export class SysPrivateSettings extends BaseSettings {
   httpProxy? = '';
   dnsResultOrder? = '';
   commonCnameEnabled?: boolean = true;
-
-  //验证码配置id
-  captchaAddonId?: number;
 
   sms?: {
     type?: string;

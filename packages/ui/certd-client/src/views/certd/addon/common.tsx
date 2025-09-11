@@ -5,6 +5,7 @@ import { forEach, get, merge, set } from "lodash-es";
 import { Modal } from "ant-design-vue";
 import { mitter } from "/@/utils/util.mitt";
 import { useI18n } from "/src/locales";
+import * as pipelineApi from "/@/views/certd/pipeline/api";
 
 export function addonProvide(api: any) {
   provide("addonApi", api);
@@ -13,13 +14,13 @@ export function addonProvide(api: any) {
   });
 }
 
-export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
+export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any, addonType: string) {
   const { t } = useI18n();
-  const addonTypeTypeDictRef = dict({
-    data: [{ value: "captcha", label: "验证码" }],
-  });
+  // const addonTypeTypeDictRef = dict({
+  //   data: [{ value: "captcha", label: "验证码" }],
+  // });
   const addonTypeDictRef = dict({
-    url: "/addon/getTypeDict?addonType=captcha",
+    url: `/addon/getTypeDict?addonType=${addonType}`,
   });
   const defaultPluginConfig = {
     component: {
@@ -61,7 +62,6 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
       }
       //字段配置赋值
       columnsRef.value[key] = column;
-      console.log("form", columnsRef.value, form);
     });
   }
 
@@ -79,30 +79,30 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
         show: false,
       },
     },
-    addonType: {
-      title: "Addon类型",
-      type: "dict-select",
-      dict: addonTypeTypeDictRef,
-      search: {
-        show: false,
-      },
-      column: {
-        width: 200,
-        component: {
-          color: "auto",
-        },
-      },
-      form: {
-        onChange(ctx: { value: any }) {
-          addonTypeDictRef.url = `/addon/getTypeDict?addonType=${ctx.value}`;
-        },
-      },
-      editForm: {
-        component: {
-          disabled: false,
-        },
-      },
-    },
+    // addonType: {
+    //   title: "Addon类型",
+    //   type: "dict-select",
+    //   dict: addonTypeTypeDictRef,
+    //   search: {
+    //     show: false,
+    //   },
+    //   column: {
+    //     width: 200,
+    //     component: {
+    //       color: "auto",
+    //     },
+    //   },
+    //   form: {
+    //     onChange(ctx: { value: any }) {
+    //       addonTypeDictRef.url = `/addon/getTypeDict?addonType=${ctx.value}`;
+    //     },
+    //   },
+    //   editForm: {
+    //     component: {
+    //       disabled: false,
+    //     },
+    //   },
+    // },
     type: {
       title: t("certd.notificationType"),
       type: "dict-select",

@@ -1,14 +1,23 @@
 import { request } from "/src/api/service";
 import { RequestHandleReq } from "/@/components/plugins/lib";
 
-export function createAddonApi() {
-  const apiPrefix = "/addon";
+export function createAddonApi(opts: { from: any; addonType: string }) {
+  let apiPrefix = "/addon";
+  if (opts.from === "sys") {
+    apiPrefix = "/sys/addon";
+  }
   return {
     async GetList(query: any) {
       return await request({
         url: apiPrefix + "/page",
         method: "post",
-        data: query,
+        data: {
+          ...query,
+          query: {
+            addonType: opts.addonType,
+            ...query.query,
+          },
+        },
       });
     },
 
@@ -16,7 +25,10 @@ export function createAddonApi() {
       return await request({
         url: apiPrefix + "/add",
         method: "post",
-        data: obj,
+        data: {
+          ...obj,
+          addonType: opts.addonType,
+        },
       });
     },
 
@@ -46,7 +58,7 @@ export function createAddonApi() {
 
     async GetOptions(id: number) {
       return await request({
-        url: apiPrefix + "/options",
+        url: apiPrefix + `/options?addonType=${opts.addonType}`,
         method: "post",
       });
     },
@@ -68,22 +80,22 @@ export function createAddonApi() {
 
     async GetSimpleInfo(id: number) {
       return await request({
-        url: apiPrefix + "/simpleInfo",
+        url: apiPrefix + `/simpleInfo?addonType=${opts.addonType}`,
         method: "post",
         params: { id },
       });
     },
 
-    async GetDefineTypes(addonType: string) {
+    async GetDefineTypes() {
       return await request({
-        url: apiPrefix + `/getTypeDict?addonType=${addonType}`,
+        url: apiPrefix + `/getTypeDict?addonType=${opts.addonType}`,
         method: "post",
       });
     },
 
     async GetProviderDefine(type: string) {
       return await request({
-        url: apiPrefix + "/define",
+        url: apiPrefix + `/define?addonType=${opts.addonType}`,
         method: "post",
         params: { type },
       });
@@ -91,14 +103,14 @@ export function createAddonApi() {
 
     async GetProviderDefineByType(type: string) {
       return await request({
-        url: apiPrefix + "/defineByType",
+        url: apiPrefix + `/defineByType?addonType=${opts.addonType}`,
         method: "post",
         params: { type },
       });
     },
 
     async Handle(req: RequestHandleReq, opts: any = {}) {
-      const url = `/pi/handle/${req.type}`;
+      const url = `/handle/${req.type}?addonType=${opts.addonType}`;
       const { typeName, action, data, input } = req;
       const res = await request({
         url,

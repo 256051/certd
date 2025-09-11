@@ -21,8 +21,8 @@
               </a-input-password>
             </a-form-item>
 
-            <a-form-item required name="captcha">
-              <captcha v-model:model-value="formState.captcha"></captcha>
+            <a-form-item v-if="settingStore.sysPublic.captchaEnabled" required name="captcha">
+              <CaptchaInput ref="captchaInputRef" v-model:model-value="formState.captcha"></CaptchaInput>
             </a-form-item>
           </template>
         </a-tab-pane>
@@ -95,10 +95,10 @@ import ImageCode from "/@/views/framework/login/image-code.vue";
 import SmsCode from "/@/views/framework/login/sms-code.vue";
 import { useI18n } from "/@/locales";
 import { LanguageToggle } from "/@/vben/layouts";
-
+import CaptchaInput from "./captcha-input.vue";
 export default defineComponent({
   name: "LoginPage",
-  components: { LanguageToggle, SmsCode, ImageCode },
+  components: { LanguageToggle, SmsCode, ImageCode, CaptchaInput },
   setup() {
     const { t } = useI18n();
     const verifyCodeInputRef = ref();
@@ -165,6 +165,10 @@ export default defineComponent({
     const handleFinish = async (values: any) => {
       loading.value = true;
       try {
+        formState.captcha = await doCaptchaValidate();
+        if (!formState.captcha) {
+          return;
+        }
         const loginType = formState.loginType;
         await userStore.login(loginType, toRaw(formState));
       } catch (e: any) {
@@ -199,6 +203,20 @@ export default defineComponent({
       return sysPublicSettings.registerEnabled && (sysPublicSettings.usernameRegisterEnabled || sysPublicSettings.emailRegisterEnabled);
     }
 
+    const captchaInputRef = ref();
+    async function doCaptchaValidate() {
+      if (!sysPublicSettings.captchaEnabled) {
+        return {};
+      }
+      const res = await captchaInputRef.value.getValidatedForm();
+      if (!res) {
+        return false;
+      }
+      return {
+        ...res,
+      };
+    }
+
     return {
       t,
       loading,
@@ -216,6 +234,7 @@ export default defineComponent({
       handleTwoFactorSubmit,
       verifyCodeInputRef,
       settingStore,
+      captchaInputRef,
     };
   },
 });

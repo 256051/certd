@@ -711,6 +711,10 @@ export default {
     setting: {
       showRunStrategy: "Show RunStrategy",
       showRunStrategyHelper: "Allow modify the run strategy of the task",
+
+      captchaEnabled: "Enable Captcha",
+      captchaHelper: "Whether to enable captcha verification for login",
+      captchaType: "Captcha Type",
     },
   },
   modal: {
@@ -730,5 +734,9 @@ export default {
     disabled: "Disabled",
     challengeSetting: "Challenge Setting",
     gotoCnameTip: "Please go to CNAME Record Page",
+  },
+  addonSelector: {
+    select: "Select",
+    placeholder: "select please",
   },
 };

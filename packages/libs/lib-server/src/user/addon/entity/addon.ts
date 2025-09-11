@@ -12,7 +12,7 @@ export class AddonEntity {
   name: string;
 
 
-  @Column({ comment: 'addon类型', length: 100 })
+  @Column({ name: 'addon_type', comment: 'addon类型', length: 100 })
   addonType: string;
 
 

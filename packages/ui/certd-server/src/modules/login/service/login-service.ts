@@ -105,19 +105,21 @@ export class LoginService {
     const pubSetting = await this.sysSettingsService.getPublicSettings()
 
     if (pubSetting.captchaEnabled) {
-      const prvSetting = await this.sysSettingsService.getPrivateSettings()
 
-      const addon = await this.addonService.getById(prvSetting.captchaAddonId,0)
+      const addon = await this.addonService.getById(pubSetting.captchaAddonId,0)
       if (!addon) {
         logger.warn('验证码插件还未配置，忽略验证码校验')
         return true
       }
-      if (addon.addonType !==  pubSetting.captchaType) {
+      if (addon.define.name !==  pubSetting.captchaType) {
         logger.warn('验证码插件类型错误，忽略验证码校验')
         return true
       }
 
-      return await addon.onValidate(opts.form)
+      const res = await addon.onValidate(opts.form)
+      if (!res) {
+        throw new Error('验证码错误');
+      }
     }
 
     return true

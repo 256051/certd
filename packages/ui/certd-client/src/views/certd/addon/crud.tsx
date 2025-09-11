@@ -1,9 +1,10 @@
 import { ref } from "vue";
 import { getCommonColumnDefine } from "./common";
 import { AddReq, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
-import { createAddonApi } from "/@/views/certd/addon/api";
-const api = createAddonApi();
+
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
+  const api = context.api;
+  const addonType = context.addonType;
   const pageRequest = async (query: UserPageQuery): Promise<UserPageRes> => {
     return await api.GetList(query);
   };
@@ -25,7 +26,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
   };
 
   const typeRef = ref();
-  const commonColumnsDefine = getCommonColumnDefine(crudExpose, typeRef, api);
+  const commonColumnsDefine = getCommonColumnDefine(crudExpose, typeRef, api, addonType);
   return {
     crudOptions: {
       request: {

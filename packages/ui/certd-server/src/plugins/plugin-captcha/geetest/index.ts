@@ -1,12 +1,13 @@
 import { AddonInput, BaseAddon, IsAddon } from "@certd/lib-server/dist/user/addon/api/index.js";
 import crypto from 'crypto';
+import { ICaptchaAddon } from "../api.js";
 @IsAddon({
   addonType:"captcha",
   name: 'geetest',
   title: '极验验证码',
   desc: '',
 })
-export class GeeTestCaptcha extends BaseAddon {
+export class GeeTestCaptcha extends BaseAddon implements ICaptchaAddon{
   @AddonInput({
     title: 'captchaId',
     component: {
@@ -43,6 +44,9 @@ export class GeeTestCaptcha extends BaseAddon {
     var captcha_output = data['captcha_output'];
     var pass_token = data['pass_token'];
     var gen_time = data['gen_time'];
+    if (!lot_number || !captcha_output || !pass_token || !gen_time) {
+      return false;
+    }
 
     // 生成签名, 使用标准的hmac算法，使用用户当前完成验证的流水号lot_number作为原始消息message，使用客户验证私钥作为key
     // 采用sha256散列算法将message和key进行单向散列生成最终的 “sign_token” 签名
@@ -78,8 +82,6 @@ export class GeeTestCaptcha extends BaseAddon {
       this.ctx.logger.error("极验验证服务异常",e)
       return true
     }
-
-
   }
 
   // 生成签名
@@ -102,7 +104,13 @@ export class GeeTestCaptcha extends BaseAddon {
       timeout: 5000
     };
     const result = await this.ctx.http.request(options);
-    return result.data;
+    return result;
+  }
+
+ async  getClientParams(): Promise<any> {
+    return {
+      captchaId: this.captchaId,
+    }
   }
 
 
