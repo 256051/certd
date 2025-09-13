@@ -1088,6 +1088,9 @@ importers:
       '@ctrl/tinycolor':
         specifier: ^4.1.0
         version: 4.1.0
+      '@fast-crud/editor-code':
+        specifier: ^1.26.6
+        version: 1.26.6
       '@fast-crud/fast-crud':
         specifier: ^1.26.6
         version: 1.26.6(vue@3.5.14(typescript@5.8.3))
@@ -3407,6 +3410,9 @@ packages:
   '@eslint/js@8.57.0':
     resolution: {integrity: sha512-Ys+3g2TaW7gADOJzPt83SJtCDhMjndcDMFVQ/Tj9iA1BfJzFKD9mAUXT3OenpuPHbI6P/myECxRJrofUsDx/5g==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+
+  '@fast-crud/editor-code@1.26.6':
+    resolution: {integrity: sha512-Dq51jO3ACkJJB3eIfyyQ/cU14Sn5jBG5qui2ZTaibs16mpE1cSMLJNl1kk5VXucHeMAlaa5QEJWuuYO/dEKZcA==}
 
   '@fast-crud/fast-crud@1.26.6':
     resolution: {integrity: sha512-m44F0qPUaswEBAn+bUqpjNm/+zn/icsTEpr4rGnDd692eZKzx7uPP1szVFwCc0nZeVteI5hNNAioIKB/6Xns1w==}
@@ -15976,6 +15982,13 @@ snapshots:
       - supports-color
 
   '@eslint/js@8.57.0': {}
+
+  '@fast-crud/editor-code@1.26.6':
+    dependencies:
+      js-yaml: 4.1.0
+      lodash-es: 4.17.21
+      monaco-editor: 0.52.2
+      monaco-yaml: 5.4.0(monaco-editor@0.52.2)
 
   '@fast-crud/fast-crud@1.26.6(vue@3.5.14(typescript@5.8.3))':
     dependencies:

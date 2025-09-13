@@ -73,7 +73,6 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref, toRaw, watch } from "vue";
-import ImageCode from "/@/views/framework/login/image-code.vue";
 import EmailCode from "/@/views/framework/register/email-code.vue";
 import SmsCode from "/@/views/framework/login/sms-code.vue";
 import { utils } from "@fast-crud/fast-crud";
