@@ -119,6 +119,7 @@ export default {
     scheduledTaskCount: "Scheduled Task Count",
     deployTaskCount: "Deployment Task Count",
     remainingValidity: "Remaining Validity",
+    effectiveTime: "Effective time",
     expiryTime: "Expiry Time",
     status: "Status",
     lastRun: "Last Run",
@@ -250,7 +251,9 @@ export default {
       ok: "Valid",
       expired: "Expired",
     },
+    certEffectiveTime: "Certificate Effective",
     certExpiresTime: "Certificate Expiration",
+    remainingValidity: "Remaining Validity",
     expired: "expired",
     days: "days",
     lastCheckTime: "Last Check Time",
@@ -465,6 +468,7 @@ export default {
   validDays: "Valid Days",
   expires: " expires",
   days: " days",
+  effectiveTime: "Effective Time",
   expireTime: "Expiration Time",
   certIssuer: "Certificate Issuer",
   applyTime: "Application Time",
@@ -707,10 +711,23 @@ export default {
     pipeline: "Pipeline",
   },
 
+  addonType: "Type",
+  addonName: "Name",
+  addonNameHelper: "Fill freely, helps to distinguish when multiple same type exist",
+  addonTypeSelect: "Select type",
   sys: {
     setting: {
       showRunStrategy: "Show RunStrategy",
       showRunStrategyHelper: "Allow modify the run strategy of the task",
+
+      captchaEnabled: "Enable Login Captcha",
+      captchaHelper: "Whether to enable captcha verification for login",
+      captchaType: "Captcha Setting",
+
+      baseSetting: "Base Settings",
+      registerSetting: "Register Settings",
+      safeSetting: "Safe Settings",
+      paymentSetting: "Payment Settings",
     },
   },
   modal: {
@@ -730,5 +747,9 @@ export default {
     disabled: "Disabled",
     challengeSetting: "Challenge Setting",
     gotoCnameTip: "Please go to CNAME Record Page",
+  },
+  addonSelector: {
+    select: "Select",
+    placeholder: "select please",
   },
 };

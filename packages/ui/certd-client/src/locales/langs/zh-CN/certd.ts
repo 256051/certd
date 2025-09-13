@@ -125,6 +125,7 @@ export default {
     scheduledTaskCount: "定时任务数",
     deployTaskCount: "部署任务数",
     remainingValidity: "到期剩余",
+    effectiveTime: "生效时间",
     expiryTime: "过期时间",
     status: "状态",
     lastRun: "最后运行",
@@ -255,7 +256,9 @@ export default {
       ok: "正常",
       expired: "过期",
     },
+    certEffectiveTime: "证书生效时间",
     certExpiresTime: "证书到期时间",
+    remainingValidity: "到期剩余",
     expired: "过期",
     days: "天",
     lastCheckTime: "上次检查时间",
@@ -471,6 +474,7 @@ export default {
   validDays: "有效天数",
   expires: "过期",
   days: "天",
+  effectiveTime: "生效时间",
   expireTime: "过期时间",
   certIssuer: "证书颁发机构",
   applyTime: "申请时间",
@@ -695,7 +699,10 @@ export default {
   setAsDefault: "设为默认",
   disabledLabel: "禁用",
   confirmToggleStatus: "确定要{action}吗？",
-
+  addonType: "类型",
+  addonName: "名称",
+  addonNameHelper: "随意填写，相同类型助于区分即可",
+  addonTypeSelect: "请选择",
   template: {
     title: "流水线模版",
     edit: "流水线模版编辑",
@@ -714,6 +721,15 @@ export default {
     setting: {
       showRunStrategy: "显示运行策略选择",
       showRunStrategyHelper: "任务设置中是否允许选择运行策略",
+
+      captchaEnabled: "启用登录验证码",
+      captchaHelper: "登录时是否启用验证码",
+      captchaType: "验证码配置",
+
+      baseSetting: "基本设置",
+      registerSetting: "注册设置",
+      safeSetting: "安全设置",
+      paymentSetting: "支付设置",
     },
   },
   modal: {
@@ -733,5 +749,9 @@ export default {
     disabled: "禁用/启用",
     challengeSetting: "校验配置",
     gotoCnameTip: "CNAME域名配置请前往CNAME记录页面添加",
+  },
+  addonSelector: {
+    select: "选择",
+    placeholder: "请选择",
   },
 };
