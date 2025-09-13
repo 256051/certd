@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.36.20](https://github.com/certd/certd/compare/v1.36.19...v1.36.20) (2025-09-13)
+
+### Performance Improvements
+
+* ssh配置增加脚本类型设置，bash还是sh ([ae41c60](https://github.com/certd/certd/commit/ae41c6038b27c9476e64a2402a8daf247c38a5b6))
+
 ## [1.36.19](https://github.com/certd/certd/compare/v1.36.18...v1.36.19) (2025-09-05)
 
 ### Performance Improvements
