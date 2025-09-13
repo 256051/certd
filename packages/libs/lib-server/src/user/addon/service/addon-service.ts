@@ -76,9 +76,21 @@ export class AddonService extends BaseService<AddonEntity> {
   }
 
   async getAddonById(id: any, checkUserId: boolean, userId?: number): Promise<any> {
+    const ctx = {
+      http: http,
+      logger: logger,
+      utils: utils,
+    };
+
+
+    if (!id){
+      //使用图片验证码
+      return await newAddon("captcha", "image", {},ctx);
+    }
     const entity = await this.info(id);
     if (entity == null) {
-      throw new Error(`该Addon配置不存在,请确认是否已被删除:id=${id}`);
+      //使用图片验证码
+      return await newAddon("captcha", "image", {},ctx);
     }
     if (checkUserId) {
       if (userId == null) {
@@ -89,17 +101,12 @@ export class AddonService extends BaseService<AddonEntity> {
       }
     }
 
-    // const access = accessRegistry.get(entity.type);
     const setting =  JSON.parse(entity.setting ??"{}")
     const input = {
       id: entity.id,
       ...setting,
     };
-    const ctx = {
-      http: http,
-      logger: logger,
-      utils: utils,
-    };
+
     return await newAddon(entity.addonType, entity.type, input,ctx);
   }
 

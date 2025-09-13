@@ -140,6 +140,11 @@ async function emitValue(value: any) {
 async function refreshTarget(value: any) {
   if (value > 0) {
     target.value = await api.GetSimpleInfo(value);
+  } else {
+    target.value = {
+      //captchaType会监听此字段，给个默认值
+      type: "",
+    };
   }
 }
 

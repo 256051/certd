@@ -21,8 +21,8 @@
               </a-input-password>
             </a-form-item>
 
-            <a-form-item v-if="settingStore.sysPublic.captchaEnabled" required name="captcha">
-              <CaptchaInput ref="captchaInputRef" v-model:model-value="formState.captcha"></CaptchaInput>
+            <a-form-item v-if="settingStore.sysPublic.captchaEnabled" has-feedback required name="captcha" :rules="rules.captcha">
+              <CaptchaInput v-model:model-value="formState.captcha"></CaptchaInput>
             </a-form-item>
           </template>
         </a-tab-pane>
@@ -36,12 +36,12 @@
               </a-input>
             </a-form-item>
 
-            <a-form-item has-feedback name="imgCode">
-              <image-code v-model:value="formState.imgCode" v-model:random-str="formState.randomStr"></image-code>
+            <a-form-item has-feedback name="smsCaptcha">
+              <CaptchaInput v-model:model-value="formState.smsCaptcha"></CaptchaInput>
             </a-form-item>
 
             <a-form-item name="smsCode" :rules="rules.smsCode">
-              <sms-code v-model:value="formState.smsCode" :img-code="formState.imgCode" :mobile="formState.mobile" :phone-code="formState.phoneCode" :random-str="formState.randomStr" />
+              <sms-code v-model:value="formState.smsCode" :captcha="formState.smsCaptcha" :mobile="formState.mobile" :phone-code="formState.phoneCode" />
             </a-form-item>
           </template>
         </a-tab-pane>
@@ -91,14 +91,13 @@ import { defineComponent, nextTick, reactive, ref, toRaw } from "vue";
 import { useUserStore } from "/src/store/user";
 import { useSettingStore } from "/@/store/settings";
 import { utils } from "@fast-crud/fast-crud";
-import ImageCode from "/@/views/framework/login/image-code.vue";
 import SmsCode from "/@/views/framework/login/sms-code.vue";
 import { useI18n } from "/@/locales";
 import { LanguageToggle } from "/@/vben/layouts";
-import CaptchaInput from "./captcha-input.vue";
+import CaptchaInput from "/@/components/captcha/captcha-input.vue";
 export default defineComponent({
   name: "LoginPage",
-  components: { LanguageToggle, SmsCode, ImageCode, CaptchaInput },
+  components: { LanguageToggle, SmsCode, CaptchaInput },
   setup() {
     const { t } = useI18n();
     const verifyCodeInputRef = ref();
@@ -112,10 +111,9 @@ export default defineComponent({
       mobile: "",
       password: "",
       loginType: "password", //password
-      imgCode: "",
       smsCode: "",
-      randomStr: "",
-      captcha: {},
+      captcha: null,
+      smsCaptcha: null,
     });
 
     const rules = {
@@ -143,6 +141,12 @@ export default defineComponent({
           message: "请输入短信验证码",
         },
       ],
+      captcha: [
+        {
+          required: true,
+          message: "请进行验证码验证",
+        },
+      ],
     };
     const layout = {
       labelCol: {
@@ -165,10 +169,10 @@ export default defineComponent({
     const handleFinish = async (values: any) => {
       loading.value = true;
       try {
-        formState.captcha = await doCaptchaValidate();
-        if (!formState.captcha) {
-          return;
-        }
+        // formState.captcha = await doCaptchaValidate();
+        // if (!formState.captcha) {
+        //   return;
+        // }
         const loginType = formState.loginType;
         await userStore.login(loginType, toRaw(formState));
       } catch (e: any) {
@@ -204,6 +208,7 @@ export default defineComponent({
     }
 
     const captchaInputRef = ref();
+    const captchaInputForSmsCode = ref();
     async function doCaptchaValidate() {
       if (!sysPublicSettings.captchaEnabled) {
         return {};
@@ -235,6 +240,7 @@ export default defineComponent({
       verifyCodeInputRef,
       settingStore,
       captchaInputRef,
+      captchaInputForSmsCode,
     };
   },
 });

@@ -51,13 +51,11 @@
         <a-switch v-model:checked="formState.public.captchaEnabled" />
         <div class="helper" v-html="t('certd.sys.setting.captchaHelper')"></div>
       </a-form-item>
-      <a-form-item v-if="formState.public.captchaEnabled" :label="t('certd.sys.setting.captchaType')" :name="['public', 'captchaAddonId']">
+      <a-form-item :label="t('certd.sys.setting.captchaType')" :name="['public', 'captchaAddonId']">
         <addon-selector v-model:model-value="formState.public.captchaAddonId" addon-type="captcha" from="sys" @selected-change="onAddonChanged" />
-
-        <a-input v-model:model-value="formState.public.captchaType" class="hidden"></a-input>
       </a-form-item>
 
-      <a-form-item v-if="formState.public.captchaEnabled" :name="['public', 'captchaType']" class="hidden">
+      <a-form-item :name="['public', 'captchaType']" class="hidden">
         <a-input v-model:model-value="formState.public.captchaType"></a-input>
       </a-form-item>
 
@@ -130,7 +128,6 @@ async function stopOtherUserTimer() {
 }
 
 function onAddonChanged(target: any) {
-  debugger;
   formState.public.captchaType = target.type;
 }
 

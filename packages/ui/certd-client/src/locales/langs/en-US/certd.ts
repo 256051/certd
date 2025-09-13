@@ -712,7 +712,7 @@ export default {
       showRunStrategy: "Show RunStrategy",
       showRunStrategyHelper: "Allow modify the run strategy of the task",
 
-      captchaEnabled: "Enable Captcha",
+      captchaEnabled: "Enable Login Captcha",
       captchaHelper: "Whether to enable captcha verification for login",
       captchaType: "Captcha Type",
     },

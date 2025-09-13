@@ -1,17 +1,21 @@
-import {Config, Inject, Provide, Scope, ScopeEnum} from '@midwayjs/core';
-import {UserService} from '../../sys/authority/service/user-service.js';
-import jwt from 'jsonwebtoken';
-import {AuthException, CommonException, Need2FAException} from "@certd/lib-server";
-import {RoleService} from '../../sys/authority/service/role-service.js';
-import {UserEntity} from '../../sys/authority/entity/user.js';
-import {SysSettingsService} from '@certd/lib-server';
-import {SysPrivateSettings} from '@certd/lib-server';
-import { cache, logger, utils } from "@certd/basic";
-import {LoginErrorException} from '@certd/lib-server/dist/basic/exception/login-error-exception.js';
-import {CodeService} from '../../basic/service/code-service.js';
-import {TwoFactorService} from "../../mine/service/two-factor-service.js";
-import {UserSettingsService} from '../../mine/service/user-settings-service.js';
-import {isPlus} from "@certd/plus-core";
+import { Config, Inject, Provide, Scope, ScopeEnum } from "@midwayjs/core";
+import { UserService } from "../../sys/authority/service/user-service.js";
+import jwt from "jsonwebtoken";
+import {
+  AuthException,
+  CommonException,
+  Need2FAException,
+  SysPrivateSettings,
+  SysSettingsService
+} from "@certd/lib-server";
+import { RoleService } from "../../sys/authority/service/role-service.js";
+import { UserEntity } from "../../sys/authority/entity/user.js";
+import { cache, utils } from "@certd/basic";
+import { LoginErrorException } from "@certd/lib-server/dist/basic/exception/login-error-exception.js";
+import { CodeService } from "../../basic/service/code-service.js";
+import { TwoFactorService } from "../../mine/service/two-factor-service.js";
+import { UserSettingsService } from "../../mine/service/user-settings-service.js";
+import { isPlus } from "@certd/plus-core";
 import { AddonService } from "@certd/lib-server/dist/user/addon/service/addon-service.js";
 
 /**
@@ -100,33 +104,6 @@ export class LoginService {
     throw new LoginErrorException(errorMessage, leftTimes);
   }
 
-  async doCaptchaValidate(opts:{form:any}){
-
-    const pubSetting = await this.sysSettingsService.getPublicSettings()
-
-    if (pubSetting.captchaEnabled) {
-
-      const addon = await this.addonService.getById(pubSetting.captchaAddonId,0)
-      if (!addon) {
-        logger.warn('验证码插件还未配置，忽略验证码校验')
-        return true
-      }
-      if (addon.define.name !==  pubSetting.captchaType) {
-        logger.warn('验证码插件类型错误，忽略验证码校验')
-        return true
-      }
-
-      const res = await addon.onValidate(opts.form)
-      if (!res) {
-        throw new Error('验证码错误');
-      }
-    }
-
-    return true
-
-  }
-
-
 
   async loginBySmsCode(req: { mobile: string; phoneCode: string; smsCode: string; randomStr: string }) {
 
@@ -136,13 +113,12 @@ export class LoginService {
       mobile: req.mobile,
       phoneCode: req.phoneCode,
       smsCode: req.smsCode,
-      randomStr: req.randomStr,
       throwError: false,
     });
 
     const {mobile, phoneCode} = req;
     if (!smsChecked) {
-      this.addErrorTimes(mobile, '验证码错误');
+      this.addErrorTimes(mobile, '手机验证码错误');
     }
     let info = await this.userService.findOne({phoneCode, mobile: mobile});
     if (info == null) {

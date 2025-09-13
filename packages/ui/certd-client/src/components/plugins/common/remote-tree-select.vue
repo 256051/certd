@@ -53,7 +53,6 @@ const pagerRef: Ref = ref({
   current: 1,
 });
 const getOptions = async () => {
-  debugger;
   if (loading.value) {
     return;
   }

@@ -1,6 +1,7 @@
 import { AddonInput, BaseAddon, IsAddon } from "@certd/lib-server";
-import crypto from 'crypto';
+import crypto from "crypto";
 import { ICaptchaAddon } from "../api.js";
+
 @IsAddon({
   addonType:"captcha",
   name: 'geetest',
@@ -8,6 +9,7 @@ import { ICaptchaAddon } from "../api.js";
   desc: '',
 })
 export class GeeTestCaptcha extends BaseAddon implements ICaptchaAddon{
+
   @AddonInput({
     title: 'captchaId',
     component: {
@@ -28,7 +30,9 @@ export class GeeTestCaptcha extends BaseAddon implements ICaptchaAddon{
 
 
   async onValidate(data?:any) {
-
+    if (!data) {
+      return false
+    }
     // geetest 服务地址
 // geetest server url
     const API_SERVER = "http://gcaptcha4.geetest.com";
@@ -107,11 +111,10 @@ export class GeeTestCaptcha extends BaseAddon implements ICaptchaAddon{
     return result;
   }
 
- async  getClientParams(): Promise<any> {
+ async  getCaptcha(): Promise<any> {
     return {
       captchaId: this.captchaId,
     }
   }
-
 
 }
