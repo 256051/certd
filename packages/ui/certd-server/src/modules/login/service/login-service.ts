@@ -15,7 +15,7 @@ import { LoginErrorException } from "@certd/lib-server";
 import { CodeService } from "../../basic/service/code-service.js";
 import { TwoFactorService } from "../../mine/service/two-factor-service.js";
 import { UserSettingsService } from "../../mine/service/user-settings-service.js";
-import { isPlus } from "@certd/plus-core";
+// import { isPlus } from "@certd/plus-core";
 import { AddonService } from "@certd/lib-server";
 import { OauthBoundService } from "./oauth-bound-service.js";
 
@@ -155,9 +155,9 @@ export class LoginService {
 
   async checkTwoFactorEnabled(userId: number) {
     //检查是否开启多重认证
-    if (!isPlus()) {
-      return true
-    }
+    // if (!isPlus()) {
+    //   return true
+    // }
 
     const twoFactorSetting = await this.twoFactorService.getSetting(userId)
 
@@ -175,9 +175,9 @@ export class LoginService {
 
   async loginByTwoFactor(req: { loginId: string; verifyCode: string }) {
     //检查是否开启多重认证
-    if (!isPlus()) {
-      throw new Error('本功能需要开通专业版')
-    }
+    // if (!isPlus()) {
+    //   throw new Error('本功能需要开通专业版')
+    // }
     const userId = cache.get(`login_2fa_code:${req.loginId}`)
     if (!userId) {
       throw new AuthException('已超时，请返回重新登录')

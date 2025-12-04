@@ -1,5 +1,6 @@
 import {Inject, Provide, Scope, ScopeEnum} from "@midwayjs/core";
-import {BaseService, NeedSuiteException, NeedVIPException, SysSettingsService} from "@certd/lib-server";
+// import {BaseService, NeedSuiteException, NeedVIPException, SysSettingsService} from "@certd/lib-server";
+import {BaseService, SysSettingsService} from "@certd/lib-server";
 import {InjectEntityModel} from "@midwayjs/typeorm";
 import {Repository} from "typeorm";
 import {SiteInfoEntity} from "../entity/site-info.js";
@@ -8,7 +9,7 @@ import dayjs from "dayjs";
 import {logger, utils} from "@certd/basic";
 import {PeerCertificate} from "tls";
 import {NotificationService} from "../../pipeline/service/notification-service.js";
-import {isComm, isPlus} from "@certd/plus-core";
+// import {isComm, isPlus} from "@certd/plus-core";
 import {UserSuiteService} from "@certd/commercial-core";
 import {UserSettingsService} from "../../mine/service/user-settings-service.js";
 import {UserSiteMonitorSetting} from "../../mine/service/models.js";
@@ -52,20 +53,20 @@ export class SiteInfoService extends BaseService<SiteInfoEntity> {
       throw new Error("userId is required");
     }
 
-    if (isComm()) {
-      const suiteSetting = await this.userSuiteService.getSuiteSetting();
-      if (suiteSetting.enabled) {
-        const userSuite = await this.userSuiteService.getMySuiteDetail(data.userId);
-        if (userSuite.monitorCount.max != -1 && userSuite.monitorCount.max <= userSuite.monitorCount.used) {
-          throw new NeedSuiteException("站点监控数量已达上限，请购买或升级套餐");
-        }
-      }
-    } else if (!isPlus()) {
-      const count = await this.getUserMonitorCount(data.userId);
-      if (count >= 1) {
-        throw new NeedVIPException("站点监控数量已达上限，请升级专业版");
-      }
-    }
+    // if (isComm()) {
+    //   const suiteSetting = await this.userSuiteService.getSuiteSetting();
+    //   if (suiteSetting.enabled) {
+    //     const userSuite = await this.userSuiteService.getMySuiteDetail(data.userId);
+    //     if (userSuite.monitorCount.max != -1 && userSuite.monitorCount.max <= userSuite.monitorCount.used) {
+    //       throw new NeedSuiteException("站点监控数量已达上限，请购买或升级套餐");
+    //     }
+    //   }
+    // } else if (!isPlus()) {
+    //   const count = await this.getUserMonitorCount(data.userId);
+    //   if (count >= 1) {
+    //     throw new NeedVIPException("站点监控数量已达上限，请升级专业版");
+    //   }
+    // }
     data.disabled = false;
 
     const found = await this.repository.findOne({

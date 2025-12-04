@@ -131,10 +131,10 @@ export const useSettingStore = defineStore({
       return this.plusInfo?.isPlus && this.plusInfo?.expireTime === -1;
     },
     isPlus(): boolean {
-      return this.plusInfo?.isPlus && (this.plusInfo?.expireTime === -1 || this.plusInfo?.expireTime > new Date().getTime());
+      return true;
     },
     isComm(): boolean {
-      return this.plusInfo?.isComm && (this.plusInfo?.expireTime === -1 || this.plusInfo?.expireTime > new Date().getTime());
+      return true;
     },
     isAgent(): boolean {
       return this.siteEnv?.agent?.enabled === true;

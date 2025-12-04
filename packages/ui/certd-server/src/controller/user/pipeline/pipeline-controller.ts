@@ -5,7 +5,7 @@ import { PipelineEntity } from '../../../modules/pipeline/entity/pipeline.js';
 import { HistoryService } from '../../../modules/pipeline/service/history-service.js';
 import { AuthService } from '../../../modules/sys/authority/service/auth-service.js';
 import { SiteInfoService } from '../../../modules/monitor/index.js';
-import { isPlus } from '@certd/plus-core';
+// import { isPlus } from '@certd/plus-core';
 
 /**
  * 证书
@@ -94,14 +94,14 @@ export class PipelineController extends CrudController<PipelineService> {
     const {version} = await this.service.save(bean);
     //是否增加证书监控
     if (bean.addToMonitorEnabled && bean.addToMonitorDomains) {
-      const sysPublicSettings = await this.sysSettingsService.getPublicSettings();
-      if (isPlus() && sysPublicSettings.certDomainAddToMonitorEnabled) {
+      // const sysPublicSettings = await this.sysSettingsService.getPublicSettings();
+      // if (isPlus() && sysPublicSettings.certDomainAddToMonitorEnabled) {
         //增加证书监控
         await this.siteInfoService.doImport({
           text: bean.addToMonitorDomains,
           userId: this.getUserId(),
         });
-      }
+      // }
     }
     return this.ok({id:bean.id,version:version});
   }

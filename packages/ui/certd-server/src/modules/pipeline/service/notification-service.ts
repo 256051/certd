@@ -1,7 +1,7 @@
 import { Inject, Provide, Scope, ScopeEnum } from '@midwayjs/core';
 import {
   BaseService,
-  NeedVIPException,
+  // NeedVIPException,
   SysInstallInfo,
   SysSettingsService,
   SysSiteInfo,
@@ -13,8 +13,8 @@ import { NotificationEntity } from '../entity/notification.js';
 import { NotificationInstanceConfig, notificationRegistry, NotificationSendReq, sendNotification } from '@certd/pipeline';
 import { http, utils } from '@certd/basic';
 import { EmailService } from '../../basic/service/email-service.js';
-import { isComm, isPlus } from '@certd/plus-core';
-
+// import { isComm, isPlus } from '@certd/plus-core';
+import { isComm } from '@certd/plus-core';
 @Provide()
 @Scope(ScopeEnum.Request, { allowDowngrade: true })
 export class NotificationService extends BaseService<NotificationEntity> {
@@ -77,11 +77,11 @@ export class NotificationService extends BaseService<NotificationEntity> {
   }
 
    checkNeedPlus(type: string){
-    const define = this.getDefineByType(type)
+    // const define = this.getDefineByType(type)
      //@ts-ignore
-    if (define.needPlus && !isPlus()) {
-      throw new NeedVIPException("此通知类型为专业版功能，请升级到专业版或以上级别");
-    }
+    // if (define.needPlus && !isPlus()) {
+    //   throw new NeedVIPException("此通知类型为专业版功能，请升级到专业版或以上级别");
+    // }
   }
 
   async getById(id: number, userId: number): Promise<NotificationInstanceConfig> {

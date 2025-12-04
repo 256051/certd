@@ -3,8 +3,8 @@ import type { EmailSend } from '@certd/pipeline';
 import { IEmailService } from '@certd/pipeline';
 
 import { logger } from '@certd/basic';
-import { isComm, isPlus } from '@certd/plus-core';
-
+// import { isComm, isPlus } from '@certd/plus-core';
+import { isComm } from '@certd/plus-core';
 import nodemailer from 'nodemailer';
 import { SendMailOptions } from 'nodemailer';
 import { UserSettingsService } from '../../mine/service/user-settings-service.js';
@@ -39,9 +39,9 @@ export class EmailService implements IEmailService {
   plusService: PlusService;
 
   async sendByPlus(email: EmailSend) {
-    if (!isPlus()) {
-      throw new Error('plus not enabled');
-    }
+    // if (!isPlus()) {
+    //   throw new Error('plus not enabled');
+    // }
 
     /**
      *  userId: number;
@@ -65,14 +65,14 @@ export class EmailService implements IEmailService {
     const emailConf = await getEmailSettings(this.sysSettingsService, this.settingsService);
 
     if (!emailConf.host && emailConf.usePlus == null) {
-      if (isPlus()) {
+      // if (isPlus()) {
         //自动使用plus发邮件
         return await this.sendByPlus(email);
-      }
-      throw new Error('邮件服务器还未设置');
+      // }
+      // throw new Error('邮件服务器还未设置');
     }
 
-    if (emailConf.usePlus && isPlus()) {
+    if (emailConf.usePlus) {
       return await this.sendByPlus(email);
     }
     await this.sendByCustom(emailConf, email);

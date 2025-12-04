@@ -195,16 +195,16 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
         buttons: {
           add: {
             async click() {
-              if (!settingsStore.isPlus) {
-                // 非plus
-                if (crudBinding.value.data.length >= 1) {
-                  notification.error({
-                    message: t("certd.monitor.basicLimitError"),
-                  });
-                  mitter.emit("openVipModal");
-                  return;
-                }
-              }
+              // if (!settingsStore.isPlus) {
+              //   // 非plus
+              //   if (crudBinding.value.data.length >= 1) {
+              //     notification.error({
+              //       message: t("certd.monitor.basicLimitError"),
+              //     });
+              //     mitter.emit("openVipModal");
+              //     return;
+              //   }
+              // }
 
               //检查是否监控站点数量超出限制
               if (settingsStore.isComm && settingsStore.suiteSetting.enabled) {

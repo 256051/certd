@@ -38,7 +38,8 @@ import { CnameRecordService } from "../../cname/service/cname-record-service.js"
 import { PluginConfigGetter } from "../../plugin/service/plugin-config-getter.js";
 import dayjs from "dayjs";
 import { DbAdapter } from "../../db/index.js";
-import { isComm, isPlus } from "@certd/plus-core";
+// import { isComm, isPlus } from "@certd/plus-core";
+import { isComm} from "@certd/plus-core";
 import { logger } from "@certd/basic";
 import { UrlService } from "./url-service.js";
 import { NotificationService } from "./notification-service.js";
@@ -275,20 +276,20 @@ export class PipelineService extends BaseService<PipelineEntity> {
     //     throw new NeedVIPException(`基础版最多只能创建${freeCount}条流水线`);
     //   }
     // }
-    if (isComm()) {
-      //校验pipelineCount
-      const suiteSetting = await this.userSuiteService.getSuiteSetting();
-      if (suiteSetting.enabled) {
-        const userSuite = await this.userSuiteService.getMySuiteDetail(bean.userId);
-        if (userSuite?.pipelineCount.max != -1 && userSuite?.pipelineCount.used + 1 > userSuite?.pipelineCount.max) {
-          throw new NeedSuiteException(`对不起，您最多只能创建${userSuite?.pipelineCount.max}条流水线，请购买或升级套餐`);
-        }
+    // if (isComm()) {
+    //   //校验pipelineCount
+    //   const suiteSetting = await this.userSuiteService.getSuiteSetting();
+    //   if (suiteSetting.enabled) {
+    //     const userSuite = await this.userSuiteService.getMySuiteDetail(bean.userId);
+    //     if (userSuite?.pipelineCount.max != -1 && userSuite?.pipelineCount.used + 1 > userSuite?.pipelineCount.max) {
+    //       throw new NeedSuiteException(`对不起，您最多只能创建${userSuite?.pipelineCount.max}条流水线，请购买或升级套餐`);
+    //     }
 
-        if (userSuite.domainCount.max != -1 && userSuite.domainCount.used + domains.length > userSuite.domainCount.max) {
-          throw new NeedSuiteException(`对不起，您最多只能添加${userSuite.domainCount.max}个域名，请购买或升级套餐`);
-        }
-      }
-    } else {
+    //     if (userSuite.domainCount.max != -1 && userSuite.domainCount.used + domains.length > userSuite.domainCount.max) {
+    //       throw new NeedSuiteException(`对不起，您最多只能添加${userSuite.domainCount.max}个域名，请购买或升级套餐`);
+    //     }
+    //   }
+    // } else {
       //非商业版校验用户最大流水线数量
       const userId = bean.userId;
       const userIsAdmin = await this.userService.isAdmin(userId);
@@ -301,7 +302,7 @@ export class PipelineService extends BaseService<PipelineEntity> {
           throw new NeedVIPException(`普通用户最多只能创建${limitUserPipelineCount}条流水线`);
         }
       }
-    }
+    // }
   }
 
   async foreachPipeline(callback: (pipeline: PipelineEntity) => void) {
@@ -499,12 +500,12 @@ export class PipelineService extends BaseService<PipelineEntity> {
 
 
   async isPipelineValidTimeEnabled(entity: PipelineEntity) {
-    const settings = await this.sysSettingsService.getPublicSettings();
-    if (isPlus() && settings.pipelineValidTimeEnabled){
-      if (entity.validTime > 0 && entity.validTime < Date.now()){
-        return false
-      }
-    }
+    // const settings = await this.sysSettingsService.getPublicSettings();
+    // if (isPlus() && settings.pipelineValidTimeEnabled){
+      // if (entity.validTime > 0 && entity.validTime < Date.now()){
+      //   return false
+      // }
+    // }
     return true
   }
 
@@ -843,9 +844,9 @@ export class PipelineService extends BaseService<PipelineEntity> {
   }
 
   async batchRerun(ids: number[], userId: any) {
-    if (!isPlus()) {
-      throw new NeedVIPException("此功能需要升级专业版");
-    }
+    // if (!isPlus()) {
+    //   throw new NeedVIPException("此功能需要升级专业版");
+    // }
 
     if (!userId || ids.length === 0) {
       return;
@@ -902,21 +903,21 @@ export class PipelineService extends BaseService<PipelineEntity> {
     if (userEntity == null) {
       throw new Error("用户不存在");
     }
-    if (userEntity.status === 0) {
-      const message = `账户${userId}已被禁用，禁止运行流水线`;
-      throw new Error(message);
-    }
-    const sysPublic = await this.sysSettingsService.getPublicSettings();
-    if (isPlus() && sysPublic.userValidTimeEnabled === true) {
+    // if (userEntity.status === 0) {
+    //   const message = `账户${userId}已被禁用，禁止运行流水线`;
+    //   throw new Error(message);
+    // }
+    // const sysPublic = await this.sysSettingsService.getPublicSettings();
+    // if (isPlus() && sysPublic.userValidTimeEnabled === true) {
       //校验用户有效期是否设置
-      if (userEntity.validTime != null && userEntity.validTime > 0) {
-        if (userEntity.validTime < new Date().getTime()) {
-          //用户已过期
-          const message = `账户${userId}已过有效期，禁止运行流水线`;
-          throw new Error(message);
-        }
-      }
-    }
+      // if (userEntity.validTime != null && userEntity.validTime > 0) {
+      //   if (userEntity.validTime < new Date().getTime()) {
+      //     //用户已过期
+      //     const message = `账户${userId}已过有效期，禁止运行流水线`;
+      //     throw new Error(message);
+      //   }
+      // }
+    // }
   }
 
   async createAutoPipeline(req: { domains: string[]; email: string; userId: number ,from:string}) {

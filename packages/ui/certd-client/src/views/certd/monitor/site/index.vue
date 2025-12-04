@@ -8,8 +8,7 @@
             {{ t("certd.monitor.description") }}
             <router-link to="/certd/monitor/setting">{{ t("certd.monitor.settingLink") }}</router-link>
           </div>
-          <div class="flex items-center">
-            {{ t("certd.monitor.limitInfo") }}
+          <div class="flex items-center">          
             <vip-button class="ml-5" mode="nav"></vip-button>
           </div>
         </div>
