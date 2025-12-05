@@ -46,7 +46,7 @@ importers:
   packages/core/acme-client:
     dependencies:
       '@certd/basic':
-        specifier: ^1.37.12
+        specifier: ^1.37.14
         version: link:../basic
       '@peculiar/x509':
         specifier: ^1.11.0
@@ -210,11 +210,11 @@ importers:
   packages/core/pipeline:
     dependencies:
       '@certd/basic':
-        specifier: ^1.37.12
+        specifier: ^1.37.14
         version: link:../basic
       '@certd/plus-core':
-        specifier: ^1.37.12
-        version: link:../../pro/plus-core
+        specifier: ^1.37.14
+        version: 1.37.14
       dayjs:
         specifier: ^1.11.7
         version: 1.11.13
@@ -297,10 +297,10 @@ importers:
     devDependencies:
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.26.1
-        version: 8.32.1(@typescript-eslint/parser@8.32.1(eslint@8.57.0)(typescript@5.8.3))(eslint@8.57.0)(typescript@5.8.3)
+        version: 8.32.1(@typescript-eslint/parser@8.32.1(eslint@8.57.0)(typescript@5.9.3))(eslint@8.57.0)(typescript@5.9.3)
       '@typescript-eslint/parser':
         specifier: ^8.26.1
-        version: 8.32.1(eslint@8.57.0)(typescript@5.8.3)
+        version: 8.32.1(eslint@8.57.0)(typescript@5.9.3)
       prettier:
         specifier: ^2.8.8
         version: 2.8.8
@@ -377,13 +377,13 @@ importers:
     devDependencies:
       '@rollup/plugin-typescript':
         specifier: ^11.0.0
-        version: 11.1.6(rollup@3.29.5)(tslib@2.8.1)(typescript@5.8.3)
+        version: 11.1.6(rollup@3.29.5)(tslib@2.8.1)(typescript@5.9.3)
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.26.1
-        version: 8.32.1(@typescript-eslint/parser@8.32.1(eslint@8.57.0)(typescript@5.8.3))(eslint@8.57.0)(typescript@5.8.3)
+        version: 8.32.1(@typescript-eslint/parser@8.32.1(eslint@8.57.0)(typescript@5.9.3))(eslint@8.57.0)(typescript@5.9.3)
       '@typescript-eslint/parser':
         specifier: ^8.26.1
-        version: 8.32.1(eslint@8.57.0)(typescript@5.8.3)
+        version: 8.32.1(eslint@8.57.0)(typescript@5.9.3)
       chai:
         specifier: ^4.1.2
         version: 4.5.0
@@ -409,7 +409,7 @@ importers:
   packages/libs/lib-k8s:
     dependencies:
       '@certd/basic':
-        specifier: ^1.37.12
+        specifier: ^1.37.14
         version: link:../../core/basic
       '@kubernetes/client-node':
         specifier: 0.21.0
@@ -449,20 +449,20 @@ importers:
   packages/libs/lib-server:
     dependencies:
       '@certd/acme-client':
-        specifier: ^1.37.12
+        specifier: ^1.37.14
         version: link:../../core/acme-client
       '@certd/basic':
-        specifier: ^1.37.12
+        specifier: ^1.37.14
         version: link:../../core/basic
       '@certd/pipeline':
-        specifier: ^1.37.12
+        specifier: ^1.37.14
         version: link:../../core/pipeline
       '@certd/plugin-lib':
-        specifier: ^1.37.12
+        specifier: ^1.37.14
         version: link:../../plugins/plugin-lib
       '@certd/plus-core':
-        specifier: ^1.37.12
-        version: link:../../pro/plus-core
+        specifier: ^1.37.14
+        version: 1.37.14
       '@midwayjs/cache':
         specifier: 3.14.0
         version: 3.14.0
@@ -607,16 +607,16 @@ importers:
   packages/plugins/plugin-cert:
     dependencies:
       '@certd/acme-client':
-        specifier: ^1.37.12
+        specifier: ^1.37.14
         version: link:../../core/acme-client
       '@certd/basic':
-        specifier: ^1.37.12
+        specifier: ^1.37.14
         version: link:../../core/basic
       '@certd/pipeline':
-        specifier: ^1.37.12
+        specifier: ^1.37.14
         version: link:../../core/pipeline
       '@certd/plugin-lib':
-        specifier: ^1.37.12
+        specifier: ^1.37.14
         version: link:../plugin-lib
       '@google-cloud/publicca':
         specifier: ^1.3.0
@@ -695,10 +695,10 @@ importers:
         specifier: ^3.787.0
         version: 3.810.0(aws-crt@1.26.2)
       '@certd/basic':
-        specifier: ^1.37.12
+        specifier: ^1.37.14
         version: link:../../core/basic
       '@certd/pipeline':
-        specifier: ^1.37.12
+        specifier: ^1.37.14
         version: link:../../core/pipeline
       '@kubernetes/client-node':
         specifier: 0.21.0
@@ -773,285 +773,6 @@ importers:
       prettier:
         specifier: ^2.8.8
         version: 2.8.8
-      tslib:
-        specifier: ^2.8.1
-        version: 2.8.1
-      typescript:
-        specifier: ^5.4.2
-        version: 5.8.3
-
-  packages/pro/commercial-core:
-    dependencies:
-      '@certd/basic':
-        specifier: ^1.37.12
-        version: link:../../core/basic
-      '@certd/lib-server':
-        specifier: ^1.37.12
-        version: link:../../libs/lib-server
-      '@certd/pipeline':
-        specifier: ^1.37.12
-        version: link:../../core/pipeline
-      '@certd/plugin-plus':
-        specifier: ^1.37.12
-        version: link:../plugin-plus
-      '@certd/plus-core':
-        specifier: ^1.37.12
-        version: link:../plus-core
-      '@midwayjs/core':
-        specifier: 3.20.11
-        version: 3.20.11
-      '@midwayjs/koa':
-        specifier: 3.20.13
-        version: 3.20.13
-      '@midwayjs/logger':
-        specifier: 3.4.2
-        version: 3.4.2
-      '@midwayjs/typeorm':
-        specifier: 3.20.11
-        version: 3.20.11
-      alipay-sdk:
-        specifier: ^4.13.0
-        version: 4.14.0
-      dayjs:
-        specifier: ^1.11.7
-        version: 1.11.13
-      typeorm:
-        specifier: ^0.3.20
-        version: 0.3.24(better-sqlite3@11.10.0)(mysql2@3.14.1)(pg@8.16.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@18.19.100)(typescript@5.8.3))
-      wechatpay-node-v3:
-        specifier: ^2.2.1
-        version: 2.2.1
-    devDependencies:
-      '@rollup/plugin-json':
-        specifier: ^6.0.0
-        version: 6.1.0(rollup@3.29.5)
-      '@rollup/plugin-terser':
-        specifier: ^0.4.3
-        version: 0.4.4(rollup@3.29.5)
-      '@rollup/plugin-typescript':
-        specifier: ^11.0.0
-        version: 11.1.6(rollup@3.29.5)(tslib@2.8.1)(typescript@5.8.3)
-      '@types/chai':
-        specifier: ^4.3.3
-        version: 4.3.20
-      '@types/node':
-        specifier: ^18
-        version: 18.19.100
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^8.26.1
-        version: 8.32.1(@typescript-eslint/parser@8.32.1(eslint@8.57.0)(typescript@5.8.3))(eslint@8.57.0)(typescript@5.8.3)
-      '@typescript-eslint/parser':
-        specifier: ^8.26.1
-        version: 8.32.1(eslint@8.57.0)(typescript@5.8.3)
-      eslint:
-        specifier: ^8.24.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.2.1
-        version: 4.2.1(eslint-config-prettier@8.10.0(eslint@8.57.0))(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.8.8
-        version: 2.8.8
-      rimraf:
-        specifier: ^5.0.5
-        version: 5.0.10
-      rollup:
-        specifier: ^3.7.4
-        version: 3.29.5
-      rollup-plugin-visualizer:
-        specifier: ^5.8.2
-        version: 5.14.0(rollup@3.29.5)
-      tslib:
-        specifier: ^2.8.1
-        version: 2.8.1
-      typescript:
-        specifier: ^5.4.2
-        version: 5.8.3
-
-  packages/pro/plugin-plus:
-    dependencies:
-      '@alicloud/pop-core':
-        specifier: ^1.7.10
-        version: 1.8.0
-      '@baiducloud/sdk':
-        specifier: ^1.0.2
-        version: 1.0.3
-      '@certd/basic':
-        specifier: ^1.37.12
-        version: link:../../core/basic
-      '@certd/lib-k8s':
-        specifier: ^1.37.12
-        version: link:../../libs/lib-k8s
-      '@certd/pipeline':
-        specifier: ^1.37.12
-        version: link:../../core/pipeline
-      '@certd/plugin-cert':
-        specifier: ^1.37.12
-        version: link:../../plugins/plugin-cert
-      '@certd/plugin-lib':
-        specifier: ^1.37.12
-        version: link:../../plugins/plugin-lib
-      '@certd/plus-core':
-        specifier: ^1.37.12
-        version: link:../plus-core
-      ali-oss:
-        specifier: ^6.21.0
-        version: 6.23.0
-      baidu-aip-sdk:
-        specifier: ^4.16.16
-        version: 4.16.16
-      basic-ftp:
-        specifier: ^5.0.5
-        version: 5.0.5
-      cos-nodejs-sdk-v5:
-        specifier: ^2.14.6
-        version: 2.14.7
-      crypto-js:
-        specifier: ^4.2.0
-        version: 4.2.0
-      dayjs:
-        specifier: ^1.11.7
-        version: 1.11.13
-      form-data:
-        specifier: ^4.0.0
-        version: 4.0.2
-      https-proxy-agent:
-        specifier: ^7.0.5
-        version: 7.0.6
-      js-yaml:
-        specifier: ^4.1.0
-        version: 4.1.0
-      jsencrypt:
-        specifier: ^3.3.2
-        version: 3.3.2
-      jsrsasign:
-        specifier: ^11.1.0
-        version: 11.1.0
-      qiniu:
-        specifier: ^7.12.0
-        version: 7.14.0
-      tencentcloud-sdk-nodejs:
-        specifier: ^4.0.44
-        version: 4.1.37(encoding@0.1.13)
-    devDependencies:
-      '@rollup/plugin-json':
-        specifier: ^6.0.0
-        version: 6.1.0(rollup@3.29.5)
-      '@rollup/plugin-terser':
-        specifier: ^0.4.3
-        version: 0.4.4(rollup@3.29.5)
-      '@rollup/plugin-typescript':
-        specifier: ^11.0.0
-        version: 11.1.6(rollup@3.29.5)(tslib@2.8.1)(typescript@5.8.3)
-      '@types/ali-oss':
-        specifier: ^6.16.11
-        version: 6.16.11
-      '@types/chai':
-        specifier: ^4.3.10
-        version: 4.3.20
-      '@types/mocha':
-        specifier: ^10.0.7
-        version: 10.0.10
-      '@types/node':
-        specifier: ^18
-        version: 18.19.100
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^8.26.1
-        version: 8.32.1(@typescript-eslint/parser@8.32.1(eslint@8.57.0)(typescript@5.8.3))(eslint@8.57.0)(typescript@5.8.3)
-      '@typescript-eslint/parser':
-        specifier: ^8.26.1
-        version: 8.32.1(eslint@8.57.0)(typescript@5.8.3)
-      chai:
-        specifier: 4.3.10
-        version: 4.3.10
-      eslint:
-        specifier: ^8.41.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.8.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.2.1
-        version: 4.2.1(eslint-config-prettier@8.10.0(eslint@8.57.0))(eslint@8.57.0)(prettier@2.8.8)
-      mocha:
-        specifier: ^10.2.0
-        version: 10.8.2
-      prettier:
-        specifier: ^2.8.8
-        version: 2.8.8
-      rimraf:
-        specifier: ^5.0.5
-        version: 5.0.10
-      rollup:
-        specifier: ^3.7.4
-        version: 3.29.5
-      tslib:
-        specifier: ^2.8.1
-        version: 2.8.1
-      typescript:
-        specifier: ^5.4.2
-        version: 5.8.3
-
-  packages/pro/plus-core:
-    dependencies:
-      '@certd/basic':
-        specifier: ^1.37.12
-        version: link:../../core/basic
-      dayjs:
-        specifier: ^1.11.7
-        version: 1.11.13
-    devDependencies:
-      '@rollup/plugin-json':
-        specifier: ^6.0.0
-        version: 6.1.0(rollup@3.29.5)
-      '@rollup/plugin-terser':
-        specifier: ^0.4.3
-        version: 0.4.4(rollup@3.29.5)
-      '@rollup/plugin-typescript':
-        specifier: ^11.0.0
-        version: 11.1.6(rollup@3.29.5)(tslib@2.8.1)(typescript@5.8.3)
-      '@types/chai':
-        specifier: ^4.3.10
-        version: 4.3.20
-      '@types/mocha':
-        specifier: ^10.0.7
-        version: 10.0.10
-      '@types/node':
-        specifier: ^18
-        version: 18.19.100
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^8.26.1
-        version: 8.32.1(@typescript-eslint/parser@8.32.1(eslint@8.57.0)(typescript@5.8.3))(eslint@8.57.0)(typescript@5.8.3)
-      '@typescript-eslint/parser':
-        specifier: ^8.26.1
-        version: 8.32.1(eslint@8.57.0)(typescript@5.8.3)
-      chai:
-        specifier: 4.3.10
-        version: 4.3.10
-      eslint:
-        specifier: ^8.41.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.8.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.2.1
-        version: 4.2.1(eslint-config-prettier@8.10.0(eslint@8.57.0))(eslint@8.57.0)(prettier@2.8.8)
-      mocha:
-        specifier: ^10.2.0
-        version: 10.8.2
-      prettier:
-        specifier: ^2.8.8
-        version: 2.8.8
-      rimraf:
-        specifier: ^5.0.5
-        version: 5.0.10
-      rollup:
-        specifier: ^3.7.4
-        version: 3.29.5
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
@@ -1294,10 +1015,10 @@ importers:
         version: 0.1.3(zod@3.24.4)
     devDependencies:
       '@certd/lib-iframe':
-        specifier: ^1.37.12
+        specifier: ^1.37.14
         version: link:../../libs/lib-iframe
       '@certd/pipeline':
-        specifier: ^1.37.12
+        specifier: ^1.37.14
         version: link:../../core/pipeline
       '@rollup/plugin-commonjs':
         specifier: ^25.0.7
@@ -1480,47 +1201,47 @@ importers:
         specifier: ^3.705.0
         version: 3.810.0(aws-crt@1.26.2)
       '@certd/acme-client':
-        specifier: ^1.37.12
+        specifier: ^1.37.14
         version: link:../../core/acme-client
       '@certd/basic':
-        specifier: ^1.37.12
+        specifier: ^1.37.14
         version: link:../../core/basic
       '@certd/commercial-core':
-        specifier: ^1.37.12
-        version: link:../../pro/commercial-core
+        specifier: ^1.37.14
+        version: 1.37.14(better-sqlite3@11.10.0)(encoding@0.1.13)(mysql2@3.14.1)(pg@8.16.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@18.19.100)(typescript@5.8.3))
       '@certd/cv4pve-api-javascript':
         specifier: ^8.4.2
         version: 8.4.2
       '@certd/jdcloud':
-        specifier: ^1.37.12
+        specifier: ^1.37.14
         version: link:../../libs/lib-jdcloud
       '@certd/lib-huawei':
-        specifier: ^1.37.12
+        specifier: ^1.37.14
         version: link:../../libs/lib-huawei
       '@certd/lib-k8s':
-        specifier: ^1.37.12
+        specifier: ^1.37.14
         version: link:../../libs/lib-k8s
       '@certd/lib-server':
-        specifier: ^1.37.12
+        specifier: ^1.37.14
         version: link:../../libs/lib-server
       '@certd/midway-flyway-js':
-        specifier: ^1.37.12
+        specifier: ^1.37.14
         version: link:../../libs/midway-flyway-js
       '@certd/pipeline':
-        specifier: ^1.37.12
+        specifier: ^1.37.14
         version: link:../../core/pipeline
       '@certd/plugin-cert':
-        specifier: ^1.37.12
+        specifier: ^1.37.14
         version: link:../../plugins/plugin-cert
       '@certd/plugin-lib':
-        specifier: ^1.37.12
+        specifier: ^1.37.14
         version: link:../../plugins/plugin-lib
       '@certd/plugin-plus':
-        specifier: ^1.37.12
-        version: link:../../pro/plugin-plus
+        specifier: ^1.37.14
+        version: 1.37.14(encoding@0.1.13)
       '@certd/plus-core':
-        specifier: ^1.37.12
-        version: link:../../pro/plus-core
+        specifier: ^1.37.14
+        version: 1.37.14
       '@huaweicloud/huaweicloud-sdk-cdn':
         specifier: ^3.1.120
         version: 3.1.149
@@ -2769,8 +2490,17 @@ packages:
   '@better-scroll/zoom@2.5.1':
     resolution: {integrity: sha512-aGvFY5ooeZWS4RcxQLD+pGLpQHQxpPy0sMZV3yadcd2QK53PK9gS4Dp+BYfRv8lZ4/P2LoNEhr6Wq1DN6+uPlA==}
 
+  '@certd/commercial-core@1.37.14':
+    resolution: {integrity: sha512-Q6M/w3Ot+wV+yJzr2b8AtrtQHHD9ImhkjWyIhZ88cwkZL2hN4fIoigcPc1fIr1Wl5vJPhdcxRveNSE8HV15lxQ==}
+
   '@certd/cv4pve-api-javascript@8.4.2':
     resolution: {integrity: sha512-udGce7ewrVl4DmZvX+17PjsnqsdDIHEDatr8QP0AVrY2p+8JkaSPW4mXCKiLGf82C9K2+GXgT+qNIqgW7tfF9Q==}
+
+  '@certd/plugin-plus@1.37.14':
+    resolution: {integrity: sha512-B45ymXDhn8nl/JsuOcZHEIPURwCWkomiSIIrP+Wi7mr3R7oUaqs0+czHVXME8e2jdRvVeRbAg3418ilSqCubqw==}
+
+  '@certd/plus-core@1.37.14':
+    resolution: {integrity: sha512-1xMJCaCvaaOvmkckz79ftU7bNF4tR9Gg3TFGgVPEQ3d/ik1/97Z+MNxVEKnOGNGAuXX+Y5ZneJMI+FgdcLsQeg==}
 
   '@certd/vue-js-cron-core@6.0.3':
     resolution: {integrity: sha512-kqzoAMhYz9j6FGNWEODRYtt4NpUEUwjpkU89z5WVg2tCtOcI5VhwyUGOd8AxiBCRfd6PtXvzuqw85PaOps9wrQ==}
@@ -4137,56 +3867,67 @@ packages:
     resolution: {integrity: sha512-u72Mzc6jyJwKjJbZZcIYmd9bumJu7KNmHYdue43vT1rXPm2rITwmPWF0mmPzLm9/vJWxIRbao/jrQmxTO0Sm9w==}
     cpu: [arm]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-arm-musleabihf@4.50.0':
     resolution: {integrity: sha512-S4UefYdV0tnynDJV1mdkNawp0E5Qm2MtSs330IyHgaccOFrwqsvgigUD29uT+B/70PDY1eQ3t40+xf6wIvXJyg==}
     cpu: [arm]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-arm64-gnu@4.50.0':
     resolution: {integrity: sha512-1EhkSvUQXJsIhk4msxP5nNAUWoB4MFDHhtc4gAYvnqoHlaL9V3F37pNHabndawsfy/Tp7BPiy/aSa6XBYbaD1g==}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-arm64-musl@4.50.0':
     resolution: {integrity: sha512-EtBDIZuDtVg75xIPIK1l5vCXNNCIRM0OBPUG+tbApDuJAy9mKago6QxX+tfMzbCI6tXEhMuZuN1+CU8iDW+0UQ==}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-loongarch64-gnu@4.50.0':
     resolution: {integrity: sha512-BGYSwJdMP0hT5CCmljuSNx7+k+0upweM2M4YGfFBjnFSZMHOLYR0gEEj/dxyYJ6Zc6AiSeaBY8dWOa11GF/ppQ==}
     cpu: [loong64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-ppc64-gnu@4.50.0':
     resolution: {integrity: sha512-I1gSMzkVe1KzAxKAroCJL30hA4DqSi+wGc5gviD0y3IL/VkvcnAqwBf4RHXHyvH66YVHxpKO8ojrgc4SrWAnLg==}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-riscv64-gnu@4.50.0':
     resolution: {integrity: sha512-bSbWlY3jZo7molh4tc5dKfeSxkqnf48UsLqYbUhnkdnfgZjgufLS/NTA8PcP/dnvct5CCdNkABJ56CbclMRYCA==}
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-riscv64-musl@4.50.0':
     resolution: {integrity: sha512-LSXSGumSURzEQLT2e4sFqFOv3LWZsEF8FK7AAv9zHZNDdMnUPYH3t8ZlaeYYZyTXnsob3htwTKeWtBIkPV27iQ==}
     cpu: [riscv64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-s390x-gnu@4.50.0':
     resolution: {integrity: sha512-CxRKyakfDrsLXiCyucVfVWVoaPA4oFSpPpDwlMcDFQvrv3XY6KEzMtMZrA+e/goC8xxp2WSOxHQubP8fPmmjOQ==}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-x64-gnu@4.50.0':
     resolution: {integrity: sha512-8PrJJA7/VU8ToHVEPu14FzuSAqVKyo5gg/J8xUerMbyNkWkO9j2ExBho/68RnJsMGNJq4zH114iAttgm7BZVkA==}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-x64-musl@4.50.0':
     resolution: {integrity: sha512-SkE6YQp+CzpyOrbw7Oc4MgXFvTw2UIBElvAvLCo230pyxOLmYwRPwZ/L5lBe/VW/qT1ZgND9wJfOsdy0XptRvw==}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-openharmony-arm64@4.50.0':
     resolution: {integrity: sha512-PZkNLPfvXeIOgJWA804zjSFH7fARBBCpCXxgkGDRjjAhRLOR8o0IGS01ykh5GYfod4c2yiiREuDM8iZ+pVsT+Q==}
@@ -8707,6 +8448,7 @@ packages:
   keygrip@1.1.0:
     resolution: {integrity: sha512-iYSchDJ+liQ8iwbSI2QqsQOvqv58eJCEanyJPJi+Khyu8smkcKSFUCbPwzFcL7YVtZ6eONjqRX/38caJ7QjRAQ==}
     engines: {node: '>= 0.6'}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   keyv@3.1.0:
     resolution: {integrity: sha512-9ykJ/46SN/9KPM/sichzQ7OvXyGDYKGTaDlKMGCAlg2UK8KRy4jb0d8sFc+0Tt0YYnThq8X2RZgCg74RPxgcVA==}
@@ -12033,6 +11775,11 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
+  typescript@5.9.3:
+    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
   typical@2.6.1:
     resolution: {integrity: sha512-ofhi8kjIje6npGozTip9Fr8iecmYfEbS06i0JnIg+rh51KakryWF4+jX8lLKZVhy6N+ID45WYSFCxPOdTWCzNg==}
 
@@ -14808,11 +14555,83 @@ snapshots:
     dependencies:
       '@better-scroll/core': 2.5.1
 
+  '@certd/commercial-core@1.37.14(better-sqlite3@11.10.0)(encoding@0.1.13)(mysql2@3.14.1)(pg@8.16.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@18.19.100)(typescript@5.8.3))':
+    dependencies:
+      '@certd/basic': link:packages/core/basic
+      '@certd/lib-server': link:packages/libs/lib-server
+      '@certd/pipeline': link:packages/core/pipeline
+      '@certd/plugin-plus': 1.37.14(encoding@0.1.13)
+      '@certd/plus-core': 1.37.14
+      '@midwayjs/core': 3.20.11
+      '@midwayjs/koa': 3.20.13
+      '@midwayjs/logger': 3.4.2
+      '@midwayjs/typeorm': 3.20.11
+      alipay-sdk: 4.14.0
+      dayjs: 1.11.13
+      typeorm: 0.3.24(better-sqlite3@11.10.0)(mysql2@3.14.1)(pg@8.16.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@18.19.100)(typescript@5.8.3))
+      wechatpay-node-v3: 2.2.1
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - babel-plugin-macros
+      - better-sqlite3
+      - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - proxy-agent
+      - redis
+      - reflect-metadata
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+
   '@certd/cv4pve-api-javascript@8.4.2':
     dependencies:
       debug: 4.4.1(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
+
+  '@certd/plugin-plus@1.37.14(encoding@0.1.13)':
+    dependencies:
+      '@alicloud/pop-core': 1.8.0
+      '@baiducloud/sdk': 1.0.3
+      '@certd/basic': link:packages/core/basic
+      '@certd/lib-k8s': link:packages/libs/lib-k8s
+      '@certd/pipeline': link:packages/core/pipeline
+      '@certd/plugin-cert': link:packages/plugins/plugin-cert
+      '@certd/plugin-lib': link:packages/plugins/plugin-lib
+      '@certd/plus-core': 1.37.14
+      ali-oss: 6.23.0
+      baidu-aip-sdk: 4.16.16
+      basic-ftp: 5.0.5
+      cos-nodejs-sdk-v5: 2.14.7
+      crypto-js: 4.2.0
+      dayjs: 1.11.13
+      form-data: 4.0.2
+      https-proxy-agent: 7.0.6
+      js-yaml: 4.1.0
+      jsencrypt: 3.3.2
+      jsrsasign: 11.1.0
+      qiniu: 7.14.0
+      tencentcloud-sdk-nodejs: 4.1.112(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
+      - proxy-agent
+      - supports-color
+
+  '@certd/plus-core@1.37.14':
+    dependencies:
+      '@certd/basic': link:packages/core/basic
+      dayjs: 1.11.13
 
   '@certd/vue-js-cron-core@6.0.3':
     dependencies:
@@ -16453,6 +16272,15 @@ snapshots:
       rollup: 3.29.5
       tslib: 2.8.1
 
+  '@rollup/plugin-typescript@11.1.6(rollup@3.29.5)(tslib@2.8.1)(typescript@5.9.3)':
+    dependencies:
+      '@rollup/pluginutils': 5.1.4(rollup@3.29.5)
+      resolve: 1.22.10
+      typescript: 5.9.3
+    optionalDependencies:
+      rollup: 3.29.5
+      tslib: 2.8.1
+
   '@rollup/pluginutils@4.2.1':
     dependencies:
       estree-walker: 2.0.2
@@ -17542,6 +17370,23 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@typescript-eslint/eslint-plugin@8.32.1(@typescript-eslint/parser@8.32.1(eslint@8.57.0)(typescript@5.9.3))(eslint@8.57.0)(typescript@5.9.3)':
+    dependencies:
+      '@eslint-community/regexpp': 4.12.1
+      '@typescript-eslint/parser': 8.32.1(eslint@8.57.0)(typescript@5.9.3)
+      '@typescript-eslint/scope-manager': 8.32.1
+      '@typescript-eslint/type-utils': 8.32.1(eslint@8.57.0)(typescript@5.9.3)
+      '@typescript-eslint/utils': 8.32.1(eslint@8.57.0)(typescript@5.9.3)
+      '@typescript-eslint/visitor-keys': 8.32.1
+      eslint: 8.57.0
+      graphemer: 1.4.0
+      ignore: 7.0.4
+      natural-compare: 1.4.0
+      ts-api-utils: 2.1.0(typescript@5.9.3)
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - supports-color
+
   '@typescript-eslint/parser@5.62.0(eslint@7.32.0)(typescript@5.8.3)':
     dependencies:
       '@typescript-eslint/scope-manager': 5.62.0
@@ -17576,6 +17421,18 @@ snapshots:
       debug: 4.4.1(supports-color@8.1.1)
       eslint: 8.57.0
       typescript: 5.8.3
+    transitivePeerDependencies:
+      - supports-color
+
+  '@typescript-eslint/parser@8.32.1(eslint@8.57.0)(typescript@5.9.3)':
+    dependencies:
+      '@typescript-eslint/scope-manager': 8.32.1
+      '@typescript-eslint/types': 8.32.1
+      '@typescript-eslint/typescript-estree': 8.32.1(typescript@5.9.3)
+      '@typescript-eslint/visitor-keys': 8.32.1
+      debug: 4.4.1(supports-color@8.1.1)
+      eslint: 8.57.0
+      typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
 
@@ -17629,6 +17486,17 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@typescript-eslint/type-utils@8.32.1(eslint@8.57.0)(typescript@5.9.3)':
+    dependencies:
+      '@typescript-eslint/typescript-estree': 8.32.1(typescript@5.9.3)
+      '@typescript-eslint/utils': 8.32.1(eslint@8.57.0)(typescript@5.9.3)
+      debug: 4.4.1(supports-color@8.1.1)
+      eslint: 8.57.0
+      ts-api-utils: 2.1.0(typescript@5.9.3)
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - supports-color
+
   '@typescript-eslint/types@5.62.0': {}
 
   '@typescript-eslint/types@7.18.0': {}
@@ -17678,6 +17546,20 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@typescript-eslint/typescript-estree@8.32.1(typescript@5.9.3)':
+    dependencies:
+      '@typescript-eslint/types': 8.32.1
+      '@typescript-eslint/visitor-keys': 8.32.1
+      debug: 4.4.1(supports-color@8.1.1)
+      fast-glob: 3.3.3
+      is-glob: 4.0.3
+      minimatch: 9.0.5
+      semver: 7.7.2
+      ts-api-utils: 2.1.0(typescript@5.9.3)
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - supports-color
+
   '@typescript-eslint/utils@5.62.0(eslint@7.32.0)(typescript@5.8.3)':
     dependencies:
       '@eslint-community/eslint-utils': 4.7.0(eslint@7.32.0)
@@ -17712,6 +17594,17 @@ snapshots:
       '@typescript-eslint/typescript-estree': 8.32.1(typescript@5.8.3)
       eslint: 8.57.0
       typescript: 5.8.3
+    transitivePeerDependencies:
+      - supports-color
+
+  '@typescript-eslint/utils@8.32.1(eslint@8.57.0)(typescript@5.9.3)':
+    dependencies:
+      '@eslint-community/eslint-utils': 4.7.0(eslint@8.57.0)
+      '@typescript-eslint/scope-manager': 8.32.1
+      '@typescript-eslint/types': 8.32.1
+      '@typescript-eslint/typescript-estree': 8.32.1(typescript@5.9.3)
+      eslint: 8.57.0
+      typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
 
@@ -24513,15 +24406,6 @@ snapshots:
       hash-base: 3.1.0
       inherits: 2.0.4
 
-  rollup-plugin-visualizer@5.14.0(rollup@3.29.5):
-    dependencies:
-      open: 8.4.2
-      picomatch: 4.0.2
-      source-map: 0.7.4
-      yargs: 17.7.2
-    optionalDependencies:
-      rollup: 3.29.5
-
   rollup-plugin-visualizer@5.14.0(rollup@4.50.0):
     dependencies:
       open: 8.4.2
@@ -25519,6 +25403,10 @@ snapshots:
     dependencies:
       typescript: 5.8.3
 
+  ts-api-utils@2.1.0(typescript@5.9.3):
+    dependencies:
+      typescript: 5.9.3
+
   ts-interface-checker@0.1.13: {}
 
   ts-node@10.9.2(@types/node@18.19.100)(typescript@5.8.3):
@@ -25735,6 +25623,8 @@ snapshots:
   typescript@4.9.5: {}
 
   typescript@5.8.3: {}
+
+  typescript@5.9.3: {}
 
   typical@2.6.1: {}
 

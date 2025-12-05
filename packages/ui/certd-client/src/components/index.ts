@@ -1,6 +1,5 @@
 import PiContainer from "./container.vue";
 import TextEditable from "./editable.vue";
-import vip from "./vip-button/install.js";
 import { CheckCircleOutlined, InfoCircleOutlined, UndoOutlined } from "@ant-design/icons-vue";
 import CronEditor from "./cron-editor/index.vue";
 import FoldBox from "./fold-box.vue";
@@ -43,7 +42,6 @@ export default {
     app.component("LoadingButton", LoadingButton);
     app.component("IconSelect", IconSelect);
     app.component("ExpiresTimeText", ExpiresTimeText);
-    app.use(vip);
     app.use(Plugins);
   },
 };

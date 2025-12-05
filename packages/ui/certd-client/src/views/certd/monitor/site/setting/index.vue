@@ -32,7 +32,6 @@
         <a-form-item :label="t('certd.monitor.setting.monitorCronSetting')" :name="['cron']">
           <div class="flex flex-baseline">
             <cron-editor v-model="formState.cron" :disabled="!settingsStore.isPlus" :allow-every-min="userStore.isAdmin" />
-            <vip-button class="ml-5" mode="button"></vip-button>
           </div>
           <div class="helper">{{ t("certd.monitor.setting.cronTrigger") }}</div>
         </a-form-item>

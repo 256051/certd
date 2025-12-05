@@ -5,7 +5,6 @@
         {{ t("certd.template.title") }}
         <span class="ml-10 sub flex items-center">
           <span>{{ t("certd.template.intro") }} </span>
-          <vip-button class="ml-10" mode="button" />
         </span>
       </div>
     </template>

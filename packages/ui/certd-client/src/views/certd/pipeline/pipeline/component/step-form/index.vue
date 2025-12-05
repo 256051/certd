@@ -54,7 +54,6 @@
                         <template #title>
                           <fs-icon class="plugin-icon" :icon="item.icon || 'clarity:plugin-line'"></fs-icon>
                           <span class="title" :title="item.title">{{ item.title }}</span>
-                          <vip-button v-if="item.needPlus" mode="icon" />
                         </template>
                         <template #description>
                           <span :title="item.desc" v-html="transformDesc(item.desc)"></span>

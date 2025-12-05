@@ -12,8 +12,9 @@ export function createSelfCertificate(opts: { crtPath: string; keyPath: string }
   const cert = forge.pki.createCertificate();
   cert.publicKey = keypair.publicKey;
   cert.serialNumber = '01';
-  cert.validFrom = new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(); // 1天前
-  cert.validTo = new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 10).toISOString(); // 10年后
+  //## 没有参数
+  // cert.validFrom = new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(); // 1天前
+  // cert.validTo = new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 10).toISOString(); // 10年后
   // 创建主题
   const attrs = [
     {

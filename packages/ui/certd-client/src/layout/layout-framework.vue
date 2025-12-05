@@ -30,7 +30,6 @@
             <span class="ml-5">{{ menu.title }} </span>
           </div>
           <tutorial-button v-if="!settingStore.isComm" class="flex-center header-btn" />
-          <vip-button class="flex-center header-btn" mode="nav" />
         </div>
         <div class="header-right header-buttons">
           <!--          <button-->

@@ -11,7 +11,6 @@
       <a-form-item :label="t('certd.sys.setting.pipelineValidTimeEnabled')" :name="['public', 'pipelineValidTimeEnabled']">
         <div class="flex items-center">
           <a-switch v-model:checked="formState.public.pipelineValidTimeEnabled" :disabled="!settingsStore.isPlus" />
-          <vip-button class="ml-5" mode="button"></vip-button>
         </div>
 
         <div class="helper">{{ t("certd.sys.setting.pipelineValidTimeEnabledHelper") }}</div>
@@ -19,7 +18,6 @@
       <a-form-item :label="t('certd.sys.setting.certDomainAddToMonitorEnabled')" :name="['public', 'certDomainAddToMonitorEnabled']">
         <div class="flex items-center">
           <a-switch v-model:checked="formState.public.certDomainAddToMonitorEnabled" :disabled="!settingsStore.isPlus" />
-          <vip-button class="ml-5" mode="button"></vip-button>
         </div>
         <div class="helper">{{ t("certd.sys.setting.certDomainAddToMonitorEnabledHelper") }}</div>
       </a-form-item>
@@ -27,7 +25,6 @@
       <a-form-item :label="t('certd.sys.setting.fixedCertExpireDays')" :name="['public', 'fixedCertExpireDays']">
         <div class="flex items-center">
           <a-input-number v-model:value="formState.public.fixedCertExpireDays" :placeholder="t('certd.sys.setting.fixedCertExpireDaysRecommend')" />
-          <vip-button class="ml-5" mode="button"></vip-button>
         </div>
         <div class="helper">{{ t("certd.sys.setting.fixedCertExpireDaysHelper") }}</div>
       </a-form-item>

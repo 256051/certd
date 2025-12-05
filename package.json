@@ -1,5 +1,5 @@
 {
-  "name": "root",
+  "name": "certd",
   "version": "1.20.4",
   "private": true,
   "type": "module",

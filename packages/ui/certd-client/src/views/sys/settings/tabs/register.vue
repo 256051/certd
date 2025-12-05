@@ -10,7 +10,6 @@
       <a-form-item :label="t('certd.enableUserValidityPeriod')" :name="['public', 'userValidTimeEnabled']">
         <div class="flex-o">
           <a-switch v-model:checked="formState.public.userValidTimeEnabled" :disabled="!settingsStore.isPlus" />
-          <vip-button class="ml-5" mode="button"></vip-button>
         </div>
         <div class="helper">{{ t("certd.userValidityPeriodHelper") }}</div>
       </a-form-item>
@@ -22,7 +21,6 @@
         <a-form-item :label="t('certd.enableEmailRegistration')" :name="['public', 'emailRegisterEnabled']">
           <div class="flex-o">
             <a-switch v-model:checked="formState.public.emailRegisterEnabled" :disabled="!settingsStore.isPlus" :title="t('certd.proFeature')" />
-            <vip-button class="ml-5" mode="button"></vip-button>
           </div>
           <div class="helper">
             <router-link to="/sys/settings/email">{{ t("certd.emailServerSetup") }}</router-link>
@@ -31,7 +29,6 @@
         <a-form-item :label="t('certd.enableSmsLoginRegister')" :name="['public', 'smsLoginEnabled']">
           <div class="flex-o">
             <a-switch v-model:checked="formState.public.smsLoginEnabled" :disabled="!settingsStore.isComm" :title="t('certd.commFeature')" />
-            <vip-button class="ml-5" mode="comm"></vip-button>
           </div>
         </a-form-item>
         <template v-if="formState.public.smsLoginEnabled">

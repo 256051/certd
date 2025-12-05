@@ -144,17 +144,6 @@ export const sysResources = [
         },
       },
       {
-        title: "certd.sysResources.accountBind",
-        name: "AccountBind",
-        path: "/sys/account",
-        component: "/sys/account/index.vue",
-        meta: {
-          icon: "ion:golf-outline",
-          permission: "sys:settings:view",
-          keepAlive: true,
-        },
-      },
-      {
         title: "certd.sysResources.permissionManager",
         name: "PermissionManager",
         path: "/sys/authority/permission",
@@ -186,68 +175,6 @@ export const sysResources = [
           permission: "sys:auth:user:view",
           keepAlive: true,
         },
-      },
-
-      {
-        title: "certd.sysResources.suiteManager",
-        name: "SuiteManager",
-        path: "/sys/suite",
-        redirect: "/sys/suite/setting",
-        meta: {
-          icon: "ion:cart-outline",
-          permission: "sys:settings:edit",
-          show: () => {
-            const settingStore = useSettingStore();
-            return settingStore.isComm;
-          },
-          keepAlive: true,
-        },
-        children: [
-          {
-            title: "certd.sysResources.suiteSetting",
-            name: "SuiteSetting",
-            path: "/sys/suite/setting",
-            component: "/sys/suite/setting/index.vue",
-            meta: {
-              show: () => {
-                const settingStore = useSettingStore();
-                return settingStore.isComm;
-              },
-              icon: "ion:cart",
-              permission: "sys:settings:edit",
-            },
-          },
-          {
-            title: "certd.sysResources.orderManager",
-            name: "OrderManager",
-            path: "/sys/suite/trade",
-            component: "/sys/suite/trade/index.vue",
-            meta: {
-              show: () => {
-                const settingStore = useSettingStore();
-                return settingStore.isComm;
-              },
-              icon: "ion:bag-check",
-              permission: "sys:settings:edit",
-              keepAlive: true,
-            },
-          },
-          {
-            title: "certd.sysResources.userSuites",
-            name: "UserSuites",
-            path: "/sys/suite/user-suite",
-            component: "/sys/suite/user-suite/index.vue",
-            meta: {
-              show: () => {
-                const settingStore = useSettingStore();
-                return settingStore.isComm;
-              },
-              icon: "ion:gift-outline",
-              auth: true,
-              keepAlive: true,
-            },
-          },
-        ],
       },
       {
         title: "certd.sysResources.netTest",

@@ -20,29 +20,6 @@
                 </a-badge>
               </a-tooltip>
 
-              <template v-if="userStore.isAdmin">
-                <a-divider type="vertical" />
-                <a-badge :dot="hasNewVersion">
-                  <a-tag color="blue" class="flex-inline pointer mr-0" :title="t('certd.dashboard.latestVersion', { version: latestVersion })" @click="openUpgradeUrl()">
-                    <fs-icon icon="ion:rocket-outline" class="mr-5"></fs-icon>
-                    v{{ version }}
-                  </a-tag>
-                </a-badge>
-                <a-divider type="vertical" />
-                <a-tag color="blue" class="flex-inline pointer mr-0" @click="openChangeLogUrl()">
-                  {{ t("certd.dashboard.changeLog") }}
-                </a-tag>
-                <a-divider type="vertical" />
-                <vip-button mode="nav" style="font-size: 12px"></vip-button>
-              </template>
-              <template v-if="settingsStore.isComm">
-                <a-divider type="vertical" />
-                <suite-card class="m-0"></suite-card>
-              </template>
-              <template v-if="settingsStore.isPlus && settingsStore.sysPublic.userValidTimeEnabled === true && userInfo.validTime">
-                <a-divider type="vertical" />
-                <valid-time-format class="flex-o" :prefix="t('certd.dashboard.validUntil')" :model-value="userInfo.validTime" />
-              </template>
             </div>
           </div>
         </div>
@@ -60,7 +37,7 @@
         <SimpleSteps></SimpleSteps>
       </div>
     </div>
-    <div v-if="!settingStore.isComm" class="warning">
+  <div v-if="!settingStore.isComm" class="warning">
       <a-alert type="warning" show-icon>
         <template #message>
           {{ t("certd.dashboard.alertMessage") }}
@@ -69,7 +46,6 @@
         </template>
       </a-alert>
     </div>
-
     <div class="statistic-data m-20">
       <a-row :gutter="20" class="flex-wrap">
         <a-col :md="6" :xs="24">
@@ -125,7 +101,6 @@
                     <div class="title">{{ item.title }}</div>
                   </div>
                 </div>
-                <div class="flex-o ml-1"><vip-button v-if="item.needPlus" mode="icon" class="" /></div>
               </a-tooltip>
             </a-card>
           </a-col>

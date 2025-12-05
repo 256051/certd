@@ -20,8 +20,6 @@
             >
               {{ t("certd.rebind") }}
             </a-button>
-
-            <vip-button class="ml-5" mode="button"></vip-button>
           </div>
 
           <div class="helper">{{ t("certd.twoFactorAuthHelper") }}</div>

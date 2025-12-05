@@ -85,9 +85,6 @@ provide("fn:ai.open", openChat);
       <div v-if="!settingStore.isComm" class="hover:bg-accent ml-1 mr-2 cursor-pointer rounded-full hidden md:block">
         <tutorial-button class="flex-center header-btn" />
       </div>
-      <div class="hover:bg-accent ml-1 mr-2 cursor-pointer rounded-full">
-        <vip-button class="flex-center header-btn" mode="nav" />
-      </div>
       <div v-if="!settingStore.isComm" class="hover:bg-accent ml-1 mr-2 cursor-pointer rounded-full">
         <fs-button shape="circle" type="text" icon="ion:logo-github" :text="null" @click="goGithub" />
       </div>

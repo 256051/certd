@@ -45,7 +45,6 @@
           <a-form-item :label="t('certd.useOfficialEmailServer')" name="usePlus">
             <div class="flex-o">
               <a-switch v-model:checked="formState.usePlus" :disabled="!settingStore.isPlus" @change="onUsePlusChanged" />
-              <vip-button class="ml-5" mode="button"></vip-button>
             </div>
             <div class="helper">{{ t("certd.useOfficialEmailServerHelper") }}</div>
           </a-form-item>

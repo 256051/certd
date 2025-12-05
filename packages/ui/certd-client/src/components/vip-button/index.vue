@@ -1,15 +1,4 @@
 <template>
-  <div v-if="!settingStore.isComm || userStore.isAdmin" class="layout-vip isPlus" :class="{ isForever: settingStore.isForever }" @click="openUpgrade">
-    <contextHolder />
-    <fs-icon icon="mingcute:vip-1-line" :title="text.title" />
-
-    <div v-if="mode !== 'icon'" class="text hidden md:block ml-0.5">
-      <a-tooltip>
-        <template #title> {{ text.title }}</template>
-        <span class="">{{ text.name }}</span>
-      </a-tooltip>
-    </div>
-  </div>
 </template>
 <script lang="tsx" setup>
 import { computed, onMounted, reactive, ref } from "vue";
@@ -37,72 +26,6 @@ type Text = {
   name: string;
   title?: string;
 };
-const text = computed<Text>(() => {
-  const vipLabel = settingStore.vipLabel;
-  const map = {
-    isComm: {
-      comm: {
-        name: t("vip.comm.name", { vipLabel }),
-        title: t("vip.comm.title", { expire: expireTime.value }),
-      },
-      button: {
-        name: t("vip.comm.name", { vipLabel }),
-        title: t("vip.comm.title", { expire: expireTime.value }),
-      },
-      icon: {
-        name: "",
-        title: t("vip.comm.name", { vipLabel }),
-      },
-      nav: {
-        name: t("vip.comm.nav", { vipLabel }),
-        title: t("vip.comm.title", { expire: expireTime.value }),
-      },
-    },
-    isPlus: {
-      comm: {
-        name: t("vip.plus.name"),
-        title: t("vip.plus.title"),
-      },
-      button: {
-        name: t("vip.comm.name", { vipLabel }),
-        title: t("vip.comm.title", { expire: expireTime.value }),
-      },
-      icon: {
-        name: "",
-        title: t("vip.comm.name", { vipLabel }),
-      },
-      nav: {
-        name: t("vip.comm.nav", { vipLabel }),
-        title: t("vip.comm.title", { expire: expireTime.value }),
-      },
-    },
-    free: {
-      comm: {
-        name: t("vip.free.comm.name"),
-        title: t("vip.free.comm.title"),
-      },
-      button: {
-        name: t("vip.free.button.name"),
-        title: t("vip.free.button.title"),
-      },
-      icon: {
-        name: "",
-        title: t("vip.free.button.name"),
-      },
-      nav: {
-        name: t("vip.free.nav.name"),
-        title: t("vip.free.nav.title"),
-      },
-    },
-  };
-  if (settingStore.isComm) {
-    return map.isComm[props.mode];
-  } else if (settingStore.isPlus) {
-    return map.isPlus[props.mode];
-  } else {
-    return map.free[props.mode];
-  }
-});
 
 const expireTime = computed(() => {
   if (settingStore.isPlus) {
