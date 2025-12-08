@@ -242,7 +242,7 @@ export default {
     title: "站点证书监控",
     description: "每天0点，检查网站证书的过期时间，到期前10天时将发出提醒（使用默认通知渠道）;",
     settingLink: "站点监控设置",
-    limitInfo: "基础版限制1条，专业版以上无限制，当前",
+    limitInfo: "限制1条，专业版以上无限制，当前",
     checkAll: "检查全部",
     confirmTitle: "确认",
     confirmContent: "确认触发检查全部站点证书吗?",
@@ -282,7 +282,7 @@ export default {
     checkSubmittedRefresh: "检查任务已提交，请稍后刷新查看结果",
     ipManagement: "IP管理",
     bulkImport: "批量导入",
-    basicLimitError: "基础版只能添加一个监控站点，请赞助升级专业版",
+    basicLimitError: "只能添加一个监控站点，请赞助升级专业版",
     limitExceeded: "对不起，您最多只能创建条{max}监控记录，请购买或升级套餐",
     setting: {
       siteMonitorSettings: "站点监控设置",

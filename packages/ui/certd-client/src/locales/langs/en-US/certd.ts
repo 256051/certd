@@ -239,7 +239,7 @@ export default {
     title: "Site Certificate Monitoring",
     description: "Check website certificates' expiration at 0:00 daily; reminders sent 10 days before expiration (using default notification channel);",
     settingLink: "Site Monitoring Settings",
-    limitInfo: "Basic edition limited to 1, professional and above unlimited, current",
+    limitInfo: "Limited to 1, professional and above unlimited, current",
     checkAll: "Check All",
     confirmTitle: "Confirm",
     confirmContent: "Confirm to trigger check for all site certificates?",
@@ -279,7 +279,7 @@ export default {
     checkSubmittedRefresh: "Check task submitted. Please refresh later to view the result.",
     ipManagement: "IP Management",
     bulkImport: "Bulk Import",
-    basicLimitError: "Basic version allows only one monitoring site. Please upgrade to the Pro version.",
+    basicLimitError: "Only one monitoring site allowed. Please upgrade to the Pro version.",
     limitExceeded: "Sorry, you can only create up to {max} monitoring records. Please purchase or upgrade your plan.",
     setting: {
       siteMonitorSettings: "Site Monitor Settings",
