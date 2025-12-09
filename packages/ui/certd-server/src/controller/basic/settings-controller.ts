@@ -10,7 +10,7 @@ import {
   SysSiteInfo,
   SysSuiteSetting
 } from "@certd/lib-server";
-import { AppKey, getPlusInfo, isComm } from "@certd/plus-core";
+import { AppKey, getPlusInfo } from "@certd/plus-core";
 import { cloneDeep } from "lodash-es";
 import { getVersion } from "../../utils/version.js";
 import { http } from "@certd/basic";
@@ -48,13 +48,18 @@ export class BasicSettingsController extends BaseController {
   }
 
   public async getSuiteSetting() {
-    if (!isComm()) {
+    // VIP检查已移除，所有用户都可以使用套餐设置
+    // if (!isComm()) {
+    //   return { enabled: false };
+    // }
+    try {
+      const setting = await this.sysSettingsService.getSetting<SysSuiteSetting>(SysSuiteSetting);
+      return {
+        enabled: setting.enabled
+      };
+    } catch (e) {
       return { enabled: false };
     }
-    const setting = await this.sysSettingsService.getSetting<SysSuiteSetting>(SysSuiteSetting);
-    return {
-      enabled: setting.enabled
-    };
   }
 
   public async getSiteEnv() {
@@ -85,8 +90,15 @@ export class BasicSettingsController extends BaseController {
     const sysPublic = await this.getSysPublic();
     const installInfo = await this.getInstallInfo();
     let siteInfo = {};
-    if (isComm()) {
+    // VIP检查已移除，所有用户都可以使用站点信息
+    // if (isComm()) {
+    //   siteInfo = await this.getSiteInfo();
+    // }
+    // 免费版也尝试获取站点信息
+    try {
       siteInfo = await this.getSiteInfo();
+    } catch (e) {
+      // 忽略错误，使用默认值
     }
     const siteEnv = await this.getSiteEnv();
     const plusInfo = await this.plusInfo();

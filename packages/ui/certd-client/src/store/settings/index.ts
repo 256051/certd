@@ -154,15 +154,15 @@ export const useSettingStore = defineStore({
     isForever() {
       return this.isPlus && this.plusInfo?.expireTime === -1;
     },
-    vipLabel(): string {
-      const { t } = useI18n();
-      const vipLabelMap: any = {
-        free: t("vip.label.free"),
-        plus: t("vip.label.plus"),
-        comm: t("vip.label.comm"),
-      };
-      return vipLabelMap[this.plusInfo?.vipType || "free"];
-    },
+    // vipLabel(): string {
+    //   const { t } = useI18n();
+    //   const vipLabelMap: any = {
+    //     free: t("vip.label.free"),
+    //     plus: t("vip.label.plus"),
+    //     comm: t("vip.label.comm"),
+    //   };
+    //   return vipLabelMap[this.plusInfo?.vipType || "free"];
+    // },
     getHeaderMenus(): any[] {
       // @ts-ignore
       let menus = this.headerMenus?.menus || [];
@@ -187,14 +187,14 @@ export const useSettingStore = defineStore({
     },
   },
   actions: {
-    checkPlus() {
-      if (!this.isPlus) {
-        notification.warn({
-          message: $t("vip.needVipTip"),
-        });
-        throw new Error($t("vip.needVipTip"));
-      }
-    },
+    // checkPlus() {
+    //   // if (!this.isPlus) {
+    //   //   notification.warn({
+    //   //     message: $t("vip.needVipTip"),
+    //   //   });
+    //   //   throw new Error($t("vip.needVipTip"));
+    //   // }
+    // },
     async loadSysSettings() {
       const allSettings = await basicApi.loadAllSettings();
       merge(this.sysPublic, allSettings.sysPublic || {});

@@ -3,7 +3,6 @@ import { Constants, CrudController, ValidateException } from '@certd/lib-server'
 import { NotificationService } from '../../../modules/pipeline/service/notification-service.js';
 import { AuthService } from '../../../modules/sys/authority/service/auth-service.js';
 import { NotificationDefine } from '@certd/pipeline';
-import { checkPlus } from '@certd/plus-core';
 
 /**
  * 通知
@@ -51,9 +50,9 @@ export class NotificationController extends CrudController<NotificationService> 
     if (!define) {
       throw new ValidateException('通知类型不存在');
     }
-    if (define.needPlus) {
-      checkPlus();
-    }
+    // if (define.needPlus) {
+    //   checkPlus();
+    // }
     return super.add(bean);
   }
 
@@ -70,9 +69,9 @@ export class NotificationController extends CrudController<NotificationService> 
       if (!define) {
         throw new ValidateException('通知类型不存在');
       }
-      if (define.needPlus) {
-        checkPlus();
-      }
+      // if (define.needPlus) {
+      //   checkPlus();
+      // }
     }
     delete bean.userId;
     return super.update(bean);

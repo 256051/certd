@@ -9,7 +9,6 @@ import {
   ValidateException
 } from "@certd/lib-server";
 import { AuthService } from "../../../modules/sys/authority/service/auth-service.js";
-import { checkPlus } from "@certd/plus-core";
 import { http, logger, utils } from "@certd/basic";
 import { TaskServiceBuilder } from "../../../modules/pipeline/service/getter/task-service-getter.js";
 
@@ -65,9 +64,9 @@ export class AddonController extends CrudController<AddonService> {
     if (!define) {
       throw new ValidateException("Addon类型不存在");
     }
-    if (define.needPlus) {
-      checkPlus();
-    }
+    // if (define.needPlus) {
+    //   checkPlus();
+    // }
     return super.add(bean);
   }
 
@@ -85,9 +84,9 @@ export class AddonController extends CrudController<AddonService> {
       if (!define) {
         throw new ValidateException("Addon类型不存在");
       }
-      if (define.needPlus) {
-        checkPlus();
-      }
+      // if (define.needPlus) {
+      //   checkPlus();
+      // }
     }
     delete bean.userId;
     return super.update(bean);

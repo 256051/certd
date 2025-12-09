@@ -35,11 +35,7 @@ const expireTime = computed(() => {
 });
 
 const expiredDays = computed(() => {
-  if (settingStore.plusInfo?.isPlus && !settingStore.isPlus) {
-    //已过期多少天
-    const days = dayjs().diff(dayjs(settingStore.plusInfo.expireTime), "day");
-    return `${settingStore.vipLabel}已过期${days}天`;
-  }
+  // VIP检查已移除，不再显示过期信息
   return "";
 });
 
@@ -50,33 +46,35 @@ const formState = reactive({
 
 const router = useRouter();
 async function doActive() {
-  if (!formState.code) {
-    message.error(t("vip.enterCode"));
-    throw new Error(t("vip.enterCode"));
-  }
-  const res = await api.doActive(formState);
-  if (res) {
-    await settingStore.init();
-    const vipLabel = settingStore.vipLabel;
-    Modal.success({
-      title: t("vip.successTitle"),
-      content: t("vip.successContent", {
-        vipLabel,
-        expireDate: dayjs(settingStore.plusInfo.expireTime).format("YYYY-MM-DD"),
-      }),
-      onOk() {
-        if (!(settingStore.installInfo.bindUserId > 0)) {
-          Modal.confirm({
-            title: t("vip.bindAccountTitle"),
-            content: t("vip.bindAccountContent"),
-            onOk() {
-              router.push("/sys/account");
-            },
-          });
-        }
-      },
-    });
-  }
+  // VIP检查已移除，不再需要激活功能
+  // if (!formState.code) {
+  //   message.error(t("vip.enterCode"));
+  //   throw new Error(t("vip.enterCode"));
+  // }
+  // const res = await api.doActive(formState);
+  // if (res) {
+  //   await settingStore.init();
+  //   const vipLabel = "免费版"; // VIP检查已移除，使用默认标签
+  //   Modal.success({
+  //     title: t("vip.successTitle"),
+  //     content: t("vip.successContent", {
+  //       vipLabel,
+  //       expireDate: dayjs(settingStore.plusInfo.expireTime).format("YYYY-MM-DD"),
+  //     }),
+  //     onOk() {
+  //       if (!(settingStore.installInfo.bindUserId > 0)) {
+  //         Modal.confirm({
+  //           title: t("vip.bindAccountTitle"),
+  //           content: t("vip.bindAccountContent"),
+  //           onOk() {
+  //             router.push("/sys/account");
+  //           },
+  //         });
+  //       }
+  //     },
+  //   });
+  // }
+  router.push("/sys/account");
 }
 
 const computedSiteId = computed(() => settingStore.installInfo?.siteId);
@@ -290,7 +288,7 @@ function openUpgrade() {
           </div>
         );
       }
-      const vipLabel = settingStore.vipLabel;
+      const vipLabel = "免费版"; // VIP检查已移除，使用默认标签
       let plusInfo: any = "";
       if (isPlus) {
         plusInfo = (
@@ -393,9 +391,9 @@ function openUpgrade() {
 }
 onMounted(() => {
   mitter.on("openVipModal", () => {
-    if (props.mode === "nav" && !settingStore.isPlus) {
-      openUpgrade();
-    }
+    // if (props.mode === "nav" && !settingStore.isPlus) {
+    //   openUpgrade();
+    // }
   });
 });
 </script>

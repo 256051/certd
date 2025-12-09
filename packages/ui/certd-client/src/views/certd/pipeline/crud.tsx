@@ -198,7 +198,7 @@ export default function ({ crudExpose, context: { selectedRowKeys } }: CreateCru
           },
           copy: {
             click: async context => {
-              settingStore.checkPlus();
+              // settingStore.checkPlus();
               const { ui } = useUi();
               // @ts-ignore
               let row = context[ui.tableColumn.row];

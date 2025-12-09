@@ -4,7 +4,7 @@ import { IEmailService } from '@certd/pipeline';
 
 import { logger } from '@certd/basic';
 // import { isComm, isPlus } from '@certd/plus-core';
-import { isComm } from '@certd/plus-core';
+// import { isComm } from '@certd/plus-core';
 import nodemailer from 'nodemailer';
 import { SendMailOptions } from 'nodemailer';
 import { UserSettingsService } from '../../mine/service/user-settings-service.js';
@@ -83,11 +83,21 @@ export class EmailService implements IEmailService {
     const transporter = nodemailer.createTransport(emailConfig);
 
     let sysTitle = 'Certd';
-    if (isComm()) {
+    // VIP检查已移除，所有用户都可以使用自定义站点标题
+    // if (isComm()) {
+    //   const siteInfo = await this.sysSettingsService.getSetting<SysSiteInfo>(SysSiteInfo);
+    //   if (siteInfo) {
+    //     sysTitle = siteInfo.title || sysTitle;
+    //   }
+    // }
+    // 免费版也尝试获取站点信息
+    try {
       const siteInfo = await this.sysSettingsService.getSetting<SysSiteInfo>(SysSiteInfo);
-      if (siteInfo) {
-        sysTitle = siteInfo.title || sysTitle;
+      if (siteInfo?.title) {
+        sysTitle = siteInfo.title;
       }
+    } catch (e) {
+      // 忽略错误，使用默认值
     }
     let subject = email.subject;
     if (!subject.includes(`【${sysTitle}】`)) {

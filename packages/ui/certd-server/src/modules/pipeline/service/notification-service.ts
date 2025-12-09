@@ -14,7 +14,7 @@ import { NotificationInstanceConfig, notificationRegistry, NotificationSendReq, 
 import { http, utils } from '@certd/basic';
 import { EmailService } from '../../basic/service/email-service.js';
 // import { isComm, isPlus } from '@certd/plus-core';
-import { isComm } from '@certd/plus-core';
+// import { isComm } from '@certd/plus-core';
 @Provide()
 @Scope(ScopeEnum.Request, { allowDowngrade: true })
 export class NotificationService extends BaseService<NotificationEntity> {
@@ -187,9 +187,19 @@ export class NotificationService extends BaseService<NotificationEntity> {
       if (notifyConfig.type != 'email') {
         //非邮件通知，需要加上站点名称
         let siteTitle = 'Certd';
-        if (isComm()) {
+        // VIP检查已移除，所有用户都可以使用自定义站点标题
+        // if (isComm()) {
+        //   const siteInfo = await this.sysSettingsService.getSetting<SysSiteInfo>(SysSiteInfo);
+        //   siteTitle = siteInfo?.title || siteTitle;
+        // }
+        // 免费版也尝试获取站点信息
+        try {
           const siteInfo = await this.sysSettingsService.getSetting<SysSiteInfo>(SysSiteInfo);
-          siteTitle = siteInfo?.title || siteTitle;
+          if (siteInfo?.title) {
+            siteTitle = siteInfo.title;
+          }
+        } catch (e) {
+          // 忽略错误，使用默认值
         }
         req.body.title = `【${siteTitle}】${req.body.title}`;
       }

@@ -27,7 +27,7 @@ const pipelineGroupDictRef = dict({
 const { openCrudFormDialog } = useFormWrapper();
 const settingStore = useSettingStore();
 async function openGroupSelectDialog() {
-  settingStore.checkPlus();
+  // settingStore.checkPlus();
   const crudOptions: any = {
     columns: {
       groupId: {

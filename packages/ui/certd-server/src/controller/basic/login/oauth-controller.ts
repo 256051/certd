@@ -1,6 +1,5 @@
 import { logger, simpleNanoId, utils } from "@certd/basic";
 import { addonRegistry, AddonService, BaseController, Constants, SysInstallInfo, SysSettingsService } from "@certd/lib-server";
-import { checkPlus } from "@certd/plus-core";
 import { ALL, Body, Controller, Get, Inject, Param, Post, Provide, Query } from "@midwayjs/core";
 import { CodeService } from "../../../modules/basic/service/code-service.js";
 import { OauthBoundEntity } from "../../../modules/login/entity/oauth-bound.js";
@@ -73,7 +72,7 @@ export class ConnectController extends BaseController {
   @Get('/callback/:type', { summary: Constants.per.guest })
   public async callback(@Param('type') type: string, @Query() query: Record<string, string>) {
 
-    checkPlus()
+    // checkPlus()
 
     //处理登录回调
     const addon = await this.getOauthProvider(type);
@@ -123,7 +122,7 @@ export class ConnectController extends BaseController {
 
   @Post('/getLogoutUrl', { summary: Constants.per.guest })
   public async logout(@Body(ALL) body: any) {
-    checkPlus()
+    // checkPlus()
     const addon = await this.getOauthProvider(body.type);
     const { logoutUrl } = await addon.buildLogoutUrl(body);
     return this.ok({ logoutUrl });
@@ -132,7 +131,7 @@ export class ConnectController extends BaseController {
 
   @Post('/token', { summary: Constants.per.guest })
   public async token(@Body(ALL) body: { validationCode: string, type: string }) {
-    checkPlus()
+    // checkPlus()
     const validationValue = await this.codeService.getValidationValue(body.validationCode);
     if (!validationValue) {
       throw new Error("校验码错误");
@@ -238,7 +237,7 @@ export class ConnectController extends BaseController {
     const list = [];
 
     for (const item of defineList) {
-      const type = item.name 
+      const type = item.name
       const conf = oauthProviders[type];
       const provider:any = {
         ...item,

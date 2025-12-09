@@ -128,9 +128,9 @@ export function getCommonColumnDefine(crudExpose: any, typeRef: any, api: any) {
 
             if (!immediate) {
               form.body = {};
-              if (define.needPlus) {
-                mitter.emit("openVipModal");
-              }
+              // if (define.needPlus) {
+              //   mitter.emit("openVipModal");
+              // }
             }
 
             if (!form.name || form.name === lastTitle) {

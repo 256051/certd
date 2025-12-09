@@ -77,7 +77,7 @@ function batchDelete() {
 }
 
 function batchRerun() {
-  settingStore.checkPlus();
+  // settingStore.checkPlus();
   Modal.confirm({
     title: "确认强制重新运行吗",
     content: "确定要强制重新运行选中流水线吗？(20条一批执行)",

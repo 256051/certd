@@ -3,7 +3,7 @@ import {BaseService, PageReq} from "@certd/lib-server";
 import {PluginEntity} from "../entity/plugin.js";
 import {InjectEntityModel} from "@midwayjs/typeorm";
 import {IsNull, Not, Repository} from "typeorm";
-import {isComm} from "@certd/plus-core";
+// import {isComm} from "@certd/plus-core";
 import {BuiltInPluginService} from "../../pipeline/service/builtin-plugin-service.js";
 import {merge} from "lodash-es";
 import {accessRegistry, notificationRegistry, pluginRegistry} from "@certd/pipeline";
@@ -69,9 +69,10 @@ export class PluginService extends BaseService<PluginEntity> {
     }
 
 
-    if (!isComm()) {
-      return groups;
-    }
+    // VIP检查已移除，所有用户都可以使用插件管理功能
+    // if (!isComm()) {
+    //   return groups;
+    // }
 
     // 初始化设置
     const settingPlugins = await this.repository.find({
@@ -125,9 +126,10 @@ export class PluginService extends BaseService<PluginEntity> {
 
   async getEnabledBuiltInList(): Promise<any> {
     const builtInList = this.builtInPluginService.getList();
-    if (!isComm()) {
-      return builtInList;
-    }
+    // VIP检查已移除，所有用户都可以使用内置插件
+    // if (!isComm()) {
+    //   return builtInList;
+    // }
 
     const list = await this.list({
       query: {

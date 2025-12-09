@@ -2,7 +2,7 @@ import { ALL, Body, Controller, Inject, Post, Provide } from '@midwayjs/core';
 import { BaseController, Constants, SysSettingsService } from '@certd/lib-server';
 import { RegisterType, UserService } from '../../../modules/sys/authority/service/user-service.js';
 import { CodeService } from '../../../modules/basic/service/code-service.js';
-import { checkComm, checkPlus } from '@certd/plus-core';
+import { checkComm } from '@certd/plus-core';
 
 export type RegisterReq = {
   type: RegisterType;
@@ -80,7 +80,7 @@ export class RegisterController extends BaseController {
       if (sysPublicSettings.emailRegisterEnabled === false) {
         throw new Error('当前站点已禁止Email注册功能');
       }
-      checkPlus();
+      // checkPlus();
       this.codeService.checkEmailCode({
         email: body.email,
         validateCode: body.validateCode,

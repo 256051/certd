@@ -1,7 +1,6 @@
 import {ALL, Body, Controller, Inject, Post, Provide, Query} from '@midwayjs/core';
 import {Constants, CrudController} from '@certd/lib-server';
 import { TemplateService } from '../../../modules/pipeline/service/template-service.js';
-import { checkPlus } from '@certd/plus-core';
 
 /**
  * 流水线模版
@@ -43,7 +42,7 @@ export class TemplateController extends CrudController<TemplateService> {
   @Post('/add', { summary: Constants.per.authOnly })
   async add(@Body(ALL) bean) {
     bean.userId = this.getUserId();
-    checkPlus()
+    // checkPlus()
     return super.add(bean);
   }
 
@@ -79,7 +78,7 @@ export class TemplateController extends CrudController<TemplateService> {
   @Post('/createPipelineByTemplate', { summary: Constants.per.authOnly })
   async createPipelineByTemplate(@Body(ALL) body: any) {
     body.userId = this.getUserId();
-    checkPlus()
+    // checkPlus()
     const res = await this.service.createPipelineByTemplate(body);
     return this.ok(res);
   }

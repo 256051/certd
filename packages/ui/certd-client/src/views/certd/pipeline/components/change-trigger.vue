@@ -30,7 +30,7 @@ const { openCrudFormDialog } = useFormWrapper();
 const settingStore = useSettingStore();
 
 async function openFormDialog() {
-  settingStore.checkPlus();
+  // settingStore.checkPlus();
   const crudOptions: any = {
     columns: {
       "props.cron": {

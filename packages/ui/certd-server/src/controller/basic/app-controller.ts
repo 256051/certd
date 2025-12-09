@@ -1,7 +1,7 @@
 import {Body, Controller, Get, Inject, Post, Provide} from '@midwayjs/core';
 import { BaseController, Constants, FileService, SysSettingsService, SysSiteInfo } from '@certd/lib-server';
 import { http, logger } from '@certd/basic';
-import { isComm } from '@certd/plus-core';
+// import { isComm } from '@certd/plus-core'; // VIP检查已移除
 
 /**
  */
@@ -32,15 +32,29 @@ export class AppController extends BaseController {
 
   @Get('/favicon', { summary: Constants.per.guest })
   public async getFavicon() {
-    if (isComm()) {
+    // VIP检查已移除，所有用户都可以使用自定义favicon
+    // if (isComm()) {
+    //   const siteInfo = await this.sysSettingsService.getSetting<SysSiteInfo>(SysSiteInfo);
+    //   const favicon = siteInfo.logo;
+    //   if (favicon) {
+    //     const redirect = '/api/basic/file/download?key=' + favicon;
+    //     this.ctx.response.redirect(redirect);
+    //     this.ctx.response.set('Cache-Control', 'public,max-age=25920');
+    //     return;
+    //   }
+    // }
+    // 免费版也尝试获取站点信息
+    try {
       const siteInfo = await this.sysSettingsService.getSetting<SysSiteInfo>(SysSiteInfo);
-      const favicon = siteInfo.logo;
+      const favicon = siteInfo?.logo;
       if (favicon) {
         const redirect = '/api/basic/file/download?key=' + favicon;
         this.ctx.response.redirect(redirect);
         this.ctx.response.set('Cache-Control', 'public,max-age=25920');
         return;
       }
+    } catch (e) {
+      // 忽略错误，使用默认值
     }
     const redirect = '/static/images/logo/logo.svg';
     this.ctx.response.redirect(redirect);

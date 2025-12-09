@@ -7,7 +7,7 @@ import { CodeErrorException } from '@certd/lib-server';
 import { EmailService } from './email-service.js';
 import { AccessService } from '@certd/lib-server';
 import { AccessSysGetter } from '@certd/lib-server';
-import { isComm } from '@certd/plus-core';
+// import { isComm } from '@certd/plus-core';
 import { CaptchaService } from "./captcha-service.js";
 
 // {data: '<svg.../svg>', text: 'abcd'}
@@ -97,11 +97,21 @@ export class CodeService {
 
 
     let siteTitle = 'Certd';
-    if (isComm()) {
+    // VIP检查已移除，所有用户都可以使用自定义站点标题
+    // if (isComm()) {
+    //   const siteInfo = await this.sysSettingsService.getSetting<SysSiteInfo>(SysSiteInfo);
+    //   if (siteInfo) {
+    //     siteTitle = siteInfo.title || siteTitle;
+    //   }
+    // }
+    // 免费版也尝试获取站点信息
+    try {
       const siteInfo = await this.sysSettingsService.getSetting<SysSiteInfo>(SysSiteInfo);
-      if (siteInfo) {
-        siteTitle = siteInfo.title || siteTitle;
+      if (siteInfo?.title) {
+        siteTitle = siteInfo.title;
       }
+    } catch (e) {
+      // 忽略错误，使用默认值
     }
 
     const verificationCodeLength =  Math.floor(Math.max(Math.min(opts?.verificationCodeLength || 4, 8), 4));

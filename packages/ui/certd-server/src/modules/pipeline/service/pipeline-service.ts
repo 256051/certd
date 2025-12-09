@@ -5,9 +5,9 @@ import {
   AccessService,
   BaseService,
   NeedSuiteException,
-  NeedVIPException,
+  // NeedVIPException, // VIP检查已移除
   PageReq,
-  SysPublicSettings,
+  // SysPublicSettings, // VIP检查已移除
   SysSettingsService,
   SysSiteInfo
 } from "@certd/lib-server";
@@ -39,7 +39,7 @@ import { PluginConfigGetter } from "../../plugin/service/plugin-config-getter.js
 import dayjs from "dayjs";
 import { DbAdapter } from "../../db/index.js";
 // import { isComm, isPlus } from "@certd/plus-core";
-import { isComm} from "@certd/plus-core";
+// import { isComm} from "@certd/plus-core"; // VIP检查已移除
 import { logger } from "@certd/basic";
 import { UrlService } from "./url-service.js";
 import { NotificationService } from "./notification-service.js";
@@ -290,18 +290,19 @@ export class PipelineService extends BaseService<PipelineEntity> {
     //     }
     //   }
     // } else {
-      //非商业版校验用户最大流水线数量
-      const userId = bean.userId;
-      const userIsAdmin = await this.userService.isAdmin(userId);
-      if (!userIsAdmin) {
-        //非管理员用户，限制pipeline数量
-        const count = await this.repository.count({ where: { userId } });
-        const sysPublic = await this.sysSettingsService.getSetting<SysPublicSettings>(SysPublicSettings);
-        const limitUserPipelineCount = sysPublic.limitUserPipelineCount;
-        if (limitUserPipelineCount && limitUserPipelineCount > 0 && count >= limitUserPipelineCount) {
-          throw new NeedVIPException(`普通用户最多只能创建${limitUserPipelineCount}条流水线`);
-        }
-      }
+      // VIP检查已移除，不再限制流水线数量
+      // 非商业版校验用户最大流水线数量
+      // const userId = bean.userId;
+      // const userIsAdmin = await this.userService.isAdmin(userId);
+      // if (!userIsAdmin) {
+      //   //非管理员用户，限制pipeline数量
+      //   const count = await this.repository.count({ where: { userId } });
+      //   const sysPublic = await this.sysSettingsService.getSetting<SysPublicSettings>(SysPublicSettings);
+      //   const limitUserPipelineCount = sysPublic.limitUserPipelineCount;
+      //   if (limitUserPipelineCount && limitUserPipelineCount > 0 && count >= limitUserPipelineCount) {
+      //     throw new NeedVIPException(`普通用户最多只能创建${limitUserPipelineCount}条流水线`);
+      //   }
+      // }
     // }
   }
 
@@ -527,9 +528,10 @@ export class PipelineService extends BaseService<PipelineEntity> {
     }
    
     let suite: UserSuiteEntity = null;
-    if (isComm()) {
-      suite = await this.checkHasDeployCount(entity.id, entity.userId);
-    }
+    // VIP检查已移除，不再检查部署次数限制
+    // if (isComm()) {
+    //   suite = await this.checkHasDeployCount(entity.id, entity.userId);
+    // }
     await this.checkUserStatus(entity.userId);
 
     return {
@@ -539,10 +541,12 @@ export class PipelineService extends BaseService<PipelineEntity> {
 
   async doRun(entity: PipelineEntity, triggerId: string, stepId?: string) {
 
-    let suite:any = null
+    // VIP检查已移除，suite 不再使用
+    // let suite:any = null
     try{
-      const res = await this.beforeCheck(entity);
-      suite = res.suite
+      await this.beforeCheck(entity);
+      // const res = await this.beforeCheck(entity);
+      // suite = res.suite // VIP检查已移除
     } catch (e) {
       logger.error(`流水线${entity.id}触发${triggerId}失败：${e.message}`);
     }
@@ -594,9 +598,19 @@ export class PipelineService extends BaseService<PipelineEntity> {
 
 
     const sysInfo: SysInfo = {};
-    if (isComm()) {
+    // VIP检查已移除，所有用户都可以使用自定义站点信息
+    // if (isComm()) {
+    //   const siteInfo = await this.sysSettingsService.getSetting<SysSiteInfo>(SysSiteInfo);
+    //   sysInfo.title = siteInfo.title;
+    // }
+    // 免费版也尝试获取站点信息
+    try {
       const siteInfo = await this.sysSettingsService.getSetting<SysSiteInfo>(SysSiteInfo);
-      sysInfo.title = siteInfo.title;
+      if (siteInfo?.title) {
+        sysInfo.title = siteInfo.title;
+      }
+    } catch (e) {
+      // 忽略错误，使用默认值
     }
 
     const taskServiceGetter = this.taskServiceBuilder.create({
@@ -630,10 +644,11 @@ export class PipelineService extends BaseService<PipelineEntity> {
       const result = await executor.run(historyId, triggerType);
 
       if (result === ResultType.success) {
-        if (isComm()) {
-          // 消耗成功次数
-          await this.userSuiteService.consumeDeployCount(suite, 1);
-        }
+        // VIP检查已移除，不再消耗部署次数
+        // if (isComm()) {
+        //   // 消耗成功次数
+        //   await this.userSuiteService.consumeDeployCount(suite, 1);
+        // }
       }
     } catch (e) {
       logger.error("执行失败：", e);
