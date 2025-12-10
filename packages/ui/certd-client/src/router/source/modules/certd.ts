@@ -225,7 +225,7 @@ export const certdResources = [
         meta: {
           show: () => {
             const settingStore = useSettingStore();
-            return settingStore.isComm && settingStore.isSuiteEnabled;
+            return settingStore.isSuiteEnabled;
           },
           icon: "ion:cart-outline",
           auth: true,
@@ -237,10 +237,10 @@ export const certdResources = [
             path: "/certd/suite/mine",
             component: "/certd/suite/mine/index.vue",
             meta: {
-              show: () => {
-                const settingStore = useSettingStore();
-                return settingStore.isComm;
-              },
+              // show: () => {
+              //   const settingStore = useSettingStore();
+              //   return settingStore.isComm;
+              // },
               icon: "ion:gift-outline",
               auth: true,
             },
@@ -251,10 +251,10 @@ export const certdResources = [
             path: "/certd/suite/buy",
             component: "/certd/suite/buy.vue",
             meta: {
-              show: () => {
-                const settingStore = useSettingStore();
-                return settingStore.isComm;
-              },
+              // show: () => {
+              //   const settingStore = useSettingStore();
+              //   return settingStore.isComm;
+              // },
               icon: "ion:cart-outline",
               auth: true,
             },
@@ -265,10 +265,10 @@ export const certdResources = [
             path: "/certd/trade",
             component: "/certd/trade/index.vue",
             meta: {
-              show: () => {
-                const settingStore = useSettingStore();
-                return settingStore.isComm;
-              },
+              // show: () => {
+              //   const settingStore = useSettingStore();
+              //   return settingStore.isComm;
+              // },
               icon: "ion:bag-check-outline",
               auth: true,
               keepAlive: true,

@@ -6,7 +6,7 @@
       </div>
     </div>
     <p class="d2-page-cover__sub-title">{{ siteInfo.slogan }}</p>
-    <div v-if="!settingStore.isCommOrAgent" class="warning">
+    <!-- <div v-if="!settingStore.isCommOrAgent" class="warning"> -->
       <a-alert type="warning" show-icon>
         <template #description>
           <div class="flex">
@@ -16,7 +16,7 @@
           </div>
         </template>
       </a-alert>
-    </div>
+    <!-- </div> -->
   </div>
 </template>
 <script lang="ts" setup>

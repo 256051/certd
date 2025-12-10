@@ -37,7 +37,7 @@
         <SimpleSteps></SimpleSteps>
       </div>
     </div>
-  <div v-if="!settingStore.isComm" class="warning">
+  <!-- <div v-if="!settingStore.isComm" class="warning"> -->
       <a-alert type="warning" show-icon>
         <template #message>
           {{ t("certd.dashboard.alertMessage") }}
@@ -45,7 +45,7 @@
           <a class="ml-5 flex-inline" href="https://certd.docmirror.cn" target="_blank">{{ t("certd.dashboard.helpDoc") }}</a>
         </template>
       </a-alert>
-    </div>
+    <!-- </div> -->
     <div class="statistic-data m-20">
       <a-row :gutter="20" class="flex-wrap">
         <a-col :md="6" :xs="24">

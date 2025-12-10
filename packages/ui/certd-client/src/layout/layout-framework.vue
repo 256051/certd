@@ -29,7 +29,7 @@
             <fs-icon :icon="menu.meta.icon"></fs-icon>
             <span class="ml-5">{{ menu.title }} </span>
           </div>
-          <tutorial-button v-if="!settingStore.isComm" class="flex-center header-btn" />
+          <tutorial-button class="flex-center header-btn" />
         </div>
         <div class="header-right header-buttons">
           <!--          <button-->
@@ -72,10 +72,10 @@
       </a-layout-content>
       <a-layout-footer class="fs-framework-footer">
         <div>
-          <span v-if="!settingStore.isComm">
+          <!-- <span v-if="!settingStore.isComm"> -->
             <span>Powered by</span>
-            <a> handsfree.work </a>
-          </span>
+            <a> itmao.club </a>
+          <!-- </span> -->
 
           <template v-if="siteInfo.licenseTo">
             <a-divider type="vertical" />

@@ -1,4 +1,5 @@
 import { ALL, Body, Controller, Inject, Post, Provide, Query } from "@midwayjs/core";
+import { InjectEntityModel } from "@midwayjs/typeorm";
 import {
   addonRegistry,
   CrudController,
@@ -6,8 +7,10 @@ import {
   SysPublicSettings,
   SysSafeSetting,
   SysSettingsEntity,
-  SysSettingsService
+  SysSettingsService,
+  SysSiteInfo
 } from "@certd/lib-server";
+import { Repository } from "typeorm";
 import { cloneDeep, merge } from "lodash-es";
 import { PipelineService } from "../../../modules/pipeline/service/pipeline-service.js";
 import { UserSettingsService } from "../../../modules/mine/service/user-settings-service.js";
@@ -30,6 +33,8 @@ export class SysSettingsController extends CrudController<SysSettingsService> {
   pipelineService: PipelineService;
   @Inject()
   codeService: CodeService;
+  @InjectEntityModel(SysSettingsEntity)
+  repository: Repository<SysSettingsEntity>;
 
   getService() {
     return this.service;
@@ -69,12 +74,49 @@ export class SysSettingsController extends CrudController<SysSettingsService> {
 
   @Post('/save', { summary: 'sys:settings:edit' })
   async save(@Body(ALL) bean: SysSettingsEntity) {
+    // VIP检查已移除，所有用户都可以保存站点信息
+    // 如果是保存站点信息，直接使用 saveSetting 方法绕过 commercial-core 的 AOP 拦截器
+    if (bean.key === 'sys.site') {
+      const siteInfo = JSON.parse(bean.setting || '{}');
+      const sysSiteInfo = new SysSiteInfo();
+      Object.assign(sysSiteInfo, siteInfo);
+      await this.service.saveSetting(sysSiteInfo);
+      // 更新 entity 的 title，确保返回正确的标题
+      const entity = await this.repository.findOne({
+        where: { key: 'sys.site' }
+      });
+      if (entity) {
+        entity.title = '站点信息';
+        await this.repository.save(entity);
+      }
+      return this.ok({});
+    }
     await this.service.save(bean);
     return this.ok({});
   }
 
   @Post('/get', { summary: 'sys:settings:view' })
   async get(@Query('key') key: string) {
+    // VIP检查已移除，所有用户都可以获取站点信息
+    // 如果是获取站点信息，直接使用 repository 绕过 commercial-core 的 AOP 拦截器
+    if (key === 'sys.site') {
+      // 直接使用 repository 获取数据，完全绕过 service 层和 AOP 拦截器
+      const entity = await this.repository.findOne({
+        where: { key }
+      });
+      // 如果不存在，返回默认值
+      if (!entity) {
+        const defaultSiteInfo = new SysSiteInfo();
+        const defaultEntity = {
+          key: 'sys.site',
+          title: '站点信息',
+          setting: JSON.stringify(defaultSiteInfo),
+          access: 'public'
+        };
+        return this.ok(defaultEntity);
+      }
+      return this.ok(entity);
+    }
     const entity = await this.service.getByKey(key);
     return this.ok(entity);
   }

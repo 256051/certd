@@ -134,7 +134,7 @@ export const useSettingStore = defineStore({
       return true;
     },
     isComm(): boolean {
-      return true;
+      return false;
     },
     isAgent(): boolean {
       return this.siteEnv?.agent?.enabled === true;

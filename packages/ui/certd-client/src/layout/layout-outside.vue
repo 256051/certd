@@ -15,14 +15,14 @@
         </div>
         <div class="footer">
           <div class="copyright">
-            <span v-if="!settingStore.isComm">
+            <!-- <span v-if="!settingStore.isComm"> -->
               <span>Copyright</span>
               <span>&copy;</span>
               <span>{{ envRef.COPYRIGHT_YEAR }}</span>
               <span>
                 <a :href="envRef.COPYRIGHT_URL" target="_blank">{{ envRef.COPYRIGHT_NAME }}</a>
               </span>
-            </span>
+            <!-- </span> -->
 
             <span v-if="siteInfo.licenseTo">
               <a-divider type="vertical" />

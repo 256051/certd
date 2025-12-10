@@ -147,14 +147,14 @@ function openUpgrade() {
     message.info(t("vip.admin_only_operation"));
     return;
   }
-  const placeholder = t("vip.enter_activation_code");
-  const isPlus = settingStore.isPlus;
-  let title = t("vip.activate_pro_business");
-  if (settingStore.isComm) {
-    title = t("vip.renew_business");
-  } else if (settingStore.isPlus) {
-    title = t("vip.renew_pro_upgrade_business");
-  }
+  // const placeholder = t("vip.enter_activation_code");
+  // const isPlus = settingStore.isPlus;
+  // let title = t("vip.activate_pro_business");
+  // if (settingStore.isComm) {
+  //   title = t("vip.renew_business");
+  // } else if (settingStore.isPlus) {
+  //   title = t("vip.renew_pro_upgrade_business");
+  // }
 
   // const goBuyUrl = "https://afdian.com/a/greper"
   const subjectId = settingStore.installInfo.siteId;
@@ -165,28 +165,28 @@ function openUpgrade() {
   const goBuyCommUrl = `${goBuyUrl}&vipType=comm`;
   const productInfo = settingStore.productInfo;
 
-  function checkPerpetualPlus() {
-    if (settingStore.isPerpetual) {
-      Modal.warn({
-        title: t("vip.already_perpetual_plus"),
-        okText: t("vip.confirm"),
-      });
-      throw new Error(t("vip.already_perpetual_plus"));
-    }
-  }
-  function goBuyPlusPage() {
-    checkPerpetualPlus();
-    if (settingStore.isComm) {
-      Modal.warn({
-        title: t("vip.already_comm"),
-        okText: t("vip.confirm"),
-      });
-      return;
-    }
-    window.open(goBuyUrl);
-  }
+  // function checkPerpetualPlus() {
+  //   if (settingStore.isPerpetual) {
+  //     Modal.warn({
+  //       title: t("vip.already_perpetual_plus"),
+  //       okText: t("vip.confirm"),
+  //     });
+  //     throw new Error(t("vip.already_perpetual_plus"));
+  //   }
+  // }
+  // function goBuyPlusPage() {
+  //   // checkPerpetualPlus();
+  //   // if (settingStore.isComm) {
+  //   //   Modal.warn({
+  //   //     title: t("vip.already_comm"),
+  //   //     okText: t("vip.confirm"),
+  //   //   });
+  //     return;
+  //   }
+  //   window.open(goBuyUrl);
+  // }
   function goBuyCommPage() {
-    checkPerpetualPlus();
+    // checkPerpetualPlus();
     if (settingStore.isPlus && !settingStore.isComm) {
       Modal.confirm({
         title: t("vip.already_plus"),

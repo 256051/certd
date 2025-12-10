@@ -1,11 +1,11 @@
 <template>
   <div class="flex flex-between w-full text-sm p-5 bg-neutral-100 dark:bg-neutral-900">
     <div class="flex items-center">
-      <span v-if="!settingStore.isComm">
+      <!-- <span v-if="!settingStore.isComm"> -->
         <span>Powered by</span>
-        <a> handsfree.work </a>
+        <a> itmao.club </a>
         <a-divider type="vertical" />
-      </span>
+      <!-- </span> -->
 
       <template v-if="siteInfo.licenseTo">
         <a :href="siteInfo.licenseToUrl || ''">{{ siteInfo.licenseTo }}</a>

@@ -12,13 +12,13 @@ export const aboutResource = [
     component: IFrameView,
     meta: {
       icon: "lucide:book-open-text",
-      link: "https://certd.docmirror.cn",
+      link: "https://cert.itmao.club",
       title: "certd.dashboard.helpDoc",
       order: 9999,
-      show: () => {
-        const settingStore = useSettingStore();
-        return !settingStore.isComm;
-      },
+      // show: () => {
+      //   const settingStore = useSettingStore();
+      //   // return !settingStore.isComm;
+      // },
     },
   },
 ];

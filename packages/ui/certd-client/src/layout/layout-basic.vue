@@ -82,12 +82,12 @@ provide("fn:ai.open", openChat);
       <LockScreen :avatar @to-login="handleLogout" />
     </template>
     <template #header-right-0>
-      <div v-if="!settingStore.isComm" class="hover:bg-accent ml-1 mr-2 cursor-pointer rounded-full hidden md:block">
+      <!-- <div v-if="!settingStore.isComm" class="hover:bg-accent ml-1 mr-2 cursor-pointer rounded-full hidden md:block"> -->
         <tutorial-button class="flex-center header-btn" />
-      </div>
-      <div v-if="!settingStore.isComm" class="hover:bg-accent ml-1 mr-2 cursor-pointer rounded-full">
+      <!-- </div> -->
+      <!-- <div v-if="!settingStore.isComm" class="hover:bg-accent ml-1 mr-2 cursor-pointer rounded-full"> -->
         <fs-button shape="circle" type="text" icon="ion:logo-github" :text="null" @click="goGithub" />
-      </div>
+      <!-- </div> -->
     </template>
     <template #footer>
       <PageFooter></PageFooter>

@@ -1,5 +1,4 @@
 import LayoutPass from "/@/layout/layout-pass.vue";
-import { useSettingStore } from "/@/store/settings";
 import aboutResource from "/@/router/source/modules/about";
 import i18n from "/@/locales/i18n";
 
@@ -21,10 +20,10 @@ export const sysResources = [
         path: "/sys/console",
         component: "/sys/console/index.vue",
         meta: {
-          show: () => {
-            const settingStore = useSettingStore();
-            return settingStore.isComm;
-          },
+          // show: () => {
+          //   const settingStore = useSettingStore();
+          //   return settingStore.isComm;
+          // },
           icon: "ion:speedometer-outline",
           permission: "sys:auth:user:view",
         },
@@ -68,10 +67,10 @@ export const sysResources = [
         path: "/sys/site",
         component: "/sys/site/index.vue",
         meta: {
-          show: () => {
-            const settingStore = useSettingStore();
-            return settingStore.isComm;
-          },
+          // show: () => {
+          //   const settingStore = useSettingStore();
+          //   return settingStore.isComm;
+          // },
           icon: "ion:document-text-outline",
           permission: "sys:settings:view",
         },
@@ -82,10 +81,10 @@ export const sysResources = [
         path: "/sys/settings/header-menus",
         component: "/sys/settings/header-menus/index.vue",
         meta: {
-          show: () => {
-            const settingStore = useSettingStore();
-            return settingStore.isComm;
-          },
+          // show: () => {
+          //   const settingStore = useSettingStore();
+          //   return settingStore.isComm;
+          // },
           icon: "ion:menu",
           permission: "sys:settings:view",
           keepAlive: true,
@@ -97,10 +96,10 @@ export const sysResources = [
         path: "/sys/access",
         component: "/sys/access/index.vue",
         meta: {
-          show: () => {
-            const settingStore = useSettingStore();
-            return settingStore.isComm;
-          },
+          // show: () => {
+          //   const settingStore = useSettingStore();
+          //   return settingStore.isComm;
+          // },
           icon: "ion:disc-outline",
           permission: "sys:settings:view",
           keepAlive: true,
@@ -135,10 +134,10 @@ export const sysResources = [
         path: "/sys/plugin/config",
         component: "/sys/plugin/config-common.vue",
         meta: {
-          show: () => {
-            const settingStore = useSettingStore();
-            return settingStore.isComm;
-          },
+          // show: () => {
+          //   const settingStore = useSettingStore();
+          //   return settingStore.isComm;
+          // },
           icon: "ion:extension-puzzle",
           permission: "sys:settings:view",
         },

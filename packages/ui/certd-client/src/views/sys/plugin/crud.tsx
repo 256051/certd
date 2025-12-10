@@ -1,6 +1,6 @@
 import * as api from "./api";
 import { useI18n } from "/src/locales";
-import { Ref, ref, computed } from "vue";
+import { Ref, ref } from "vue";
 import { useRouter } from "vue-router";
 import { AddReq, compute, CreateCrudOptionsProps, CreateCrudOptionsRet, DelReq, dict, EditReq, UserPageQuery, UserPageRes } from "@fast-crud/fast-crud";
 import { Modal } from "ant-design-vue";
@@ -126,9 +126,9 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
             },
           },
           config: {
-            show: computed(() => {
-              return settingStore.isComm;
-            }),
+            // show: computed(() => {
+            //   return settingStore.isComm;
+            // }),
             text: null,
             icon: "ion:settings-outline",
             title: t("certd.config"),
