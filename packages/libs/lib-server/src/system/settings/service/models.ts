@@ -136,6 +136,8 @@ export class SysSiteInfo extends BaseSettings {
   slogan?: string;
   logo?: string;
   loginLogo?: string;
+  licenseTo?: string;
+  licenseToUrl?: string;
 }
 
 export class SysSecretBackup extends BaseSettings {
