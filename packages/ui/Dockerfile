@@ -3,6 +3,9 @@
 ########################
 FROM node:22-alpine AS builder
 
+# 原生模块（better-sqlite3 / ssh2 等）在 Alpine 上编译需要工具链与 Python（供 node-gyp）
+RUN apk add --no-cache python3 make g++ linux-headers
+
 # 工作目录（不存在会自动创建）
 WORKDIR /workspace/
 

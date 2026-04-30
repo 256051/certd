@@ -235,7 +235,10 @@ token=md5(zhangsan + 5dh232kfg!* + 1554691950854)=cfcd208495d565ef66e7dff9f98764
       transformResponse: [
         function(data, headers) { // headers 参数包含响应头
           try {
-            const contentType = headers['content-type'] || '';
+            const rawContentType = headers?.['content-type'] ?? headers?.get?.('content-type') ?? '';
+            const contentType = Array.isArray(rawContentType)
+              ? rawContentType.join(';').toLowerCase()
+              : String(rawContentType).toLowerCase();
             // 判断是否是 GB2312/GBK 编码
             if (contentType.includes('gb2312') || contentType.includes('gbk')) {
               // 使用 iconv-lite 解码
